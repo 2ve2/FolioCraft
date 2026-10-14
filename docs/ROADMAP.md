@@ -1,6 +1,6 @@
 # Implementation roadmap
 
-Execution state updated 2026-10-14: extended editors, owned assets and public details implemented and representative browser gates passed. Checkboxes reflect actual proof; exhaustive acceptance and launch integrations remain.
+Execution state updated 2026-10-15: extended editors, owned assets and public details implemented and representative browser gates passed. Checkboxes reflect actual proof; exhaustive acceptance and launch integrations remain.
 
 ## Phase 0 — setup and evidence
 - [x] Copy docs into new project, root AGENTS.md; inspect cwd/git/tooling.
@@ -23,7 +23,7 @@ Gate PASSED: account → bio → project → appearance → preview → publish 
 
 ## Phase 2 — complete content and appearance
 - [x] Owned asset metadata/lifecycle and verification code with local image/ownership proof.
-- [x] Live R2 upload/copy/download/delete and local browser CORS proof (production origin pending).
+- [x] Live R2 upload/copy/download/delete and local browser CORS proof; exact trial-origin policy configured, hosted upload lifecycle still pending.
 - [x] Backend projects/gallery/rich blocks and experience/skills/education/article CRUD APIs.
 - [x] Frontend editors/rendering for these additions (representative persistence/browser proof; full quality gate still being audited).
 - [x] Three tested theme presets and Arabic/Latin font pairs preserving content.
@@ -41,7 +41,7 @@ Gate: representative Arabic/English portfolios work at desktop/mobile widths, in
 - [ ] Optional real mail notification delivery (SMTP unconfigured).
 - [x] Structured errors/retry semantics, CI workflow, private backup and real local restore proof.
 - [ ] Remote CI execution, scheduled retention/backups and cache policy (currently no-store).
-- [ ] Deploy staging to chosen hosts when authorized/configured; smoke test actual origin/session/domain behavior.
+- [x] Deploy authorized Cloudflare trial API/web; hosted signup/sign-in, owner draft save/reload, publication and separate public page observed. Full provider/device/launch acceptance remains pending; see CLOUDFLARE.md.
 Gate: recorded end-to-end acceptance and real deployment evidence; no invented provider checks.
 
 ## Later
