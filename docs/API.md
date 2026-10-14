@@ -1,193 +1,193 @@
-# مرجع API الحالي
+# Current API reference
 
-آخر مراجعة: 2026-10-13، Asia/Riyadh. هذا الملف يصف الكود الحالي، وليس واجهات مقترحة. الباك مستقل في `apps/api`؛ عقود المحتوى في `packages/contracts/src/index.ts`. حالة الفحوص والتكاملات في `STATUS.md`.
+Last reviewed: 2026-10-13, Asia/Riyadh. This file describes current code, not proposed endpoints. The independent backend lives in `apps/api`; content contracts are in `packages/contracts/src/index.ts`. Check and integration status are in `STATUS.md`.
 
-## قواعد الاتصال
+## Connection rules
 
-- عنوان التطوير: `http://localhost:4000`. بادئة الأعمال `/api`.
-- ترسل الواجهة كوكي الجلسة عبر `credentials: "include"`. الطلبات العامة للقراءة لا تحتاج جلسة.
-- لكل كتابة تحت `/api/*`، بما فيها الاستفسارات العامة، يجب أن يطابق `Origin` قيمة `WEB_URL` حرفيًا. الطلب دون هذا الرأس يرفض بـ `403 INVALID_ORIGIN`. CORS يسمح لهذا الأصل وحده مع بيانات الاعتماد.
-- كل عملية خاصة تتحقق من جلسة Better Auth ومن ملكية الموقع. `ownerId` في جسم الطلب لا يمنح صلاحية. الموقع أو العنصر غير الموجود أو غير المملوك يرجع `404 NOT_FOUND`.
-- الإنتاج يتطلب بريدًا مؤكدًا؛ الجلسة غير المؤكدة ترفض بـ `403 EMAIL_NOT_VERIFIED`.
-- JSON يجب أن يرسل بـ `Content-Type: application/json`. الحد تحت `/api/*` هو 1,048,576 بايت (1 MiB)، وحد Bun server هو 1,100,000 بايت. aggregate المسودة نفسه مقيد بـ900,000 بايت UTF-8 بعد تحويله إلى JSON؛ ليس كل مجموع الحدود القصوى للحقول قابلًا للإرسال في طلب واحد.
-- استجابات `/api/*` تحمل `Cache-Control: no-store`. رؤوس `X-Request-Id` و`Retry-After` متاحة للواجهة عبر CORS.
+- Development URL: `http://localhost:4000`. Domain endpoint prefix: `/api`.
+- The frontend sends the session cookie using `credentials: "include"`. Public reads do not require a session.
+- Every write under `/api/*`, including public inquiries, requires `Origin` to exactly match `WEB_URL`. A missing header is rejected with `403 INVALID_ORIGIN`. CORS allows only that origin with credentials.
+- Every private operation checks the Better Auth session and site ownership. A body `ownerId` grants no authority. Missing or unowned sites/items return `404 NOT_FOUND`.
+- Production requires verified email; an unverified session returns `403 EMAIL_NOT_VERIFIED`.
+- Send JSON with `Content-Type: application/json`. The `/api/*` body limit is1,048,576 bytes (1 MiB); the Bun server limit is1,100,000 bytes. The serialized draft aggregate is limited to900,000 UTF-8 bytes; the sum of every field maximum cannot necessarily fit in a single request.
+- `/api/*` responses use `Cache-Control: no-store`. CORS exposes `X-Request-Id` and `Retry-After` to the frontend.
 
-نجاح واجهات الأعمال:
+Domain API success:
 
 ```json
 {"status":true,"result":{}}
 ```
 
-فشلها:
+Domain API failure:
 
 ```json
 {"status":false,"code":"REVISION_CONFLICT","error":"REVISION_CONFLICT"}
 ```
 
-خطأ التحقق يرجع `400 VALIDATION_ERROR` مع `fields` من Zod. لا تعتمد على صياغة نص `error` كترجمة للمستخدم؛ استخدم `code`.
+Validation returns `400 VALIDATION_ERROR` with Zod `fields`. Use `code` for user-facing translations rather than relying on the wording of `error`.
 
-**استثناء:** `/api/auth/*` يحتفظ ببروتوكول Better Auth الأصلي؛ لا تغلفه بغلاف الأعمال. `/health` و`/ready` لهما شكل تشغيلي مستقل، والملفات العامة ترجع تحويلًا `302` عند النجاح.
+**Exception:** `/api/auth/*` retains the native Better Auth protocol; do not wrap it in the domain envelope. `/health` and `/ready` use separate operational response shapes; successful public asset delivery returns a `302` redirect.
 
-## المصادقة والتشغيل
+## Authentication and operation
 
-| الطريقة والمسار | الاستخدام الفعلي |
+| Method and path | Actual behavior |
 |---|---|
-| `POST /api/auth/sign-up/email` | Better Auth؛ مثال `{ "name":"اسم الحساب", "email":"person@example.com", "password":"a-long-password" }`، الحد الأدنى 10 أحرف |
-| `POST /api/auth/sign-in/email` | Better Auth؛ `{ "email":"person@example.com", "password":"a-long-password" }` |
-| `GET /api/auth/get-session` | قراءة الجلسة ببروتوكول Better Auth |
-| `POST /api/auth/sign-out` | إنهاء الجلسة |
-| `POST /api/auth/send-verification-email` | رسالة تأكيد؛ استخدم عميل Better Auth وعقده الأصلي |
-| `GET /api/auth/verify-email` | رابط التأكيد الذي تصدره الخدمة؛ لا تنشئ رمزًا يدويًا |
-| `POST /api/auth/request-password-reset` | طلب رابط إعادة تعيين كلمة المرور عبر Better Auth |
-| `POST /api/auth/reset-password` | رمز إعادة التعيين وكلمة المرور الجديدة عبر Better Auth؛ يلغي الجلسات السابقة |
-| `GET /api/me` | خاص؛ `{id,name,email,emailVerified}` داخل `result` |
-| `GET /health` | حياة العملية فقط؛ `{status:true}` |
-| `GET /ready` | يتحقق بـ `select 1`؛ يوضح `integrations.storage/mail` كـ `configured` أو `disabled`، وليس اختبار إرسال أو رفع |
+| `POST /api/auth/sign-up/email` | Better Auth; example `{ "name":"Account name", "email":"person@example.com", "password":"a-long-password" }`; password minimum10 characters |
+| `POST /api/auth/sign-in/email` | Better Auth; `{ "email":"person@example.com", "password":"a-long-password" }` |
+| `GET /api/auth/get-session` | Read the session using the Better Auth protocol |
+| `POST /api/auth/sign-out` | End the session |
+| `POST /api/auth/send-verification-email` | Verification message; use the Better Auth client and native contract |
+| `GET /api/auth/verify-email` | Service-issued verification link; do not create a token manually |
+| `POST /api/auth/request-password-reset` | Request a password-reset link through Better Auth |
+| `POST /api/auth/reset-password` | Reset token and new password through Better Auth; revokes previous sessions |
+| `GET /api/me` | Private; `{id,name,email,emailVerified}` inside `result` |
+| `GET /health` | Process liveness only; `{status:true}` |
+| `GET /ready` | Runs `select 1`; reports `integrations.storage/mail` as `configured` or `disabled`, not an upload/delivery test |
 
-التسجيل في الإنتاج يرسل التأكيد ولا يمنح جلسة دخول جاهزة. بعد التأكيد لا يوجد تسجيل تلقائي؛ يسجل المستخدم الدخول. التطوير يسمح بالدخول دون التأكيد لتجربة المسار المحلي. غياب إعداد البريد يرجع `503 MAIL_UNAVAILABLE` للعمليات التي تحتاجه؛ فشل SMTP يرجع `MAIL_DELIVERY_FAILED`. أصل الإنتاج HTTPS وSMTP الكامل مطلوبان عند بدء العملية.
+Production registration sends verification and does not issue an immediately usable session. Verification does not automatically sign in; the user then signs in. Development permits unverified sign-in for the local flow. Missing mail configuration returns `503 MAIL_UNAVAILABLE` for mail-dependent operations; SMTP failure returns `MAIL_DELIVERY_FAILED`. Production startup requires HTTPS origins and complete SMTP configuration.
 
-حدود Better Auth مخزنة في قاعدة البيانات: نافذة عامة 60 ثانية/100 طلب؛ الدخول 10، والتسجيل وطلب إعادة التعيين وإعادة إرسال التأكيد 5 لكل 60 ثانية. الكتابة الخاصة للأعمال: 120 عملية لكل مستخدم/60 ثانية. `429` قد يصحبه `Retry-After`.
+Better Auth limits are database-backed: general window100 requests/60 seconds; sign-in10, and sign-up, reset requests, and verification resends5 each/60 seconds. Private domain writes allow120 per user/60 seconds. `429` can include `Retry-After`.
 
-## المواقع والمسودة والإصدارات
+## Sites, drafts, and releases
 
-`Site` الخاص: `{id,slug,revision,publishedReleaseId,draft}`. يسمح حاليًا بموقع واحد لكل حساب. `slug` بين 3 و50 حرفًا من الأحرف اللاتينية الصغيرة والأرقام مع شرطات فاصلة، وفريد عالميًا.
+Private `Site`: `{id,slug,revision,publishedReleaseId,draft}`. Currently one site per account. Globally unique `slug` is3–50 lowercase Latin letters/digits with separator hyphens.
 
-| الطريقة والمسار | الطلب / النتيجة |
+| Method and path | Request / result |
 |---|---|
-| `GET /api/sites` | الموقع المملوك أو `null` |
-| `POST /api/sites` | `{slug,locale:"ar"|"en"}`؛ ينشئ مسودة فارغة ويرجع `Site` |
-| `GET /api/sites/:id` | `Site` المملوك |
-| `GET /api/sites/:id/preview` | `Site` مع المسودة الخاصة |
-| `PATCH /api/sites/:id` | `{revision,slug?,locale?}`؛ أحد الحقلين مطلوب؛ يرجع `Site` |
-| `PUT /api/sites/:id/draft` | `{revision,draft}`؛ يحفظ aggregate كاملًا ويرجع `Site` |
-| `POST /api/sites/:id/releases` | `{revision}`؛ ينشر ويرجع `{id,revision}` للإصدار |
-| `GET /api/sites/:id/releases?limit=20&offset=0` | `{items,hasMore,limit,offset}`؛ كل عنصر `{id,revision,createdAt,active}` |
-| `GET /api/sites/:id/releases/:releaseId` | خاص؛ `{id,revision,createdAt,snapshot}` |
-| `POST /api/sites/:id/releases/:releaseId/activate` | `{expectedReleaseId:UUID|null}`؛ ينشط إصدارًا مملوكًا ويرجع `Site` |
-| `POST /api/sites/:id/unpublish` | لا جسم مطلوب؛ يزيل المؤشر العام، ويحافظ على المسودة والإصدارات |
+| `GET /api/sites` | Owned site or `null` |
+| `POST /api/sites` | `{slug,locale:"ar"|"en"}`; creates an empty draft and returns `Site` |
+| `GET /api/sites/:id` | Owned `Site` |
+| `GET /api/sites/:id/preview` | `Site` with the private draft |
+| `PATCH /api/sites/:id` | `{revision,slug?,locale?}`; at least one optional field required; returns `Site` |
+| `PUT /api/sites/:id/draft` | `{revision,draft}`; saves the full aggregate and returns `Site` |
+| `POST /api/sites/:id/releases` | `{revision}`; publishes and returns release `{id,revision}` |
+| `GET /api/sites/:id/releases?limit=20&offset=0` | `{items,hasMore,limit,offset}`; each item `{id,revision,createdAt,active}` |
+| `GET /api/sites/:id/releases/:releaseId` | Private; `{id,revision,createdAt,snapshot}` |
+| `POST /api/sites/:id/releases/:releaseId/activate` | `{expectedReleaseId:UUID|null}`; activates an owned release and returns `Site` |
+| `POST /api/sites/:id/unpublish` | No body required; removes the public pointer while retaining draft and releases |
 
-الحفظ وتعديل المحتوى والإعدادات يقفلان صف الموقع ويقارنـان `revision` داخل معاملة PostgreSQL. الرقم القديم يرجع `409 REVISION_CONFLICT` دون كتابة؛ النجاح يزيد الرقم. لا تعد إرسال نسخة قديمة تلقائيًا فوق أحدث نسخة. احتفظ بالتعديل المحلي، ثم حمّل آخر نسخة أو ادمج عمدًا. التغييرات المحلية غير المحفوظة ليست دليل حفظ.
+Saving and content/settings changes lock the site row and compare `revision` inside a PostgreSQL transaction. A stale revision returns `409 REVISION_CONFLICT` without writing; success increments the revision. Do not automatically resend stale content over a newer version. Retain local edits, then load the latest version or merge deliberately. Unsaved local changes are not proof of persistence.
 
-النشر يتطلب اسمًا وتخصصًا/مسمى. يأخذ snapshot ثابتًا ومصفى للعامة ويحدث مؤشر الإصدار في المعاملة نفسها؛ نشر نفس المراجعة يعيد الإصدار الموجود. تفعيل إصدار قديم يقارن `expectedReleaseId` بالمؤشر الحالي، ويرجع `409 PUBLICATION_CONFLICT` عند اختلافه؛ لا يستبدل المسودة. إلغاء النشر لا يستخدم `revision` ولا يزيده في التنفيذ الحالي. تغيير `slug` يغيّر عنوان الموقع العام، ولا ينشئ تحويلًا من العنوان السابق.
+Publication requires a name and discipline/role. It creates an immutable public-filtered snapshot and updates the release pointer in the same transaction; publishing the same revision reuses its existing release. Activating a prior release compares `expectedReleaseId` with the current pointer and returns `409 PUBLICATION_CONFLICT` on mismatch; it does not replace the draft. Unpublishing currently neither uses nor increments `revision`. Changing `slug` changes the public URL without redirecting the old URL.
 
-`limit`: 1–100، افتراضي 20. `offset`: 0–10,000، افتراضي 0. تطبق هذه الحدود على سجل الإصدارات وصندوق الاستفسارات. مجموعات المحتوى محدودة بالحجم وترجع كاملة دون pagination.
+`limit`:1–100, default20. `offset`:0–10,000, default0. These bounds apply to release history and the inquiry inbox. Content collections have size limits and return complete arrays without pagination.
 
-## النبذة والمظهر والأقسام
+## Profile, appearance, and sections
 
-| الطريقة والمسار | الشكل |
+| Method and path | Shape |
 |---|---|
 | `GET /api/sites/:id/profile` | `{revision,profile}` |
-| `PATCH /api/sites/:id/profile` | `{revision,profile:partial}`؛ يرجع `Site` |
+| `PATCH /api/sites/:id/profile` | `{revision,profile:partial}`; returns `Site` |
 | `GET /api/sites/:id/appearance` | `{revision,appearance}` |
-| `PATCH /api/sites/:id/appearance` | `{revision,appearance:partial}`؛ يرجع `Site` |
+| `PATCH /api/sites/:id/appearance` | `{revision,appearance:partial}`; returns `Site` |
 | `GET /api/sites/:id/sections` | `{revision,sections}` |
-| `PATCH /api/sites/:id/sections` | `{revision,sections:partial}`؛ يرجع `Site` |
+| `PATCH /api/sites/:id/sections` | `{revision,sections:partial}`; returns `Site` |
 
-Patch فارغ أو حقل غير معروف مرفوض. نبذة الحساب العامة منفصلة عن بريد الدخول؛ `profile.email` يظهر فقط إذا أدخله صاحب الموقع للنشر.
+Empty patches and unknown fields are rejected. Public profile email is separate from login email; `profile.email` appears only when the site owner enters it for publication.
 
-- `profile`: `name` ≤100، `role` ≤140، `bio` ≤3000، `location` ≤100، `email` صالح أو فارغ، `website` HTTP(S) أو فارغ، `available` boolean. اختياريًا `imageAssetId: UUID|null` و`socialLinks: [{label,url}]` بحد 10، label غير فارغ ≤50، ورابط HTTP(S).
-- `appearance`: `theme:light|dark|editorial`، `font:sans|serif|mono`، `size:small|medium|large`، `accent:violet|blue|green|rose`، `projectsVisible:boolean`. تعديلات المظهر لا تغير المحتوى.
-- `sections`: booleans اختيارية للمفاتيح `projects,experiences,education,skills,articles,contact`. PATCH الأقسام والمظهر يزامنان إظهار المشاريع بين الحقلين القديم والجديد.
+- `profile`: `name` ≤100, `role` ≤140, `bio` ≤3000, `location` ≤100, valid or empty `email`, HTTP(S) or empty `website`, boolean `available`. Optional `imageAssetId: UUID|null` and `socialLinks: [{label,url}]` with at most10 links, nonempty label ≤50, and HTTP(S) URL.
+- `appearance`: `theme:light|dark|editorial`, `font:sans|serif|mono`, `size:small|medium|large`, `accent:violet|blue|green|rose`, `projectsVisible:boolean`. Appearance changes do not change content.
+- `sections`: optional booleans for `projects,experiences,education,skills,articles,contact`. Section/appearance PATCH synchronizes project visibility between the legacy and new fields.
 
-مثال تعديل نبذة:
+Example profile update:
 
 ```json
-{"revision":3,"profile":{"bio":"مصمم أساعد الفرق على بناء تجارب واضحة.","imageAssetId":null}}
+{"revision":3,"profile":{"bio":"A designer helping teams build clear experiences.","imageAssetId":null}}
 ```
 
-## CRUD المحتوى وترتيبه
+## Content CRUD and ordering
 
-ينطبق النمط التالي على `projects`, `experiences`, `education`, `skills`, `articles`:
+The following pattern applies to `projects`, `experiences`, `education`, `skills`, and `articles`:
 
-| الطريقة والمسار | الشكل |
+| Method and path | Shape |
 |---|---|
-| `GET /api/sites/:id/:collection` | `{revision,items}`؛ غياب مجموعة اختيارية يعرض مصفوفة فارغة |
+| `GET /api/sites/:id/:collection` | `{revision,items}`; absent optional collections return an empty array |
 | `GET /api/sites/:id/:collection/:itemId` | `{revision,item}` |
-| `POST /api/sites/:id/:collection` | `{revision,item:full}`؛ ID UUID للعنصر مطلوب؛ يرجع `Site` |
-| `PATCH /api/sites/:id/:collection/:itemId` | `{revision,item:partial}`؛ لا `id` داخل patch؛ يرجع `Site` |
-| `DELETE /api/sites/:id/:collection/:itemId` | جسم JSON `{revision}`؛ يرجع `Site` |
-| `POST /api/sites/:id/:collection/reorder` | `{revision,ids:[UUID,...]}`؛ تبديل كامل لكل IDs الحالية مرة واحدة بالضبط |
+| `POST /api/sites/:id/:collection` | `{revision,item:full}`; item UUID required; returns `Site` |
+| `PATCH /api/sites/:id/:collection/:itemId` | `{revision,item:partial}`; no `id` in patch; returns `Site` |
+| `DELETE /api/sites/:id/:collection/:itemId` | JSON body `{revision}`; returns `Site` |
+| `POST /api/sites/:id/:collection/reorder` | `{revision,ids:[UUID,...]}`; a full permutation containing every current ID exactly once |
 
-مثال مشروع كامل؛ UUID توضيحي وليس معرفًا لمورد حقيقي:
+Example complete project; the UUID is illustrative and does not identify a real resource:
 
 ```json
-{"revision":4,"item":{"id":"f9d09b48-5fb7-4d92-b617-1b9c5f13a1df","title":"هوية معرض","summary":"تصميم هوية وتجربة عرض.","body":"قصة المشروع والنتائج.","role":"تصميم","year":"2026","tools":"تصميم بصري","url":"","slug":"exhibition-identity","featured":true}}
+{"revision":4,"item":{"id":"f9d09b48-5fb7-4d92-b617-1b9c5f13a1df","title":"Exhibition identity","summary":"Identity and exhibition experience design.","body":"The project story and results.","role":"Design","year":"2026","tools":"Visual design","url":"","slug":"exhibition-identity","featured":true}}
 ```
 
-| المجموعة / الحد | الحقول الأساسية وحدودها |
+| Collection / limit | Core fields and limits |
 |---|---|
-| مشاريع / 30 | `id,title` غير فارغ ≤120، `summary` ≤700، `body` ≤12000، `role` ≤140، `year` ≤20، `tools` ≤300، `url` HTTP(S) أو فارغ؛ اختياريًا `slug,featured,coverAssetId,galleryAssetIds` بحد 12 UUID غير مكرر، `richBody,results` ≤4000 |
-| خبرات / 50 | `id,organization` ≤160، `role` ≤140، `startDate,endDate,current,description` ≤5000؛ اختياريًا `accomplishments` بحد 20 نصًا غير فارغ ≤700 |
-| تعليم وشهادات / 50 | `id,organization` ≤160، `qualification` ≤180، `startDate,endDate,description` ≤3000، `verificationUrl` HTTP(S) أو فارغ؛ `type` اختياري `education|certificate` |
-| مهارات / 30 مجموعة | `id,category` غير فارغ ≤100، `items` بين 1 و50 نصًا غير فارغ ≤100 |
-| مقالات / 100 | `id,slug,title` غير فارغ ≤180، `summary` ≤700، `body` ≤50000، `published:boolean`؛ اختياريًا `coverAssetId,richBody` |
+| Projects /30 | `id,title` nonempty ≤120, `summary` ≤700, `body` ≤12000, `role` ≤140, `year` ≤20, `tools` ≤300, HTTP(S) or empty `url`; optional `slug,featured,coverAssetId,galleryAssetIds` with at most12 distinct UUIDs, `richBody,results` ≤4000 |
+| Experience /50 | `id,organization` ≤160, `role` ≤140, `startDate,endDate,current,description` ≤5000; optional `accomplishments` with at most20 nonempty strings ≤700 |
+| Education/certificates /50 | `id,organization` ≤160, `qualification` ≤180, `startDate,endDate,description` ≤3000, HTTP(S) or empty `verificationUrl`; optional `type:education|certificate` |
+| Skills /30 groups | `id,category` nonempty ≤100; `items` contains1–50 nonempty strings ≤100 |
+| Articles /100 | `id,slug,title` nonempty ≤180, `summary` ≤700, `body` ≤50000, `published:boolean`; optional `coverAssetId,richBody` |
 
-التواريخ بصيغة ISO `YYYY-MM-DD`. `endDate` يقبل `null` ولا يسبق البداية؛ `current:true` في الخبرة يتطلب `endDate:null`. IDs فريدة داخل كل مجموعة؛ slugs فريدة داخل المشاريع وداخل المقالات. ترتيب المصفوفة هو ترتيب التخزين. `featured` يخزن حالة التمييز، وليس إذنًا لتغيير ترتيب البيانات تلقائيًا.
+Dates use ISO `YYYY-MM-DD`. `endDate` accepts `null` and cannot precede the start; experience `current:true` requires `endDate:null`. IDs are unique within each collection; slugs are unique within projects and within articles. Array order is storage order. `featured` stores emphasis state, not permission to reorder data automatically.
 
-حقول الإصدار 1 الجديدة كلها اختيارية لحفظ التوافق مع المسودات القديمة. حفظ عميل قديم يحتفظ بالحقول الجديدة التي لا يعرفها للموقع وللمشاريع المتبقية؛ حذف مشروع عمدًا يزيله من المسودة فقط. لا تضف بيانات شخصية تجريبية إلى مسودة المستخدم.
+New version1 fields are optional for compatibility with older drafts. A legacy client save retains unknown new site fields and fields on remaining projects; deliberate project deletion removes it from the draft only. Do not insert personal demo data into a user draft.
 
-`richBody` مصفوفة بحد 100 كتلة و50,000 حرف مجمعة:
+`richBody` is an array with at most100 blocks and50,000 aggregate characters:
 
 ```json
 [
- {"type":"heading","level":2,"text":"النتائج"},
- {"type":"paragraph","text":"نص عادي، يعرض كنص دون تنفيذ HTML."},
- {"type":"list","ordered":false,"items":["نتيجة أولى","نتيجة ثانية"]}
+ {"type":"heading","level":2,"text":"Results"},
+ {"type":"paragraph","text":"Plain text rendered without executing HTML."},
+ {"type":"list","ordered":false,"items":["First result","Second result"]}
 ]
 ```
 
-فقرة ≤4000، عنوان `level:2|3` ≤200، وقائمة من 1–30 نصًا ≤1000 لكل عنصر. أنواع/حقول HTML وروابط السكربت غير مدعومة. `readTimeMinutes` للمقال محسوب في الباك: عدد كلمات richBody إن احتوت نصًا غير فارغ، وإلا body، مقسوم على 200 ومقرب للأعلى، والحد الأدنى دقيقة. POST/PATCH المقال لا يقبلان هذا الحقل؛ حفظ aggregate يعيد حسابه بدل الثقة بقيمة العميل.
+Paragraph ≤4000, heading `level:2|3` ≤200, and list1–30 strings ≤1000 each. HTML types/fields and script links are unsupported. Backend article `readTimeMinutes` uses richBody word count when it contains nonempty text, otherwise body, divided by200 and rounded up with a1-minute minimum. Article POST/PATCH reject this field; aggregate saves recalculate it instead of trusting the client.
 
-## الملفات والصور
+## Assets and images
 
-| الطريقة والمسار | النتيجة/الطلب |
+| Method and path | Result/request |
 |---|---|
-| `GET /api/sites/:siteId/assets` | قائمة الملفات غير المحذوفة بحد 100؛ DTO دون مفاتيح التخزين |
-| `POST /api/sites/:siteId/assets/upload-intent` | `{mime:"image/png"|"image/jpeg"|"image/webp",size:bytes}`؛ DTO مع `uploadUrl,uploadHeaders,uploadExpiresIn:600` |
-| `POST /api/sites/:siteId/assets/:assetId/complete` | يتحقق من الصورة ويعيد DTO بحالة `ready`؛ تكراره بعد الجاهزية يعيد النتيجة |
-| `GET /api/sites/:siteId/assets/:assetId/download` | خاص؛ `{url,expiresIn:60}` لملف جاهز مملوك |
-| `DELETE /api/sites/:siteId/assets/:assetId` | لا يحذف ملفًا مرتبطًا بالمسودة أو بأي إصدار محفوظ؛ نجاح `{id,status,retryAfter?}` |
-| `POST /api/sites/:siteId/assets/cleanup` | تنظيف محدود 100 عنصر انتهت نافذته؛ `{results}` |
-| `GET /api/public/sites/:slug/assets/:assetId` | `302` إلى URL GET موقع لمدة 60 ثانية، فقط لمرجع داخل الإصدار العام النشط |
+| `GET /api/sites/:siteId/assets` | At most100 nondeleted assets; DTO excludes storage keys |
+| `POST /api/sites/:siteId/assets/upload-intent` | `{mime:"image/png"|"image/jpeg"|"image/webp",size:bytes}`; DTO plus `uploadUrl,uploadHeaders,uploadExpiresIn:600` |
+| `POST /api/sites/:siteId/assets/:assetId/complete` | Verifies the image and returns a `ready` DTO; repeating after readiness returns the existing result |
+| `GET /api/sites/:siteId/assets/:assetId/download` | Private; `{url,expiresIn:60}` for an owned ready asset |
+| `DELETE /api/sites/:siteId/assets/:assetId` | Cannot delete assets referenced by the draft or any retained release; success `{id,status,retryAfter?}` |
+| `POST /api/sites/:siteId/assets/cleanup` | Bounded cleanup of100 expired items; `{results}` |
+| `GET /api/public/sites/:slug/assets/:assetId` | `302` to a signed GET URL valid60 seconds, only for a reference in the active public release |
 
-DTO الملف: `id,siteId,mime,size,width,height,status,expiresAt,createdAt`. الحالات `pending,ready,deleting,deleted`. الرفع محدود بـ5 MiB وصورة PNG/JPEG/WebP غير متعددة الصفحات؛ كل ضلع ≤4096 وعدد البكسلات ≤16,777,216. يتحقق الباك من الحجم وMIME وETag ثم يجلب بايتات محدودة ويفك الصورة فعليًا، وينسخ النسخة المتحققة بشرط ETag إلى مفتاح منفصل.
+Asset DTO: `id,siteId,mime,size,width,height,status,expiresAt,createdAt`. States: `pending,ready,deleting,deleted`. Uploads are limited to5 MiB and single-page PNG/JPEG/WebP images; each side ≤4096 and pixel count ≤16,777,216. Backend checks size, MIME, and ETag, fetches bounded bytes, decodes the image, and conditionally copies the verified version using ETag to a separate key.
 
-يرفع المتصفح الملف مباشرة بـPUT إلى `uploadUrl` ومع `uploadHeaders` كما وردت، دون كوكي التطبيق. بعد نجاح PUT يستدعي `/complete`، ثم يربط UUID الجاهز داخل المسودة. MIME المرسل من العميل وحده لا يثبت صحة الملف. ربط ملف غير جاهز/غير مملوك يرفض بـ`422 ASSET_NOT_READY_OR_OWNED`.
+The browser PUTs the file directly to `uploadUrl` using exactly `uploadHeaders`, without the application cookie. After PUT succeeds, it calls `/complete` and attaches the ready UUID to the draft. Client-provided MIME alone does not establish validity. Unready/unowned attachments return `422 ASSET_NOT_READY_OR_OWNED`.
 
-**معنى الرابط الموقع:** هو صلاحية حاملة للرابط حتى انتهاء 60 ثانية، وليس جلسة. إلغاء النشر يمنع إصدار روابط عامة جديدة، لكنه لا يلغي URL صدر سابقًا قبل انتهاء صلاحيته ولا يزيل بايتات سبق تنزيلها. لا تسجل روابط التوقيع. الحذف يحتفظ بـ`deleting` حتى نهاية نافذة PUT + دقيقة كي لا يعيد PUT صالح تكوين ملف staging بعد تنظيفه؛ أعد الحذف/التنظيف لاحقًا. `cleanup` لا يعمل بجدولة تلقائية حاليًا.
+**Signed URL semantics:** possession grants access until the60-second expiry; this is not a session. Unpublishing prevents new public URLs but does not invalidate already-issued URLs before expiry or erase downloaded bytes. Never log signed URLs. Deletion retains `deleting` through the PUT window plus one minute so a still-valid PUT cannot recreate staging after cleanup; retry deletion/cleanup later. `cleanup` currently has no automatic schedule.
 
-## القراءة العامة والاستفسارات
+## Public reads and inquiries
 
-| الطريقة والمسار | الشكل |
+| Method and path | Shape |
 |---|---|
-| `GET /api/public/sites/:slug` | `{slug,releaseId,publishedAt,draft}` داخل `result`؛ draft هنا snapshot عام ثابت، وليس مسودة التحرير |
-| `GET /api/public/sites/:slug/projects/:projectId` | `{releaseId,project}`؛ معرف UUID أو slug مشروع؛ البحث يفضل مطابقة ID قبل slug |
-| `GET /api/public/sites/:slug/articles/:articleSlug` | `{releaseId,article}`؛ مقال ظاهر ومختار للنشر فقط |
-| `POST /api/public/sites/:slug/inquiries` | `{name,email,message,website?:""}`؛ `201` و`{id,createdAt}` |
-| `GET /api/sites/:id/inquiries?limit=20&offset=0&status=new` | خاص؛ `{items,hasMore,limit,offset}`؛ status اختياري `new|read|archived` |
-| `PATCH /api/sites/:id/inquiries/:inquiryId` | `{status:"read"|"archived"}`؛ يرجع السجل المملوك؛ لا يعتمد على مراجعة المسودة |
+| `GET /api/public/sites/:slug` | `{slug,releaseId,publishedAt,draft}` inside `result`; draft here is the immutable public snapshot, not the editing draft |
+| `GET /api/public/sites/:slug/projects/:projectId` | `{releaseId,project}`; UUID or project slug, with ID matching preferred |
+| `GET /api/public/sites/:slug/articles/:articleSlug` | `{releaseId,article}`; visible article selected for publication only |
+| `POST /api/public/sites/:slug/inquiries` | `{name,email,message,website?:""}`; `201` with `{id,createdAt}` |
+| `GET /api/sites/:id/inquiries?limit=20&offset=0&status=new` | Private; `{items,hasMore,limit,offset}`; optional `status:new|read|archived` |
+| `PATCH /api/sites/:id/inquiries/:inquiryId` | `{status:"read"|"archived"}`; returns the owned record; independent of draft revision |
 
-الـprojection العام يخفي الأقسام المعطلة، ويستبعد المقالات `published:false`، ويزيل البريد والموقع والروابط الاجتماعية إذا كان التواصل مخفيًا. لا يرجع صاحب الحساب أو جلساته. تعديل المسودة لا يغير snapshot العام؛ `404` عند عدم وجود نشر. صفحات الويب `/p/:slug/projects/:id` و`/p/:slug/articles/:articleSlug` تستخدم هذه البيانات المنشورة وتتطلب تطابق معرف الإصدار. إثبات المتصفح مسجل في STATUS.md.
+The public projection hides disabled sections, excludes `published:false` articles, and removes email, website, and social links when contact is hidden. It returns neither account owner nor sessions. Editing a draft does not change the public snapshot; missing publication returns `404`. Web `/p/:slug/projects/:id` and `/p/:slug/articles/:articleSlug` consume published data and require matching release identity. Browser evidence is recorded in STATUS.md.
 
-الاستفسار: اسم 1–100، بريد صالح ≤254، رسالة 10–3000 حرف، honeypot `website` فارغ إن أرسل. يلزم موقع منشور لحظة الإدراج. التخزين في صندوق الموقع هو العملية الفعلية؛ لا يوجد إرسال تنبيه بريدي لصاحب الموقع حاليًا. الحدود المشتركة عبر قاعدة البيانات: 5 لكل slug وعنوان عميل/60 ثانية، و60 لكل موقع/ساعة. عند استدعاء Hono مباشرة دون server قد يكون IP `unknown`؛ تشغيل Bun server هو الذي يشتق عنوان العميل الموثوق.
+Inquiry: name1–100, valid email ≤254, message10–3000 characters, empty honeypot `website` if provided. The site must be published at insertion time. Actual delivery is storage in the site inbox; there is currently no owner email notification. Shared database limits:5 per slug/client address/60 seconds and60 per site/hour. Direct Hono calls without server can use IP `unknown`; Bun server derives the trusted client address.
 
-## أخطاء شائعة
+## Common errors
 
-| HTTP | أمثلة code |
+| HTTP | Example codes |
 |---|---|
 | 400 | `VALIDATION_ERROR, INVALID_JSON, INVALID_REFERENCE, INVALID_ORDER, PROFILE_REQUIRED` |
 | 401/403 | `UNAUTHORIZED, EMAIL_NOT_VERIFIED, INVALID_ORIGIN` |
-| 404 | `NOT_FOUND`؛ يشمل الموارد غير المملوكة |
+| 404 | `NOT_FOUND`; includes unowned resources |
 | 409 | `REVISION_CONFLICT, PUBLICATION_CONFLICT, ITEM_EXISTS, ALREADY_EXISTS, ASSET_REFERENCED, ASSET_STATE_CONFLICT, UPLOAD_EXPIRED, UPLOAD_NOT_FOUND, UPLOAD_CHANGED` |
 | 413 | `BODY_TOO_LARGE` |
 | 422 | `ASSET_NOT_READY_OR_OWNED, INVALID_IMAGE, UPLOAD_METADATA_MISMATCH, UPLOAD_SIZE_MISMATCH` |
 | 429 | `RATE_LIMITED, ASSET_LIMIT_REACHED` |
-| 502/503 | `STORAGE_PROVIDER_ERROR, STORAGE_UNAVAILABLE, DATABASE_UNAVAILABLE`؛ البريد يحتفظ بعقد Better Auth الأصلي |
-| 500 | `INTERNAL_ERROR`؛ التفاصيل الداخلية لا ترسل للعميل |
+| 502/503 | `STORAGE_PROVIDER_ERROR, STORAGE_UNAVAILABLE, DATABASE_UNAVAILABLE`; mail retains the native Better Auth contract |
+| 500 | `INTERNAL_ERROR`; internal details are not sent to the client |
 
-## المصدر وحدود الأدلة
+## Source and evidence limits
 
-المصدر التنفيذي: `apps/api/src/routes/{sites,content,assets,inquiries}.ts` والخدمات المرتبطة، `lib/auth.ts`, `config/env.ts`, وعقود Zod. بروتوكول المصادقة موثق رسميًا في [Better Auth Email & Password](https://better-auth.com/docs/authentication/email-password). التفاصيل التشغيلية وCORS والتكاملات غير المهيأة في [OPERATIONS.md](OPERATIONS.md). لا يوجد ادعاء توثيق OpenAPI منشور أو تحقق من R2/SMTP أو نشر إنتاجي في هذا الملف.
+Implementation source: `apps/api/src/routes/{sites,content,assets,inquiries}.ts` and associated services, `lib/auth.ts`, `config/env.ts`, and Zod contracts. The authentication protocol is documented in [Better Auth Email & Password](https://better-auth.com/docs/authentication/email-password). Operational details, CORS, and unconfigured integrations are in [OPERATIONS.md](OPERATIONS.md). This file does not claim published OpenAPI documentation, R2/SMTP verification, or production deployment.
 
 ## Platform administration
 
@@ -203,7 +203,7 @@ Suspension blocks public portfolio/detail reads, new public signed asset links a
 
 Native auth-admin mutation audits cover set-role, create-user, update-user, ban-user, unban-user, impersonate-user, stop-impersonating, revoke-user-session, revoke-user-sessions, remove-user and set-user-password. Supported before/after hooks persist an attempt then finalize outcome. Native operation and audit finalization are separate transactions; interrupted events stay `attempted`. These audits contain actor/target IDs and action/status, never passwords, cookies, session tokens, email or full native request bodies. Single-session revocation resolves the database session ID privately; mutation request IDs are generated in the native hook independently of Hono IDs. Unauthorized requests denied before an admin mutation are not mutation audit entries.
 
-بوابة الصور المنشورة تسمح بـCORP cross-origin على تحويل302 الناجح فقط لتضمين الصور من مضيف الويب المستقل؛ الردود الخاصة والمرفوضة تحتفظ بـsame-origin. لا يلغي ذلك فحص الإصدار العام النشط.
+The public image gateway permits CORP cross-origin only on successful302 redirects to embed assets from the independent web host; private and rejected responses remain same-origin. Active public release checks still apply.
 
 ## Published discovery — 2026-10-14
 GET /api/public/sitemap exposes only current accessible published slug/publishedAt pairs;100 per page, optional after slug cursor and nextCursor. Strict invalid/unknown queries400. Draft-only sites, suspended sites and active owner bans excluded by the same public predicate. No draft/account/asset key fields. Web /sitemap.xml is an XML index; /p/:slug/sitemap.xml lists visible current portfolio/project/article routes only, no-store; failure503, missing publication404. Safe database network/read deadline failures return503 DATABASE_UNAVAILABLE, including wrapped errors.
