@@ -1,5 +1,10 @@
 # Current status
 
+## Latest owner content correction — 2026-10-14
+- English CV portfolio draft is saved in the authenticated hosted account with four projects and five skill groups. About you now contains only the verbatim professional summary from the supplied PDF, without assistant additions. Exact string equality and saved status verified after a page reload; private screenshot under work/cv-portfolio/.
+- Cloudflare API and frontend are deployed; hosted sign-in and owner draft saving work. This supersedes the earlier predeployment status below. Public portfolio SSR returned404 during a prior probe and remains unresolved; do not claim public publication acceptance.
+- Next action: finish the separate public-route investigation, reconcile deployment documentation and push pending granular commits. No publication was performed for the CV draft.
+
 ## Active free Cloudflare-only trial — 2026-10-14
 - Human requires free hosted testing with their computer off and Cloudflare only; temporary tunnels and external backend hosts declined. Containers Paid is outside the authorized cost scope. Investigate Workers compatibility while retaining Bun local execution and unchanged data/contracts.
 - Current boundaries: Bun server entry and Bun SHA256 request keys; pg/Drizzle connection lifecycle; native Sharp full-image verification; Nodemailer mail; Next.js Workers adapter. No disabled feature or public draft exposure is an acceptable silent workaround.
