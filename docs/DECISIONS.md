@@ -126,3 +126,9 @@ Separate bug fixes discovered during the refactor proof: Drizzle's single-table 
 ## D14 — English documentation and granular commits (2026-10-14)
 Human-confirmed: all project Markdown must be entirely in English, including examples and historical quotations/titles. Product Arabic/English localization remains unchanged. Every completed project-file work step/addition/change requires a separate clearly described commit; preserve remote history. The human explicitly excluded their account permission grant from commits; no account identifier or grant evidence is added to versioned documentation.
 
+
+## D15 — Cloudflare-only friends trial (confirmed 2026-10-14; recorded 2026-10-15)
+- Human-confirmed: free Cloudflare hosting, available with the computer off; no paid Containers, tunnels or external backend hosts. Additive Workers API/OpenNext web implementation retains independent Bun local execution, PostgreSQL transactions and shared renderer.
+- Human-confirmed: temporarily allow signup without email verification because no mail provider is available for friends testing. TRIAL_SKIP_EMAIL_VERIFICATION defaultsfalse; current trial config explicitly sets true. Real mail and disabling the exception are required before general launch.
+- Human explicitly approved transferring existing project database/storage credentials and a new session secret to their Cloudflare Workers Secrets. No actual values or account-grant identifiers belong in Git or documentation.
+- Engineering defaults, not separately human-selected implementation details: request-scoped PostgreSQL/Images bindings, Node SHA256, pinned OpenNext manifest patch and global_fetch_strictly_public routing. Actual proof and remaining limits are in CLOUDFLARE/STATUS.
