@@ -1,51 +1,51 @@
-# FolioCraft — ملف تسليم المشروع
+# FolioCraft — Project handoff
 
-آخر تحديث: 2026-10-14، توقيت Asia/Riyadh.
+Last updated: 2026-10-14, Asia/Riyadh.
 
-الاسم FolioCraft اسم عمل مأخوذ من النموذج؛ الاسم التجاري النهائي لم يُحسم.
+FolioCraft is a working name taken from the prototype; the final product name has not been decided.
 
-## الهدف
-منصة بناء بورتفوليو بقالب واحد ثابت وشامل. يخصص المستخدم الثيم والألوان ونوع الخط وشكله وحجمه، ويحافظ القالب على بنية UI متسقة. دعم العربية والإنجليزية، ومحتوى مناسب لمختلف التخصصات.
+## Goal
+A portfolio builder with one fixed, comprehensive layout. Users customize themes, colors, font family/style, and text size while retaining a consistent UI structure. Support Arabic and English and content suitable for different disciplines.
 
-## القرارات المؤكدة من المستخدم
-- الباك مستقل عن الفرونت.
-- الباك: Bun + Hono + Better Auth + Drizzle ORM.
-- استلهام أسلوب الباك من `/home/lord2ve/Desktop/sooqha-backend` دون تعديل المشروع المرجعي.
-- فتح جلسة تنفيذ جديدة، ونقل السياق إليها، وإنشاء ملفات Markdown لمنع فقدان القرارات والتقدم.
+## Human-confirmed decisions
+- The backend is independent of the frontend.
+- Backend: Bun + Hono + Better Auth + Drizzle ORM.
+- Use `/home/lord2ve/Desktop/sooqha-backend` as a style reference without modifying that project.
+- Open a new implementation session, transfer context, and create Markdown files to preserve decisions and progress.
 
-## الخطة المقترحة التي نبدأ بها
-- الفرونت: Next.js + TypeScript + Tailwind + shadcn/ui للوحة التحكم، وتصميم مخصص للقالب العام.
-- PostgreSQL، تخزين متوافق مع S3، Zod، Biome، Bun Test للباك، واختبارات متصفح للمسار الكامل.
-- تطبيقان مستقلان داخل مستودع واحد؛ هذا تنظيم مقترح، وليس شرطًا لدمج التشغيل أو النشر.
-- هدف التنفيذ الأول: حساب ← نبذة ← مشروع ← مظهر ← معاينة ← نشر فعلي.
+## Initial proposed plan
+- Frontend: Next.js + TypeScript + Tailwind + shadcn/ui for the dashboard, with a custom public portfolio design.
+- PostgreSQL, S3-compatible storage, Zod, Biome, Bun Test for the backend, and browser tests of the full flow.
+- Two independent applications in one repository; this proposed organization does not require shared execution or deployment.
+- First implementation goal: account -> profile -> project -> appearance -> preview -> real publication.
 
-## قراءة الملفات
-ابدأ في الجلسة الجديدة بـ `HANDOFF.md` ثم `STATUS.md`؛ فيهما نقطة الاستئناف الحالية والمتبقي فعليًا.
-1. `AGENTS.md`: بروتوكول استمرار العمل وتحديث الوثائق.
-2. `REQUIREMENTS.md`: المنتج، النطاق ومعايير القبول.
-3. `ARCHITECTURE.md`: الفرونت والباك والبيانات وAPI والنشر.
-4. `BACKEND_STYLE.md`: أنماط مستخرجة من كود Sooqha وحدود إعادة الاستخدام.
-5. `UI_UX_REVIEW.md`: نتائج اختبار النموذج الفعلية.
-6. `DECISIONS.md`: المؤكد مقابل المقترح والأسئلة المفتوحة.
-7. `ROADMAP.md`: مراحل التنفيذ وشروط اكتمالها.
-8. `STATUS.md`: الحالة الحالية، الأدلة والخطوة التالية.
-9. `CHANGELOG.md`: سجل العمل والتسليم.
+## Reading order
+Start a new session with `HANDOFF.md`, then `STATUS.md`; they describe the current continuation point and actual remaining work.
+1. `AGENTS.md`: work continuity and documentation protocol.
+2. `REQUIREMENTS.md`: product, scope, and acceptance criteria.
+3. `ARCHITECTURE.md`: frontend, backend, data, API, and deployment.
+4. `BACKEND_STYLE.md`: patterns observed in Sooqha source and reuse boundaries.
+5. `UI_UX_REVIEW.md`: actual prototype test findings.
+6. `DECISIONS.md`: confirmed decisions, proposals, and open questions.
+7. `ROADMAP.md`: implementation phases and completion criteria.
+8. `STATUS.md`: current status, evidence, and next action.
+9. `CHANGELOG.md`: work and handoff history.
 
-## مصادر السياق
-- النموذج: https://ai.studio/apps/8adde5df-a98e-4263-8e84-910e47a5accd
-- عنوانه: FolioCraft — Universal Portfolio Studio.
-- المحادثة الأصلية: `6ace08fc-25b0-83ed-9668-30315581eed3`، «اقتراح منصة هوية رقمية».
-- استرجاع المحادثة الأصلية أعاد نص المستخدم عن القالب الثابت؛ بعض ردود المساعد أعادت placeholders فقط، لذلك لا نفترض تفاصيلها المفقودة.
-- لقطة المراجعة: `../editorial-review.jpg` في حزمة التسليم الأصلية.
+## Context sources
+- Prototype: https://ai.studio/apps/8adde5df-a98e-4263-8e84-910e47a5accd
+- Prototype title: FolioCraft — Universal Portfolio Studio.
+- Original conversation: `6ace08fc-25b0-83ed-9668-30315581eed3`, title translated as "Digital identity platform proposal".
+- Retrieval of the original conversation returned the human requirement for a fixed layout; some assistant replies contained only placeholders, so their missing details must not be assumed.
+- Review image: `../editorial-review.jpg` in the original handoff package.
 
-انسخ هذه الحزمة إلى `docs/` داخل مشروع جلسة التنفيذ واجعل الملفات هناك المصدر المحدث. ضع `AGENTS.md` في جذر المشروع. لا تترك نسختين تتنافسان كمصدر حقيقة؛ هذه النسخة تظل سجل التسليم الأول.
+Original handoff instruction: copy this package into the implementation project's `docs/` directory and keep those files current. Place `AGENTS.md` at the project root. Avoid competing sources of truth; the original package remains the initial handoff record.
 
-## التنفيذ الحالي
+## Current implementation
 
-هذه النسخة في `/home/lord2ve/Desktop/blog-website/docs/` هي مصدر الحقيقة. محررات المحتوى والمظهر والرسائل والإصدارات والإدارة تعمل محليًا. اعتمد المستخدم فصل تمرير المحرر والمعاينة على الدسكتوب والستايل البنفسجي. المصدر منظم حسب المسؤولية في الباك وحسب الميزة في الفرونت؛ التفاصيل في SOURCE_STRUCTURE، والأدلة والمتبقي الفعلي في STATUS. تكامل البريد والاستضافة النهائية ومصفوفة المتصفحات الأوسع ما زالت متبقية؛ لا يوجد نشر إنتاجي في هذه الجولة. ملف README في الجذر يشرح التشغيل.
+This copy at `/home/lord2ve/Desktop/blog-website/docs/` is the source of truth. Content, appearance, inbox, release, and administration editors work locally. The human adopted independent desktop editor/preview scrolling and the violet styling. Backend source is organized by responsibility and frontend source by feature; see SOURCE_STRUCTURE for the map and STATUS for evidence and actual remaining work. Mail integration, final hosting, and a broader browser matrix remain pending; this round did not deploy production. The root README explains local execution.
 
-نظام المقاسات والخطوط الحالي موثق في DESIGN_SYSTEM.md، وأدلة الموقع الحقيقي والحدود في STATUS.md.
+Current typography and spacing are documented in DESIGN_SYSTEM.md; real-site evidence and limitations are in STATUS.md.
 
-## خريطة الكود الحالية
+## Current source map
 
-راجع [SOURCE_STRUCTURE.md](SOURCE_STRUCTURE.md) لمعرفة مكان كل مسؤولية بعد التنظيم. الواجهات الموسعة والإدارة اجتازت مراجعات محلية؛ المتبقي الخارجي والمتبقي من مصفوفة الأجهزة موضح في STATUS.
+See [SOURCE_STRUCTURE.md](SOURCE_STRUCTURE.md) for responsibility placement after reorganization. Expanded previews and administration passed local reviews; external dependencies and the remaining device matrix are documented in STATUS.
