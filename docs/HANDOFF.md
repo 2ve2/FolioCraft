@@ -1,3 +1,8 @@
+## Latest continuation — 2026-10-14
+- Arabic fictional demo flow completed through hosted signup, owned draft, publication, separate public view and page scrolling. Edited local MP4 under ignored work/demo-video/. Group message prepared only, not sent. Demo session signed out after capture; human must sign in again for private editing.
+- Real owner public portfolio now works following web global_fetch_strictly_public routing fix. Current web deployment6fb18ac0-1a72-4963-b61f-4f996f81c547; no change to owner content during demo.
+- Remaining work: reconcile earlier scaffold-only CLOUDFLARE guide and review live upload/mail/device limitations. Trial mail verification skip remains explicitly authorized; do not claim mail operation verified.
+
 # Frontend audit handoff
 
 ## Source organization completed — 2026-10-14
