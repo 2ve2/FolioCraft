@@ -1,0 +1,145 @@
+.panel {
+	display: grid;
+	gap: var(--space-4, 16px);
+	min-width: 0;
+	color: inherit;
+}
+.panel h1,
+.panel h2,
+.panel h3,
+.panel p {
+	margin: 0;
+}
+.panel p,
+.panel small,
+.panel h1,
+.panel h2,
+.panel h3,
+.panel a,
+.panel strong {
+	min-width: 0;
+	line-height: 1.7;
+	overflow-wrap: anywhere;
+}
+.panel label {
+	display: grid;
+	gap: 0.5rem;
+	font-size: var(--text-label, 14px);
+}
+.panel input,
+.panel textarea,
+.panel select {
+	width: 100%;
+	min-width: 0;
+	border: 1px solid #d9d7df;
+	border-radius: 0.6rem;
+	padding: 0.7rem;
+	font: inherit;
+	font-size: var(--text-body, 16px);
+	min-height: var(--control-min, 44px);
+	background: white;
+	color: #292735;
+}
+.panel textarea {
+	min-height: 5rem;
+	resize: vertical;
+}
+.panel button {
+	min-height: var(--control-min, 44px);
+	font: inherit;
+	cursor: pointer;
+	border: 1px solid #d9d7df;
+	border-radius: 0.6rem;
+	padding: 0.55rem 0.8rem;
+	background: white;
+	color: #393348;
+}
+.panel button[aria-pressed="true"] {
+	background: #eee9ff;
+	border-color: #b9a5f5;
+}
+.panel button:disabled {
+	cursor: default;
+	opacity: 0.5;
+}
+.panel button:focus-visible,
+.panel input:focus-visible,
+.panel select:focus-visible,
+.panel textarea:focus-visible {
+	outline: 2px solid #7952d8;
+	outline-offset: 3px;
+}
+.card {
+	border: 1px solid #e7e3ec;
+	border-radius: 0.8rem;
+	padding: var(--space-4, 16px);
+	display: grid;
+	gap: var(--space-3, 12px);
+	min-width: 0;
+}
+.actions {
+	display: flex;
+	gap: 0.6rem;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.message {
+	white-space: pre-wrap;
+}
+.preview {
+	border: 1px solid #e7e3ec;
+	border-radius: 0.8rem;
+	overflow: hidden;
+	min-width: 0;
+}
+.preview > .actions {
+	padding: var(--space-4, 16px);
+}
+.counts {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
+	gap: 0.8rem;
+	margin: 0;
+}
+.counts > div {
+	border: 1px solid #e7e3ec;
+	border-radius: 0.7rem;
+	padding: 0.8rem;
+}
+.counts dt {
+	font-size: var(--text-caption, 14px);
+}
+.counts dd {
+	font-size: 1.6rem;
+	margin: 0.3rem 0 0;
+}
+@media (max-width: 600px) {
+	.panel button {
+		min-height: var(--control-min, 44px);
+	}
+	.actions {
+		align-items: stretch;
+	}
+	.card {
+		padding: var(--space-4, 16px);
+	}
+}
+
+.panel h2 {
+	font-size: var(--text-heading, 24px);
+	line-height: var(--leading-heading, 1.35);
+}
+.panel h3 {
+	font-size: var(--text-subheading, 18px);
+	line-height: var(--leading-heading, 1.35);
+}
+
+.panel h1 {
+	font-size: var(--text-title, 32px);
+	line-height: var(--leading-heading, 1.35);
+}
+
+.card h2,
+.card h3 {
+	font-size: var(--text-subheading, 18px);
+}
