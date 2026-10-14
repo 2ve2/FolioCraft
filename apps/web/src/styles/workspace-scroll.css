@@ -1,0 +1,59 @@
+/* Desktop editor and preview scroll independently under fixed action chrome. */
+@media (min-width: 971px) {
+	.studio-shell--split-scroll {
+		height: 100dvh;
+		overflow: hidden;
+	}
+	.studio-shell--split-scroll .sidebar {
+		overflow: auto;
+	}
+	.studio-shell--split-scroll .studio-main {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		min-height: 0;
+	}
+	.studio-shell--split-scroll .studio-header,
+	.studio-shell--split-scroll .feedback {
+		flex-shrink: 0;
+	}
+	.studio-shell--split-scroll .editor-layout {
+		flex: 1;
+		min-height: 0;
+		overflow: hidden;
+	}
+	.studio-shell--split-scroll .editor-panel {
+		overflow: auto;
+		overscroll-behavior: contain;
+		scroll-padding-block: 24px;
+	}
+	.studio-shell--split-scroll .editor-card {
+		scroll-margin-top: 24px;
+	}
+	.studio-shell--split-scroll .preview-panel {
+		position: static;
+		align-self: stretch;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		overflow: hidden;
+	}
+	.studio-shell--split-scroll .preview-toolbar,
+	.studio-shell--split-scroll .preview-expand,
+	.studio-shell--split-scroll .preview-caption,
+	.studio-shell--split-scroll .preview-link,
+	.studio-shell--split-scroll .browser-bar {
+		flex-shrink: 0;
+	}
+	.studio-shell--split-scroll .preview-canvas {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-height: 0;
+	}
+	.studio-shell--split-scroll .portfolio-viewport {
+		flex: 1;
+		min-height: 0;
+		max-height: none;
+	}
+}
