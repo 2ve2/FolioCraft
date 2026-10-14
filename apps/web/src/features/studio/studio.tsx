@@ -56,6 +56,7 @@ export function Studio() {
 		logout,
 		renameSite,
 		exportDraft,
+		importDraft,
 		publicationChanged,
 		operationsBusy,
 		flush,
@@ -168,6 +169,7 @@ export function Studio() {
 					busy={busy}
 					renameSite={renameSite}
 					exportDraft={exportDraft}
+					importDraft={importDraft}
 					unpublish={unpublish}
 				/>
 			)}
