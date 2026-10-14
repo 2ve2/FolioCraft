@@ -1,11 +1,11 @@
 # FolioCraft API
 
-باك مستقل يستخدم Bun، Hono، Better Auth، PostgreSQL وDrizzle. ابدأ من `src/server.ts` للتشغيل و`src/app.ts` لتركيب المسارات والحماية. قواعد البيانات داخل services، والتحقق من الطلب داخل routes، والمخطط والترحيلات داخل db.
+An independent backend using Bun, Hono, Better Auth, PostgreSQL, and Drizzle. Start at `src/server.ts` for execution and `src/app.ts` for route and protection composition. Database rules live in services, request validation in routes, and schema and migrations in db.
 
-خدمات الموقع منفصلة: `siteDraftService` للمسودة والملكية والمراجعات، `releaseService` للنشر وتاريخ الإصدارات، و`publicSiteService` للإصدار العام. ملف `siteService` واجهة توافق صغيرة؛ لا تضع تنفيذًا جديدًا داخله. إعداد المصادقة في `lib/auth.ts`، وقواعدها وتدقيقها في `lib/auth-hooks.ts`.
+Site services are separate: `siteDraftService` owns drafts, ownership, and revisions; `releaseService` owns publication and release history; `publicSiteService` owns public releases. `siteService` is a small compatibility facade; do not add new implementation there. Authentication configuration is in `lib/auth.ts`; its rules and audits are in `lib/auth-hooks.ts`.
 
-التشغيل من الجذر: `bun run dev:api`. إعداد البيئة في `.env.example`؛ الإعدادات الحقيقية تبقى في `.env` المحجوب. تشغيل الباك لا يحتاج تشغيل Next.js. اختبارات البيانات تمر عبر `bun run test` من الجذر، الذي يحمي قاعدة folio_test ويمنع استخدام Neon أو قواعد الإنتاج.
+Run from the root with `bun run dev:api`. Environment examples are in `.env.example`; actual configuration stays in the ignored `.env`. The backend runs without Next.js. Data tests use root `bun run test`, which guards folio_test and rejects Neon or production databases.
 
-Fixture المتصفح في `tests/fixtures/browser-server.ts`، وليس ضمن كود التشغيل. يمر عبر wrapper المحمي ويستقبل إشارة الإغلاق لينظف حساباته المولدة فقط. لا تشغّل fixture بإعدادات تطوير موروثة.
+The browser fixture is in `tests/fixtures/browser-server.ts`, outside runtime source. It runs through the guarded wrapper and handles shutdown signals to clean up only its generated accounts. Do not run it with inherited development settings.
 
-راجع [دليل المصدر](../../docs/SOURCE_STRUCTURE.md)، [عقد API](../../docs/API.md)، [التشغيل](../../docs/OPERATIONS.md) و[الحالة الفعلية](../../docs/STATUS.md).
+See the [source guide](../../docs/SOURCE_STRUCTURE.md), [API contract](../../docs/API.md), [operations](../../docs/OPERATIONS.md), and [actual status](../../docs/STATUS.md).
