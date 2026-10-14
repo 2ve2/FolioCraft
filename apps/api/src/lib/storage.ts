@@ -6,13 +6,13 @@ import {
 	PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import sharp from "sharp";
+import { validateImageBytes } from "#image-validation";
 import { ApiError } from "./response-helpers";
 import { storageBucket, storageClient } from "./storage-client";
 
 export const MAX_ASSET_BYTES = 5 * 1024 * 1024;
 export const UPLOAD_EXPIRY_SECONDS = 600;
-const MAX_PIXELS = 16_777_216;
+export { validateImageBytes };
 
 /** Converts provider errors into safe, stable domain failures while preserving intentional errors. */
 function providerError(error: unknown): never {
@@ -22,39 +22,6 @@ function providerError(error: unknown): never {
 		throw new ApiError(409, "UPLOAD_NOT_FOUND");
 	if (value.$metadata?.httpStatusCode === 412) throw new ApiError(409, "UPLOAD_CHANGED");
 	throw new ApiError(502, "STORAGE_PROVIDER_ERROR");
-}
-
-/** Fully decodes a bounded supported image before its bytes can enter verified storage. */
-export async function validateImageBytes(
-	bytes: Buffer,
-	mime: string,
-): Promise<{ width: number; height: number }> {
-	if (bytes.length < 1 || bytes.length > MAX_ASSET_BYTES)
-		throw new ApiError(422, "UPLOAD_SIZE_MISMATCH");
-	try {
-		const image = sharp(bytes, {
-			limitInputPixels: MAX_PIXELS,
-			failOn: "warning",
-			animated: false,
-		});
-		const meta = await image.metadata();
-		const expected = { "image/png": "png", "image/jpeg": "jpeg", "image/webp": "webp" }[mime];
-		if (
-			!expected ||
-			meta.format !== expected ||
-			!meta.width ||
-			!meta.height ||
-			meta.width > 4096 ||
-			meta.height > 4096 ||
-			meta.width * meta.height > MAX_PIXELS ||
-			(meta.pages ?? 1) > 1
-		)
-			throw new Error("Unsupported image dimensions/type");
-		await image.stats(); // Force decoding: metadata alone can accept a truncated image.
-		return { width: meta.width, height: meta.height };
-	} catch {
-		throw new ApiError(422, "INVALID_IMAGE");
-	}
 }
 
 export const storage = {
