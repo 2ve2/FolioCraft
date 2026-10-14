@@ -1,0 +1,124 @@
+.picker {
+	min-width: 0;
+	padding: var(--space-4, 16px);
+	margin: var(--space-3, 12px) 0;
+	border: 1px solid #e4e2e9;
+	border-radius: var(--radius-card, 12px);
+}
+.picker legend {
+	padding-inline: 6px;
+	font-size: var(--text-label, 14px);
+	font-weight: 650;
+}
+.selectedImage {
+	display: block;
+	width: 120px;
+	height: 100px;
+	object-fit: cover;
+	border-radius: 8px;
+	margin-top: 12px;
+}
+.previewFailure {
+	display: grid;
+	gap: 6px;
+	margin-top: 6px;
+}
+.hint {
+	font-size: var(--text-caption, 12px);
+	line-height: 1.7;
+	color: #625e72;
+	margin: 6px 0;
+	overflow-wrap: anywhere;
+}
+.actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+.picker button,
+.upload {
+	min-height: var(--control-min, 44px);
+	border: 1px solid #ddd9e6;
+	border-radius: 8px;
+	background: #fff;
+	padding: 7px 9px;
+	color: #373247;
+	font-size: var(--text-label, 14px);
+	line-height: 1.6;
+}
+.upload {
+	position: relative;
+	cursor: pointer;
+	overflow: hidden;
+	display: inline-flex;
+}
+.upload input {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
+}
+.upload:focus-within {
+	outline: 2px solid #7458ce;
+	outline-offset: 3px;
+}
+.upload[aria-disabled="true"] {
+	opacity: 0.5;
+	cursor: default;
+}
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr));
+	gap: 10px;
+	margin-top: 12px;
+	max-height: 420px;
+	overflow: auto;
+}
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	border: 1px solid #e4e2e9;
+	border-radius: 10px;
+	padding: 8px;
+	min-width: 0;
+}
+.card img,
+.placeholder {
+	width: 100%;
+	height: 100px;
+	border-radius: 7px;
+	object-fit: cover;
+	background: #f5f3f8;
+}
+.placeholder {
+	display: grid;
+	place-content: center;
+	padding: 8px;
+	font-size: var(--text-caption, 12px);
+	text-align: center;
+	color: #625e72;
+}
+.card small {
+	color: #625e72;
+	font-size: var(--text-caption, 12px);
+}
+.picker button[aria-pressed="true"] {
+	background: #f1ebff;
+	border-color: #9274dc;
+}
+.picker .danger,
+.error {
+	color: #a62937;
+}
+.error {
+	font-size: var(--text-caption, 12px);
+	line-height: 1.7;
+	background: #fff0f1;
+	border-radius: 8px;
+	padding: 9px;
+	overflow-wrap: anywhere;
+}
