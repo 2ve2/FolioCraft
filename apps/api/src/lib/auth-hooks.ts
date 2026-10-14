@@ -5,7 +5,7 @@ import {
 	isAPIError,
 } from "better-auth/api";
 import { eq } from "drizzle-orm";
-import { env, mailConfigured } from "../config/env";
+import { mailConfigured, requireEmailVerification } from "../config/env";
 import { db } from "../db";
 import { adminAudit } from "../db/schema/admin";
 
@@ -46,7 +46,7 @@ export const authHooks = {
 	before: createAuthMiddleware(async (ctx) => {
 		const needsMail =
 			["/request-password-reset", "/send-verification-email"].includes(ctx.path) ||
-			(env.NODE_ENV === "production" && ["/sign-up/email", "/sign-in/email"].includes(ctx.path));
+			(requireEmailVerification && ["/sign-up/email", "/sign-in/email"].includes(ctx.path));
 		if (needsMail && !mailConfigured)
 			throw new APIError("SERVICE_UNAVAILABLE", {
 				code: "MAIL_UNAVAILABLE",
@@ -84,7 +84,7 @@ export const authHooks = {
 				code: "ADMIN_REQUIRED",
 				message: "An active admin account is required",
 			});
-		if (env.NODE_ENV === "production" && !actor.user.emailVerified)
+		if (requireEmailVerification && !actor.user.emailVerified)
 			throw new APIError("FORBIDDEN", {
 				code: "EMAIL_NOT_VERIFIED",
 				message: "Verify your email before administering the platform",
