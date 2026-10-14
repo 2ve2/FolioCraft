@@ -3,6 +3,9 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
+		"build:cloudflare": "opennextjs-cloudflare build",
+		"preview:cloudflare": "opennextjs-cloudflare preview",
+		"deploy:cloudflare": "opennextjs-cloudflare deploy",
 		"dev": "next dev --hostname 127.0.0.1",
 		"build": "next build",
 		"start": "next start --hostname 127.0.0.1",
@@ -26,8 +29,9 @@
 		"tailwindcss": "4.3.3"
 	},
 	"devDependencies": {
+		"@opennextjs/cloudflare": "1.20.11",
+		"@types/node": "26.6.5",
 		"@types/react": "19.3.0",
-		"@types/react-dom": "19.3.0",
-		"@types/node": "26.6.5"
+		"@types/react-dom": "19.3.0"
 	}
 }
