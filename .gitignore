@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.next-qa/
+.env
+.env.local
+.env.*
+!.env.example
+.aws/
+.codex/
+.agents/
+docs/screenshots/
+work/
+*.tsbuildinfo

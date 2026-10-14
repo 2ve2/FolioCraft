@@ -1,0 +1,18 @@
+{
+	"files": {
+		"includes": [
+			"**",
+			"!**/node_modules",
+			"!**/.next",
+			"!**/.next-qa",
+			"!**/work",
+			"!**/bun.lock",
+			"!**/next-env.d.ts",
+			"!**/src/db/migrations"
+		]
+	},
+	"formatter": { "indentStyle": "tab", "lineWidth": 100 },
+	"javascript": { "formatter": { "quoteStyle": "double", "semicolons": "always" } },
+	"linter": { "enabled": true, "rules": { "preset": "recommended" } },
+	"assist": { "actions": { "source": { "organizeImports": "on" } } }
+}
