@@ -1,0 +1,111 @@
+/* FolioCraft scroll rails retain native wheel, keyboard and drag behavior. */
+.studio-shell--split-scroll .editor-panel,
+.studio-shell .portfolio-viewport,
+.studio-shell .editor-panel textarea,
+.expanded-preview-content {
+	scrollbar-color: #9470df #f0eaf9;
+	scrollbar-width: thin;
+}
+@supports selector(::-webkit-scrollbar) {
+	.studio-shell--split-scroll .editor-panel,
+	.studio-shell .portfolio-viewport,
+	.studio-shell .editor-panel textarea,
+	.expanded-preview-content {
+		scrollbar-color: auto;
+		scrollbar-width: auto;
+	}
+	:is(
+		.studio-shell--split-scroll .editor-panel,
+		.studio-shell .portfolio-viewport,
+		.studio-shell .editor-panel textarea,
+		.expanded-preview-content
+	)::-webkit-scrollbar {
+		width: 12px;
+		height: 12px;
+	}
+	:is(
+		.studio-shell--split-scroll .editor-panel,
+		.studio-shell .portfolio-viewport,
+		.studio-shell .editor-panel textarea,
+		.expanded-preview-content
+	)::-webkit-scrollbar-track {
+		background: linear-gradient(180deg, #f7f3fc, #eee5fa 50%, #f7f3fc);
+		border: 3px solid transparent;
+		background-clip: padding-box;
+		border-radius: 99px;
+		margin-block: 8px;
+	}
+	:is(
+		.studio-shell--split-scroll .editor-panel,
+		.studio-shell .portfolio-viewport,
+		.studio-shell .editor-panel textarea,
+		.expanded-preview-content
+	)::-webkit-scrollbar-thumb {
+		min-height: 48px;
+		min-width: 48px;
+		border: 3px solid transparent;
+		border-radius: 99px;
+		background: linear-gradient(180deg, #b79be8, #8055d9 48%, #6340b9);
+		background-clip: padding-box;
+		box-shadow: inset 0 0 0 1px #ffffff38;
+	}
+	:is(
+		.studio-shell--split-scroll .editor-panel,
+		.studio-shell .portfolio-viewport,
+		.studio-shell .editor-panel textarea,
+		.expanded-preview-content
+	)::-webkit-scrollbar-thumb:hover {
+		border-width: 2px;
+		background-image: linear-gradient(180deg, #c5a8f4, var(--purple) 48%, #543298);
+		box-shadow: inset 0 0 0 1px #ffffff55;
+	}
+	:is(
+		.studio-shell--split-scroll .editor-panel,
+		.studio-shell .portfolio-viewport,
+		.studio-shell .editor-panel textarea,
+		.expanded-preview-content
+	)::-webkit-scrollbar-thumb:active {
+		background-image: linear-gradient(180deg, #9b78e3, #5934b7);
+	}
+	:is(
+		.studio-shell--split-scroll .editor-panel,
+		.studio-shell .portfolio-viewport,
+		.studio-shell .editor-panel textarea,
+		.expanded-preview-content
+	)::-webkit-scrollbar-button {
+		display: none;
+	}
+	:is(
+		.studio-shell--split-scroll .editor-panel,
+		.studio-shell .portfolio-viewport,
+		.studio-shell .editor-panel textarea,
+		.expanded-preview-content
+	)::-webkit-scrollbar-corner {
+		background: transparent;
+	}
+}
+@media (forced-colors: active) {
+	.studio-shell--split-scroll .editor-panel,
+	.studio-shell .portfolio-viewport,
+	.studio-shell .editor-panel textarea,
+	.expanded-preview-content {
+		scrollbar-color: auto;
+	}
+	:is(
+		.studio-shell--split-scroll .editor-panel,
+		.studio-shell .portfolio-viewport,
+		.studio-shell .editor-panel textarea,
+		.expanded-preview-content
+	)::-webkit-scrollbar-track {
+		background: Canvas;
+	}
+	:is(
+		.studio-shell--split-scroll .editor-panel,
+		.studio-shell .portfolio-viewport,
+		.studio-shell .editor-panel textarea,
+		.expanded-preview-content
+	)::-webkit-scrollbar-thumb {
+		background: CanvasText;
+		box-shadow: none;
+	}
+}
