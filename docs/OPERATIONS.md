@@ -1,18 +1,18 @@
-# التشغيل والتكاملات
+# Operations and integrations
 
-آخر مراجعة: 2026-10-13، Asia/Riyadh. يصف هذا الملف إعدادات التنفيذ الحالي ومتطلبات التشغيل التي لم تختبر بعد. نتائج الفحوص الفعلية محفوظة في `STATUS.md`؛ هذه التعليمات لا تعني جاهزية الإنتاج أو نجاح البريد؛ إثبات R2 المحلي الفعلي مسجل أدناه وفي STATUS.
+Last reviewed: 2026-10-13, Asia/Riyadh. This file describes current configuration and operational requirements that remain untested. Actual results are in `STATUS.md`; these instructions do not establish production readiness or mail delivery. Real local R2 evidence is recorded below and in STATUS.
 
-## المكونات والملفات
+## Components and files
 
-- `apps/api`: Bun + Hono، Better Auth، Drizzle و`pg`. `app.ts` يركب HTTP؛ `server.ts` يشغل Bun ويشتق عنوان العميل ويغلق pool عند الإنهاء.
-- `apps/web`: تطبيق Next مستقل يستخدم API، دون اتصال بقاعدة البيانات. `NEXT_PUBLIC_API_URL` عنوان API المتاح للمتصفح، و`API_URL` للقراءة العامة من خادم الويب.
-- `packages/contracts`: عقود محتوى Zod، الإصدار 1، مع إضافات اختيارية متوافقة مع المسودات القديمة.
-- `packages/portfolio`: قالب العرض المشترك؛ محررات الأقسام والصور والتفاصيل العامة منفذة، وأدلة القبول وحدودها في STATUS.md.
-- الأسرار في متغيرات تشغيل الباك أو ملف `.env` محلي متجاهل. أمثلة `apps/api/.env.example` تحتوي placeholders فقط. لا تطبع `DATABASE_URL` أو SMTP/R2 credentials أو كلمات المرور أو كوكي الجلسة أو روابط التوقيع في السجلات.
+- `apps/api`: Bun + Hono, Better Auth, Drizzle, and `pg`. `app.ts` composes HTTP; `server.ts` runs Bun, derives client addresses, and closes the pool on shutdown.
+- `apps/web`: independent Next application consuming the API without database access. `NEXT_PUBLIC_API_URL` is the browser-accessible API URL; `API_URL` is used for public reads from the web server.
+- `packages/contracts`: version1 Zod content contracts with optional additions compatible with legacy drafts.
+- `packages/portfolio`: shared renderer; section editors, images, and public details are implemented. Acceptance evidence and limitations are in STATUS.md.
+- Secrets belong in backend runtime variables or an ignored local `.env`. `apps/api/.env.example` contains placeholders only. Never log `DATABASE_URL`, SMTP/R2 credentials, passwords, session cookies, or signed URLs.
 
-## التشغيل المحلي
+## Local development
 
-من جذر المشروع، باستخدام Bun:
+From the project root, using Bun:
 
 ```sh
 bun install --frozen-lockfile
@@ -20,66 +20,66 @@ bun run typecheck
 bun run check
 ```
 
-انسخ مثال البيئة محليًا واملأه بإعدادات هذا المشروع. لا تستخدم حسابات أو قاعدة بيانات مشروع Sooqha المرجعي. طابق اسم المضيف: `localhost:3000` و`localhost:4000` يختلفان عن `127.0.0.1` في قواعد الأصل والكوكي.
+Copy the environment example locally and supply configuration for this project. Never use accounts or the database of the Sooqha reference project. Match hostnames: `localhost:3000` and `localhost:4000` differ from `127.0.0.1` for origins and cookies.
 
-بعد مراجعة migrations وقبل تشغيل API على قاعدة جديدة:
+After reviewing migrations, before starting API against a new database:
 
 ```sh
 bun run db:migrate
 bun run dev:api
 ```
 
-وفي عملية أخرى:
+In a separate process:
 
 ```sh
 bun run dev:web
 ```
 
-`db:migrate` يطبق SQL الذي لم يطبق بعد على **DATABASE_URL الحالي**؛ تحقق من الهدف قبل تنفيذه. لا يستبدل نسخة احتياطية أو موافقة ترقية إنتاج. الأمر `db:generate` يولد ملفات مراجعة من schema؛ لا تستخدم `drizzle-kit push` أو reset/truncate للتشغيل.
+`db:migrate` applies pending SQL to the **current DATABASE_URL**; verify its target before execution. It does not replace a backup or approval of a production upgrade. `db:generate` produces reviewable schema migration files; do not use `drizzle-kit push` or reset/truncate for operation.
 
-للتحقق من البناء:
+To verify the build:
 
 ```sh
 bun run build
 ```
 
-حاوية API في `apps/api/Dockerfile`، build context جذر المستودع؛ Bun 1.4.2 مع تثبيت dependencies إنتاج مفلترة لـ`@folio/api`، مستخدم `bun`، و`NODE_ENV=production HOST=0.0.0.0`. `.dockerignore` يستبعد أسرار env وwork وnode_modules. مثال بناء محلي فقط:
+The API container definition is `apps/api/Dockerfile`, with repository root as build context; Bun1.4.2, production dependencies filtered to `@folio/api`, user `bun`, and `NODE_ENV=production HOST=0.0.0.0`. `.dockerignore` excludes env secrets, work, and node_modules. Local build example only:
 
 ```sh
 docker build -f apps/api/Dockerfile -t foliocraft-api .
 ```
 
-لا يطبق Docker migrations عند الإقلاع؛ وفر secrets في runtime، وطبق migrations بخطوة مستقلة مراجعة. لا يوجد ادعاء بناء image ناجح أو نشر حاوية من وجود Dockerfile. فحص Bun compile مستقل لا يثبت بناء الحاوية أو إعداد بيئة الإنتاج؛ نتيجة التنفيذ الدائمة في STATUS.
+Docker does not run migrations at startup; provide runtime secrets and apply migrations in a separate reviewed step. A Dockerfile alone does not prove a successful image build or container deployment. Independent Bun compilation does not verify the container or production environment; actual results belong in STATUS.
 
-API يبدأ مستقلًا عبر `bun run --cwd apps/api start`. الويب يبنى ويبدأ مستقلًا عبر scripts تطبيقه. واجهات صحة التشغيل: `GET /health` لحياة العملية و`GET /ready` لاتصال PostgreSQL وحالة وجود إعدادات التكامل. حالة `configured` تعني اكتمال المتغيرات؛ لا تعني نجاح رفع أو إرسال.
+API starts independently with `bun run --cwd apps/api start`. Web builds and starts independently through its own scripts. Operational endpoints: `GET /health` for process liveness and `GET /ready` for PostgreSQL connectivity and integration configuration presence. `configured` means complete variables, not successful upload or delivery.
 
-## البيئة المطلوبة للإنتاج
+## Required production environment
 
-| المتغير | الدلالة |
+| Variable | Meaning |
 |---|---|
-| `NODE_ENV=production` | يفعّل أصل HTTPS، secure cookies، وتأكيد البريد قبل استخدام العمليات الخاصة |
-| `HOST=0.0.0.0` | الاستماع داخل حاوية/خادم خلف reverse proxy؛ لا تكشف منفذ API مباشرة للعامة عند الاعتماد على proxy |
-| `PORT` | افتراضي 4000، 1–65535 |
-| `API_URL` | أصل HTTPS للباك دون path أو trailing slash، مثال توضيحي `https://api.example.com` |
-| `WEB_URL` | أصل HTTPS واحد مسموح للواجهة، مثال توضيحي `https://app.example.com`؛ ليس اسم نطاق تم شراؤه أو ربطه |
-| `BETTER_AUTH_SECRET` | سر عشوائي طويل؛ الحد المطبق ≥32 حرفًا، مخصص للمشروع |
-| `DATABASE_URL` | اتصال PostgreSQL مخصص؛ في الإنتاج استخدم TLS والتحقق من شهادة واسم المضيف مثل `sslmode=verify-full` مع إعداد CA الصحيح للمزود |
-| `DB_POOL_MAX` | افتراضي 10، 1–100؛ خطط لمجموع pools عبر جميع النسخ ومحدودية مزود DB |
-| `DB_CONNECT_TIMEOUT_MS` | افتراضي 5000، 100–60000 |
-| `DB_STATEMENT_TIMEOUT_MS` | افتراضي 15000، 1000–120000 |
-| `TRUSTED_PROXY_IPS` | قائمة مفصولة بفواصل لعناوين socket proxy الدقيقة فقط؛ افتراضي فارغ |
-| SMTP الكامل | إلزامي لبدء الإنتاج؛ التفاصيل أدناه |
-| R2 الكامل | اختياري؛ عند غيابه رفع/قراءة ملفات التخزين ترجع تعطيلًا واضحًا |
+| `NODE_ENV=production` | Enables HTTPS origins, secure cookies, and email verification before private operations |
+| `HOST=0.0.0.0` | Listen inside a container/server behind a reverse proxy; do not directly expose the API port when relying on the proxy |
+| `PORT` | Default4000, range1–65535 |
+| `API_URL` | Backend HTTPS origin without path/trailing slash; illustrative `https://api.example.com` |
+| `WEB_URL` | One allowed frontend HTTPS origin; illustrative `https://app.example.com`, not a purchased or connected domain |
+| `BETTER_AUTH_SECRET` | Long project-specific random secret; enforced minimum32 characters |
+| `DATABASE_URL` | Dedicated PostgreSQL connection; production uses TLS with certificate/hostname verification such as `sslmode=verify-full` and the provider's correct CA configuration |
+| `DB_POOL_MAX` | Default10, range1–100; plan total pools across instances against database provider limits |
+| `DB_CONNECT_TIMEOUT_MS` | Default5000, range100–60000 |
+| `DB_STATEMENT_TIMEOUT_MS` | Default15000, range1000–120000 |
+| `TRUSTED_PROXY_IPS` | Comma-separated exact proxy socket addresses only; empty by default |
+| Complete SMTP group | Required for production startup; details below |
+| Complete R2 group | Optional; missing configuration explicitly disables storage uploads/reads |
 
-`DATABASE_URL` يتحقق حاليًا من بادئة `postgresql://`؛ اختيار TLS والتحقق الكامل مسؤولية إعداد الاتصال، وليس فحصًا مثبتًا في validator للإنتاج. `pg` يستعمل connection string وpool بمعاملات فعلية، وليس Neon HTTP driver. عند الجمع بين SSL options وconnection string، راجع [node-postgres SSL](https://node-postgres.com/features/ssl) لتجنب استبدال إعداد الشهادة بخيارات الرابط. لا تستخدم تعطيل التحقق من الشهادة كتكوين إنتاج.
+`DATABASE_URL` currently validates the `postgresql://` prefix; TLS selection and full verification are connection configuration responsibilities, not proven production validator checks. `pg` uses a connection string and pool with real transactions, not the Neon HTTP driver. When combining SSL options and connection strings, review [node-postgres SSL](https://node-postgres.com/features/ssl) to avoid URL options replacing certificate configuration. Do not disable certificate verification in production.
 
-توفير النطاقات، شهادة TLS، مزود التشغيل وإعداد الجدار الناري لم يتم في هذه الجلسة. لا يفترض هذا الدليل أن إعداد sibling domains والكوكي نجح في الإنتاج؛ يجب إثبات التسجيل والتأكيد والدخول والكتابة والنشر من الأصل النهائي.
+Domains, TLS certificates, hosting, and firewall configuration were not provisioned in this session. This guide does not assume production sibling-domain cookies work; verify registration, verification, sign-in, writes, and publication from final origins.
 
-## عنوان العميل والـreverse proxy
+## Client address and reverse proxy
 
-`server.ts` يأخذ عنوان socket الفعلي من Bun. يثق بـ`x-real-ip` فقط إذا كان عنوان socket ضمن `TRUSTED_PROXY_IPS` بالضبط، والقيمة عنوان IP صالح واحد. لا يعتمد على `x-forwarded-for` أو `cf-connecting-ip` من العميل. يستبدل `x-folio-client-ip` الوارد بقيمة مشتقة؛ Better Auth وحدود الاستفسارات تستخدم القيمة الناتجة.
+`server.ts` takes the actual socket address from Bun. It trusts `x-real-ip` only when the socket exactly matches `TRUSTED_PROXY_IPS` and the header contains one valid IP. It does not trust client-supplied `x-forwarded-for` or `cf-connecting-ip`. It replaces incoming `x-folio-client-ip` with a derived value used by Better Auth and inquiry limits.
 
-أضف عناوين proxy الدقيقة بعد تحديد topology الفعلي؛ لا تستخدم CIDR أو wildcard أو أسماء مضيف في هذه القائمة. يجب أن **يستبدل** proxy رأس `x-real-ip` الوارد من العميل بعنوانه الذي رآه، لا يمرره كما هو. مثال Nginx توضيحي داخل server HTTPS قائم:
+Add exact proxy addresses after deciding actual topology; do not use CIDR, wildcards, or hostnames in this list. The proxy must **replace** client-supplied `x-real-ip` with the address it observed rather than forwarding it unchanged. Illustrative Nginx block inside an existing HTTPS server:
 
 ```nginx
 location / {
@@ -89,11 +89,11 @@ location / {
 }
 ```
 
-هذا المثال لا يهيئ TLS ولا يثبت صحة سلسلة proxy إضافية. عند تعدد proxies أو CDN، وثق السلسلة وعزل الوصول واختبر spoofing. الطلبات المباشرة إلى Hono في الاختبار لا تملك طبقة socket؛ لا تعتبر header مقدمًا منها إثباتًا لعنوان عميل إنتاج.
+This example configures neither TLS nor an additional proxy chain. For multiple proxies or a CDN, document the chain, restrict access, and test spoofing. Direct Hono tests have no socket layer; their supplied headers do not prove production client identity.
 
-## البريد وتأكيد الحساب
+## Mail and account verification
 
-المجموعة مطلوبة كاملة أو تترك كاملة فارغة في التطوير:
+The complete group is required, or all values remain empty in development:
 
 ```dotenv
 SMTP_HOST=smtp.example.com
@@ -104,17 +104,17 @@ SMTP_PASSWORD=replace-in-secret-store
 MAIL_FROM=hello@example.com
 ```
 
-الأمثلة placeholders. لا يوجد حساب SMTP أو نطاق إرسال مهيأ حاليًا. `SMTP_SECURE=true` يعني TLS من بداية الاتصال، وغالبًا يناسب 465؛ `false` يفرض STARTTLS في النقل الحالي. النقل يستخدم مهلات اتصال/تحية 10 ثوانٍ وsocket 15 ثانية ويمنع الوصول إلى ملفات أو URLs عبر Nodemailer.
+Examples are placeholders. No SMTP account or sender domain is currently configured. `SMTP_SECURE=true` uses TLS from connection start, commonly on465; `false` enforces STARTTLS in the current transport. Connection/greeting deadlines are10 seconds and socket deadline15 seconds; Nodemailer file/URL access is disabled.
 
-في الإنتاج: `requireEmailVerification=true`, إرسال عند التسجيل والدخول، و`autoSignInAfterVerification=false`. ينبغي للواجهة عرض التحقق من صندوق البريد بعد التسجيل ثم طلب الدخول بعد التأكيد؛ هذا تكامل واجهة مطلوب ولم يثبت إنتاجيًا. التطوير يسمح بالمسار المحلي دون التأكيد، ولا يمثل سياسة إطلاق.
+Production: `requireEmailVerification=true`, send on registration/sign-in, and `autoSignInAfterVerification=false`. The frontend should prompt users to check their inbox after registration and sign in after verification; this required UI integration is not proven in production. Development permits the unverified local flow, which is not a launch policy.
 
-طلب إعادة تعيين كلمة المرور وإعادة إرسال التأكيد مع SMTP غير مهيأ يرجع `503 MAIL_UNAVAILABLE`؛ فشل النقل يرجع `MAIL_DELIVERY_FAILED`. إعادة التعيين الناجحة تلغي الجلسات السابقة. الرسائل تحتوي نصًا عربيًا/إنجليزيًا؛ URL الرسالة يتحقق أنه من أصل API نفسه. لا تطبع رابط التوكن ولا تعلن نجاح تسليم دون دليل مزود. بريد الاستفسارات غير منفذ؛ الاستفسارات تخزن داخل صندوق الموقع فقط.
+Password reset and verification resend with unconfigured SMTP return `503 MAIL_UNAVAILABLE`; transport failure returns `MAIL_DELIVERY_FAILED`. Successful reset revokes previous sessions. Messages contain Arabic/English text; the message URL must match the API origin. Never print token links or claim delivery without provider evidence. Inquiry mail is not implemented; inquiries are stored only in the site inbox.
 
-قبل إعلان جاهزية البريد، يلزم نطاق sender موثق لدى المزود، إعداد SPF/DKIM/DMARC المناسب لذلك المزود، وإثبات إرسال واستلام وتأكيد وإعادة تعيين من البيئة النهائية. هذه خطوات معلقة، وليست تغييرات أجريت على DNS. تفاصيل البروتوكول في [Better Auth Email & Password](https://better-auth.com/docs/authentication/email-password).
+Before declaring mail ready, verify the sender domain with the provider, configure its SPF/DKIM/DMARC requirements, and prove sending, receiving, verification, and reset from the final environment. These are pending steps, not completed DNS changes. Protocol details: [Better Auth Email & Password](https://better-auth.com/docs/authentication/email-password).
 
-## R2 ورفع الصور
+## R2 and image uploads
 
-أبق bucket **خاصًا**؛ لا تفعّل `r2.dev` العام أو custom domain عام يتجاوز التحقق من الإصدار. مجموعة التشغيل الكاملة:
+Keep the bucket **private**; do not enable public `r2.dev` or a public custom domain that bypasses release checks. Complete runtime group:
 
 ```dotenv
 R2_ACCOUNT_ID=replace-with-32-lowercase-hex-characters
@@ -124,9 +124,9 @@ R2_SECRET_ACCESS_KEY=replace-in-secret-store
 R2_ENDPOINT=
 ```
 
-عند ترك endpoint فارغًا يستعمل `${R2_ACCOUNT_ID}.r2.cloudflarestorage.com` عبر HTTPS. endpoint الاختياري مقيد لحسابك وفي نطاقات R2 الرسمية العامة/الأوروبية/FedRAMP، دون port أو path أو query أو credentials. SDK region `auto`؛ credentials لا ترسل للمتصفح. امنح مفتاح R2 صلاحيات قراءة وكتابة وحذف ونسخ في bucket المخصص فقط وفق سياسة المزود، دون حساب إنتاج مرجعي.
+An empty endpoint uses `${R2_ACCOUNT_ID}.r2.cloudflarestorage.com` over HTTPS. Optional endpoints must belong to this account within official public/EU/FedRAMP R2 domains, without port/path/query/credentials. SDK region is `auto`; credentials never reach the browser. Grant the R2 key read/write/delete/copy permissions only for the dedicated bucket according to provider policy; never reuse a reference production account.
 
-اضبط CORS للرفع من **قيمة WEB_URL الدقيقة**. مثال لوحة R2، استبدل الأصل بالمقرر:
+Configure upload CORS for the **exact WEB_URL**. R2 dashboard example; replace the origin with the selected value:
 
 ```json
 [
@@ -140,60 +140,60 @@ R2_ENDPOINT=
 ]
 ```
 
-للرفع المحلي استخدم `http://localhost:3000` في bucket اختبار مخصص. لا تستخدم wildcard. التحميل كصورة عبر URL موقع لا يحتاج طلب fetch مخصصًا؛ إذا أضفت fetch عبر المتصفح لاحقًا، اضبط GET/HEAD والرؤوس المطلوبة تحديدًا بعد مراجعة الاستخدام. هذه سياسة إعداد موصى بها للمسار الحالي وليست سياسة applied في حساب R2. [Cloudflare R2 CORS](https://developers.cloudflare.com/r2/buckets/cors/) يوضح أن صحة التوقيع لا تغني عن CORS في المتصفح.
+For local uploads use `http://localhost:3000` in a dedicated test bucket, never a wildcard. Image loading through signed URLs needs no custom fetch; if browser fetch is added later, configure GET/HEAD and required headers specifically after reviewing usage. This is a recommended configuration for the current flow, not a policy already applied to R2. [Cloudflare R2 CORS](https://developers.cloudflare.com/r2/buckets/cors/) explains that a valid signature does not replace browser CORS.
 
-نافذة PUT 600 ثانية. يقيد الباك الرفع لـ5 MiB، PNG/JPEG/WebP، ≤4096 لكل ضلع، صورة واحدة دون animation متعدد الصفحات. تحقق الإكمال يفحص metadata والحجم ثم يحمل stream محدودًا ويفك الصورة فعليًا عبر Sharp؛ copy بشرط ETag يحفظ البايتات التي فحصت إلى `verified/` ويمنع تبديلها بإعادة PUT إلى `staging/`. لا تربط asset قبل `ready`.
+PUT window600 seconds. Backend upload limits:5 MiB, PNG/JPEG/WebP, each side ≤4096, one image without multi-page animation. Completion checks metadata/size, downloads a bounded stream, and decodes with Sharp; ETag-conditional copy preserves inspected bytes in `verified/` and prevents replacement through repeated PUT to `staging/`. Never attach an asset before `ready`.
 
-الحفظ والنشر يقفلان مراجع الملفات ويتحققان من الملكية والحالة. الحذف يمنع الملفات المشار إليها في المسودة **أو أي إصدار تاريخي محفوظ**؛ لا توجد سياسة حذف إصدارات تاريخية حاليًا. أخطاء المزود ترجع `502 STORAGE_PROVIDER_ERROR`؛ غياب الإعداد `503 STORAGE_UNAVAILABLE`.
+Saving and publication lock asset references and verify ownership/state. Deletion rejects assets referenced by the draft **or any retained historical release**; no historical release deletion policy exists currently. Provider failures return `502 STORAGE_PROVIDER_ERROR`; missing configuration returns `503 STORAGE_UNAVAILABLE`.
 
-تحميل خاص أو عام مصرح ينتج signed GET لمدة 60 ثانية. الرابط يحمل الصلاحية لمن يعرفه حتى انتهاء وقته؛ إلغاء النشر يمنع إصدار روابط جديدة لكنه لا يبطل رابطًا سابقًا فورًا. headers تطلب `private,no-store`، والـredirect العام `no-referrer`. لا تعتمد على انتهاء التوقيع لمحو ملف خزنه زائر مسبقًا.
+Authorized private/public downloads issue signed GET URLs valid60 seconds. Possession grants access until expiry; unpublishing prevents new URLs but does not immediately invalidate earlier ones. Headers request `private,no-store`; public redirects use `no-referrer`. Signature expiry cannot erase a file a visitor already stored.
 
-`POST /api/sites/:id/assets/cleanup` تنظيف صريح محدود 100 عنصر. يحتفظ الحذف بحالة `deleting` حتى انتهاء signed PUT + دقيقة؛ فشل المزود يبقي العملية قابلة لإعادة المحاولة. الملفات الجاهزة تنظف staging فقط، لا verified. لا توجد مهمة cleanup مجدولة تلقائيًا في التنفيذ الحالي؛ يلزم ترتيب تشغيلها في خدمة مصرح بها بعد تحديد المضيف. توجد كذلك خدمة لتنظيف rate buckets القديمة، دون scheduler موثق يعمل حاليًا.
+`POST /api/sites/:id/assets/cleanup` explicitly cleans at most100 items. Deletion retains `deleting` until signed PUT expiry plus one minute; provider failure leaves it retryable. Ready assets clean staging only, not verified. There is no automatic cleanup schedule in the current implementation; arrange an authorized service after hosting is selected. Old rate buckets also have a cleanup service without a documented running scheduler.
 
-في 2026-10-13 نجح اختبار R2 الحقيقي للرفع الموقع وفك الصورة والنسخ المشروط والتحميل المطابق وحماية verified من إعادة staging والحذف. ضبطت CORS للأصل http://localhost:3000 فقط ونجح الرفع من متصفح فعلي مع ETag. مفاتيح المشروع محفوظة في env محجوب فقط. هذا لا يثبت مسار محرر الصور المصادق كاملًا أو CORS أصل الإنتاج النهائي.
+On2026-10-13, real R2 testing passed signed upload, image decoding, conditional copy, matching download, verified protection against staging replacement, and deletion. CORS was configured only for http://localhost:3000; a real browser upload with ETag succeeded. Project keys remain only in ignored env. This does not prove the complete authenticated image-editor flow or final production-origin CORS.
 
-## الاختبارات المعزولة
+## Isolated tests
 
-الأمر الآمن من الجذر:
+Safe root command:
 
 ```sh
 bun run test
 ```
 
-يشغل `scripts/test-api.ts`: يحدد `NODE_ENV=test` وsecret اختبار وأصول localhost، ويزيل إعداد SMTP/R2 من بيئة الابن. الافتراضي `postgresql://folio@127.0.0.1:55432/folio_test`. يطبق migrations على **قاعدة الاختبار** ثم `bun test tests` داخل API.
+Runs `scripts/test-api.ts`: sets `NODE_ENV=test`, a test secret, and localhost origins; removes SMTP/R2 configuration from the child environment. Default `postgresql://folio@127.0.0.1:55432/folio_test`. Applies migrations to the **test database**, then runs `bun test tests` inside API.
 
-يجب إعداد cluster/قاعدة اختبار منفصلة `folio_test` وrole محلي محدود، ولا تضع Neon المشروع أو أي DATABASE_URL إنتاج في `TEST_DATABASE_URL`. لا تستعمل `bun run --cwd apps/api test` مباشرة مع ملف `.env` للعمل لأنه يتجاوز wrapper المعزول. إعداد cluster المحلي عملية مستقلة؛ الدليل لا ينشئه ضمنيًا. الـwrapper يرفض أي TEST_DATABASE_URL ليس على `localhost` أو `127.0.0.1` أو `[::1]` وباسم قاعدة `folio_test` بالضبط، حتى لو مرر صراحة. يسمح ذلك بتغيير port/role المحلي، ولا يسمح بقاعدة Neon أو إنتاج.
+Create a separate local folio_test cluster/database and restricted role; never put project Neon or any production DATABASE_URL in `TEST_DATABASE_URL`. Do not run `bun run --cwd apps/api test` directly with the working `.env`, which bypasses the isolated wrapper. Local cluster setup is a separate step, not implicit in this guide. The wrapper rejects any explicitly supplied TEST_DATABASE_URL unless host is `localhost`, `127.0.0.1`, or `[::1]` and database is exactly `folio_test`. Local port/role changes are allowed; Neon/production databases are not.
 
-للفحوص دون قاعدة أو مزود: `bun run typecheck` و`bun run check`. قاعدة الاختبار لا تثبت قدرات SMTP/R2 الفعلية ولا cookie policy لنطاقات الإنتاج. انسخ **نتائج التنفيذ الفعلية** إلى `STATUS.md` ولا تحول أمثلة هذا الملف إلى سجل نجاح.
+Checks without database/providers: `bun run typecheck` and `bun run check`. The test database proves neither actual SMTP/R2 capability nor production-domain cookie policy. Record **actual execution results** in `STATUS.md`; examples here are not success records.
 
-## migrations والنسخ الاحتياطي والاستعادة
+## Migrations, backups, and restoration
 
-راجع SQL في `apps/api/src/db/migrations/` وschema قبل التطبيق. الملفات الحالية `0000` تنشئ auth/sites/releases، و`0001` تضيف assets/inquiries/rate limits، و`0002_release_integrity.sql` تضيف FK مؤجلًا لضمان أن الإصدار المنشور لنفس الموقع، وFK لملكية asset/site/uploader، وtrigger يمنع UPDATE للإصدارات، و0003 تضيف حقول Better Auth Admin وتعليق المواقع وجدول admin_audit؛ محتوى الموقع الإضافي JSONB في aggregate بمراجعة، لذلك لم ينشأ جدول لكل خبرة أو مقال. لا تستخدم push إنتاجي أو reset. قبل أي migration إنتاج: نسخة احتياطية، تحديد الهدف الصحيح، وفحص ملاءمة النسخة السابقة من التطبيق وrollback المتوقع.
+Review SQL in `apps/api/src/db/migrations/` and schema before application. Current `0000` creates auth/sites/releases; `0001` adds assets/inquiries/rate limits; `0002_release_integrity.sql` adds a deferred FK ensuring the published release belongs to its site, asset/site/uploader ownership FKs, and a release UPDATE prevention trigger;0003 adds Better Auth Admin fields, site suspension, and admin_audit. Additional content lives in a revisioned JSONB aggregate, not a table per experience/article. Never use production schema push/reset. Before a production migration: backup, verify the correct target, and review compatibility with the previous app version and anticipated rollback.
 
-الهدف التشغيلي للنسخ: dump PostgreSQL بصيغة custom مع restore إلى **قاعدة مستقلة جديدة**، ثم فحص migrations، أعداد السجلات/العلاقات، وتسجيل الدخول وsnapshot عام وعزل المسودات. لا تثبت رؤية ملف dump وحدها نجاح الاستعادة. لا تشغل restore بـ`--clean` على قاعدة العمل. PostgreSQL backup لا يحفظ بايتات R2؛ يلزم إجراء مستقل لحماية الملفات وربطها بمراجع الإصدارات.
+Operational backup goal: PostgreSQL custom dump, restoration to a **new independent database**, then migration, record/relation count, sign-in, public snapshot, and draft isolation checks. Seeing a dump file alone does not prove restoration. Never restore with `--clean` against the working database. PostgreSQL backups exclude R2 bytes; assets and their release references require a separate protection procedure.
 
-يجب تحديد جدول النسخ ومدة الاحتفاظ وتشفير النسخ ومكانها، وهدفَي RPO/RTO وفق المضيف المختار. المساعد الحالي `scripts/backup-db.ts`:
+Specify backup schedule, retention, encryption/location, and RPO/RTO based on the selected host. Current helper: `scripts/backup-db.ts`:
 
 ```sh
-# من جذر المشروع؛ يقرأ env تطبيق API. راجع قاعدة الهدف والتفويض أولًا.
+# From project root; reads API env. Review the target database and authorization first.
 bun run db:backup
 ```
 
-لا يضع URI أو كلمة المرور ضمن args الأدوات؛ يمرر الاتصال عبر متغيرات PostgreSQL. يحتاج `pg_dump` متاحًا، ويستخدم جذور شهادات النظام عند اختيار `sslmode=verify-full` (يمكن تحديد `PGSSLROOTCERT` لمسار موثوق)، ويكتب custom dump `--no-owner` إلى `work/backups/portfolio-<timestamp>.dump`، بصلاحية ملف 0600 ومجلد 0700. لا يعلن `backup_created` عند فشل pg_dump. افحص أي ملف جزئي خلفه الفشل قبل الاعتماد عليه.
+The helper passes connection settings through PostgreSQL variables, never URI/password tool arguments. It requires `pg_dump`; `sslmode=verify-full` uses system CA roots (a trusted `PGSSLROOTCERT` path may be supplied). It writes a custom `--no-owner` dump to `work/backups/portfolio-<timestamp>.dump`, file0600 and directory0700. Failed pg_dump never reports `backup_created`; inspect partial files before relying on them.
 
-فحص restore المعزول فقط، من جذر المشروع:
+Isolated restore verification only, from project root:
 
 ```sh
 bun run db:verify-restore
 ```
 
-هذا النمط يرفض كل قاعدة غير local `folio_test`، ينشئ قاعدة مؤقتة `folio_restore_<random>`، يشغل `pg_restore --exit-on-error --no-owner`، ويقارن counts أحد عشر جدولًا، ومحتوى نبذة عربية والمسودة والإصدار ومؤشر النشر لبيانات اختبار مؤقتة، ويتحقق من وجود `release_snapshot_immutable`، ثم يحذف **القاعدة المؤقتة التي أنشأها فقط** وينظف مستخدم الاختبار المحدد من مصدر الاختبار. يحتاج `createdb,pg_restore,psql,dropdb` ودور اختبار يستطيع إنشاء قاعدة. هذا دليل بنيوي محدود؛ لا يستبدل اختبار الدخول والملفات والـsnapshots على نسخة مستعادة. سجل نتيجة التنفيذ الفعلية في STATUS؛ وجود helper وحده لا يثبت نجاح restore أو نسخة إنتاج. مرجع رسمي: [PostgreSQL SQL Dump](https://www.postgresql.org/docs/current/backup-dump.html).
+This mode rejects every database except local `folio_test`, creates temporary `folio_restore_<random>`, runs `pg_restore --exit-on-error --no-owner`, compares eleven table counts plus temporary fixture Arabic profile/draft/release/published pointer, verifies `release_snapshot_immutable`, deletes **only its created temporary database**, and cleans the exact fixture user from the test source. Requires `createdb,pg_restore,psql,dropdb` and a test role permitted to create databases. This is limited structural evidence, not a substitute for restored sign-in/assets/snapshot tests. Record actual results in STATUS; the helper alone proves neither restoration nor a production backup. Official reference: [PostgreSQL SQL Dump](https://www.postgresql.org/docs/current/backup-dump.html).
 
-## السجلات والإغلاق والحدود الحالية
+## Logs, shutdown, and current limits
 
-السجلات structured للطلب تحتوي request ID والطريقة والحالة والمدة، دون جسم الطلب أو cookie. خطأ داخلي يسجل اسم الخطأ ومسار الطلب ورمز DB؛ العميل يرى code عامًا. الإغلاق بـSIGINT/SIGTERM يوقف قبول الطلبات وpool، مع حد 15 ثانية قبل إيقاف قسري؛ لم يثبت rolling deployment على مضيف إنتاج.
+Structured request logs include request ID, method, status, and duration without body/cookies. Internal errors log error name, route, and DB code; clients receive a generic code. SIGINT/SIGTERM shutdown stops accepting requests and closes the pool, with a15-second forced-stop deadline; production rolling deployment is unproven.
 
-حدود الإطلاق المعلقة: SMTP ونطاق sender، R2 خاص وCORS ورفع فعلي، مضيف API/web ونطاقات HTTPS وقواعد proxy، تجربة كوكي نهائية، قياس rate limit تحت عدة نسخ، مراقبة وتنبيه/نسخ واستعادة مثبتة، تنظيف مجدول، والقبول الشامل للواجهة والإدارة. تكوين env أو Docker وحده لا يحقق هذه الشروط. لا شراء خدمات أو نشر إنتاجي ضمن هذا الدليل.
+Pending launch requirements: SMTP/sender domain, private R2/CORS/real uploads, API/web hosts and HTTPS/proxy rules, final cookie behavior, multi-instance rate-limit measurement, monitoring/alerts/proven backup and restore, scheduled cleanup, and comprehensive frontend/admin acceptance. Environment or Docker configuration alone does not satisfy these conditions. This guide authorizes neither service purchases nor production deployment.
 
 
 ## Administrative operations and limits
