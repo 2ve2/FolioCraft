@@ -1,0 +1,18 @@
+# Typography and spacing — current implementation
+
+Updated2026-10-14. These are implementation defaults responding to the human request for measured design; the exact font names were not separately human-selected.
+
+- Self-hosted fonts through exact Fontsource5.3.0 packages: Noto Sans Arabic Variable for UI/simple portfolio; Noto Naskh Arabic Variable for editorial portfolio; IBM Plex Mono for Latin mono with Noto Sans Arabic for Arabic glyphs. Both Noto families include Arabic/Latin subsets. Runtime fonts come from the web host, with system fallbacks during swap. Licenses remain with package distributions.
+- UI hierarchy in apps/web/src/styles/tokens.css: captions12px, labels/buttons14px, typed content16px, subheadings18px, section headings24px, page titles32px/phone28px. Body line-height1.7, headings1.35. Essential content should not use decorative branding sizes.
+- Portfolio base sizes14/16/18px preserve user choice and layout. Titles scale relative to container width; metadata has12px minimum, typed public fields16px minimum and navigation links44px touch targets.
+- Spacing scale4/8/12/16/24/32/48/64px. Cards24px desktop/16px phone; label-to-field8px; fields16px apart; card separation24px; checkboxes18px inside44px label rows with12px text gap.
+- Controls44px minimum; control radius8px and card radius12px; two columns of equal navigation cells below430px. Long labels may wrap with cell growth rather than clipping. Editor and preview use separate mobile tabs; preview shares the public renderer.
+- Contrast uses readable ink/muted tokens and preset palettes; pale colors are decorative. Browser evidence must recheck dimensions/overflow/font load after changing fonts. Do not claim that all devices or real screen readers were tested from one Chromium session.
+
+Mini-preview scale is an inspection aid, not a change to published font sizes. Use Expand preview for actual-size16px text: desktop1100px with contained scroll if needed; phone adapts to modal content width. Native dialog contains focus, disabled inquiry form prevents accidental preview submission; Escape restores opener focus.
+
+## Final human typography steering — 2026-10-14
+Human requested a slight reduction after readability fixes. Current UI caption13,label/body15,subheading17,heading22,title30/phone26; public size keys14/15/17px and metadata minimum13px. Spacing/touch targets retained. Device names are visible; Settings is last; desktop sidebar248px prevents English nav wrapping. Preview parity and skill-group spacing evidence are recorded in STATUS.
+
+## Approved workspace scrolling — 2026-10-14
+Desktop>=971px uses independently scrolling editor and preview beneath a fixed action header. Phone retains normal document scrolling and edit/preview tabs. FolioCraft chrome uses native violet gradient scroll thumbs/lavender tracks, including editor textareas, with standards and forced-colors fallbacks. Human approved the demonstrated result; no prototype controls remain. Skill headings have16px space before tags and skill groups40px row/32px column separation.
