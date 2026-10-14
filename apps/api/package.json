@@ -1,0 +1,35 @@
+{
+	"name": "@folio/api",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "bun --hot src/server.ts",
+		"start": "bun src/server.ts",
+		"typecheck": "tsc --noEmit",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "bun src/db/migrate.ts",
+		"test": "bun test tests",
+		"db:backup": "bun ../../scripts/backup-db.ts",
+		"db:verify-restore": "bun ../../scripts/backup-db.ts --verify-test",
+		"db:state:capture": "bun src/db/verify-state.ts --capture",
+		"db:state:verify": "bun src/db/verify-state.ts"
+	},
+	"dependencies": {
+		"@aws-sdk/client-s3": "3.1150.0",
+		"@aws-sdk/s3-request-presigner": "3.1150.0",
+		"@better-auth/drizzle-adapter": "1.7.7",
+		"@folio/contracts": "workspace:*",
+		"better-auth": "1.7.7",
+		"drizzle-orm": "0.45.4",
+		"hono": "4.13.13",
+		"nodemailer": "10.1.0",
+		"pg": "8.23.1",
+		"sharp": "0.35.5",
+		"zod": "4.6.7"
+	},
+	"devDependencies": {
+		"@types/nodemailer": "8.0.2",
+		"@types/pg": "8.23.1",
+		"drizzle-kit": "0.31.11"
+	}
+}
