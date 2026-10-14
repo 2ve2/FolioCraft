@@ -1,11 +1,12 @@
 # Current status
 
 ## GitHub upload preparation — 2026-10-14
+- GitHub upload succeeded to https://github.com/2ve2/FolioCraft.git on main:123 commits/202 tracked files before this separate documentation checkpoint. Remote was empty before push; normal push created main and configured upstream. Pre-push byte comparison found0 source differences. Final remote HEAD verification follows this checkpoint; hosting remains undeployed.
 - Human authorized a GitHub upload ahead of a friends-only trial and required granular commits. Remote URL is to be supplied by the human; no remote upload/deployment is claimed.
 - Current source lives beneath a home-level Git repository. Prepare the independent upload snapshot under ignored work/github-upload, without staging or modifying the parent repository.
 - Hardened .gitignore for all .env variants except .env.example, local .aws/.codex/.agents directories and private QA account screenshots. Candidate scan:202 files, zero exact configured secret-value matches, both actual environment files excluded and zero account screenshots included. This is a focused secret-value check, not comprehensive security certification.
 - Local upload snapshot completed:202 tracked files in122 responsibility-specific commits, clean index, all tracked file bytes equal source at snapshot time. Evidence:work/github-upload-evidence.json. No remote configured yet. Prior editing chronology is unavailable; these are current-source additions, not invented historical fixes.
-- Next action: attach the supplied GitHub remote and push after verifying authentication. No Neon/R2/content/publication changes.
+- Next action: verify the final remote HEAD, then prepare the separately authorized friends-only hosting trial. No Neon/R2/content/publication changes. Continue repository operations in work/github-upload; original source remains outside that snapshot and must be synchronized deliberately for subsequent changes.
 
 ## Source organization completed — 2026-10-14
 - Human requested clear, understandable, extensible backend/frontend files after adopting split scrolling. Completed this structural scope without dependency/schema/migration/provider/production-policy changes. New source map: SOURCE_STRUCTURE.md; per-app README added; root/docs README and ARCHITECTURE/ROADMAP/DECISIONS updated.
