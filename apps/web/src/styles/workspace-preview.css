@@ -1,0 +1,117 @@
+.expanded-preview {
+	position: fixed;
+	inset: 0;
+	margin: auto;
+	width: min(1200px, calc(100vw - 32px));
+	height: min(900px, calc(100dvh - 32px));
+	max-width: none;
+	max-height: none;
+	padding: 0;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-card);
+	background: var(--paper);
+	color: var(--ink);
+	overflow: hidden;
+}
+.expanded-preview::backdrop {
+	background: #242137a6;
+}
+.expanded-preview > header {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-4);
+	padding: var(--space-4);
+	border-bottom: 1px solid var(--line);
+}
+.studio-shell .expanded-preview > header h2 {
+	font-size: var(--text-subheading);
+}
+.expanded-preview[open] {
+	display: flex;
+	flex-direction: column;
+}
+.expanded-preview-content {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	direction: ltr;
+	padding: var(--space-4);
+}
+
+.studio-shell .sidebar-label,
+.studio-shell .workspace-label,
+.studio-shell .content-jump-nav a,
+.studio-shell .theme-choice {
+	font-size: var(--text-label);
+}
+.studio-shell .muted,
+.studio-shell .address-display,
+.studio-shell .rich-source-note {
+	font-size: var(--text-caption);
+	color: var(--muted);
+	overflow-wrap: anywhere;
+}
+.standalone-admin {
+	display: grid;
+	align-content: start;
+	gap: var(--space-8);
+}
+@media (max-width: 600px) {
+	.standalone-admin {
+		padding: var(--space-4);
+	}
+}
+
+.mobile-logout {
+	display: none;
+}
+@media (max-width: 970px) {
+	.studio-shell .sidebar {
+		flex-wrap: wrap;
+	}
+	.studio-shell .mobile-logout {
+		display: inline-flex;
+		margin-inline-start: auto;
+		flex-shrink: 0;
+	}
+	.studio-shell .sidebar nav {
+		width: 100%;
+		margin-inline-start: 0;
+	}
+}
+
+/* Preview scrolling and actions remain contained in their intended surfaces. */
+.portfolio-viewport,
+.expanded-preview-content {
+	overscroll-behavior: contain;
+}
+.studio-shell .preview-toolbar {
+	flex-wrap: wrap;
+}
+.studio-shell .device-controls button {
+	width: auto;
+	min-width: var(--control-min);
+	height: var(--control-min);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-2);
+	padding: var(--space-2) var(--space-3);
+	font-size: var(--text-caption);
+}
+@media (min-width: 971px) {
+	.studio-shell .sidebar {
+		width: 248px;
+		padding-inline: 16px;
+	}
+	.studio-shell .studio-main {
+		width: calc(100% - 248px);
+		margin-inline-start: 248px;
+	}
+	.studio-shell .nav-item {
+		white-space: nowrap;
+		padding-inline: 12px;
+	}
+}
