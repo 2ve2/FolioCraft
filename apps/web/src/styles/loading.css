@@ -1,0 +1,108 @@
+.loading-screen {
+	position: relative;
+	gap: 30px;
+	background: radial-gradient(ellipse at 50% 45%, #f0e9fa 0, transparent 60%), #faf9fc;
+	overflow: hidden;
+}
+.loading-brand {
+	position: relative;
+}
+.loading-card {
+	position: relative;
+	width: min(100%, 410px);
+	padding: 36px 30px 30px;
+	border: 1px solid #e9e2f1;
+	border-radius: 22px;
+	background: #ffffffed;
+	box-shadow: 0 12px 50px #40286009;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 14px;
+}
+.loading-emblem {
+	display: grid;
+	place-items: center;
+	width: 68px;
+	height: 68px;
+	border-radius: 20px;
+	background: #f4effc;
+	color: #865ed4;
+	margin-bottom: 6px;
+}
+.loading-card h1 {
+	font-size: 20px;
+	font-weight: 650;
+	letter-spacing: -0.3px;
+	color: #44364f;
+}
+.loading-card p {
+	font-size: var(--text-caption);
+	line-height: 1.9;
+	color: #93819f;
+	max-width: 300px;
+}
+.loading-track {
+	height: 3px;
+	width: 100px;
+	overflow: hidden;
+	background: #eee7f6;
+	border-radius: 9px;
+	margin-top: 10px;
+}
+.loading-card .loading-track span {
+	display: block;
+	width: 45px;
+	height: 100%;
+	background: #9b79db;
+	border-radius: 9px;
+	animation: loading-slide 1.7s ease-in-out infinite alternate;
+}
+.loading-screen > .loading-footnote {
+	position: relative;
+	font-size: var(--text-caption);
+	color: #ad9db7;
+	letter-spacing: 0.1px;
+}
+.loading-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	margin-top: 10px;
+}
+.loading-card--error .loading-emblem {
+	background: #fff4f2;
+	color: #b4756b;
+}
+@keyframes loading-slide {
+	from {
+		transform: translateX(-10px);
+	}
+	to {
+		transform: translateX(65px);
+	}
+}
+@media (max-width: 430px) {
+	.loading-card {
+		padding: 30px 22px;
+	}
+	.loading-card h1 {
+		font-size: 18px;
+	}
+	.rich-editor .rich-block {
+		padding: 14px;
+	}
+	.editor-card .toggle-field {
+		padding: 10px;
+		gap: 12px;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.loading-card .loading-track span {
+		animation: none;
+		width: 100%;
+		opacity: 0.5;
+	}
+}
