@@ -13,11 +13,13 @@ export function SettingsSection({
 	busy,
 	renameSite,
 	exportDraft,
+	importDraft,
 	unpublish,
 }: EditorSectionProps & {
 	busy: boolean;
 	renameSite: (slug: string) => Promise<void>;
 	exportDraft: () => void;
+	importDraft: (file: File) => Promise<void>;
 	unpublish: () => Promise<void>;
 }) {
 	const t = copy[locale];
@@ -44,6 +46,21 @@ export function SettingsSection({
 				<button className="secondary wide" type="button" onClick={exportDraft}>
 					{t.draftExport}
 				</button>
+			</section>
+			<section className="editor-card">
+				<h2>{t.draftImport}</h2>
+				<Field label={t.draftImport} hint={t.draftImportHint}>
+					<input
+						type="file"
+						accept=".json,application/json"
+						disabled={busy}
+						onChange={(event) => {
+							const file = event.currentTarget.files?.[0];
+							event.currentTarget.value = "";
+							if (file) void importDraft(file);
+						}}
+					/>
+				</Field>
 			</section>
 			<section className="editor-card">
 				<h2>{t.published}</h2>
