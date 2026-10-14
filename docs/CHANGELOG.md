@@ -325,3 +325,8 @@ Human requests an internet-hosted trial that continues with their computer off, 
 ## Personal English portfolio from supplied CV — 2026-10-14
 Human requests their own website from an attached CV and explicitly selects English content. Read the PDF visually because its text layer is empty; the second page is blank. Use only supplied facts, four actual projects, technical/soft skills, education, certifications and contact links. Dates/project URLs/images not supplied must not be fabricated. Populate the authenticated owner's blank portfolio through the actual UI, retain private draft/public separation, verify saved output and show the result. Source document, screenshots, exports and personal account evidence stay in ignored work/; no personal identifiers are added to versioned documentation.
 
+
+## 2026-10-14 — verbatim biography correction scope
+- Human requires About you to reproduce only the professional summary from the supplied CV verbatim, without assistant additions.
+- Scope: replace the authenticated owner draft biography through the hosted editor, verify saved state and persisted text, retain private source/evidence under ignored work/. No publication or source-code change.
+- Completed: replaced biography with the CV professional summary only; preserved original spelling and punctuation, joining visual PDF line wraps. Removed added education/certificate/contact paragraphs from this field. Hosted editor reported saved; reload retained an exact string match. Screenshot retained privately under work/cv-portfolio/about-you-verbatim.png. No publication performed.
