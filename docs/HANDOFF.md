@@ -1,5 +1,7 @@
 # Project handoff
 
+> **Testing only:** The Cloudflare-hosted instance is a trial for friends to test and report issues. It is not a final launch or an accepted production release. Deployment to Cloudflare makes the test instance reachable; it does not establish production readiness.
+
 ## Latest continuation — 2026-10-15
 - Documentation-only reconciliation completed; no application/provider/account change or new runtime test. See STATUS for current evidence and limits.
 - Arabic fictional demo flow completed through hosted signup, owned draft, publication, separate public view and page scrolling. Edited local MP4 under ignored work/demo-video/. Group message prepared only, not sent. Demo session signed out after capture; human must sign in again for private editing.
