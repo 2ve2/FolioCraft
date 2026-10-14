@@ -1,5 +1,11 @@
 # Current status
 
+## English-only documentation completed — 2026-10-14
+- Translated12 authored Markdown files: root/app README files, docs README, architecture, source structure, API, operations, and Arabic quotations/titles in changelog, decisions, status and handoff. Existing English text, endpoint names, commands and links retained; illustrative Arabic sample values now have English equivalents.
+- Root and docs AGENTS now require English-only Markdown and separate commits for completed work steps and file changes. Account permission operations are explicitly excluded from commits by the human; evidence remains private and ignored.
+- Verification:40 Markdown files across project source and upload checkout scanned, zero Arabic-script matches. No non-Markdown changes relative to the prior uploaded HEAD. This documentation-only scope does not require another runtime/build/database test run; no such rerun claimed. Private verification evidence:work/english-markdown-evidence.json.
+- Each translated document has its own commit. Next action: push documentation commits and verify remote HEAD; demonstrate platform administration after the human completes sign-in with their authorized account. No hosting deployment.
+
 ## GitHub upload preparation — 2026-10-14
 - GitHub upload succeeded to https://github.com/2ve2/FolioCraft.git on main:123 commits/202 tracked files before this separate documentation checkpoint. Remote was empty before push; normal push created main and configured upstream. Pre-push byte comparison found0 source differences. Final remote HEAD verification follows this checkpoint; hosting remains undeployed.
 - Human authorized a GitHub upload ahead of a friends-only trial and required granular commits. Remote URL is to be supplied by the human; no remote upload/deployment is claimed.
