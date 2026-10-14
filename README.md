@@ -1,30 +1,30 @@
 # FolioCraft
 
-منصة بورتفوليو بقالب ثابت، بواجهة Next.js مستقلة عن Bun/Hono API، وحسابات Better Auth وبيانات PostgreSQL عبر Drizzle.
+A fixed-layout portfolio platform with a Next.js frontend independent of the Bun/Hono API, Better Auth accounts, and PostgreSQL data managed through Drizzle.
 
-## التشغيل المحلي
+## Local development
 
 1. `bun install --frozen-lockfile`
-2. انسخ `apps/api/.env.example` إلى `apps/api/.env`، واضبط اتصال PostgreSQL وسر الحسابات وأصول الفرونت/الباك.
-3. انسخ `apps/web/.env.example` إلى `apps/web/.env.local` واضبط عنوان API.
-4. `bun run db:migrate` لإضافة المخطط المراجع إلى قاعدة المشروع.
-5. شغّل `bun run dev:api` و`bun run dev:web` كلًا في طرفية مستقلة.
-6. افتح `http://localhost:3000`. الباك على `http://localhost:4000`.
+2. Copy `apps/api/.env.example` to `apps/api/.env` and configure PostgreSQL, the authentication secret, and frontend/backend origins.
+3. Copy `apps/web/.env.example` to `apps/web/.env.local` and configure the API URL.
+4. Run `bun run db:migrate` to apply the reviewed schema to the project database.
+5. Run `bun run dev:api` and `bun run dev:web` in separate terminals.
+6. Open `http://localhost:3000`. The API runs on `http://localhost:4000`.
 
-`bun run typecheck`، `bun run check`، `bun run build`، و`bun run test` للتحقق. اختبارات التكامل تعمل حصريًا على قاعدة PostgreSQL محلية باسم `folio_test`؛ wrapper يرفض عناوين الإنتاج ويعزل بيئة الاختبار. تفاصيل إعداد القاعدة في docs/OPERATIONS.md.
+Use `bun run typecheck`, `bun run check`, `bun run build`, and `bun run test` for verification. Integration tests run exclusively against a local PostgreSQL database named `folio_test`; the wrapper rejects production URLs and isolates the test environment. Database setup details are in docs/OPERATIONS.md.
 
-## تنظيم الملفات
+## Source organization
 
-[دليل تنظيم الكود](docs/SOURCE_STRUCTURE.md) يوضح مكان كل مسؤولية في الباك والفرونت، وترتيب الستايل، وخطوات التطوير والتحقق. ملفات الدخول تجمع المزايا؛ منطق المسودات والإصدارات والعرض العام منفصل، والفرونت مقسم حسب الميزة.
+The [source structure guide](docs/SOURCE_STRUCTURE.md) describes backend/frontend responsibilities, stylesheet order, and development and verification steps. Entry points compose features; drafts, releases, and public reads have separate services, and frontend code is grouped by feature.
 
-## مصدر الحقيقة
+## Source of truth
 
-الوثائق المحدثة في `docs/`، بدءًا من `docs/STATUS.md` و`docs/DECISIONS.md` و`docs/ROADMAP.md`. تعليمات الاستمرارية في `AGENTS.md`. حزمة التسليم الأصلية محفوظة كسجل خارج المشروع؛ هذه النسخة هي المرجع التنفيذي.
+Current documentation lives in `docs/`, starting with `docs/STATUS.md`, `docs/DECISIONS.md`, and `docs/ROADMAP.md`. Continuity instructions are in `AGENTS.md`. The original handoff package is retained outside the project as a historical record; this copy is the implementation reference.
 
-## المسار الأول
+## First vertical slice
 
-تسجيل/دخول ← إنشاء رابط بورتفوليو ← نبذة ومشاريع ← حفظ مسودة مع مراجعة ← معاينة/مظهر ← نشر نسخة عامة في `/p/:slug`. تعديلات المسودة لا تغيّر النسخة العامة حتى النشر التالي. المعاينة والنشر يستخدمان المكوّن نفسه. يدعم المحرر العربية/الإنجليزية وRTL.
+Sign up/sign in -> create a portfolio URL -> profile and projects -> save a revisioned draft -> preview/appearance -> publish a public release at `/p/:slug`. Draft changes do not change public output until the next publication. Preview and publication use the same component. The editor supports Arabic/English and RTL.
 
-الباك يدعم جميع أقسام المحتوى، ترتيبها وإخفاءها، تاريخ الإصدارات والرجوع إليها، صندوق الرسائل، وحدود الطلبات، ورفع صور R2 والتحقق منها، والتحقق بالبريد واستعادة كلمة المرور. تشغيل R2 وSMTP فعليًا يحتاج إعداداتهما؛ لا توجد محاكاة لنجاح تكامل غير متصل. الواجهة تعرض محررات النبذة والمشاريع والخبرات والتعليم والمهارات والمقالات والمظهر، إضافة إلى الرسائل والإصدارات والإدارة. لا يتضمن المشروع نشرًا إنتاجيًا.
+The backend supports every content section, ordering and visibility, release history and activation, inbox, request limits, R2 image upload and verification, email verification, and password reset. Real R2 and SMTP operation requires their configuration; disconnected integrations never simulate success. The frontend provides profile, project, experience, education, skill, article, and appearance editors, plus inbox, releases, and administration. The project has not been deployed to production.
 
-[توثيق API](docs/API.md) و[التشغيل والتكاملات والنسخ](docs/OPERATIONS.md). `bun run db:backup` لحفظ dump خاص، و`bun run db:verify-restore` لإثبات الاستعادة على بيانات اختبار محلية معزولة.
+See the [API reference](docs/API.md) and [operations, integrations, and backups](docs/OPERATIONS.md). Use `bun run db:backup` for a private dump and `bun run db:verify-restore` to verify restoration using isolated local test data.
