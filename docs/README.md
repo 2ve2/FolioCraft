@@ -1,6 +1,6 @@
 # FolioCraft — Project handoff
 
-Last updated: 2026-10-14, Asia/Riyadh.
+Last updated: 2026-10-15, Asia/Riyadh.
 
 FolioCraft is a working name taken from the prototype; the final product name has not been decided.
 
@@ -42,7 +42,7 @@ Original handoff instruction: copy this package into the implementation project'
 
 ## Current implementation
 
-This copy at `/home/lord2ve/Desktop/blog-website/docs/` is the source of truth. Content, appearance, inbox, release, and administration editors work locally. The human adopted independent desktop editor/preview scrolling and the violet styling. Backend source is organized by responsibility and frontend source by feature; see SOURCE_STRUCTURE for the map and STATUS for evidence and actual remaining work. Mail integration, final hosting, and a broader browser matrix remain pending; this round did not deploy production. The root README explains local execution.
+This copy at `/home/lord2ve/Desktop/blog-website/docs/` is the source of truth. Content, appearance, inbox, release, and administration editors work locally. The human adopted independent desktop editor/preview scrolling and the violet styling. Backend source is organized by responsibility and frontend source by feature; see SOURCE_STRUCTURE for the map and STATUS for evidence and actual remaining work. A Cloudflare-only friends-testing trial is deployed; see [CLOUDFLARE.md](CLOUDFLARE.md) for actual targets, runtime adapters, the human-authorized temporary email-verification exception and verification limits. Mail delivery, live hosted uploads, a broader browser matrix and general-launch operations remain pending. The root README explains local execution.
 
 Current typography and spacing are documented in DESIGN_SYSTEM.md; real-site evidence and limitations are in STATUS.md.
 
