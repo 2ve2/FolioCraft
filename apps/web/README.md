@@ -8,4 +8,6 @@ Public output and preview share `@folio/portfolio`; data contracts use `@folio/c
 
 `src/app/globals.css` is an ordered import entry point. The order of `src/styles` files is part of the cascade, not alphabetical sorting. CSS Modules remain beside their feature. Public portfolio styles live in `packages/portfolio/src/styles.ts`.
 
+Cloudflare builds use `bun run --cwd apps/web build:cloudflare` from the root and the pinned OpenNext adapter. `open-next.config.ts` selects Webpack; the root Bun patch fixes its manifest loader. `wrangler.toml` serves SSR/static assets and enables public Worker-to-Worker fetch routing. Build-time public origins and runtime API origin must match the trial. See [CLOUDFLARE](../../docs/CLOUDFLARE.md) for deployment steps and evidence.
+
 Run from the root with `bun run dev:web`. Configure the public API origin in `.env.local` using `.env.example`. See the [source guide](../../docs/SOURCE_STRUCTURE.md) and [design system](../../docs/DESIGN_SYSTEM.md). Verification evidence and its limits are in [STATUS](../../docs/STATUS.md).
