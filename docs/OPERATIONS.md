@@ -1,6 +1,8 @@
 # Operations and integrations
 
-Last reviewed: 2026-10-13, Asia/Riyadh. This file describes current configuration and operational requirements that remain untested. Actual results are in `STATUS.md`; these instructions do not establish production readiness or mail delivery. Real local R2 evidence is recorded below and in STATUS.
+Last reviewed: 2026-10-15, Asia/Riyadh. This file describes current configuration and operational requirements that remain untested. Actual results are in `STATUS.md`; these instructions do not establish production readiness or mail delivery. Real local R2 evidence is recorded below and in STATUS.
+
+The friends-testing Cloudflare trial is deployed. See [CLOUDFLARE.md](CLOUDFLARE.md) for actual Worker versions, HTTPS origins, build commands, request-scoped runtime behavior, temporary email-verification exception and remaining acceptance. Older local proof below does not imply hosted upload/mail acceptance.
 
 ## Components and files
 
@@ -57,7 +59,8 @@ API starts independently with `bun run --cwd apps/api start`. Web builds and sta
 
 | Variable | Meaning |
 |---|---|
-| `NODE_ENV=production` | Enables HTTPS origins, secure cookies, and email verification before private operations |
+| `NODE_ENV=production` | Enables HTTPS origins and secure cookies; verification is required unless the explicit trial exception is enabled |
+| `TRIAL_SKIP_EMAIL_VERIFICATION` | Defaultfalse; true only for the human-authorized friends-testing trial with no SMTP |
 | `HOST=0.0.0.0` | Listen inside a container/server behind a reverse proxy; do not directly expose the API port when relying on the proxy |
 | `PORT` | Default4000, range1–65535 |
 | `API_URL` | Backend HTTPS origin without path/trailing slash; illustrative `https://api.example.com` |
@@ -68,12 +71,12 @@ API starts independently with `bun run --cwd apps/api start`. Web builds and sta
 | `DB_CONNECT_TIMEOUT_MS` | Default5000, range100–60000 |
 | `DB_STATEMENT_TIMEOUT_MS` | Default15000, range1000–120000 |
 | `TRUSTED_PROXY_IPS` | Comma-separated exact proxy socket addresses only; empty by default |
-| Complete SMTP group | Required for production startup; details below |
+| Complete SMTP group | Required for normal production startup; the explicit trial skip permits unavailable mail |
 | Complete R2 group | Optional; missing configuration explicitly disables storage uploads/reads |
 
 `DATABASE_URL` currently validates the `postgresql://` prefix; TLS selection and full verification are connection configuration responsibilities, not proven production validator checks. `pg` uses a connection string and pool with real transactions, not the Neon HTTP driver. When combining SSL options and connection strings, review [node-postgres SSL](https://node-postgres.com/features/ssl) to avoid URL options replacing certificate configuration. Do not disable certificate verification in production.
 
-Domains, TLS certificates, hosting, and firewall configuration were not provisioned in this session. This guide does not assume production sibling-domain cookies work; verify registration, verification, sign-in, writes, and publication from final origins.
+The Cloudflare trial uses HTTPS workers.dev origins. Hosted signup/sign-in, saves and publication were observed; custom domains, broader cookie/security acceptance and actual verification/reset delivery remain unproven. Bun reverse-proxy examples below apply to the server target, not the Workers entry.
 
 ## Client address and reverse proxy
 
@@ -91,6 +94,8 @@ location / {
 
 This example configures neither TLS nor an additional proxy chain. For multiple proxies or a CDN, document the chain, restrict access, and test spoofing. Direct Hono tests have no socket layer; their supplied headers do not prove production client identity.
 
+The Workers entry uses the Cloudflare-injected client address and replaces x-folio-client-ip; it does not apply the Bun socket TRUSTED_PROXY_IPS path. Preserve this distinction when testing spoofing or choosing a deployment target.
+
 ## Mail and account verification
 
 The complete group is required, or all values remain empty in development:
@@ -106,7 +111,7 @@ MAIL_FROM=hello@example.com
 
 Examples are placeholders. No SMTP account or sender domain is currently configured. `SMTP_SECURE=true` uses TLS from connection start, commonly on465; `false` enforces STARTTLS in the current transport. Connection/greeting deadlines are10 seconds and socket deadline15 seconds; Nodemailer file/URL access is disabled.
 
-Production: `requireEmailVerification=true`, send on registration/sign-in, and `autoSignInAfterVerification=false`. The frontend should prompt users to check their inbox after registration and sign in after verification; this required UI integration is not proven in production. Development permits the unverified local flow, which is not a launch policy.
+Normal production: `requireEmailVerification=true`, send on registration/sign-in, and `autoSignInAfterVerification=false`. The human explicitly approved TRIAL_SKIP_EMAIL_VERIFICATION=true for this hosted friends trial; it suppresses the signup/sign-in verification requirement but does not simulate mail. Restore false and prove delivery before general launch. The frontend should prompt users to check their inbox after registration and sign in after verification; this required UI integration is not proven in production. Development permits the unverified local flow, which is not a launch policy.
 
 Password reset and verification resend with unconfigured SMTP return `503 MAIL_UNAVAILABLE`; transport failure returns `MAIL_DELIVERY_FAILED`. Successful reset revokes previous sessions. Messages contain Arabic/English text; the message URL must match the API origin. Never print token links or claim delivery without provider evidence. Inquiry mail is not implemented; inquiries are stored only in the site inbox.
 
@@ -140,9 +145,9 @@ Configure upload CORS for the **exact WEB_URL**. R2 dashboard example; replace t
 ]
 ```
 
-For local uploads use `http://localhost:3000` in a dedicated test bucket, never a wildcard. Image loading through signed URLs needs no custom fetch; if browser fetch is added later, configure GET/HEAD and required headers specifically after reviewing usage. This is a recommended configuration for the current flow, not a policy already applied to R2. [Cloudflare R2 CORS](https://developers.cloudflare.com/r2/buckets/cors/) explains that a valid signature does not replace browser CORS.
+For local uploads use `http://localhost:3000` in a dedicated test bucket, never a wildcard. Image loading through signed URLs needs no custom fetch; if browser fetch is added later, configure GET/HEAD and required headers specifically after reviewing usage. The existing bucket CORS now also includes the exact Cloudflare trial frontend origin with PUT/Content-Type, exposed ETag and max age3600. Applying that policy is recorded; hosted authenticated upload completion remains unverified. [Cloudflare R2 CORS](https://developers.cloudflare.com/r2/buckets/cors/) explains that a valid signature does not replace browser CORS.
 
-PUT window600 seconds. Backend upload limits:5 MiB, PNG/JPEG/WebP, each side ≤4096, one image without multi-page animation. Completion checks metadata/size, downloads a bounded stream, and decodes with Sharp; ETag-conditional copy preserves inspected bytes in `verified/` and prevents replacement through repeated PUT to `staging/`. Never attach an asset before `ready`.
+PUT window600 seconds. Backend upload limits:5 MiB, PNG/JPEG/WebP, each side ≤4096, one image without multi-page animation. Completion checks metadata/size, downloads a bounded stream, and fully decodes using Sharp on Bun or the Images adapter on Workers; ETag-conditional copy preserves inspected bytes in `verified/` and prevents replacement through repeated PUT to `staging/`. Never attach an asset before `ready`.
 
 Saving and publication lock asset references and verify ownership/state. Deletion rejects assets referenced by the draft **or any retained historical release**; no historical release deletion policy exists currently. Provider failures return `502 STORAGE_PROVIDER_ERROR`; missing configuration returns `503 STORAGE_UNAVAILABLE`.
 
@@ -193,7 +198,7 @@ This mode rejects every database except local `folio_test`, creates temporary `f
 
 Structured request logs include request ID, method, status, and duration without body/cookies. Internal errors log error name, route, and DB code; clients receive a generic code. SIGINT/SIGTERM shutdown stops accepting requests and closes the pool, with a15-second forced-stop deadline; production rolling deployment is unproven.
 
-Pending launch requirements: SMTP/sender domain, private R2/CORS/real uploads, API/web hosts and HTTPS/proxy rules, final cookie behavior, multi-instance rate-limit measurement, monitoring/alerts/proven backup and restore, scheduled cleanup, and comprehensive frontend/admin acceptance. Environment or Docker configuration alone does not satisfy these conditions. This guide authorizes neither service purchases nor production deployment.
+Pending general-launch requirements: SMTP/sender domain and disabling the trial verification exception; live hosted R2 upload/decoder/rendering acceptance; comprehensive cookie, device and admin checks; multi-instance load/rate-limit measurement; monitoring/alerts and provider backup/restore; scheduled cleanup. Trial API/web HTTPS hosting and exact R2 trial CORS are configured, with the limited proof in CLOUDFLARE and STATUS. Environment or Docker configuration alone does not satisfy these conditions. This guide authorizes neither service purchases nor production deployment.
 
 
 ## Administrative operations and limits
