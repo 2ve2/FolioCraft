@@ -4,7 +4,8 @@
 - Human authorized a GitHub upload ahead of a friends-only trial and required granular commits. Remote URL is to be supplied by the human; no remote upload/deployment is claimed.
 - Current source lives beneath a home-level Git repository. Prepare the independent upload snapshot under ignored work/github-upload, without staging or modifying the parent repository.
 - Hardened .gitignore for all .env variants except .env.example, local .aws/.codex/.agents directories and private QA account screenshots. Candidate scan:202 files, zero exact configured secret-value matches, both actual environment files excluded and zero account screenshots included. This is a focused secret-value check, not comprehensive security certification.
-- Next action: produce source-addition commits by responsibility, then attach the supplied GitHub remote and push after verifying authentication. Prior editing chronology is unavailable; do not invent historical fix commits. No Neon/R2/content/publication changes.
+- Local upload snapshot completed:202 tracked files in122 responsibility-specific commits, clean index, all tracked file bytes equal source at snapshot time. Evidence:work/github-upload-evidence.json. No remote configured yet. Prior editing chronology is unavailable; these are current-source additions, not invented historical fixes.
+- Next action: attach the supplied GitHub remote and push after verifying authentication. No Neon/R2/content/publication changes.
 
 ## Source organization completed — 2026-10-14
 - Human requested clear, understandable, extensible backend/frontend files after adopting split scrolling. Completed this structural scope without dependency/schema/migration/provider/production-policy changes. New source map: SOURCE_STRUCTURE.md; per-app README added; root/docs README and ARCHITECTURE/ROADMAP/DECISIONS updated.
