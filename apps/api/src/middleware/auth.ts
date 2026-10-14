@@ -1,5 +1,5 @@
 import { createMiddleware } from "hono/factory";
-import { env } from "../config/env";
+import { requireEmailVerification } from "../config/env";
 import { auth } from "../lib/auth";
 import { ApiError } from "../lib/response-helpers";
 import { rateLimitService } from "../services/rateLimitService";
@@ -15,7 +15,7 @@ export const requireAuth = createMiddleware<AuthEnv>(async (c, next) => {
 		(!session.user.banExpires || session.user.banExpires.getTime() > Date.now())
 	)
 		throw new ApiError(403, "ACCOUNT_BANNED");
-	if (env.NODE_ENV === "production" && !session.user.emailVerified)
+	if (requireEmailVerification && !session.user.emailVerified)
 		throw new ApiError(403, "EMAIL_NOT_VERIFIED");
 	c.set("userId", session.user.id);
 	c.set("authSession", session);
