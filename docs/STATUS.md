@@ -3,7 +3,7 @@
 ## JSON restore continuation — 2026-10-15
 - Implemented Settings JSON selection, bounded/schema validation, bilingual replace confirmation, revisioned server save and success-only editor replacement. Public release/address unchanged; backend asset ownership still enforced.
 - Checks:4 parser tests pass/13 assertions; API+web typecheck passed after test type reference; Biome171 files passed before the reference-only addition. Full browser restore/cancel/server-rejection/reload acceptance remains incomplete. Local isolated login/export and malformed-file selection performed; no final invalid-feedback proof yet.
-- Human reports usage limit and requests Cloudflare update instructions. No new deployment performed. An attempted snapshot build started with stale source after a copy-path error and was interrupted; do not use that output. Canonical feature files now synchronized and committed separately.
+- Human reports usage limit and requests Cloudflare update instructions. No new deployment performed. An attempted snapshot build started with stale source after a copy-path error and completed before interruption; it contains stale source and must not be used for the new feature. Canonical feature files now synchronized and committed separately.
 - Next action: complete isolated browser acceptance, run frozen install and fresh OpenNext build from work/github-upload, then redeploy web only when authorized. API unchanged. Review final fixture cleanup evidence before reuse.
 
 
