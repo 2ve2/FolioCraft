@@ -1,5 +1,11 @@
 # Current status
 
+## Active free Cloudflare-only trial — 2026-10-14
+- Human requires free hosted testing with their computer off and Cloudflare only; temporary tunnels and external backend hosts declined. Containers Paid is outside the authorized cost scope. Investigate Workers compatibility while retaining Bun local execution and unchanged data/contracts.
+- Current boundaries: Bun server entry and Bun SHA256 request keys; pg/Drizzle connection lifecycle; native Sharp full-image verification; Nodemailer mail; Next.js Workers adapter. No disabled feature or public draft exposure is an acceptable silent workaround.
+- Cloudflare dashboard was at login; human reports sign-in complete, account page verification pending. No application deployed or public trial URL exists yet. Latest English-documentation push succeeded to main81f0266; an additional remote-HEAD query was not executed because automatic approval review hit its usage limit. No account identifiers/grant evidence committed.
+- Next action: verify account, determine the compatible deployment build and actual free-plan limits, prepare reversible changes and run compatibility/runtime gates before upload.
+
 ## English-only documentation completed — 2026-10-14
 - Translated12 authored Markdown files: root/app README files, docs README, architecture, source structure, API, operations, and Arabic quotations/titles in changelog, decisions, status and handoff. Existing English text, endpoint names, commands and links retained; illustrative Arabic sample values now have English equivalents.
 - Root and docs AGENTS now require English-only Markdown and separate commits for completed work steps and file changes. Account permission operations are explicitly excluded from commits by the human; evidence remains private and ignored.
