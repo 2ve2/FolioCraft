@@ -44,7 +44,7 @@ Validation returns `400 VALIDATION_ERROR` with Zod `fields`. Use `code` for user
 | `GET /health` | Process liveness only; `{status:true}` |
 | `GET /ready` | Runs `select 1`; reports `integrations.storage/mail` as `configured` or `disabled`, not an upload/delivery test |
 
-Production registration sends verification and does not issue an immediately usable session. Verification does not automatically sign in; the user then signs in. Development permits unverified sign-in for the local flow. Missing mail configuration returns `503 MAIL_UNAVAILABLE` for mail-dependent operations; SMTP failure returns `MAIL_DELIVERY_FAILED`. Production startup requires HTTPS origins and complete SMTP configuration.
+Normal production registration sends verification and does not issue an immediately usable session. The human-authorized hosted trial explicitly sets TRIAL_SKIP_EMAIL_VERIFICATION=true, permitting immediate signup/sign-in without mail; the flag defaultsfalse. Verification does not automatically sign in; the user then signs in. Development permits unverified sign-in for the local flow. Missing mail configuration returns `503 MAIL_UNAVAILABLE` for mail-dependent operations; SMTP failure returns `MAIL_DELIVERY_FAILED`. Production startup requires HTTPS origins and complete SMTP configuration unless the explicit trial skip is enabled. Reset/resend still report unavailable mail when no transport exists; see [CLOUDFLARE.md](CLOUDFLARE.md) for the current trial exception.
 
 Better Auth limits are database-backed: general window100 requests/60 seconds; sign-in10, and sign-up, reset requests, and verification resends5 each/60 seconds. Private domain writes allow120 per user/60 seconds. `429` can include `Retry-After`.
 
@@ -169,7 +169,7 @@ The browser PUTs the file directly to `uploadUrl` using exactly `uploadHeaders`,
 
 The public projection hides disabled sections, excludes `published:false` articles, and removes email, website, and social links when contact is hidden. It returns neither account owner nor sessions. Editing a draft does not change the public snapshot; missing publication returns `404`. Web `/p/:slug/projects/:id` and `/p/:slug/articles/:articleSlug` consume published data and require matching release identity. Browser evidence is recorded in STATUS.md.
 
-Inquiry: name1–100, valid email ≤254, message10–3000 characters, empty honeypot `website` if provided. The site must be published at insertion time. Actual delivery is storage in the site inbox; there is currently no owner email notification. Shared database limits:5 per slug/client address/60 seconds and60 per site/hour. Direct Hono calls without server can use IP `unknown`; Bun server derives the trusted client address.
+Inquiry: name1–100, valid email ≤254, message10–3000 characters, empty honeypot `website` if provided. The site must be published at insertion time. Actual delivery is storage in the site inbox; there is currently no owner email notification. Shared database limits:5 per slug/client address/60 seconds and60 per site/hour. Direct Hono calls without server can use IP `unknown`; Bun server derives the trusted socket/proxy address; the Cloudflare Worker entry derives the trusted edge address and overwrites the application client-address header.
 
 ## Common errors
 
