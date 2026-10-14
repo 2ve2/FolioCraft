@@ -330,3 +330,7 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Human requires About you to reproduce only the professional summary from the supplied CV verbatim, without assistant additions.
 - Scope: replace the authenticated owner draft biography through the hosted editor, verify saved state and persisted text, retain private source/evidence under ignored work/. No publication or source-code change.
 - Completed: replaced biography with the CV professional summary only; preserved original spelling and punctuation, joining visual PDF line wraps. Removed added education/certificate/contact paragraphs from this field. Hosted editor reported saved; reload retained an exact string match. Screenshot retained privately under work/cv-portfolio/about-you-verbatim.png. No publication performed.
+
+## 2026-10-14 — hosted public portfolio routing investigation
+- Human reports their public portfolio cannot open. Check public API publication state and frontend SSR routing before modifying content or publishing. Use investigate-first evidence workflow; preserve owner draft.
+- Cause/proof: public API returned200 while frontend SSR returned404. Cloudflare documents same-account Worker fetch routing; enabled global_fetch_strictly_public in web Wrangler flags. Redeployed frontend version6fb18ac0-1a72-4963-b61f-4f996f81c547, with unchanged compiled assets. Actual hosted browser now renders the published English portfolio and verbatim biography. Private screenshot retained; no new publication performed by the agent.
