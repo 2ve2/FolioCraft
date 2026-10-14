@@ -2,6 +2,9 @@
 	"name": "@folio/api",
 	"private": true,
 	"type": "module",
+	"imports": {
+		"#image-validation": "./src/lib/image-validation.ts"
+	},
 	"scripts": {
 		"dev": "bun --hot src/server.ts",
 		"start": "bun src/server.ts",
