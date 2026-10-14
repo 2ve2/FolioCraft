@@ -1,0 +1,12 @@
+# OpenNext output; this is not a static-only export of the portfolio application.
+# Adapter installation/build and Workers preview must pass before deployment.
+name = "foliocraft-trial"
+main = ".open-next/worker.js"
+compatibility_date = "2026-10-14"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
