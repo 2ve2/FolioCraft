@@ -1,0 +1,47 @@
+import type { Project, PublicSite } from "@folio/contracts";
+import { PortfolioDetail } from "@folio/portfolio";
+import { publishedMetadata } from "../../../../../lib/public-metadata";
+import { PublicUnavailable, publicAssets, readPublished } from "../../_public";
+export const dynamic = "force-dynamic";
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ slug: string; projectId: string }>;
+}) {
+	const { slug, projectId } = await params;
+	const site = await readPublished<PublicSite>(slug);
+	const project = site?.draft.projects.find(
+		(item) => item.id === projectId || item.slug === projectId,
+	);
+	return site && project
+		? publishedMetadata(
+				site,
+				`/p/${encodeURIComponent(site.slug)}/projects/${encodeURIComponent(project.id)}`,
+				`${project.title} — ${site.draft.profile.name}`,
+				project.summary,
+				project.coverAssetId,
+			)
+		: { robots: { index: false, follow: false } };
+}
+export default async function PublicProject({
+	params,
+}: {
+	params: Promise<{ slug: string; projectId: string }>;
+}) {
+	const { slug, projectId } = await params;
+	const site = await readPublished<PublicSite>(slug);
+	if (!site) return <PublicUnavailable />;
+	const detail = await readPublished<{ releaseId: string; project: Project }>(
+		slug,
+		`/projects/${encodeURIComponent(projectId)}`,
+	);
+	if (!detail || detail.releaseId !== site.releaseId) return <PublicUnavailable />;
+	return (
+		<PortfolioDetail
+			draft={site.draft}
+			project={detail.project}
+			assetUrls={publicAssets(site)}
+			publicBasePath={`/p/${encodeURIComponent(site.slug)}`}
+		/>
+	);
+}
