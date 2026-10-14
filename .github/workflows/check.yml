@@ -1,0 +1,43 @@
+name: Checks
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run check
+      - run: bun run build
+  integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: folio
+          POSTGRES_PASSWORD: local-ci-only
+          POSTGRES_DB: folio_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U folio"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://folio:local-ci-only@localhost:5432/folio_test
+      BETTER_AUTH_SECRET: ci-only-isolated-test-secret-not-for-production-12345
+      API_URL: http://localhost:4000
+      WEB_URL: http://localhost:3000
+      NODE_ENV: test
+      TEST_DATABASE_URL: postgresql://folio:local-ci-only@localhost:5432/folio_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+      - run: bun run test
