@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, api, authClient } from "../../lib/api";
 import { useAssetUrls } from "../assets/use-asset-urls";
 import { copy } from "./copy";
+import { DraftImportError, readDraftBackup } from "./draft-import";
 import type { SaveState, Section } from "./types";
 
 /** Owns authenticated draft loading, recovery, revisioned saves and publication operations. */
@@ -541,6 +542,52 @@ export function useStudioController() {
 		anchor.click();
 		URL.revokeObjectURL(url);
 	}
+	/** Restores a validated backup through the owned revision guard before changing editor state. */
+	async function importDraft(file: File) {
+		if (operation.current || !siteRef.current) return;
+		const identity = sessionIdentityRef.current;
+		const current = () => identity === sessionIdentityRef.current && mounted.current;
+		operation.current = true;
+		setBusy(true);
+		setError("");
+		setNotice("");
+		try {
+			const imported = await readDraftBackup(file);
+			if (!current() || !window.confirm(textRef.current.draftImportConfirm)) return;
+			if (!current()) return;
+			if (timer.current) {
+				clearTimeout(timer.current);
+				timer.current = null;
+			}
+			// Settle earlier writes so a delayed autosave cannot overwrite the restored draft.
+			if (saveJob.current) await saveJob.current.promise.catch(() => undefined);
+			if (!current() || !siteRef.current) return;
+			const owned = siteRef.current;
+			const restored = await api<Site>(`/api/sites/${owned.id}/draft`, "PUT", {
+				revision: owned.revision,
+				draft: imported,
+			});
+			if (!current()) return;
+			acceptSite(restored);
+			setNotice(textRef.current.draftImportSaved);
+		} catch (e) {
+			if (!current()) return;
+			setError(
+				e instanceof DraftImportError
+					? e.reason === "size"
+						? textRef.current.draftImportSize
+						: textRef.current.draftImportInvalid
+					: e instanceof ApiError && e.code === "ASSET_NOT_READY_OR_OWNED"
+						? textRef.current.draftImportAssets
+						: explain(e),
+			);
+		} finally {
+			if (current()) {
+				operation.current = false;
+				setBusy(false);
+			}
+		}
+	}
 	const publicationChanged = (value: Site) => {
 		if (siteRef.current?.id !== value.id) return;
 		if (siteRef.current.publishedReleaseId !== value.publishedReleaseId)
@@ -596,6 +643,7 @@ export function useStudioController() {
 		logout,
 		renameSite,
 		exportDraft,
+		importDraft,
 		publicationChanged,
 		operationsBusy,
 		flush,
