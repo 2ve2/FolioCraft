@@ -7,6 +7,8 @@ Build the portfolio product described in docs/REQUIREMENTS.md. Human instruction
 Read docs/README.md, docs/STATUS.md, docs/DECISIONS.md and the relevant architecture/style notes before implementation. Inspect existing code and git state before assuming the project is empty. Do not re-ask settled decisions.
 
 ## Durable memory
+- Keep all project Markdown files entirely in English, including examples and historical quotations.
+- Document every completed work step, addition and modification in a separate, clearly described Git commit. Synchronize source changes to the independent GitHub checkout under work/github-upload before committing; never stage the home-level repository. Preserve existing remote history and never invent prior editing chronology.
 - Before a multi-step task, record its scope in docs/CHANGELOG.md.
 - After meaningful completed steps, record affected files, actual checks/results, decisions and pending work.
 - Before ending or handing off, update docs/STATUS.md with completed work, active work, blockers, next action and verification evidence.
