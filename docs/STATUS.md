@@ -1,5 +1,9 @@
 # Current status
 
+## Arabic fictional demo — 2026-10-14
+- Completed hosted signup, Arabic draft creation, fictional content, appearance save, publication and separate public page with complete scroll. Real owner portfolio unchanged. Demo uses explicitly fictional biography, organizations and example.com email.
+- Local edited video in ignored work/demo-video/: Arabic captions, animated intro/outro, dissolves and smooth pan of actual full-page capture. This is a screenshot montage, not a continuous screen recording. Final67-second H.2641080x1350/24fps MP4 fully decoded with exit0; sampled title and scroll frames visually inspected after font corrections. No message sent to the group or external video upload.
+
 ## Latest owner content correction — 2026-10-14
 - English CV portfolio draft is saved in the authenticated hosted account with four projects and five skill groups. About you now contains only the verbatim professional summary from the supplied PDF, without assistant additions. Exact string equality and saved status verified after a page reload; private screenshot under work/cv-portfolio/.
 - Cloudflare API and frontend are deployed; hosted sign-in and owner draft saving work. This supersedes the earlier predeployment status below. Public portfolio SSR404 fixed by enabling Cloudflare public Worker fetch routing. Hosted browser now renders the already published owner portfolio with its verbatim biography. Frontend deployment version6fb18ac0-1a72-4963-b61f-4f996f81c547.
