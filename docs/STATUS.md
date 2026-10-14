@@ -2,8 +2,8 @@
 
 ## Latest owner content correction — 2026-10-14
 - English CV portfolio draft is saved in the authenticated hosted account with four projects and five skill groups. About you now contains only the verbatim professional summary from the supplied PDF, without assistant additions. Exact string equality and saved status verified after a page reload; private screenshot under work/cv-portfolio/.
-- Cloudflare API and frontend are deployed; hosted sign-in and owner draft saving work. This supersedes the earlier predeployment status below. Public portfolio SSR returned404 during a prior probe and remains unresolved; do not claim public publication acceptance.
-- Next action: finish the separate public-route investigation, reconcile deployment documentation and push pending granular commits. No publication was performed for the CV draft.
+- Cloudflare API and frontend are deployed; hosted sign-in and owner draft saving work. This supersedes the earlier predeployment status below. Public portfolio SSR404 fixed by enabling Cloudflare public Worker fetch routing. Hosted browser now renders the already published owner portfolio with its verbatim biography. Frontend deployment version6fb18ac0-1a72-4963-b61f-4f996f81c547.
+- Next action: reconcile remaining deployment documentation and push pending granular commits. Owner publication existed when inspected; agent performed no new publication.
 
 ## Active free Cloudflare-only trial — 2026-10-14
 - Human requires free hosted testing with their computer off and Cloudflare only; temporary tunnels and external backend hosts declined. Containers Paid is outside the authorized cost scope. Investigate Workers compatibility while retaining Bun local execution and unchanged data/contracts.
