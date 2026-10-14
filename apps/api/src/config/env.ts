@@ -17,6 +17,10 @@ const schema = z
 		PORT: z.coerce.number().int().min(1).max(65535).default(4000),
 		HOST: z.string().default("127.0.0.1"),
 		NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+		TRIAL_SKIP_EMAIL_VERIFICATION: z
+			.enum(["true", "false"])
+			.default("false")
+			.transform((value) => value === "true"),
 		DB_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),
 		DB_CONNECT_TIMEOUT_MS: z.coerce.number().int().min(100).max(60000).default(5000),
 		DB_STATEMENT_TIMEOUT_MS: z.coerce.number().int().min(1000).max(120000).default(15000),
@@ -71,7 +75,7 @@ const schema = z
 		if (v.NODE_ENV === "production") {
 			if (!v.API_URL.startsWith("https://") || !v.WEB_URL.startsWith("https://"))
 				ctx.addIssue({ code: "custom", message: "Production origins require HTTPS" });
-			if (!v.SMTP_HOST)
+			if (!v.SMTP_HOST && !v.TRIAL_SKIP_EMAIL_VERIFICATION)
 				ctx.addIssue({
 					code: "custom",
 					message: "Production authentication requires configured SMTP verification/reset delivery",
@@ -79,6 +83,8 @@ const schema = z
 		}
 	});
 export const env = schema.parse(process.env);
+export const requireEmailVerification =
+	env.NODE_ENV === "production" && !env.TRIAL_SKIP_EMAIL_VERIFICATION;
 export const storageConfigured = Boolean(
 	env.R2_ACCOUNT_ID && env.R2_BUCKET && env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY,
 );
