@@ -1,0 +1,13 @@
+# Additive Workers build target. Local Bun execution still uses src/server.ts.
+# Do not deploy until the compatibility gates in docs/CLOUDFLARE.md pass.
+name = "foliocraft-api-trial"
+main = "src/worker.ts"
+compatibility_date = "2026-10-14"
+compatibility_flags = ["nodejs_compat", "nodejs_compat_populate_process_env"]
+workers_dev = true
+
+[vars]
+NODE_ENV = "production"
+# Supply reviewed HTTPS API_URL and WEB_URL before runtime verification.
+# DATABASE_URL, BETTER_AUTH_SECRET and provider credentials are Workers secrets.
+
