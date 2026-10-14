@@ -1,16 +1,19 @@
 # Source structure guide
 
-Last updated: 2026-10-14. This guide describes the actual implementation, not a proposed library list.
+Last updated: 2026-10-15. This guide describes the actual implementation, not a proposed library list.
 
 ## Project boundaries
 
 `apps/api` is the independent backend and `apps/web` the independent frontend. The frontend imports neither the database nor backend configuration or secrets. Both applications share data contracts in `packages/contracts`; public output and private preview share `packages/portfolio`.
+
+Cloudflare target configuration is in each app `wrangler.toml`; web adapter settings are in `apps/web/open-next.config.ts` and its Bun patch is under root `patches/`. Generated `.open-next`/`.wrangler` output and private evidence in `work/` are ignored, not product source. See [CLOUDFLARE.md](CLOUDFLARE.md).
 
 ## Backend: where should a change go?
 
 ```text
 apps/api/src/
   server.ts                    Bun execution, shutdown and connection limits
+  worker.ts                    Cloudflare entry, trusted edge address and request scopes
   app.ts                       Middleware and route composition only
   config/env.ts                Configuration loading and validation
   middleware/                  Authentication, administration, protection and HTTP errors
@@ -32,11 +35,14 @@ apps/api/src/
     auth-hooks.ts              Mail rules, administrative permissions and protocol audit
     mail.ts                    Real mail transport when configured
     storage-client.ts          Storage client configuration
-    storage.ts                 Storage operations and image inspection
+    storage.ts                 Storage operations and image verification delegation
+    image-validation.ts        Bun Sharp full-image validation
+    image-validation.worker.ts Workers Images validation and forced decode
+    worker-images-context.ts   Request-local Images binding
     response-helpers.ts        Safe success and error response contract
     validation.ts              Resource identifiers and pagination
   db/
-    index.ts                   PostgreSQL/Drizzle and connection deadlines
+    index.ts                   Bun pool, Workers request-scoped DB and deadlines
     schema/                    Actual tables grouped by domain
     migrations/                Explicit migrations and Drizzle metadata
 apps/api/tests/
