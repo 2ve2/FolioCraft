@@ -6,6 +6,9 @@ compatibility_date = "2026-10-14"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true
 
+[vars]
+API_URL = "https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev"
+
 [assets]
 directory = ".open-next/assets"
 binding = "ASSETS"
