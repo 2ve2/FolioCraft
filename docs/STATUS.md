@@ -1,5 +1,7 @@
 # Current status
 
+> **Testing only:** The Cloudflare-hosted instance is a trial for friends to test and report issues. It is not a final launch or an accepted production release. Deployment to Cloudflare makes the test instance reachable; it does not establish production readiness.
+
 ## Authoritative continuation — 2026-10-15
 - Documentation reconciled against source and recorded2026-10-14 evidence. This update changes Markdown only and does not rerun application tests, modify accounts/content, change provider settings or redeploy.
 - Cloudflare-only friends trial is deployed: web https://foliocraft-trial.bdalrhmnmtwq53.workers.dev/ and independent API https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev. Last observed versions: web6fb18ac0-1a72-4963-b61f-4f996f81c547, API970d67cc-4caa-4ab8-aac7-b73c034989a2. Bun local execution is retained.
