@@ -137,6 +137,17 @@ export const copy = {
 		savingWait: "انتظر انتهاء الحفظ أولًا.",
 		projectsLimit: "الحد الأقصى ٣٠ مشروعًا.",
 		draftExport: "تنزيل نسخة من المسودة",
+		draftImport: "استعادة المسودة من ملف JSON",
+		draftImportHint:
+			"ارفع نسخة سبق تنزيلها من هنا، حتى ٢ ميغابايت. ستستبدل المسودة بعد التأكيد، دون تغيير عنوان الموقع أو النسخة المنشورة. الصور ليست ضمن الملف؛ يمكن استعادة مراجع الصور التابعة لهذا الموقع فقط.",
+		draftImportConfirm:
+			"هل تريد استبدال مسودتك الحالية بمحتوى هذا الملف وحفظها؟ تشمل العملية المحتوى واللغة والمظهر، وتستبدل التعديلات غير المحفوظة. لن تتغير النسخة المنشورة.",
+		draftImportInvalid:
+			"الملف ليس نسخة JSON صالحة من مسودة FolioCraft، أو إصدار الملف غير مدعوم. لم يتم استبدال المسودة.",
+		draftImportSize: "الملف أكبر من ٢ ميغابايت. لم يتم استبدال المسودة.",
+		draftImportAssets:
+			"يحتوي الملف على صور غير متاحة أو لا تتبع هذا الموقع. لم يتم استبدال المسودة.",
+		draftImportSaved: "تمت استعادة المسودة وحفظها. راجع الحقول والمعاينة قبل النشر.",
 		startupError: "تعذر التحقق من جلسة الدخول. تأكد من تشغيل خدمة الموقع وأعد المحاولة.",
 	},
 	en: {
@@ -286,6 +297,17 @@ export const copy = {
 		savingWait: "Please wait for the current save to finish.",
 		projectsLimit: "Up to 30 projects.",
 		draftExport: "Download draft copy",
+		draftImport: "Restore draft from JSON",
+		draftImportHint:
+			"Choose a copy downloaded here, up to 2 MiB. After confirmation it replaces your draft, keeping the site address and public release. Image files are not included; only this site's available image references can be restored.",
+		draftImportConfirm:
+			"Replace and save your current draft with this file? Content, language, appearance and unsaved edits will be replaced. Your public release will stay unchanged.",
+		draftImportInvalid:
+			"This is not a valid FolioCraft draft JSON file, or its version is unsupported. Your draft was not replaced.",
+		draftImportSize: "The file exceeds 2 MiB. Your draft was not replaced.",
+		draftImportAssets:
+			"The file references unavailable images or images belonging to another site. Your draft was not replaced.",
+		draftImportSaved: "Draft restored and saved. Review the fields and preview before publishing.",
 		startupError:
 			"Could not check your session. Check that the portfolio service is running and try again.",
 	},
