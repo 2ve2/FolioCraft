@@ -1,7 +1,7 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth } from "better-auth";
 import { admin } from "better-auth/plugins/admin";
-import { env } from "../config/env";
+import { env, requireEmailVerification } from "../config/env";
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
 import { authHooks } from "./auth-hooks";
@@ -24,7 +24,7 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 		minPasswordLength: 10,
-		requireEmailVerification: env.NODE_ENV === "production",
+		requireEmailVerification,
 		revokeSessionsOnPasswordReset: true,
 		/** Delivers the native reset link using the configured project mail transport. */
 		sendResetPassword: async ({ user, url }) => {
@@ -32,8 +32,8 @@ export const auth = betterAuth({
 		},
 	},
 	emailVerification: {
-		sendOnSignUp: env.NODE_ENV === "production",
-		sendOnSignIn: env.NODE_ENV === "production",
+		sendOnSignUp: requireEmailVerification,
+		sendOnSignIn: requireEmailVerification,
 		autoSignInAfterVerification: false,
 		/** Delivers the native verification link using the configured project mail transport. */
 		sendVerificationEmail: async ({ user, url }) => {
