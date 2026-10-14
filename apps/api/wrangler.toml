@@ -6,8 +6,15 @@ compatibility_date = "2026-10-14"
 compatibility_flags = ["nodejs_compat", "nodejs_compat_populate_process_env"]
 workers_dev = true
 
+[alias]
+"#image-validation" = "./src/lib/image-validation.worker.ts"
+
+[images]
+binding = "IMAGES"
+
 [vars]
 NODE_ENV = "production"
+TRIAL_SKIP_EMAIL_VERIFICATION = "true"
 # Supply reviewed HTTPS API_URL and WEB_URL before runtime verification.
 # DATABASE_URL, BETTER_AUTH_SECRET and provider credentials are Workers secrets.
 
