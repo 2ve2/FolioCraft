@@ -1,0 +1,30 @@
+:root {
+	--font-ui: "Noto Sans Arabic Variable", Arial, sans-serif;
+	--font-editorial: "Noto Naskh Arabic Variable", Georgia, serif;
+	--font-mono: "IBM Plex Mono", "Noto Sans Arabic Variable", monospace;
+	--text-caption: 13px;
+	--text-label: 15px;
+	--text-body: 15px;
+	--text-subheading: 17px;
+	--text-heading: 22px;
+	--text-title: 30px;
+	--leading-body: 1.7;
+	--leading-heading: 1.35;
+	--space-1: 4px;
+	--space-2: 8px;
+	--space-3: 12px;
+	--space-4: 16px;
+	--space-6: 24px;
+	--space-8: 32px;
+	--space-12: 48px;
+	--space-16: 64px;
+	--control-min: 44px;
+	--radius-control: 8px;
+	--radius-card: 12px;
+}
+
+@media (max-width: 720px) {
+	:root {
+		--text-title: 26px;
+	}
+}
