@@ -1,44 +1,69 @@
 # Cloudflare-only trial deployment
 
-Status: configuration scaffolding, not a completed deployment. No public FolioCraft trial URL has been issued or verified.
+Last reconciled: 2026-10-15, Asia/Riyadh. Deployment and browser evidence below was collected on 2026-10-14; this documentation update does not constitute a new deployment or live test.
 
-## Deployment targets
+## Deployed trial
 
-- `apps/api/wrangler.toml`: `foliocraft-api-trial`, using the additive Hono Worker entry in `src/worker.ts`. Local Bun startup remains `src/server.ts`.
-- `apps/web/wrangler.toml`: `foliocraft-trial`, serving the full application through generated OpenNext output and static assets. The repository currently does not contain an installed OpenNext adapter or generated `.open-next` output.
-- Keep existing Neon PostgreSQL and private R2 assets. No schema migration, account-content change, public draft exposure, or existing Cloudflare project replacement is part of this deployment.
+- Web: https://foliocraft-trial.bdalrhmnmtwq53.workers.dev/
+- API: https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev
+- Last verified web version: `6fb18ac0-1a72-4963-b61f-4f996f81c547`.
+- Last verified API version: `970d67cc-4caa-4ab8-aac7-b73c034989a2`.
 
-The human requires free Cloudflare hosting that runs with their computer off. No tunnels, external backend hosts, paid Containers, purchases, or plan upgrades are authorized.
+The human authorized a free Cloudflare-only friends-testing deployment that runs with their computer off. No paid Containers, plan upgrade, tunnel or external backend host was used. PostgreSQL remains the existing Neon database and files remain in private R2. No deployment migration or reset was performed. A reachable trial is not comprehensive production acceptance.
 
-## Required compatibility gates
+## Runtime targets and source
 
-1. Install a maintained Wrangler version and an adapter verified against installed Next.js16.4.0/React19.3.0; use Bun and commit package/lockfile changes separately. Global Wrangler3.109.1 is not sufficient evidence of compatibility with the current runtime/configuration.
-2. Build and preview the frontend in the actual Workers runtime. Preserve SSR public pages and private editor behavior; a static-only export is not equivalent.
-3. Give each Workers request its own PostgreSQL connection lifecycle. Current application-wide Bun pg pool must not be assumed safe across independent Workers requests. Verify real publication transactions and concurrent request isolation.
-4. Replace native Sharp only in the Workers target with a verified compatible full-image decoder. Retain MIME, dimensions, page-count, byte bounds, corruption checks and exact-byte conditional R2 copy. Metadata-only acceptance is not an acceptable replacement.
-5. Configure and prove actual verification/reset delivery. Current production startup requires complete mail configuration; do not bypass verification or fabricate delivery for the trial.
-6. Review free-plan CPU/bundle/memory limits against authentication and image verification workloads. Reject unsupported deployment rather than silently dropping features or upgrading the account.
-7. Set final HTTPS origins, trusted edge-client handling and secure cookies. Prove sign-in, ownership, draft save, publication, inbox and admin access from the deployed frontend.
+- API `apps/api/wrangler.toml` deploys `src/worker.ts`, which calls the same Hono application as Bun `src/server.ts`. Node compatibility and process-environment population are enabled.
+- Workers requests use an AsyncLocalStorage-scoped PostgreSQL/Drizzle pool with max1 and close it in finally. Bun execution retains its application pool. PostgreSQL transactions and owned draft/release contracts are retained.
+- Request hashing uses Node SHA256. The Worker entry replaces the application client-address header using the Cloudflare edge address; Bun retains socket/exact-proxy handling.
+- The `#image-validation` import maps to Sharp for Bun and the Cloudflare Images adapter for Workers. Workers validate size/MIME/dimensions and supported animation limits, then consume a transformed PNG to force decoding before the unchanged exact-byte conditional R2 copy. `IMAGES` is bound in API Wrangler configuration. Local adapter proof does not certify every corrupt-image variant or live provider upload.
+- Web `apps/web/wrangler.toml` deploys generated OpenNext output with `ASSETS`; this is the full Next.js SSR application, not a static-only export. Adapter1.20.11 and Wrangler4.151.0 are pinned with Bun's lockfile.
+- `open-next.config.ts` builds Next with Webpack. The tracked Bun patch includes `preview-props.json` in the adapter manifest loader; without it, the initial deployment threw a runtime exception.
+- Web enables `global_fetch_strictly_public`. Without it, same-account Worker fetches returned404 even when the public API returned200. After enabling it, the actual published portfolio rendered in the browser. [Cloudflare Worker fetch](https://developers.cloudflare.com/workers/runtime-apis/fetch/) documents this routing option.
 
-## Configuration and secrets
+## Origins, secrets and mail exception
 
-API runtime settings include API_URL, WEB_URL, DATABASE_URL, BETTER_AUTH_SECRET, pool/deadline settings and complete configured mail/storage groups. Keep credentials exclusively in Cloudflare Workers secrets, never Wrangler vars, source files, logs or Git. Supply reviewed origin values before runtime initialization; the starter configuration deliberately includes no credentials or guessed origin.
+Web build-time `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_WEB_URL` must match the deployed public HTTPS origins. Runtime `API_URL` selects the server-side public API. Runtime variables do not retroactively change compiled public variables.
 
-Frontend NEXT_PUBLIC_API_URL and NEXT_PUBLIC_WEB_URL are build-time public origins. Its server-side API_URL must refer to the independently deployed API. Runtime vars alone cannot retroactively change compiled NEXT_PUBLIC values.
+API `API_URL`, `WEB_URL`, `NODE_ENV=production` and `DB_CONNECT_TIMEOUT_MS=20000` are in Wrangler vars. `DATABASE_URL`, `BETTER_AUTH_SECRET` and R2 credentials are encrypted Workers Secrets, transferred with explicit human approval. Never put actual secret values, session cookies, personal account exports or source CV data in Git or docs. Local secret files and adapter output remain ignored.
 
-Wrangler local logs and temporary build outputs belong in ignored work/ or ignored adapter folders. Any .dev.vars files remain ignored. Run dry builds before a network deployment:
+The human explicitly authorized signup without email verification for this trial because no SMTP provider is configured. API Wrangler sets `TRIAL_SKIP_EMAIL_VERIFICATION=true`; its environment default is false. Production HTTPS origins, secure cookies, session checks and ownership checks remain enabled. Reset/resend operations still report unavailable mail; no sending or recipient delivery was proven. Before a general launch, configure and verify mail, set the flag false and redeploy. This is a temporary testing exception, not a blanket launch policy.
+
+R2 CORS was updated to allow the exact trial frontend origin alongside the existing localhost origin, retaining PUT, Content-Type, exposed ETag and max age3600. The bucket remains private. A successful CORS update is not proof of a hosted authenticated upload completing.
+
+## Repeatable build and deployment
+
+Use the independent checkout or a clean build directory so OpenNext's `.next` output does not interfere with a running local editor. Install the frozen Bun lockfile so the adapter patch applies. These commands are operational examples, not authorization to redeploy or a record that they were run again:
 
 ```sh
-# From each app directory, after installing compatible project-local tooling.
-bunx --no-install wrangler deploy --dry-run
+bun install --frozen-lockfile
+NEXT_PUBLIC_API_URL=https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev NEXT_PUBLIC_WEB_URL=https://foliocraft-trial.bdalrhmnmtwq53.workers.dev bun run --cwd apps/web build:cloudflare
+bunx --no-install wrangler deploy --config apps/web/wrangler.toml --dry-run
+bunx --no-install wrangler deploy --config apps/api/wrangler.toml --dry-run
 ```
 
-No upload succeeds merely because these files exist. Record actual compiler, runtime and provider evidence in STATUS before declaring the trial available.
+After reviewing changes and receiving any required deployment authorization:
+
+```sh
+bunx --no-install wrangler deploy --config apps/api/wrangler.toml
+bunx --no-install wrangler deploy --config apps/web/wrangler.toml
+```
+
+A first API deployment additionally needs approved secret provisioning through Wrangler's secret commands or a private ignored secrets file. Do not place values on visible command lines. Normal redeployments retain existing Workers Secrets; inspect the target and configuration before updating. Builds alone do not establish database, auth or provider success.
+
+## Recorded evidence and remaining acceptance
+
+- Guarded Bun suite:17 pass,0 fail,799 assertions after Workers compatibility changes. API/web typechecks and Biome passed. These are historical checks, not rerun by the documentation task.
+- Actual local workerd: native signup/signin, owned draft persistence, cross-account denial, transactional publication/public projection,12 concurrent request scopes and non-admin denial. Eight local Images cases covered valid PNG/JPEG/WebP, MIME mismatch and invalid inputs.
+- Live API: health/readiness200, anonymous private/admin401, published projection200; readiness reported storage configured and mail disabled.
+- Live web: initial manifest exception fixed; subsequent public SSR404 fixed. Human account sign-in, draft save/reload and public rendering were observed. A fictional Arabic account completed hosted signup, content save, appearance, publish and separate public-page scrolling.
+- Live authenticated R2 upload/verification/rendering on the Workers deployment, full corrupt/animated-image matrix, remote CI, broad browser/accessibility matrix, real mail, scheduled retention/backups and monitoring remain unverified or incomplete. Do not report them as passed.
+
+Private evidence remains in ignored `work/worker-http-evidence.json`, `work/worker-images-evidence.json`, `work/cloudflare-live-http.json` and screenshots/video captures. `work/cloudflare-web-live.json` records the intermediate404 before the routing fix; later browser/HTTP proof supersedes it. Never upload these private artifacts wholesale.
 
 ## References
 
 - [Cloudflare OpenNext configuration](https://developers.cloudflare.com/workers/framework-guides/web-apps/opennext/)
 - [Workers Node.js compatibility](https://developers.cloudflare.com/workers/runtime-apis/nodejs/)
-- [Workers PostgreSQL connections](https://developers.cloudflare.com/workers/tutorials/postgres/)
-- [Workers pricing and free limits](https://developers.cloudflare.com/workers/platform/pricing/)
-
+- [Workers fetch routing](https://developers.cloudflare.com/workers/runtime-apis/fetch/)
+- [Workers Images binding](https://developers.cloudflare.com/images/transform-images/bindings/)
