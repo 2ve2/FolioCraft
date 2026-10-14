@@ -1,5 +1,16 @@
 # Current status
 
+## Authoritative continuation — 2026-10-15
+- Documentation reconciled against source and recorded2026-10-14 evidence. This update changes Markdown only and does not rerun application tests, modify accounts/content, change provider settings or redeploy.
+- Cloudflare-only friends trial is deployed: web https://foliocraft-trial.bdalrhmnmtwq53.workers.dev/ and independent API https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev. Last observed versions: web6fb18ac0-1a72-4963-b61f-4f996f81c547, API970d67cc-4caa-4ab8-aac7-b73c034989a2. Bun local execution is retained.
+- Fixed initial OpenNext manifest exception and later public SSR404. Actual owner sign-in, save/reload and published English portfolio rendering observed. Fictional Arabic hosted signup, content/appearance save, publication and separate public-page scroll completed. Real-owner source data, account exports and video captures remain ignored/private.
+- Historical compatibility evidence: guarded folio_test suite17 pass/0 fail/799 assertions; typechecks/Biome/builds passed; local workerd ownership, publication and12 concurrent request scopes proved; eight local Images cases passed. Detailed boundaries are in [CLOUDFLARE.md](CLOUDFLARE.md). No new runtime checks are claimed by this Markdown task.
+- Human-authorized TRIAL_SKIP_EMAIL_VERIFICATION=true is active only in the trial configuration; defaultfalse. SMTP is unavailable, so resend/reset delivery is not proven. Secure HTTPS cookies, sessions and ownership checks remain enabled. Credentials are Workers Secrets, not frontend/Git values.
+- Exact trial-origin R2 CORS configured; live authenticated hosted image upload/decoder/rendering is still unverified. Remaining general-launch work: actual mail and disabling the exception, broader device/browser/accessibility and privileged-operation acceptance, remote CI, load/rate-limit measurements, scheduling/monitoring/provider backup/restore. Do not call the whole frontend or launch complete.
+- Repository operations use ignored work/github-upload with separate commits; never stage the home-level Git repository. Last completed push before this documentation round was main9f1bc97. Generated next-env.d.ts differences in that checkout are unrelated and must not be staged as documentation.
+- Documentation verification:21 tracked authored Markdown files scanned, zero Arabic-script matches; changed-document local links and code fences valid, no exact configured credential matches and source/snapshot bytes equal. No runtime suite rerun required for this Markdown-only update. Each changed document receives a separate commit; remote synchronization evidence is private under work/. Next product action: hosted upload acceptance or a specific human-reported defect. Verify runtime sessions before reusing; historical session IDs do not establish currently running services.
+
+
 ## Arabic fictional demo — 2026-10-14
 - Completed hosted signup, Arabic draft creation, fictional content, appearance save, publication and separate public page with complete scroll. Real owner portfolio unchanged. Demo uses explicitly fictional biography, organizations and example.com email.
 - Local edited video in ignored work/demo-video/: Arabic captions, animated intro/outro, dissolves and smooth pan of actual full-page capture. This is a screenshot montage, not a continuous screen recording. Final67-second H.2641080x1350/24fps MP4 fully decoded with exit0; sampled title and scroll frames visually inspected after font corrections. No message sent to the group or external video upload.
@@ -7,9 +18,13 @@
 ## Latest owner content correction — 2026-10-14
 - English CV portfolio draft is saved in the authenticated hosted account with four projects and five skill groups. About you now contains only the verbatim professional summary from the supplied PDF, without assistant additions. Exact string equality and saved status verified after a page reload; private screenshot under work/cv-portfolio/.
 - Cloudflare API and frontend are deployed; hosted sign-in and owner draft saving work. This supersedes the earlier predeployment status below. Public portfolio SSR404 fixed by enabling Cloudflare public Worker fetch routing. Hosted browser now renders the already published owner portfolio with its verbatim biography. Frontend deployment version6fb18ac0-1a72-4963-b61f-4f996f81c547.
-- Next action: reconcile remaining deployment documentation and push pending granular commits. Owner publication existed when inspected; agent performed no new publication.
+- Owner publication existed when inspected; agent performed no new publication for that owner. Deployment documentation has since been reconciled; see the current summary above.
 
-## Active free Cloudflare-only trial — 2026-10-14
+## Historical checkpoints below
+
+The entries below preserve what was true at their recorded stage. Their pending/no-deployment statements are superseded by the authoritative continuation above; they are not current instructions to repeat completed work.
+
+## Historical predeployment investigation — 2026-10-14
 - Human requires free hosted testing with their computer off and Cloudflare only; temporary tunnels and external backend hosts declined. Containers Paid is outside the authorized cost scope. Investigate Workers compatibility while retaining Bun local execution and unchanged data/contracts.
 - Current boundaries: Bun server entry and Bun SHA256 request keys; pg/Drizzle connection lifecycle; native Sharp full-image verification; Nodemailer mail; Next.js Workers adapter. No disabled feature or public draft exposure is an acceptable silent workaround.
 - Cloudflare dashboard was at login; human reports sign-in complete, account page verification pending. No application deployed or public trial URL exists yet. Latest English-documentation push succeeded to main81f0266; an additional remote-HEAD query was not executed because automatic approval review hit its usage limit. No account identifiers/grant evidence committed.
@@ -135,7 +150,7 @@ Updated: 2026-10-14, Asia/Riyadh. Authoritative workspace: `/home/lord2ve/Deskto
 - Tests run exclusively against local folio_test, rejecting production/remote database settings. Development/Neon `.env` secrets remain ignored.
 
 ## Required integration configuration
-1. R2: user supplied account `d6cdae28af282cb94815a843cb891328`, bucket `blog-website`. Project credentials are saved only in private apps/api/.env. Live signed PUT200, actual image verification/conditional copy, signed GET200 byte equality, staging replay isolation and delete/head404 passed. Exact localhost:3000 CORS rule applied preserving existing rules; actual browser PUT200 and exposed ETag passed. Final production origin CORS remains pending. Do not put secrets in Markdown.
+1. R2: user supplied account `[Cloudflare account ID omitted]`, bucket `blog-website`. Project credentials are saved only in private apps/api/.env. Live signed PUT200, actual image verification/conditional copy, signed GET200 byte equality, staging replay isolation and delete/head404 passed. Exact localhost:3000 CORS rule applied preserving existing rules; actual browser PUT200 and exposed ETag passed. Final production origin CORS remains pending. Do not put secrets in Markdown.
 2. Mail: SMTP provider and sender domain not available yet. Verification/reset source exists; real sending, DNS and recipient flow remain unverified.
 3. Hosts/domains: not selected/configured; real production cookies/proxy policy, deployment, scheduling, monitoring/retention and R2 backups need operator setup.
 
