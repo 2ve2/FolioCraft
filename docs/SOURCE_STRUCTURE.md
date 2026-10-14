@@ -1,145 +1,145 @@
-# دليل تنظيم الكود
+# Source structure guide
 
-آخر تحديث: 2026-10-14. هذا الدليل يصف التنفيذ الفعلي، وليس قائمة مكتبات مقترحة.
+Last updated: 2026-10-14. This guide describes the actual implementation, not a proposed library list.
 
-## حدود المشروع
+## Project boundaries
 
-`apps/api` هو الباك المستقل، و`apps/web` هو الفرونت المستقل. لا يستورد الفرونت قاعدة البيانات أو إعدادات الباك أو أسراره. تشترك التطبيقات في عقود البيانات داخل `packages/contracts`، ويشترك العرض العام والمعاينة الخاصة في `packages/portfolio`.
+`apps/api` is the independent backend and `apps/web` the independent frontend. The frontend imports neither the database nor backend configuration or secrets. Both applications share data contracts in `packages/contracts`; public output and private preview share `packages/portfolio`.
 
-## الباك: أين أضع التغيير؟
+## Backend: where should a change go?
 
 ```text
 apps/api/src/
-  server.ts                    تشغيل Bun وحدود الإغلاق والاتصالات
-  app.ts                       تجميع middleware والمسارات فقط
-  config/env.ts                قراءة الإعدادات والتحقق منها
-  middleware/                  المصادقة والإدارة والحماية وأخطاء HTTP
-  routes/                      التحقق من الطلب وتفويضه للخدمة المناسبة
+  server.ts                    Bun execution, shutdown and connection limits
+  app.ts                       Middleware and route composition only
+  config/env.ts                Configuration loading and validation
+  middleware/                  Authentication, administration, protection and HTTP errors
+  routes/                      Request validation and delegation to the responsible service
   services/
-    siteDraftService.ts        المسودات والملكية والمراجعات وتعديل إعدادات الموقع
-    releaseService.ts          النشر والإلغاء والتاريخ وتفعيل إصدار سابق
-    publicSiteService.ts       قراءة الإصدار العام المتاح فقط
-    siteService.ts             واجهة تجميع صغيرة تحافظ على المستهلكين السابقين
-    contentService.ts          تحديث مجموعات المحتوى وترتيبها
-    assetService.ts            دورة الملفات المملوكة والربط والتحقق
-    inquiryService.ts          الرسائل وصندوق الاستفسارات
-    adminService.ts            موارد الإدارة والإيقاف والاستئناف
-    auditService.ts            تسجيل إجراءات الإدارة
-    publicAccess.ts            شرط الإتاحة العام المشترك
-    rateLimitService.ts        حدود الطلبات الذرية في PostgreSQL
+    siteDraftService.ts        Drafts, ownership, revisions and site settings
+    releaseService.ts          Publish, unpublish, history and prior release activation
+    publicSiteService.ts       Accessible published release reads only
+    siteService.ts             Small compatibility facade for existing consumers
+    contentService.ts          Content collection updates and ordering
+    assetService.ts            Owned asset lifecycle, attachment and verification
+    inquiryService.ts          Messages and inquiry inbox
+    adminService.ts            Administrative resources, suspension and resumption
+    auditService.ts            Administrative action recording
+    publicAccess.ts            Shared public availability predicate
+    rateLimitService.ts        Atomic PostgreSQL request limits
   lib/
-    auth.ts                    إعداد Better Auth ومحول قاعدة البيانات
-    auth-hooks.ts              قواعد البريد وصلاحيات الإدارة وتدقيق بروتوكولها
-    mail.ts                    نقل البريد الحقيقي عند تهيئته
-    storage-client.ts          إعداد عميل التخزين
-    storage.ts                 عمليات التخزين وفحص الصور
-    response-helpers.ts        عقد النجاح والخطأ الآمن
-    validation.ts              معرفات الموارد وترقيم الصفحات
+    auth.ts                    Better Auth configuration and database adapter
+    auth-hooks.ts              Mail rules, administrative permissions and protocol audit
+    mail.ts                    Real mail transport when configured
+    storage-client.ts          Storage client configuration
+    storage.ts                 Storage operations and image inspection
+    response-helpers.ts        Safe success and error response contract
+    validation.ts              Resource identifiers and pagination
   db/
-    index.ts                   PostgreSQL/Drizzle ومهل الاتصالات
-    schema/                    جداول فعلية حسب المجال
-    migrations/                ترحيلات صريحة محفوظة مع بيانات Drizzle
+    index.ts                   PostgreSQL/Drizzle and connection deadlines
+    schema/                    Actual tables grouped by domain
+    migrations/                Explicit migrations and Drizzle metadata
 apps/api/tests/
-  *.test.ts                    اختبارات القاعدة والبروتوكول والصلاحيات
-  test-guard.ts                رفض الإنتاج والقواعد البعيدة
-  fixtures/browser-server.ts  حسابات وخدمة متصفح مؤقتة على folio_test فقط
+  *.test.ts                    Database, protocol and authorization tests
+  test-guard.ts                Reject production and remote databases
+  fixtures/browser-server.ts  Temporary browser accounts/server on folio_test only
 ```
 
-المسارات الخاصة بالمحتوى في `routes/content.ts` تجمع profile/projects/appearance/experiences/education/skills/articles/sections. `collection-router.ts` و`content-validation.ts` هما مساعدا هذا المجال؛ بقية ملفات المسارات واضحة بالاسم: `account`, `sites`, `releases`, `assets`, `inquiries`, `admin`, `public-*`, `runtime`.
+Content routes in `routes/content.ts` compose profile/projects/appearance/experiences/education/skills/articles/sections. `collection-router.ts` and `content-validation.ts` are domain helpers; remaining route files have descriptive names: `account`, `sites`, `releases`, `assets`, `inquiries`, `admin`, `public-*`, `runtime`.
 
-ابدأ تغيير الطلب في route، وطبّق قواعد البيانات والمعاملة في service. لا تجعل route يكتب مباشرة إلى قاعدة البيانات. تمرّ عمليات المسودة عبر قفل الموقع والملكية ومراجعة المسودة والتحقق من الملفات. النشر يحتفظ بمعاملته الذرية ونسخته غير القابلة للتعديل. Better Auth يملك بروتوكوله؛ لا تلف استجاباته بعقد domain API.
+Start request changes in a route and implement database rules and transactions in its service. Routes must not write directly to the database. Draft operations use site locking, ownership, draft revisions, and asset verification. Publication retains its atomic transaction and immutable snapshot. Better Auth owns its protocol; do not wrap its responses in the domain API envelope.
 
-واجهة `siteService.ts` محفوظة للتوافق مع الاختبارات والمستهلكين السابقين. كود التشغيل الداخلي يستورد الخدمة المحددة حسب مسؤوليته. لا تضف منطقًا جديدًا إلى ملف التجميع.
+The `siteService.ts` facade remains for compatibility with tests and existing consumers. Internal runtime source imports the specific responsible service. Do not add new logic to the facade.
 
-## الفرونت: مسارات رفيعة ومزايا مستقلة
+## Frontend: thin routes and independent features
 
 ```text
 apps/web/src/
-  app/                         مسارات Next والـlayout والـmetadata وrobots/sitemap
-  components/ui/               Brand وField وLanguageSwitch وSelectControl
+  app/                         Next routes, layout, metadata and robots/sitemap
+  components/ui/               Brand, Field, LanguageSwitch and SelectControl
   features/
     studio/
-      studio.tsx               جمع حالة الشاشة وأقسام مساحة العمل
-      use-studio-controller.ts تحميل/استعادة/حفظ المسودة وعمليات الموقع
-      welcome-screen.tsx       شاشتا الدخول وإنشاء الحساب
-      onboarding-screen.tsx    إنشاء الموقع الأول
-      loading-screen.tsx       التحميل والأخطاء القابلة للاستعادة
-      workspace-sidebar.tsx    تنقل مساحة العمل والحساب
-      workspace-header.tsx     اللغة وحالة الحفظ وأداة النشر
-      workspace-preview.tsx    إطار المعاينة والجهاز والتكبير
-      site-address.tsx         تعديل عنوان الموقع
+      studio.tsx               Screen state and workspace section composition
+      use-studio-controller.ts Draft loading/recovery/saving and site operations
+      welcome-screen.tsx       Sign-in and sign-up screens
+      onboarding-screen.tsx    First site creation
+      loading-screen.tsx       Loading and recoverable errors
+      workspace-sidebar.tsx    Workspace and account navigation
+      workspace-header.tsx     Language, save state and publication controls
+      workspace-preview.tsx    Preview frame, device and expansion controls
+      site-address.tsx         Site address editing
       sections/                content/appearance/settings
-      copy.ts, types.ts        النصوص والعقود الداخلية لهذه الميزة
+      copy.ts, types.ts        Feature copy and internal contracts
     content/
-      content-editors.tsx      ترتيب محررات الأقسام فقط
-      experiences-editor.tsx   الخبرات
-      education-editor.tsx     التعليم والشهادات
-      skills-editor.tsx        مجموعات المهارات
-      articles-editor.tsx      المقالات
-      visibility-editor.tsx    إظهار الأقسام
-      project-extras.tsx       بيانات المشروع الإضافية والغلاف والمعرض
-      rich-editor.tsx          كتل النص المقيدة
-      collection-actions.tsx   الترتيب والحذف مع التأكيد
-      input.tsx, reorder.ts    حقل المحتوى وترتيب المصفوفات دون تغيير المعرفات
-      copy.ts, types.ts        النصوص والخصائص المشتركة
+      content-editors.tsx      Section editor composition only
+      experiences-editor.tsx   Experience
+      education-editor.tsx     Education and certificates
+      skills-editor.tsx        Skill groups
+      articles-editor.tsx      Articles
+      visibility-editor.tsx    Section visibility
+      project-extras.tsx       Additional project fields, cover and gallery
+      rich-editor.tsx          Constrained text blocks
+      collection-actions.tsx   Ordering and confirmed deletion
+      input.tsx, reorder.ts    Content input and array ordering without ID changes
+      copy.ts, types.ts        Shared copy and props
     assets/
-      asset-picker.tsx         الرفع والمكتبة وحالات الصور
-      use-asset-urls.ts         تجديد روابط الملفات الخاصة بحسب الحساب والجلسة
-      copy.ts, types.ts        النصوص والعقود الداخلية
-      asset-picker.module.css  ستايل المكتبة المحلي
+      asset-picker.tsx         Upload, library and image states
+      use-asset-urls.ts         Private asset URL renewal scoped to account/session
+      copy.ts, types.ts        Copy and internal contracts
+      asset-picker.module.css  Local library styles
     management/
-      site-operations.tsx      الرسائل وتاريخ النشر
-      admin-panel.tsx          واجهة الإدارة المستقلة أو المضمنة
-      shared.tsx               ترقيم الصفحات وطلبها ورسائل الخطأ والتواريخ
-      copy.ts, types.ts        النصوص وعقود موارد الإدارة والعمليات
-      management.module.css    الستايل المشترك لإدارة الموارد
+      site-operations.tsx      Inbox and publication history
+      admin-panel.tsx          Standalone or embedded administration UI
+      shared.tsx               Pagination, requests, errors and dates
+      copy.ts, types.ts        Administrative/operations resource copy and contracts
+      management.module.css    Shared resource management styles
     portfolio/
-      portfolio-preview.tsx    أبعاد المعاينة والتنقل الخاص والمودال
-      inquiry-form.tsx         نموذج الرسائل؛ إرسال المعاينة معطل
+      portfolio-preview.tsx    Preview dimensions, private navigation and modal
+      inquiry-form.tsx         Inquiry form; preview submission is disabled
   lib/
-    api-origin.ts              أصل الباك المسموح للمتصفح
-    auth-client.ts             عميل Better Auth الرسمي
-    api.ts                     طلبات domain API وعقد ApiError
-    public-metadata.ts         بيانات وصفية من الإصدار المنشور فقط
-  styles/                      tokens وملفات الستايل العامة ذات ترتيب صريح
+    api-origin.ts              Backend origin allowed for browser requests
+    auth-client.ts             Official Better Auth client
+    api.ts                     Domain API requests and ApiError contract
+    public-metadata.ts         Metadata from the published release only
+  styles/                      Tokens and global styles with explicit ordering
 ```
 
-يبقى `use-studio-controller.ts` مسؤولًا واحدًا عن تنسيق الحفظ، مراجعة البيانات، استعادة التعديلات، وتغيير الجلسة. فصل هذه الحالة إلى مخازن مستقلة قد يخلق سباقًا بين حفظ المسودة والنشر أو تبديل الحساب؛ لذلك لم نغيّر خوارزميتها خلال تنظيم الملفات. أقسام التحرير تستقبل `draft` ودالة `update`، وتعرض حقولًا مضبوطة بالحالة. لا تتجاوز قفل العملية أو مراجعة الموقع بكتابة API أخرى.
+`use-studio-controller.ts` remains the single coordinator for saving, revisions, recovery, and session changes. Splitting this state into independent stores could race draft saving against publication or account switching, so its algorithm was preserved during reorganization. Editing sections receive `draft` and an `update` callback and render controlled fields. Do not bypass operation locks or site revisions with another API write.
 
-المكونات العامة القابلة لإعادة الاستخدام مكانها `components/ui`. المكون الخاص بميزة يبقى داخل `features/<name>`، مع نصوصه وأنواعه وCSS Module إن كان محليًا. لا تستورد ميزة ملفات تنفيذ داخل `app`: اتجاه الاعتماد من route إلى feature، وليس العكس.
+Reusable controls belong in `components/ui`. Feature-specific components stay in `features/<name>` alongside their copy, types, and local CSS Module. Features must not import implementation files from `app`: dependencies point from route to feature, not the reverse.
 
-## الستايل والقالب المشترك
+## Styles and shared portfolio
 
-`app/globals.css` مدخل CSS فقط. ترتيب imports مقصود ويحافظ على cascade السابق: tokens، foundation، welcome، workspace، responsive، editor-groups، loading، select-control، readability، workspace-preview، workspace-scroll، scrollbars. لا ترتب هذه imports أبجديًا؛ ملفات readability وبعض قواعد responsive هي تحسينات مرتبة فوق قواعد الأساس.
+`app/globals.css` is only a CSS entry point. Import order deliberately preserves the existing cascade: tokens, foundation, welcome, workspace, responsive, editor-groups, loading, select-control, readability, workspace-preview, workspace-scroll, scrollbars. Do not alphabetize these imports; readability and some responsive rules are ordered refinements over the base rules.
 
 ```text
 packages/portfolio/src/
-  index.tsx           صادرات الحزمة الثابتة
-  portfolio.tsx       القالب العام نفسه للمعاينة والإصدار المنشور
-  portfolio-detail.tsx تفاصيل المشروع والمقال
-  appearance.ts       الثيمات والخطوط وأحجام النص وتوليد CSS variables
-  copy.ts             نصوص القالب العربية والإنجليزية
-  format.ts           الروابط المسموحة والمفاتيح ومدة القراءة
-  section-elements.tsx العناوين ونطاقات التواريخ
-  rich-content.tsx    كتل React الآمنة ومعرض الصور
-  styles.ts           قواعد القالب المقروءة؛ لا تضم ستايل الاستوديو
-  types.ts            خصائص العرض الداخلية
+  index.tsx           Stable package exports
+  portfolio.tsx       Same public layout for preview and published releases
+  portfolio-detail.tsx Project and article details
+  appearance.ts       Themes, fonts, text sizes and CSS variable generation
+  copy.ts             Arabic and English portfolio copy
+  format.ts           Allowed links, keys and reading time
+  section-elements.tsx Headings and date ranges
+  rich-content.tsx    Safe React blocks and image gallery
+  styles.ts           Readable portfolio rules; excludes Studio styles
+  types.ts            Internal rendering props
 ```
 
-صادرات `@folio/portfolio` بقيت كما هي: `Portfolio`, `PortfolioDetail`, `RichContent`, `portfolioFontNames`, `portfolioTextSizes`. أما `packages/contracts/src/index.ts` فهو عقد البيانات الموحد: Zod، النسخ، حدود المحتوى، الإسقاط المنشور وحساب مدة القراءة. بقي دون تغيير في هذه الجولة.
+The `@folio/portfolio` exports remain unchanged: `Portfolio`, `PortfolioDetail`, `RichContent`, `portfolioFontNames`, `portfolioTextSizes`. `packages/contracts/src/index.ts` is the shared data contract: Zod, versions, content limits, public projection, and reading-time calculation. It was unchanged during this round.
 
-## إضافة قسم أو تطوير وظيفة
+## Adding a section or extending a feature
 
-1. حدّد عقد البيانات في contracts واختبر حدود المدخلات والإسقاط المنشور.
-2. أضف route وخدمة تستعمل حارس الملكية والمراجعة الموجودين، مع معاملة إن كانت العملية متعددة الخطوات.
-3. أضف المحرر في feature المناسبة، باستخدام دالة التحديث المشتركة وأسماء الحقول المترجمة.
-4. أضف العرض إلى portfolio المشترك ونصوصه وRTL؛ لا تنشئ قالبًا ثانيًا للمعاينة.
-5. تحقّق من الحفظ والنشر والعزل بين الحسابات، والعرض على الهاتف والدسكتوب.
+1. Define the data contract in contracts and test input limits and the public projection.
+2. Add a route and service using existing ownership/revision guards, with a transaction for multi-step operations.
+3. Add the editor in the appropriate feature using the shared update callback and translated field names.
+4. Add rendering to the shared portfolio with its copy and RTL support; do not create a second preview layout.
+5. Verify saving, publication, account isolation, and desktop/phone output.
 
-## التحقق والتشغيل
+## Verification and execution
 
-شغّل API والويب في طرفيتين مستقلتين، وفق README وOPERATIONS. استخدم `bun run check`, `bun run typecheck`, `bun run test` و`bun run build`. اختبارات القاعدة تمر عبر wrapper الجذر وتعمل على folio_test فقط؛ لا تشغّلها بإعدادات Neon.
+Run API and web in separate terminals as described in README and OPERATIONS. Use `bun run check`, `bun run typecheck`, `bun run test`, and `bun run build`. Database tests use the root wrapper and folio_test only; never run them with Neon settings.
 
-للبناء المحلي المعزول أثناء تشغيل واجهة المستخدم: `FOLIO_QA_BUILD=1 bun run --cwd apps/web build --webpack`. ولتجربة الإدارة المعزولة: `bun run test --admin-browser` يشغّل fixture على4400، مع واجهة4300 تضبط API origin إلى127.0.0.1:4400. بيانات الدخول المؤقتة تحفظ داخل work بصلاحية0600 وتنظّف عند الإغلاق؛ لا تنقلها إلى التوثيق.
+For an isolated local build while the user-facing web app runs: `FOLIO_QA_BUILD=1 bun run --cwd apps/web build --webpack`. For isolated administration testing, `bun run test --admin-browser` starts the fixture on4400; web4300 uses API origin127.0.0.1:4400. Temporary credentials stay inside work with0600 permissions and are cleaned on shutdown; never copy them into documentation.
 
-مواد المقارنة والنسخ المؤقتة في `work/structure-refactor` دليل لهذه الجولة فقط، وليست ملفات منتج أو مكتبات يجب استيرادها. أدلة التحقق الدقيقة وحدودها في STATUS وCHANGELOG؛ نجاح البناء لا يعني إثبات نشر الإنتاج أو تغطية كل متصفح وقارئ شاشة.
+Comparison material and temporary copies in `work/structure-refactor` are evidence for this round, not product modules or importable libraries. Exact verification evidence and limitations are in STATUS and CHANGELOG; a successful build does not prove production deployment or coverage of every browser and screen reader.
