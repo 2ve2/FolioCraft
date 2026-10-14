@@ -1,6 +1,10 @@
 node_modules/
 .next/
 .next-qa/
+.open-next/
+.wrangler/
+.dev.vars
+.dev.vars.*
 .env
 .env.local
 .env.*
