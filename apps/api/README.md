@@ -8,4 +8,6 @@ Run from the root with `bun run dev:api`. Environment examples are in `.env.exam
 
 The browser fixture is in `tests/fixtures/browser-server.ts`, outside runtime source. It runs through the guarded wrapper and handles shutdown signals to clean up only its generated accounts. Do not run it with inherited development settings.
 
+Cloudflare execution uses `src/worker.ts` and `wrangler.toml`, retaining the same Hono routes and services. Its PostgreSQL pool and Images binding are request-scoped; the image-validation import maps to a Workers decoder while Bun retains Sharp. The deployed trial temporarily permits unverified signup by explicit human approval; the default flag is false. See [CLOUDFLARE](../../docs/CLOUDFLARE.md) for deployment and remaining provider acceptance.
+
 See the [source guide](../../docs/SOURCE_STRUCTURE.md), [API contract](../../docs/API.md), [operations](../../docs/OPERATIONS.md), and [actual status](../../docs/STATUS.md).
