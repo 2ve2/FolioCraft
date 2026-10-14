@@ -11,7 +11,7 @@
 
 ### Dispatch completed
 - Verified initial handoff: 10 Markdown files/387 lines; inventory and line-count command exit 0.
-- Created execution chat `01a13516-e5ab-7bf1-bd9d-d3ecdbf0cf70` on local host, titled «بناء منصة البورتفوليو — الفرونت والباك المستقل».
+- Created execution chat `01a13516-e5ab-7bf1-bd9d-d3ecdbf0cf70` on local host, titled "Build the portfolio platform — frontend and independent backend" (translated title).
 - Returned projectless output path: `/home/lord2ve/Documents/Codex/2026-10-13/foliocraft/outputs`.
 - Prompt contains full stack correction, reference repository path/read-only scope, all handoff files, prototype URL/review, documentation maintenance protocol and first vertical slice.
 - No runtime validation performed by planning chat; startup snapshot requested next.
@@ -19,7 +19,7 @@
 ### Human workspace correction
 - User explicitly selected existing blog-website and requested a new session there.
 - Told prior projectless chat to stop and log completed/pending work.
-- Created correct local project chat `01a13518-4550-7362-9be2-65ce43248bb2`, title «بناء منصة البورتفوليو في blog-website» in project `8732368a-c64d-4230-84cc-ec4e23821051` at `/home/lord2ve/Desktop/blog-website`.
+- Created correct local project chat `01a13518-4550-7362-9be2-65ce43248bb2`, title "Build the portfolio platform in blog-website" (translated title) in project `8732368a-c64d-4230-84cc-ec4e23821051` at `/home/lord2ve/Desktop/blog-website`.
 - Transfer prompt emphasizes preserving existing code/git changes/AGENTS, adapting architecture and merging documentation without overwrites. This is the current authoritative implementation destination.
 
 ## Entry template
@@ -143,7 +143,7 @@ Date/task/step; files changed; decision reference; exact check + observed result
 - Audit found stale current-state statements: STATUS still described unverified R2 and disabled live storage; D09 still marked moderation pending; BACKEND_STYLE still said middleware extraction pending; ARCHITECTURE still left PostgreSQL provider open. Historical CHANGELOG entries remain chronological evidence.
 - Update current status/decisions/style/architecture/operations/handoff and record a concrete frontend-first continuation scope before dispatch. No implementation restart, credential printing, real-admin promotion or deployment.
 - Markdown current-state audit completed: STATUS,HANDOFF,DECISIONS,BACKEND_STYLE,ARCHITECTURE,OPERATIONS,README updated; historical action entries retained. Existing acceptance checkboxes were not broadened without evidence.
-- Created new local project chat `01a13690-5c69-71c2-8b60-cc237c31b997`, «إكمال محرر البورتفوليو والواجهات», with concrete implementation instructions and test/provider/ownership limits. No secrets copied into the prompt. New-chat execution status is checked through app tools; frontend is not claimed completed by this handoff.
+- Created new local project chat `01a13690-5c69-71c2-8b60-cc237c31b997`, "Complete the portfolio editor and interfaces" (translated title), with concrete implementation instructions and test/provider/ownership limits. No secrets copied into the prompt. New-chat execution status is checked through app tools; frontend is not claimed completed by this handoff.
 
 ## 2026-10-13 — extended frontend implementation scope
 - Continue existing studio/design with revisioned real draft saves: experiences, education/certificates, skills, articles/rich blocks, project feature/gallery/order, section visibility and owned R2 upload flow.
@@ -284,10 +284,10 @@ Human liked the split-scroll trial and requested scrollbar styling consistent wi
 
 
 ## Adopt split scrolling — 2026-10-14
-Human answered «يب تم» to adopting the branded scrollbar and independent desktop scrolling. Scope: make accepted layout the default, remove prototype state/button/CSS, retain mobile flow, verify browser behavior and web checks/build. No account content or publication changes.
+Human answered "Yes, done" (translated) to adopting the branded scrollbar and independent desktop scrolling. Scope: make accepted layout the default, remove prototype state/button/CSS, retain mobile flow, verify browser behavior and web checks/build. No account content or publication changes.
 
 ## Split scrolling adopted — 2026-10-14
-Human explicitly approved branded scrollbars and independent desktop scrolling («يب تم»). The layout is now the default and the development-only trial button/state were removed. Actual1042px browser shows full-height884px workspace and two contained scroll surfaces; at390px editor/preview tabs remain the normal document flow with no horizontal overflow. Biome104 files, web TypeScript and final Webpack build pass. Screenshot screenshots/lord-split-scroll-adopted.png. No account content/publication changes.
+Human explicitly approved branded scrollbars and independent desktop scrolling ("Yes, done" (translated)). The layout is now the default and the development-only trial button/state were removed. Actual1042px browser shows full-height884px workspace and two contained scroll surfaces; at390px editor/preview tabs remain the normal document flow with no horizontal overflow. Biome104 files, web TypeScript and final Webpack build pass. Screenshot screenshots/lord-split-scroll-adopted.png. No account content/publication changes.
 
 ## Active source organization — 2026-10-14
 Human requests updating Markdown and organizing both backend/frontend so responsibilities are clear and extensible. Boundary: preserve HTTP contracts, ownership/auth checks, transactional publishing, persisted draft/public separation, UI text/markup/styles/navigation and existing package exports. No migrations/dependency/provider/production policy changes. Baseline web check/typecheck/build passed immediately before refactor; isolated backend suite is running. Audit existing responsibilities before moving them; no subagents. Next action: extract cohesive backend service/auth boundaries, group frontend features and split oversized UI/copy/CSS modules, run same gates and real browser checks, then document actual source map and remaining limits.
