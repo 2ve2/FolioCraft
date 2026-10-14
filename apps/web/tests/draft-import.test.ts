@@ -1,0 +1,53 @@
+/// <reference types="bun" />
+import { describe, expect, test } from "bun:test";
+import { emptyDraft } from "@folio/contracts";
+import { DraftImportError, readDraftBackup } from "../src/features/studio/draft-import";
+
+function backup(value: unknown, name = "portfolio-draft.json") {
+	return new File([JSON.stringify(value, null, 2)], name, { type: "application/json" });
+}
+
+describe("downloaded draft restoration", () => {
+	test("round-trips exported Arabic content and appearance", async () => {
+		const draft = emptyDraft("ar");
+		draft.profile.name = "اختبار استعادة";
+		draft.appearance.theme = "dark";
+		const restored = await readDraftBackup(backup(draft));
+		expect(restored.profile).toEqual({ ...draft.profile, socialLinks: [] });
+		expect(restored.appearance).toEqual(draft.appearance);
+		expect(restored.locale).toBe("ar");
+	});
+	test("legacy exports explicitly clear absent optional content collections", async () => {
+		const restored = await readDraftBackup(backup(emptyDraft("en")));
+		expect(restored.experiences).toEqual([]);
+		expect(restored.education).toEqual([]);
+		expect(restored.skills).toEqual([]);
+		expect(restored.articles).toEqual([]);
+		expect(restored.profile.socialLinks).toEqual([]);
+	});
+	test("rejects unsupported versions, malformed JSON and unsafe content", async () => {
+		await expect(
+			readDraftBackup(backup({ ...emptyDraft("en"), schemaVersion: 2 })),
+		).rejects.toBeInstanceOf(DraftImportError);
+		await expect(readDraftBackup(new File(["{broken"], "draft.json"))).rejects.toBeInstanceOf(
+			DraftImportError,
+		);
+		const unsafe = emptyDraft("en");
+		unsafe.profile.website = "javascript:alert(1)";
+		await expect(readDraftBackup(backup(unsafe))).rejects.toBeInstanceOf(DraftImportError);
+	});
+	test("rejects oversized input before reading it", async () => {
+		let read = false;
+		await expect(
+			readDraftBackup({
+				name: "draft.json",
+				size: 2 * 1024 * 1024 + 1,
+				text: async () => {
+					read = true;
+					return "{}";
+				},
+			}),
+		).rejects.toMatchObject({ reason: "size" });
+		expect(read).toBe(false);
+	});
+});
