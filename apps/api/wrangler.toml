@@ -15,6 +15,9 @@ binding = "IMAGES"
 [vars]
 NODE_ENV = "production"
 TRIAL_SKIP_EMAIL_VERIFICATION = "true"
+API_URL = "https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev"
+WEB_URL = "https://foliocraft-trial.bdalrhmnmtwq53.workers.dev"
+DB_CONNECT_TIMEOUT_MS = "20000"
 # Supply reviewed HTTPS API_URL and WEB_URL before runtime verification.
 # DATABASE_URL, BETTER_AUTH_SECRET and provider credentials are Workers secrets.
 
