@@ -1,0 +1,381 @@
+@media (min-width: 1600px) {
+	.editor-layout {
+		grid-template-columns: minmax(480px, 0.7fr) minmax(600px, 1.3fr);
+	}
+	.editor-panel {
+		padding: 40px 48px;
+	}
+	.preview-panel {
+		padding: 32px 40px;
+	}
+}
+@media (max-width: 1190px) {
+	.sidebar {
+		width: 185px;
+		padding: 26px 14px;
+	}
+	.studio-main {
+		width: calc(100% - 185px);
+		margin-inline-start: 185px;
+	}
+	.studio-header {
+		padding: 0 20px;
+	}
+	.page-breadcrumb > span {
+		display: none;
+	}
+	.header-actions {
+		gap: 10px;
+	}
+	.editor-layout {
+		grid-template-columns: minmax(340px, 0.9fr) minmax(340px, 1fr);
+	}
+	.editor-panel {
+		padding: 27px 21px;
+	}
+	.preview-panel {
+		padding: 22px 18px;
+	}
+	.two-fields {
+		grid-template-columns: 1fr;
+		gap: 0;
+	}
+	.welcome-main {
+		gap: 50px;
+	}
+}
+@media (max-width: 970px) {
+	.studio-shell {
+		display: block;
+	}
+	.sidebar {
+		position: static;
+		width: 100%;
+		height: auto;
+		flex-direction: row;
+		align-items: center;
+		padding: 15px 22px;
+		border-inline-end: 0;
+		border-bottom: 1px solid var(--line);
+		gap: 25px;
+	}
+	.sidebar nav {
+		flex-direction: row;
+		margin-inline-start: auto;
+	}
+	.workspace-label,
+	.sidebar-bottom {
+		display: none;
+	}
+	.nav-item {
+		font-size: var(--text-caption);
+		padding: 9px 12px;
+		gap: 7px;
+	}
+	.nav-dot {
+		display: none;
+	}
+	.studio-main {
+		width: 100%;
+		margin: 0;
+	}
+	.studio-header {
+		height: 67px;
+	}
+	.preview-panel {
+		top: 67px;
+		min-height: calc(100vh - 142px);
+	}
+	.portfolio-viewport {
+		max-height: calc(100vh - 278px);
+	}
+	.welcome-main {
+		gap: 35px;
+	}
+	.welcome-story h1 {
+		font-size: 42px;
+	}
+	.auth-card {
+		padding: 25px;
+	}
+	.save-status {
+		font-size: var(--text-caption);
+	}
+}
+@media (max-width: 720px) {
+	.welcome-header {
+		padding: 23px 6vw;
+	}
+	.welcome-main {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		width: 88%;
+		padding: 38px 0;
+		gap: 32px;
+		min-height: auto;
+	}
+	.welcome-story h1 {
+		font-size: 37px;
+		max-width: 470px;
+		margin: 17px 0;
+	}
+	.welcome-story > p {
+		font-size: var(--text-caption);
+		line-height: 1.9;
+	}
+	.journey {
+		margin-top: 24px;
+		display: none;
+	}
+	.auth-card {
+		padding: 25px;
+	}
+	.welcome-footer {
+		flex-direction: column;
+		gap: 9px;
+		padding: 22px 6vw;
+	}
+	.brand {
+		font-size: 21px;
+	}
+	.sidebar {
+		gap: 12px;
+		padding: 14px 16px;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+	.sidebar .brand {
+		font-size: 20px;
+	}
+	.sidebar nav {
+		gap: 4px;
+	}
+	.nav-item {
+		padding: 8px;
+		font-size: var(--text-caption);
+	}
+	.nav-item svg {
+		width: 14px;
+	}
+	.studio-header {
+		position: static;
+		padding: 13px 16px;
+		min-height: 66px;
+		height: auto;
+		gap: 8px;
+	}
+	.page-breadcrumb {
+		display: none;
+	}
+	.studio-header .header-actions {
+		width: 100%;
+		gap: 10px;
+		justify-content: space-between;
+	}
+	.save-status {
+		font-size: var(--text-caption);
+	}
+	.studio-header .primary {
+		font-size: var(--text-caption);
+		padding: 8px 10px;
+	}
+	.locale-select {
+		min-width: 75px;
+		font-size: var(--text-caption);
+		padding: 7px 8px;
+	}
+	.mobile-tabs {
+		display: flex;
+		padding: 10px 16px;
+		gap: 8px;
+		background: #fff;
+		border-bottom: 1px solid var(--line);
+	}
+	.mobile-tabs button {
+		flex: 1;
+		padding: 8px;
+		font-size: var(--text-caption);
+		color: #8d7b9e;
+		border-radius: 7px;
+	}
+	.mobile-tabs button.active {
+		background: #f0e9fa;
+		color: var(--purple);
+		font-weight: 650;
+	}
+	.editor-layout {
+		display: block;
+		min-height: auto;
+	}
+	.mobile-hidden {
+		display: none;
+	}
+	.editor-panel {
+		padding: 25px 18px;
+		max-width: 100%;
+	}
+	.editor-card {
+		padding: 19px;
+	}
+	.two-fields {
+		grid-template-columns: 1fr 1fr;
+		gap: 12px;
+	}
+	.section-heading h1 {
+		font-size: 25px;
+	}
+	.preview-panel {
+		position: static;
+		min-height: calc(100vh - 190px);
+		padding: 23px 16px;
+	}
+	.portfolio-viewport {
+		max-height: none;
+		min-height: 430px;
+	}
+	.preview-canvas.device-desktop {
+		max-width: 100%;
+	}
+	.feedback {
+		padding: 13px 18px;
+		font-size: var(--text-caption);
+	}
+	.feedback-actions {
+		gap: 12px;
+	}
+	.onboarding {
+		padding: 44px 0;
+	}
+	.onboarding h1 {
+		font-size: 28px;
+	}
+	.onboarding-card {
+		padding: 23px;
+	}
+	.projects-heading .secondary {
+		font-size: var(--text-caption);
+	}
+	.loading-screen p {
+		max-width: 450px;
+	}
+	.account {
+		display: none;
+	}
+}
+@media (max-width: 430px) {
+	.sidebar {
+		justify-content: space-between;
+		gap: 12px;
+	}
+	.sidebar nav {
+		width: 100%;
+		justify-content: space-between;
+		margin: 0;
+	}
+	.nav-item {
+		flex: 1;
+		justify-content: center;
+	}
+	.sidebar .brand {
+		font-size: 21px;
+	}
+	.two-fields {
+		grid-template-columns: 1fr;
+		gap: 0;
+	}
+	.save-status span {
+		max-width: 83px;
+		white-space: normal;
+		font-size: var(--text-caption);
+		line-height: 1.4;
+	}
+	.header-actions {
+		gap: 8px;
+	}
+	.welcome-header .header-actions .text-button {
+		font-size: var(--text-caption);
+	}
+	.projects-heading {
+		align-items: flex-start;
+	}
+	.projects-heading h2 {
+		font-size: 14px;
+	}
+	.theme-swatch {
+		height: 73px;
+		padding: 10px;
+	}
+	.editor-bottom {
+		align-items: flex-start;
+	}
+	.editor-bottom > span {
+		max-width: 200px;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.spin {
+		animation: none;
+	}
+	.primary,
+	.secondary,
+	.danger-button,
+	input,
+	textarea,
+	select,
+	.preview-canvas {
+		transition: none;
+	}
+	html {
+		scroll-behavior: auto;
+	}
+}
+
+.content-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	margin-block: 12px;
+}
+.collection-item,
+.rich-block {
+	border-top: 1px solid var(--border, #e5e5e5);
+	padding-block: 18px;
+}
+.rich-editor {
+	margin-block: 20px;
+}
+.rich-editor h3,
+.editor-card > h3 {
+	margin-block: 14px;
+}
+.sidebar nav {
+	flex-wrap: wrap;
+}
+.content-actions button {
+	font-size: var(--text-caption);
+}
+.editor-card .toggle-field {
+	margin-block: 12px;
+}
+@media (max-width: 700px) {
+	.sidebar nav .nav-item {
+		flex: 1 0 auto;
+	}
+	.content-actions {
+		gap: 6px;
+	}
+}
+.standalone-admin {
+	max-width: 1160px;
+	margin-inline: auto;
+	padding: 24px;
+	min-height: 100vh;
+}
+.standalone-admin > .content-actions {
+	justify-content: space-between;
+}
+.standalone-admin .field {
+	max-width: 200px;
+}
