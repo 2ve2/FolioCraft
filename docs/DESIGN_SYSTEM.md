@@ -16,3 +16,9 @@ Human requested a slight reduction after readability fixes. Current UI caption13
 
 ## Approved workspace scrolling — 2026-10-14
 Desktop>=971px uses independently scrolling editor and preview beneath a fixed action header. Phone retains normal document scrolling and edit/preview tabs. FolioCraft chrome uses native violet gradient scroll thumbs/lavender tracks, including editor textareas, with standards and forced-colors fallbacks. Human approved the demonstrated result; no prototype controls remain. Skill headings have16px space before tags and skill groups40px row/32px column separation.
+
+## Local product and action refinements — 2026-10-15
+- Product landing preserves the violet identity, uses a real shared-renderer fictional example, responsive benefit/process sections and functional authentication entry. No invented adoption statistics/testimonials.
+- Text action arrows share16px SVG dimensions,1.75 stroke,8px text spacing and Arabic mirroring. Project badges/actions wrap with8px row/16px column gaps. Back arrows remain separate directional controls.
+- TooltipButton replaces native title popups on existing icon-only logout/remove/accent actions. Violet-black surface, white13px text,9px radius, subtle border/shadow, short fade and reduced-motion/forced-colors fallbacks. Portaled fixed placement has viewport margins and a small pointer; keyboard focus/Escape and aria-describedby are supported. It does not replace accessible button names.
+- Mobile logout uses a fixed44px square with explicit flex centering; prior13px horizontal icon drift is corrected. Optional visual appearance controls hide avatar/initials and missing-cover decoration independently; source content stays intact.
