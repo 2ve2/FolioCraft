@@ -1,5 +1,9 @@
 # Current status
 
+## Next requested work — 2026-10-15
+- Human requested a separate project chat: investigate hosted image upload and deletion reports; fix language-sensitive back arrows on login/signup; default the application to English without rewriting existing portfolios; redesign the pre-auth product landing page. Investigation/implementation pending in the new chat.
+- Landing page scope clarified as product introduction and signup/signin entry, retaining project identity. Preserve fixed public portfolio layout and real backend operations. Prior JSON restore implementation/checks/deployment remain complete below.
+
 ## JSON restore completed — 2026-10-15
 - Settings now restores downloaded JSON backups with a translated file chooser, local2MiB/schema validation and explicit in-page Replace/Cancel controls. The existing revisioned owned-save endpoint remains authoritative; editor state changes only after success. Site address and public release remain unchanged. Files contain references, not image bytes; unavailable/foreign image references are rejected.
 - Older optional collections, rich blocks, image references and visibility normalize to empty/default values so intentional restoration does not retain newer fields through legacy merge compatibility. No backend route, schema, dependency or account-role change.
