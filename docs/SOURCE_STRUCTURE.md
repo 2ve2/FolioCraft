@@ -149,3 +149,6 @@ Run API and web in separate terminals as described in README and OPERATIONS. Use
 For an isolated local build while the user-facing web app runs: `FOLIO_QA_BUILD=1 bun run --cwd apps/web build --webpack`. For isolated administration testing, `bun run test --admin-browser` starts the fixture on4400; web4300 uses API origin127.0.0.1:4400. Temporary credentials stay inside work with0600 permissions and are cleaned on shutdown; never copy them into documentation.
 
 Comparison material and temporary copies in `work/structure-refactor` are evidence for this round, not product modules or importable libraries. Exact verification evidence and limitations are in STATUS and CHANGELOG; a successful build does not prove production deployment or coverage of every browser and screen reader.
+
+## Draft backup restoration
+`features/studio/draft-import.ts` reads bounded JSON files and validates/normalizes current and older schemaVersion1 exports. Settings owns local file selection and visible confirmation/cancellation; use-studio-controller serializes restoration with earlier saves and accepts the server result only for the same session. Existing owned revisioned PUT draft remains authoritative for asset ownership and conflicts. No new import backend route or migration. Tests are in apps/web/tests/draft-import.test.ts.
