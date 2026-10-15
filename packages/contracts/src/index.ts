@@ -15,8 +15,13 @@ const link = z.union([
 		.refine((value) => /^https?:\/\//.test(value)),
 ]);
 const assetId = z.uuid().nullable().optional();
+
+/** Builds a bounded text schema without changing the supplied content. */
 const text = (max: number) => z.string().max(max);
+
+/** Builds a required trimmed title schema with an explicit length limit. */
 const title = (max: number) => z.string().trim().min(1).max(max);
+
 export const richBlockSchema = z.discriminatedUnion("type", [
 	z.object({ type: z.literal("paragraph"), text: text(4000) }).strict(),
 	z
@@ -92,8 +97,11 @@ export const projectSchema = z.object({
 	results: text(4000).optional(),
 });
 const date = z.iso.date();
+
+/** Checks that a supplied date range is chronologically valid. */
 const range = <T extends { startDate: string; endDate: string | null }>(value: T) =>
 	value.endDate === null || value.endDate >= value.startDate;
+
 export const experienceSchema = z
 	.object({
 		id: z.uuid(),
@@ -142,6 +150,7 @@ export const articleSchema = z
 	.strict();
 export const articleInputSchema = articleSchema.omit({ readTimeMinutes: true });
 export type Article = z.infer<typeof articleSchema>;
+
 /** Empty editor blocks do not replace existing plain text until real structured content exists. */
 export function hasRichContent(blocks?: RichBlock[]): boolean {
 	return Boolean(
@@ -152,6 +161,8 @@ export function hasRichContent(blocks?: RichBlock[]): boolean {
 		),
 	);
 }
+
+/** Computes reading time from the article text that will actually render. */
 export function calculateReadTime(article: Pick<Article, "body" | "richBody">): number {
 	const content = hasRichContent(article.richBody)
 		? (article.richBody ?? [])
@@ -160,6 +171,7 @@ export function calculateReadTime(article: Pick<Article, "body" | "richBody">): 
 		: article.body;
 	return Math.max(1, Math.ceil(content.trim().split(/\s+/u).filter(Boolean).length / 200));
 }
+
 export const sectionVisibilitySchema = z
 	.object({
 		projects: z.boolean().optional(),
@@ -179,12 +191,17 @@ export const appearanceSchema = z.object({
 	profileVisualVisible: z.boolean().optional(),
 	projectFallbackVisible: z.boolean().optional(),
 });
+
+/** Rejects duplicate identities inside a content collection. */
 const uniqueIds = (items: { id: string }[]) =>
 	new Set(items.map((item) => item.id)).size === items.length;
+
+/** Rejects duplicate non-empty detail addresses inside a content collection. */
 const uniqueSlugs = (items: { slug?: string }[]) => {
 	const values = items.flatMap((item) => (item.slug ? [item.slug] : []));
 	return new Set(values).size === values.length;
 };
+
 export const draftSchema = z
 	.object({
 		schemaVersion: z.literal(1),
@@ -244,6 +261,8 @@ export type Site = {
 	draft: Draft;
 };
 export type PublicSite = { slug: string; releaseId: string; publishedAt: string; draft: Draft };
+
+/** Collects all referenced image identities for ownership and retention checks. */
 export function collectAssetIds(draft: Draft): string[] {
 	return [
 		...new Set([
@@ -258,6 +277,8 @@ export function collectAssetIds(draft: Draft): string[] {
 		]),
 	];
 }
+
+/** Projects only the draft content eligible for the published release. */
 export function publishedDraft(draft: Draft): Draft {
 	const visibility = draft.sectionVisibility;
 	const result: Draft = {
@@ -285,9 +306,12 @@ export function publishedDraft(draft: Draft): Draft {
 	}
 	return result;
 }
+
 export const createSiteSchema = z.object({ slug: slugSchema, locale: localeSchema });
 export const saveSchema = z.object({ revision: z.number().int().min(0), draft: draftSchema });
 export const publishSchema = z.object({ revision: z.number().int().min(0) });
+
+/** Creates the initial fixed-layout draft for the chosen content language. */
 export const emptyDraft = (locale: Locale): Draft => ({
 	schemaVersion: 1,
 	locale,

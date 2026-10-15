@@ -1,5 +1,6 @@
 import { hasRichContent, type Project, type RichBlock } from "@folio/contracts";
 import { keyed } from "./format";
+
 /** Structured text renders React nodes; saved markup is never interpreted as HTML. */
 export function RichContent({ body, blocks }: { body: string; blocks?: RichBlock[] }) {
 	return (
@@ -34,6 +35,8 @@ export function RichContent({ body, blocks }: { body: string; blocks?: RichBlock
 		</div>
 	);
 }
+
+/** Renders only the project gallery images with available verified URLs. */
 export function Gallery({
 	project,
 	assetUrls,
@@ -52,4 +55,5 @@ export function Gallery({
 		)
 	);
 }
+
 /** Public details share the exact portfolio shell and rich content used by editor preview. */

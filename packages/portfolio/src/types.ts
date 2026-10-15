@@ -1,5 +1,6 @@
 import type { Draft } from "@folio/contracts";
 import type { ReactNode } from "react";
+
 /** Shared by the private preview and the immutable published release. */
 export type PortfolioProps = {
 	draft: Draft;

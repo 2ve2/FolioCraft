@@ -1,4 +1,6 @@
 import { type Article, calculateReadTime, type Locale } from "@folio/contracts";
+
+/** Allows only explicit HTTP or HTTPS links for public rendering. */
 export function safeHttpUrl(value: string): string | undefined {
 	try {
 		const url = new URL(value);
@@ -8,6 +10,7 @@ export function safeHttpUrl(value: string): string | undefined {
 	}
 }
 
+/** Creates stable display keys for repeated text values. */
 export function keyed<T>(values: T[]): { value: T; key: string }[] {
 	const counts = new Map<string, number>();
 	return values.map((value) => {
@@ -17,6 +20,8 @@ export function keyed<T>(values: T[]): { value: T; key: string }[] {
 		return { value, key: `${serialized}:${count}` };
 	});
 }
+
+/** Formats the calculated article reading time in the portfolio language. */
 export function readingTime(article: Article, locale: Locale): string {
 	const minutes = calculateReadTime(article);
 	if (locale === "en") return `${minutes} min read`;

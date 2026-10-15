@@ -5,6 +5,8 @@ import { LinkArrow } from "./link-arrow";
 import { Portfolio } from "./portfolio";
 import { Gallery, RichContent } from "./rich-content";
 import type { PortfolioProps } from "./types";
+
+/** Composes a project or article detail inside the shared portfolio shell. */
 export function PortfolioDetail({
 	draft,
 	project,
