@@ -20,12 +20,40 @@ export async function readDraftBackup(file: Pick<File, "name" | "size" | "text">
 	if (!parsed.success) throw new DraftImportError("invalid");
 	const draft = parsed.data;
 	// Older exports omit optional collections; restoring them must clear those sections.
-	return {
+	const restored: Draft = {
 		...draft,
-		profile: { ...draft.profile, socialLinks: draft.profile.socialLinks ?? [] },
+		profile: {
+			...draft.profile,
+			socialLinks: draft.profile.socialLinks ?? [],
+			imageAssetId: draft.profile.imageAssetId ?? null,
+		},
+		projects: draft.projects.map((project) => ({
+			...project,
+			slug: project.slug ?? project.id,
+			coverAssetId: project.coverAssetId ?? null,
+			galleryAssetIds: project.galleryAssetIds ?? [],
+			richBody: project.richBody ?? [],
+			results: project.results ?? "",
+			featured: project.featured ?? false,
+		})),
+		sectionVisibility: {
+			projects: draft.sectionVisibility?.projects ?? draft.appearance.projectsVisible,
+			experiences: draft.sectionVisibility?.experiences ?? true,
+			education: draft.sectionVisibility?.education ?? true,
+			skills: draft.sectionVisibility?.skills ?? true,
+			articles: draft.sectionVisibility?.articles ?? true,
+			contact: draft.sectionVisibility?.contact ?? true,
+		},
 		experiences: draft.experiences ?? [],
 		education: draft.education ?? [],
 		skills: draft.skills ?? [],
-		articles: draft.articles ?? [],
+		articles: (draft.articles ?? []).map((article) => ({
+			...article,
+			coverAssetId: article.coverAssetId ?? null,
+			richBody: article.richBody ?? [],
+		})),
 	};
+	const validated = draftSchema.safeParse(restored);
+	if (!validated.success) throw new DraftImportError("invalid");
+	return validated.data;
 }
