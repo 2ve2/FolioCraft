@@ -448,3 +448,7 @@ Human requests their own website from an attached CV and explicitly selects Engl
 ## 2026-10-16 — Biome ancestor exclusion corrected
 - Reproduced failure from independent checkout nested under work: original !**/work processes0 files and exits1. Constrained exclusions to !work and !apps/*/work so only repository-local temporary folders are excluded, regardless of checkout ancestors. Both canonical and independent checkout now process221 files with exit0/no warnings. No product source/dependency changes.
 - Active verification: upload this focused configuration fix and inspect GitHub Actions. Hosted success remains unconfirmed until the new run completes; previous failed build step was skipped. No Cloudflare deployment.
+
+## 2026-10-16 — hosted CI repair verified
+- Uploaded investigation e8cda48 and configuration repair adc76cf to origin/main. GitHub Actions run38814768836 completed success for adc76cf: integration completed success and validate completed success, including the formerly failing quality check and the build. Fresh jobs response independently confirms both results. Evidence: https://github.com/2ve2/FolioCraft/actions/runs/38814768836 .
+- Completed: CI path-exclusion fix and actual hosted acceptance. Active work/blockers: none for this scope. This final evidence checkpoint is local documentation; hosted source is adc76cf with2/2 successful checks. Previous failed runs remain historical. Cloudflare deployment/media502 and mail/provider acceptance are unchanged.
