@@ -328,3 +328,9 @@ textarea {
 		transform: rotate(360deg);
 	}
 }
+
+/* Text-action arrows use the same gap as the shared portfolio renderer. */
+a:has(> .link-arrow),
+button:has(> .link-arrow) {
+	gap: 8px;
+}
