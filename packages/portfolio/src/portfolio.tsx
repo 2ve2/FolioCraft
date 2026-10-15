@@ -1,6 +1,7 @@
 import { getPortfolioStyle } from "./appearance";
 import { copy } from "./copy";
 import { keyed, readingTime, safeHttpUrl } from "./format";
+import { LinkArrow } from "./link-arrow";
 import { Gallery, RichContent } from "./rich-content";
 import { DateRange, SectionHeading } from "./section-elements";
 import { portfolioCss as css } from "./styles";
@@ -70,9 +71,12 @@ export function Portfolio({
 							<a href={`${detail ? (publicBasePath ?? "") : ""}#${workAnchor}`}>{t.work}</a>
 						)}
 						{hasContact && (
-							<a href={`${detail ? (publicBasePath ?? "") : ""}#${contactAnchor}`}>
+							<a
+								className="folio__arrow-link"
+								href={`${detail ? (publicBasePath ?? "") : ""}#${contactAnchor}`}
+							>
 								{t.contact}
-								<span aria-hidden="true"> ↗</span>
+								<LinkArrow locale={locale} />
 							</a>
 						)}
 					</div>
@@ -121,20 +125,20 @@ export function Portfolio({
 							{hasContact && (
 								<div className="folio__hero-links">
 									{email && (
-										<a className="folio__button" href={`mailto:${email}`}>
+										<a className="folio__arrow-link folio__button" href={`mailto:${email}`}>
 											{t.email}
-											<span aria-hidden="true"> ↗</span>
+											<LinkArrow locale={locale} />
 										</a>
 									)}
 									{website && (
 										<a
-											className="folio__text-link"
+											className="folio__arrow-link folio__text-link"
 											href={website}
 											target="_blank"
 											rel="noopener noreferrer"
 										>
 											{t.website}
-											<span aria-hidden="true"> ↗</span>
+											<LinkArrow locale={locale} />
 										</a>
 									)}
 								</div>
@@ -194,14 +198,18 @@ export function Portfolio({
 													{project.year && <span dir="auto">{project.year}</span>}
 												</div>
 												<h3 dir="auto">{project.title}</h3>
-												{project.featured && <span className="folio__tag">{t.featured}</span>}
-												{publicBasePath && (
-													<a
-														className="folio__project-link"
-														href={`${publicBasePath}/projects/${encodeURIComponent(project.slug || project.id)}`}
-													>
-														{t.details} ↗
-													</a>
+												{(project.featured || publicBasePath) && (
+													<div className="folio__project-actions">
+														{project.featured && <span className="folio__tag">{t.featured}</span>}
+														{publicBasePath && (
+															<a
+																className="folio__arrow-link folio__project-link"
+																href={`${publicBasePath}/projects/${encodeURIComponent(project.slug || project.id)}`}
+															>
+																{t.details} <LinkArrow locale={locale} />
+															</a>
+														)}
+													</div>
 												)}
 												{project.summary && (
 													<p className="folio__summary" dir="auto">
@@ -244,13 +252,13 @@ export function Portfolio({
 												)}
 												{url && (
 													<a
-														className="folio__project-link"
+														className="folio__arrow-link folio__project-link"
 														href={url}
 														target="_blank"
 														rel="noopener noreferrer"
 													>
 														{t.visit}
-														<span aria-hidden="true"> ↗</span>
+														<LinkArrow locale={locale} />
 													</a>
 												)}
 											</div>
@@ -319,12 +327,12 @@ export function Portfolio({
 									)}
 									{safeHttpUrl(item.verificationUrl) && (
 										<a
-											className="folio__project-link"
+											className="folio__arrow-link folio__project-link"
 											href={safeHttpUrl(item.verificationUrl)}
 											target="_blank"
 											rel="noopener noreferrer"
 										>
-											{t.verify} ↗
+											{t.verify} <LinkArrow locale={locale} />
 										</a>
 									)}
 								</div>
@@ -375,10 +383,10 @@ export function Portfolio({
 										)}
 										{publicBasePath ? (
 											<a
-												className="folio__project-link"
+												className="folio__arrow-link folio__project-link"
 												href={`${publicBasePath}/articles/${encodeURIComponent(item.slug)}`}
 											>
-												{t.read} ↗
+												{t.read} <LinkArrow locale={locale} />
 											</a>
 										) : (
 											<details className="folio__details">
@@ -407,25 +415,31 @@ export function Portfolio({
 						<p>{t.contactIntro}</p>
 						<div className="folio__contact-links">
 							{email && (
-								<a href={`mailto:${email}`} dir="ltr">
-									{email} <span aria-hidden="true">↗</span>
+								<a className="folio__arrow-link" href={`mailto:${email}`} dir="ltr">
+									{email} <LinkArrow locale={locale} />
 								</a>
 							)}
 							{website && (
-								<a href={website} target="_blank" rel="noopener noreferrer">
-									{t.website} <span aria-hidden="true">↗</span>
+								<a
+									className="folio__arrow-link"
+									href={website}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{t.website} <LinkArrow locale={locale} />
 								</a>
 							)}
 
 							{keyed(socialLinks).map(({ value: item, key }) => (
 								<a
+									className="folio__arrow-link"
 									key={key}
 									href={safeHttpUrl(item.url)}
 									dir="auto"
 									target="_blank"
 									rel="noopener noreferrer"
 								>
-									{item.label} ↗
+									{item.label} <LinkArrow locale={locale} />
 								</a>
 							))}
 						</div>
