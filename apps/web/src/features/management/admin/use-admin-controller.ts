@@ -9,6 +9,8 @@ import type { AdminSite, AdminUser, Audit, Counts } from "../shared/types";
 /** Coordinates guarded administrator requests, selection epochs and native account actions. */
 export function useAdminController(locale: Locale) {
 	const t = text[locale];
+
+	// Active resource tab, page and platform totals.
 	const [tab, setTab] = useState<"sites" | "audit" | "users">("sites");
 	const [offset, setOffset] = useState(0);
 	const page = usePage<AdminSite | Audit>(
@@ -16,12 +18,16 @@ export function useAdminController(locale: Locale) {
 		locale,
 	);
 	const [counts, setCounts] = useState<Counts | null>(null);
+
+	// Official identity list and its independent request feedback.
 	const [users, setUsers] = useState<AdminUser[]>([]);
 	const [userMore, setUserMore] = useState(false);
 	const [usersLoaded, setUsersLoaded] = useState(false);
 	const [usersError, setUsersError] = useState("");
 	const [userLoading, setUserLoading] = useState(false);
 	const [userVersion, setUserVersion] = useState(0);
+
+	// Shared mutation feedback and the selected account/site forms.
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState("");
 	const [notice, setNotice] = useState("");
@@ -30,17 +36,25 @@ export function useAdminController(locale: Locale) {
 	const [confirmation, setConfirmation] = useState("");
 	const [role, setRole] = useState<"user" | "admin">("user");
 	const [details, setDetails] = useState<AdminSite | null>(null);
+
+	// Focus targets and request epochs prevent stale-view completion work.
 	const selectedHeading = useRef<HTMLHeadingElement>(null);
 	const detailsHeading = useRef<HTMLHeadingElement>(null);
+
+	// Move focus into newly opened detail panels.
 	useEffect(() => {
 		if (selected) selectedHeading.current?.focus();
 	}, [selected]);
+
 	useEffect(() => {
 		if (details) detailsHeading.current?.focus();
 	}, [details]);
+
 	const mounted = useRef(true);
 	const actionPending = useRef(false);
 	const viewVersion = useRef(0);
+
+	// Invalidate pending actions when this controller leaves the screen.
 	useEffect(() => {
 		mounted.current = true;
 		return () => {
@@ -48,6 +62,7 @@ export function useAdminController(locale: Locale) {
 			viewVersion.current += 1;
 		};
 	}, []);
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Refresh resource counts after a completed operation.
 	useEffect(() => {
 		let current = true;
@@ -62,6 +77,7 @@ export function useAdminController(locale: Locale) {
 			current = false;
 		};
 	}, [locale, userVersion]);
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Explicit refresh invalidates the official identity list.
 	useEffect(() => {
 		if (tab !== "users") return;
