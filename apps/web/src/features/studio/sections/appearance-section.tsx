@@ -3,6 +3,7 @@ import { portfolioFontNames, portfolioTextSizes } from "@folio/portfolio";
 import { Check, Sparkles } from "lucide-react";
 import { Field } from "../../../components/ui/field";
 import { SelectControl } from "../../../components/ui/select-control";
+import { TooltipButton } from "../../../components/ui/tooltip-button";
 import { copy } from "../copy";
 import type { EditorSectionProps } from "../types";
 export function AppearanceSection({ draft, locale, update }: Omit<EditorSectionProps, "site">) {
@@ -72,20 +73,35 @@ export function AppearanceSection({ draft, locale, update }: Omit<EditorSectionP
 					<span>{t.accent}</span>
 					<div className="accent-grid">
 						{(["violet", "blue", "green", "rose"] as const).map((accent) => (
-							<button
+							<TooltipButton
 								key={accent}
 								type="button"
 								aria-label={t[accent]}
-								title={t[accent]}
+								hint={t[accent]}
 								aria-pressed={draft.appearance.accent === accent}
 								className={`accent-chip accent-${accent} ${draft.appearance.accent === accent ? "selected" : ""}`}
 								onClick={() => changeAppearance("accent", accent)}
 							>
 								{draft.appearance.accent === accent ? <Check size={16} /> : <span />}
-							</button>
+							</TooltipButton>
 						))}
 					</div>
 				</div>
+				{(
+					[
+						["profileVisualVisible", t.showProfileVisual],
+						["projectFallbackVisible", t.showProjectFallback],
+					] as const
+				).map(([key, label]) => (
+					<label className="switch-row" key={key}>
+						<input
+							type="checkbox"
+							checked={draft.appearance[key] !== false}
+							onChange={(event) => changeAppearance(key, event.target.checked)}
+						/>
+						<span>{label}</span>
+					</label>
+				))}
 				<label className="switch-row">
 					<input
 						type="checkbox"
