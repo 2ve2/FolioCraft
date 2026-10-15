@@ -553,7 +553,6 @@ export function useStudioController() {
 		setNotice("");
 		try {
 			const imported = await readDraftBackup(file);
-			if (!current() || !window.confirm(textRef.current.draftImportConfirm)) return;
 			if (!current()) return;
 			if (timer.current) {
 				clearTimeout(timer.current);
