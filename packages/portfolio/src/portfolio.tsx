@@ -84,13 +84,15 @@ export function Portfolio({
 				{detail}
 				{!detail && (hasProfile || compact) && (
 					<section className="folio__hero" aria-label={t.portfolio}>
-						<div className="folio__identity" aria-hidden="true">
-							{profile.imageAssetId && assetUrls[profile.imageAssetId] ? (
-								<img src={assetUrls[profile.imageAssetId]} alt="" className="folio__avatar" />
-							) : (
-								initials || <span className="folio__identity-empty">✦</span>
-							)}
-						</div>
+						{appearance.profileVisualVisible !== false && (
+							<div className="folio__identity" aria-hidden="true">
+								{profile.imageAssetId && assetUrls[profile.imageAssetId] ? (
+									<img src={assetUrls[profile.imageAssetId]} alt="" className="folio__avatar" />
+								) : (
+									initials || <span className="folio__identity-empty">✦</span>
+								)}
+							</div>
+						)}
 						<div className="folio__hero-copy">
 							{profile.available && (
 								<div className="folio__availability">
@@ -175,23 +177,26 @@ export function Portfolio({
 									);
 									return (
 										<div className="folio__project" key={project.id}>
-											<div className={`folio__art folio__art--${index % 3}`} aria-hidden="true">
-												{project.coverAssetId && assetUrls[project.coverAssetId] ? (
-													<img
-														className="folio__cover"
-														src={assetUrls[project.coverAssetId]}
-														alt=""
-													/>
-												) : (
-													<>
-														<div className="folio__art-orbit" />
-														<div className="folio__art-shape" />
-														<span className="folio__art-number">
-															{String(index + 1).padStart(2, "0")}
-														</span>
-													</>
-												)}
-											</div>
+											{((project.coverAssetId && assetUrls[project.coverAssetId]) ||
+												appearance.projectFallbackVisible !== false) && (
+												<div className={`folio__art folio__art--${index % 3}`} aria-hidden="true">
+													{project.coverAssetId && assetUrls[project.coverAssetId] ? (
+														<img
+															className="folio__cover"
+															src={assetUrls[project.coverAssetId]}
+															alt=""
+														/>
+													) : (
+														<>
+															<div className="folio__art-orbit" />
+															<div className="folio__art-shape" />
+															<span className="folio__art-number">
+																{String(index + 1).padStart(2, "0")}
+															</span>
+														</>
+													)}
+												</div>
+											)}
 											<div className="folio__project-copy">
 												<div className="folio__project-meta">
 													<span>{String(index + 1).padStart(2, "0")}</span>
