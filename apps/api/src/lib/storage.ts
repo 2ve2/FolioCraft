@@ -15,9 +15,20 @@ export const UPLOAD_EXPIRY_SECONDS = 600;
 export { validateImageBytes };
 
 /** Converts provider errors into safe, stable domain failures while preserving intentional errors. */
-function providerError(error: unknown): never {
+function providerError(error: unknown, stage: string): never {
 	if (error instanceof ApiError) throw error;
 	const value = error as { name?: string; $metadata?: { httpStatusCode?: number } };
+	// Never log provider messages, object keys, signed URLs or credentials.
+	console.warn(
+		JSON.stringify({
+			event: "storage_provider_failure",
+			stage,
+			kind: ["TypeError", "NoSuchKey", "AccessDenied", "TimeoutError"].includes(value.name ?? "")
+				? value.name
+				: "provider",
+			status: value.$metadata?.httpStatusCode ?? null,
+		}),
+	);
 	if (value.$metadata?.httpStatusCode === 404 || value.name === "NoSuchKey")
 		throw new ApiError(409, "UPLOAD_NOT_FOUND");
 	if (value.$metadata?.httpStatusCode === 412) throw new ApiError(409, "UPLOAD_CHANGED");
@@ -44,7 +55,7 @@ export const storage = {
 				{ expiresIn: UPLOAD_EXPIRY_SECONDS, signableHeaders: new Set(["content-type"]) },
 			);
 		} catch (e) {
-			return providerError(e);
+			return providerError(e, "upload-sign");
 		}
 	},
 
@@ -62,12 +73,13 @@ export const storage = {
 				{ expiresIn: 60 },
 			);
 		} catch (e) {
-			return providerError(e);
+			return providerError(e, "download-sign");
 		}
 	},
 
 	/** Verifies uploaded metadata and image bytes, then conditionally copies the exact object to immutable storage. */
 	async verifyAndCopy(stagingKey: string, key: string, mime: string, size: number) {
+		let stage = "verify-head";
 		try {
 			const head = await storageClient().send(
 				new HeadObjectCommand({ Bucket: storageBucket(), Key: stagingKey }),
@@ -80,6 +92,7 @@ export const storage = {
 				!head.ETag
 			)
 				throw new ApiError(422, "UPLOAD_METADATA_MISMATCH");
+			stage = "verify-read";
 			const object = await storageClient().send(
 				new GetObjectCommand({ Bucket: storageBucket(), Key: stagingKey, IfMatch: head.ETag }),
 			);
@@ -97,7 +110,9 @@ export const storage = {
 			}
 			if (length !== size) throw new ApiError(422, "UPLOAD_SIZE_MISMATCH");
 			const bytes = Buffer.concat(chunks);
+			stage = "verify-image";
 			const { width, height } = await validateImageBytes(bytes, mime);
+			stage = "verify-copy";
 			// Conditional server-side copy pins the exact bytes decoded above even if the signed PUT is replayed.
 			await storageClient().send(
 				new CopyObjectCommand({
@@ -113,7 +128,7 @@ export const storage = {
 			);
 			return { width, height };
 		} catch (e) {
-			return providerError(e);
+			return providerError(e, stage);
 		}
 	},
 
@@ -122,7 +137,7 @@ export const storage = {
 		try {
 			await storageClient().send(new DeleteObjectCommand({ Bucket: storageBucket(), Key: key }));
 		} catch (e) {
-			providerError(e);
+			providerError(e, "delete");
 		}
 	},
 };
