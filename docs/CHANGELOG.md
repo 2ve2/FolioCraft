@@ -432,3 +432,7 @@ Human requests their own website from an attached CV and explicitly selects Engl
 ## 2026-10-16 — authorized GitHub synchronization
 - Human explicitly requested listing the required commits before uploading them. Scope: fetch origin, inspect unpublished commits, report the exact list, push the existing linear history to https://github.com/2ve2/FolioCraft.git main and verify remote equality. No force push, Cloudflare deployment, schema or provider mutation.
 - Fetch succeeded; origin/main has no unique commits and the local branch has17 unpublished commits through7587407. Only generated apps/web/next-env.d.ts is uncommitted and remains excluded. Existing acceptance evidence remains recorded above; this synchronization does not claim a fresh test run.
+
+## 2026-10-16 — GitHub upload completed
+- Authorized ordinary push succeeded: origin/main advanced from787746e to1017f28, uploading the18 commits disclosed before execution. No force push or Cloudflare deployment. This final documentation checkpoint records the result and is also included in the authorized synchronization.
+- Completed: source/history upload. Active work: none for synchronization. Remaining product blockers: hosted-media502 diagnosis and mail/provider/launch acceptance. Generated apps/web/next-env.d.ts remains uncommitted. Existing tests/build evidence was not rerun for a Git-only operation.
