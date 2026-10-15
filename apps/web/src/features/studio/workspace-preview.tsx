@@ -1,5 +1,6 @@
 import type { Draft, Locale, Site } from "@folio/contracts";
-import { Circle, ExternalLink, Globe2, Maximize2, Monitor, Smartphone } from "lucide-react";
+import { LinkArrow } from "@folio/portfolio";
+import { Circle, Globe2, Maximize2, Monitor, Smartphone } from "lucide-react";
 import { ExpandedPortfolioPreview, PortfolioPreview } from "../portfolio/portfolio-preview";
 import { copy } from "./copy";
 export function WorkspacePreview({
@@ -97,7 +98,7 @@ export function WorkspacePreview({
 			{site.publishedReleaseId && (
 				<a className="preview-link" target="_blank" rel="noreferrer" href={`/p/${site.slug}`}>
 					{t.openSite}
-					<ExternalLink size={13} />
+					<LinkArrow locale={locale} />
 				</a>
 			)}
 		</section>
