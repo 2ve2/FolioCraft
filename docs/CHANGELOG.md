@@ -414,3 +414,8 @@ Human requests their own website from an attached CV and explicitly selects Engl
 
 ## 2026-10-16 — normal local sign-in runtime
 - Human clarified that normal account sign-in is required. Started the existing development configuration on localhost3000/4000 against the project's configured database instead of folio_test. Login/session/readiness HTTP200; readiness confirms database reachability and configured storage/disabled mail. Open requested for /login. No source/env/migration/account/provider change or deployment/push; services remain running for human inspection.
+
+## 2026-10-16 — independent administration dashboard redesign scope
+- Human accepts route separation and requests a substantial redesign of the platform administration dashboard using appropriate skills. Apply lean-build: reuse real resource/native identity operations, with a coherent overview, independent navigation, readable accounts/sites/audit views, focused management dialogs and responsive bilingual layout.
+- Route boundary: / remains product landing; /studio owns personal portfolio editing; /admin and its sites/accounts/activity child routes own platform management. Remove embedded admin section from Studio, retain administrator-only link and backend gates. Authentication sends normal users to Studio and supports a fixed admin return intent without arbitrary redirects.
+- Preserve existing native account confirmation, moderation reasons, audit records, paging, ownership/session checks and publication behavior. No invented analytics, new dependencies/schema, hosted account mutation, deployment or GitHub push. Verification uses existing gates plus disposable guarded local browser admin/owner accounts; leave normal localhost3000/4000 available for human review.
