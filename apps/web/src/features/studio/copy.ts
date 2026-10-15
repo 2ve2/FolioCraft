@@ -138,6 +138,10 @@ export const copy = {
 		projectsLimit: "الحد الأقصى ٣٠ مشروعًا.",
 		draftExport: "تنزيل نسخة من المسودة",
 		draftImport: "استعادة المسودة من ملف JSON",
+		draftImportApply: "استبدال المسودة وحفظها",
+		draftImportCancel: "إلغاء الاستعادة",
+		draftImportChoose: "اختيار ملف JSON",
+		draftImportReading: "جارٍ التحقق من الملف…",
 		draftImportHint:
 			"ارفع نسخة سبق تنزيلها من هنا، حتى ٢ ميغابايت. ستستبدل المسودة بعد التأكيد، دون تغيير عنوان الموقع أو النسخة المنشورة. الصور ليست ضمن الملف؛ يمكن استعادة مراجع الصور التابعة لهذا الموقع فقط.",
 		draftImportConfirm:
@@ -298,6 +302,10 @@ export const copy = {
 		projectsLimit: "Up to 30 projects.",
 		draftExport: "Download draft copy",
 		draftImport: "Restore draft from JSON",
+		draftImportApply: "Replace and save draft",
+		draftImportCancel: "Cancel restore",
+		draftImportChoose: "Choose JSON file",
+		draftImportReading: "Checking file…",
 		draftImportHint:
 			"Choose a copy downloaded here, up to 2 MiB. After confirmation it replaces your draft, keeping the site address and public release. Image files are not included; only this site's available image references can be restored.",
 		draftImportConfirm:
