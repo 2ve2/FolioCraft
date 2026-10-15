@@ -1,15 +1,16 @@
 # Current status
 
-## JSON restore continuation — 2026-10-15
-- Implemented Settings JSON selection, bounded/schema validation, bilingual replace confirmation, revisioned server save and success-only editor replacement. Public release/address unchanged; backend asset ownership still enforced.
-- Checks:4 parser tests pass/13 assertions; API+web typecheck passed after test type reference; Biome171 files passed before the reference-only addition. Full browser restore/cancel/server-rejection/reload acceptance remains incomplete. Local isolated login/export and malformed-file selection performed; no final invalid-feedback proof yet.
-- Human reports usage limit and requests Cloudflare update instructions. No new deployment performed. An attempted snapshot build started with stale source after a copy-path error and completed before interruption; it contains stale source and must not be used for the new feature. Canonical feature files now synchronized and committed separately.
-- Next action: complete isolated browser acceptance, run frozen install and fresh OpenNext build from work/github-upload, then redeploy web only when authorized. API unchanged. Review final fixture cleanup evidence before reuse.
-
+## JSON restore completed — 2026-10-15
+- Settings now restores downloaded JSON backups with a translated file chooser, local2MiB/schema validation and explicit in-page Replace/Cancel controls. The existing revisioned owned-save endpoint remains authoritative; editor state changes only after success. Site address and public release remain unchanged. Files contain references, not image bytes; unavailable/foreign image references are rejected.
+- Older optional collections, rich blocks, image references and visibility normalize to empty/default values so intentional restoration does not retain newer fields through legacy merge compatibility. No backend route, schema, dependency or account-role change.
+- Final checks:5 focused tests pass/18 assertions; API+web TypeScript and Biome171 files pass; final Next Webpack/OpenNext build succeeds. Actual isolated browser: malformed file rejection, cancellation, asset rejection without replacement, persisted name/language/theme/skills across reload, original public release retained, and old plain-body project restored after a newer rich-body draft. Arabic/English chooser controls inspected. No comprehensive browser/accessibility matrix claimed.
+- Frontend-only Cloudflare trial redeployed to versionfee5d122-d173-4dc9-8ea1-f4538807e8c8. Curl root, existing public portfolio and new JS chunk each returned200; hosted chunk contains translated restore controls. Authenticated end-to-end restoration was tested locally, not repeated on the hosted owner account. A Python probe received403; later curl/browser requests succeeded. API version and secrets unchanged.
+- Both disposable fixture users cleaned,0 remaining; temporary credentials removed, QA web/API stopped. Existing PostgreSQL service retained. Private evidence/screenshots:work/json-restore/. Source and documentation commits are kept granular in work/github-upload.
+- Active blockers for this feature: none. Next action: human refresh the hosted trial and use Settings; broader mail/upload/device/operational acceptance remains as documented in CLOUDFLARE. This is a testing deployment, not a final launch.
 
 > **Testing only:** The Cloudflare-hosted instance is a trial for friends to test and report issues. It is not a final launch or an accepted production release. Deployment to Cloudflare makes the test instance reachable; it does not establish production readiness.
 
-## Authoritative continuation — 2026-10-15
+## Earlier documentation checkpoint — 2026-10-15
 - Documentation reconciled against source and recorded2026-10-14 evidence. This update changes Markdown only and does not rerun application tests, modify accounts/content, change provider settings or redeploy.
 - Cloudflare-only friends trial is deployed: web https://foliocraft-trial.bdalrhmnmtwq53.workers.dev/ and independent API https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev. Last observed versions: web6fb18ac0-1a72-4963-b61f-4f996f81c547, API970d67cc-4caa-4ab8-aac7-b73c034989a2. Bun local execution is retained.
 - Fixed initial OpenNext manifest exception and later public SSR404. Actual owner sign-in, save/reload and published English portfolio rendering observed. Fictional Arabic hosted signup, content/appearance save, publication and separate public-page scroll completed. Real-owner source data, account exports and video captures remain ignored/private.
