@@ -16,7 +16,7 @@ import type { SaveState, Section } from "./types";
 
 /** Owns authenticated draft loading, recovery, revisioned saves and publication operations. */
 export function useStudioController() {
-	const [locale, setLocale] = useState<Locale>("ar");
+	const [locale, setLocale] = useState<Locale>("en");
 	const t = copy[locale];
 	const {
 		data: session,
@@ -382,7 +382,7 @@ export function useStudioController() {
 		event.preventDefault();
 		setError("");
 		const data = new FormData(event.currentTarget);
-		const slug = String(data.get("slug")).trim();
+		const slug = String(data.get("slug")).trim().toLowerCase();
 		if (!slugSchema.safeParse(slug).success) {
 			setError(t.slugError);
 			return;
