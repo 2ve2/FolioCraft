@@ -2,7 +2,8 @@ import { createMiddleware } from "hono/factory";
 import { requireEmailVerification } from "../config/env";
 import { auth } from "../lib/auth";
 import { ApiError } from "../lib/response-helpers";
-import { rateLimitService } from "../services/rateLimitService";
+import { rateLimitService } from "../services/rate-limit";
+
 export type AuthEnv = { Variables: { userId: string; authSession: typeof auth.$Infer.Session } };
 
 /** Authenticates private requests against the database and bounds authenticated writes. */

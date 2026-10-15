@@ -3,6 +3,7 @@ import { z } from "zod";
 /** Normalizes empty optional environment values before validating their schema. */
 const optional = <T extends z.ZodType>(s: T) =>
 	z.preprocess((v) => (v === "" ? undefined : v), s.optional());
+
 /** Accepts only plain HTTP origins without paths or embedded credentials. */
 const origin = z.url().refine((v) => {
 	const u = new URL(v);
@@ -47,6 +48,7 @@ const schema = z
 			if (n !== 0 && n !== keys.length)
 				ctx.addIssue({ code: "custom", message: `Configure all of ${keys.join(", ")} or none` });
 		};
+
 		checkGroup(["R2_ACCOUNT_ID", "R2_BUCKET", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY"]);
 		checkGroup(["SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD", "MAIL_FROM"]);
 		if (v.R2_ENDPOINT) {

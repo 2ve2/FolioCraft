@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import { check, index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { sites } from "./site";
+
 export const assets = pgTable(
 	"assets",
 	{

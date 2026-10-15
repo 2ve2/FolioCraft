@@ -29,6 +29,7 @@ const requestDatabase = new AsyncLocalStorage<typeof defaultDatabase>();
 
 /** Selects the request-owned connection in Workers while preserving the Bun pool outside that scope. */
 export const db: typeof defaultDatabase = new Proxy(defaultDatabase, {
+	/** Resolves ORM access against the current request database scope. */
 	get(_target, property) {
 		const database = requestDatabase.getStore() ?? defaultDatabase;
 		const value = Reflect.get(database, property, database);

@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { check, index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { sites } from "./site";
+
 export const rateBuckets = pgTable("rate_buckets", {
 	key: text("key").primaryKey(),
 	count: integer("count").notNull(),

@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { Pool } from "pg";
 import { db } from "../src/db";
 import { rateBuckets } from "../src/db/schema/operations";
-import { rateLimitService } from "../src/services/rateLimitService";
+import { rateLimitService } from "../src/services/rate-limit";
 import { request } from "./helpers";
 
 test("health/readiness and method boundaries report actual database health", async () => {

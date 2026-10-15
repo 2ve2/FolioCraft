@@ -1,6 +1,6 @@
 import { chmod, mkdir, open } from "node:fs/promises";
 import { resolve } from "node:path";
-import { emptyDraft } from "../packages/contracts/src/index";
+import { emptyDraft } from "../packages/contracts/src";
 
 const verify = process.argv.includes("--verify-test");
 const database = verify

@@ -6,9 +6,11 @@ import { user } from "./schema/auth";
 import { releases, sites } from "./schema/site";
 
 const file = resolve(import.meta.dir, "../../../../work/pre-migration-state.json");
+
 /** Hashes stable pre-migration fields without writing raw account or portfolio data. */
 const hashing = (value: unknown) =>
 	new Bun.CryptoHasher("sha256").update(JSON.stringify(value)).digest("hex");
+
 try {
 	const [accounts, portfolios, versions] = await Promise.all([
 		db.select({ id: user.id, email: user.email, name: user.name }).from(user).orderBy(asc(user.id)),

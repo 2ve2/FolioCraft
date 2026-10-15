@@ -9,6 +9,7 @@ const server = Bun.serve({
 	port: env.PORT,
 	idleTimeout: 30,
 	maxRequestBodySize: 1_100_000,
+
 	/** Derives a trusted socket client address and dispatches requests to the application. */
 	fetch(request, instance) {
 		const peer = instance.requestIP(request)?.address ?? "unknown";
@@ -31,6 +32,7 @@ const server = Bun.serve({
 	},
 });
 console.info(JSON.stringify({ event: "server_started", host: env.HOST, port: env.PORT }));
+
 /** Drains the HTTP server and PostgreSQL pool with a bounded forced shutdown. */
 const shutdown = async () => {
 	if (stopping) return;
@@ -49,5 +51,6 @@ const shutdown = async () => {
 		process.exit(1);
 	}
 };
+
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
