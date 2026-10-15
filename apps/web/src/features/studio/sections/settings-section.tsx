@@ -1,5 +1,5 @@
 import type { Locale } from "@folio/contracts";
-import { ExternalLink } from "lucide-react";
+import { LinkArrow } from "@folio/portfolio";
 import { useEffect, useRef, useState } from "react";
 import { Field } from "../../../components/ui/field";
 import { SelectControl } from "../../../components/ui/select-control";
@@ -138,7 +138,7 @@ export function SettingsSection({
 					<>
 						<a className="secondary wide" href={`/p/${site.slug}`} target="_blank" rel="noreferrer">
 							{t.openSite}
-							<ExternalLink size={16} />
+							<LinkArrow locale={locale} />
 						</a>
 						<button className="danger-button wide" type="button" onClick={() => void unpublish()}>
 							{t.unpublish}
