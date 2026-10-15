@@ -2,6 +2,7 @@ import type { Draft, Project } from "@folio/contracts";
 import { collectAssetIds } from "@folio/contracts";
 import { FileText, LayoutGrid, Plus, Trash2 } from "lucide-react";
 import { Field } from "../../../components/ui/field";
+import { TooltipButton } from "../../../components/ui/tooltip-button";
 import { AssetPicker } from "../../assets/asset-picker";
 import { ContentEditors } from "../../content/content-editors";
 import { ProjectExtras } from "../../content/project-extras";
@@ -248,10 +249,10 @@ export function ContentSection({
 					<div className="card-heading">
 						<span className="project-number">{String(index + 1).padStart(2, "0")}</span>
 						<h2>{project.title || t.projectTitle}</h2>
-						<button
+						<TooltipButton
 							className="icon-button danger"
 							aria-label={t.remove}
-							title={t.remove}
+							hint={t.remove}
 							type="button"
 							onClick={() => {
 								if (window.confirm(t.removeConfirm))
@@ -262,7 +263,7 @@ export function ContentSection({
 							}}
 						>
 							<Trash2 size={17} />
-						</button>
+						</TooltipButton>
 					</div>
 					<Field label={`${t.projectTitle} · ${t.required}`}>
 						<input
