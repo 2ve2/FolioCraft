@@ -123,6 +123,8 @@ test("images attach, detach and delete while owned drafts and retained releases 
 		expect(objects.has(`staging/${site.id}/${draftOnly.id}`)).toBe(false);
 		const released = await uploaded();
 		site.draft.profile.imageAssetId = released.id;
+		site.draft.appearance.profileVisualVisible = false;
+		site.draft.appearance.projectFallbackVisible = false;
 		site = await result<Site>(
 			await request(
 				`${base}/draft`,
@@ -153,6 +155,9 @@ test("images attach, detach and delete while owned drafts and retained releases 
 		);
 		expect(objects.get(`verified/${site.id}/${released.id}`)).toEqual(bytes);
 		expect(site.draft.locale).toBe("ar");
+		const publicSite = await result<Site>(await request(`/api/public/sites/${site.slug}`));
+		expect(publicSite.draft.appearance.profileVisualVisible).toBe(false);
+		expect(publicSite.draft.appearance.projectFallbackVisible).toBe(false);
 	} finally {
 		configured.mockRestore();
 		sign.mockRestore();
