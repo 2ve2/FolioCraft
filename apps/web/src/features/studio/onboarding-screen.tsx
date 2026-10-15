@@ -1,6 +1,7 @@
-import type { Locale } from "@folio/contracts";
-import { ArrowUpRight, Globe2, LoaderCircle } from "lucide-react";
-import type { FormEvent, ReactNode } from "react";
+import { type Locale, slugSchema } from "@folio/contracts";
+import { LinkArrow } from "@folio/portfolio";
+import { Globe2, LoaderCircle } from "lucide-react";
+import { type FormEvent, type ReactNode, useRef, useState } from "react";
 import { Brand } from "../../components/ui/brand";
 import { Field } from "../../components/ui/field";
 import { SelectControl } from "../../components/ui/select-control";
@@ -23,6 +24,8 @@ export function OnboardingScreen({
 	createSite: (event: FormEvent<HTMLFormElement>) => Promise<void>;
 }) {
 	const t = copy[locale];
+	const [invalidAddress, setInvalidAddress] = useState(false);
+	const address = useRef<HTMLInputElement>(null);
 	return (
 		<div className="welcome-page">
 			<header className="welcome-header">
@@ -51,12 +54,33 @@ export function OnboardingScreen({
 				<span className="eyebrow">01 / {t.workspace}</span>
 				<h1>{t.createTitle}</h1>
 				<p>{t.createText}</p>
-				<form className="onboarding-card" onSubmit={createSite}>
-					<Field label={t.slug} hint={t.slugHint}>
+				<form
+					className="onboarding-card"
+					noValidate
+					aria-busy={busy}
+					onSubmit={(event) => {
+						const valid = slugSchema.safeParse(address.current?.value.trim().toLowerCase()).success;
+						setInvalidAddress(!valid);
+						if (!valid) {
+							event.preventDefault();
+							address.current?.focus();
+							return;
+						}
+						void createSite(event);
+					}}
+				>
+					<Field label={t.slug}>
 						<div className="slug-input" dir="ltr">
 							<span>/p/</span>
 							<input
 								name="slug"
+								ref={address}
+								disabled={busy}
+								aria-invalid={invalidAddress || undefined}
+								aria-describedby="address-help"
+								autoCapitalize="none"
+								spellCheck={false}
+								onChange={() => setInvalidAddress(false)}
 								autoComplete="off"
 								pattern="[a-z0-9]+(-[a-z0-9]+)*"
 								minLength={3}
@@ -66,9 +90,17 @@ export function OnboardingScreen({
 							/>
 						</div>
 					</Field>
+					<p
+						id="address-help"
+						className={invalidAddress ? "error-box" : "onboarding-hint"}
+						role={invalidAddress ? "alert" : undefined}
+					>
+						{invalidAddress ? t.slugError : t.slugHint}
+					</p>
 					<Field label={t.createLanguage}>
 						<SelectControl
 							name="locale"
+							disabled={busy}
 							label={t.createLanguage}
 							defaultValue={locale}
 							options={[
@@ -84,7 +116,7 @@ export function OnboardingScreen({
 					)}
 					<button type="submit" className="primary wide" disabled={busy}>
 						{busy ? <LoaderCircle className="spin" size={18} /> : t.create}
-						<ArrowUpRight size={18} />
+						<LinkArrow locale={locale} />
 					</button>
 					<small className="auth-privacy">{t.privacy}</small>
 				</form>
