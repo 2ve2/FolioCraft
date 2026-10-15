@@ -2,13 +2,13 @@
 
 > **Testing only:** The Cloudflare-hosted instance is a trial for friends to test and report issues. It is not a final launch or an accepted production release. Deployment to Cloudflare makes the test instance reachable; it does not establish production readiness.
 
-Last reconciled: 2026-10-15, Asia/Riyadh. Deployment and browser evidence below was collected on 2026-10-14; this documentation update does not constitute a new deployment or live test.
+Last reconciled: 2026-10-15, Asia/Riyadh. Deployment and browser initial evidence below was collected on 2026-10-14. The JSON restore frontend update and its HTTP checks were completed on 2026-10-15 as noted below.
 
 ## Deployed trial
 
 - Web: https://foliocraft-trial.bdalrhmnmtwq53.workers.dev/
 - API: https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev
-- Last verified web version: `6fb18ac0-1a72-4963-b61f-4f996f81c547`.
+- Last verified web version: `fee5d122-d173-4dc9-8ea1-f4538807e8c8`.
 - Last verified API version: `970d67cc-4caa-4ab8-aac7-b73c034989a2`.
 
 The human authorized a free Cloudflare-only friends-testing deployment that runs with their computer off. No paid Containers, plan upgrade, tunnel or external backend host was used. PostgreSQL remains the existing Neon database and files remain in private R2. No deployment migration or reset was performed. A reachable trial is not comprehensive production acceptance.
@@ -69,3 +69,6 @@ Private evidence remains in ignored `work/worker-http-evidence.json`, `work/work
 - [Workers Node.js compatibility](https://developers.cloudflare.com/workers/runtime-apis/nodejs/)
 - [Workers fetch routing](https://developers.cloudflare.com/workers/runtime-apis/fetch/)
 - [Workers Images binding](https://developers.cloudflare.com/images/transform-images/bindings/)
+
+## JSON restore frontend update — 2026-10-15
+Frontend rebuilt and redeployed after five focused parser tests, typechecks/Biome and guarded local browser restoration/cancel/ownership/persistence/public-isolation proof. Root, existing public portfolio and new client chunk returned200 through curl; new restore labels were present in the deployed chunk. Authenticated hosted restoration was not repeated on the real owner account. No API deployment, secret update or schema change. Local fixture cleanup removed2 generated users with0 remaining. See STATUS for precise evidence and remaining general-launch limits.
