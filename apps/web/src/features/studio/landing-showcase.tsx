@@ -1,9 +1,20 @@
 import { type Draft, emptyDraft, type Locale } from "@folio/contracts";
+import Link from "next/link";
 import { useState } from "react";
-import { PortfolioPreview } from "../portfolio/portfolio-preview";
+import { ExpandedPortfolioPreview, PortfolioPreview } from "../portfolio/portfolio-preview";
 
 /** Demonstrates real shared rendering with explicitly fictional, browser-local content. */
-export function LandingShowcase({ locale }: { locale: Locale }) {
+export function LandingShowcase({
+	locale,
+	expanded,
+	device,
+	onClose,
+}: {
+	locale: Locale;
+	expanded: boolean;
+	device: "desktop" | "mobile";
+	onClose: () => void;
+}) {
 	const ar = locale === "ar";
 	const [theme, setTheme] = useState<Draft["appearance"]["theme"]>("light");
 	const draft = emptyDraft(locale);
@@ -39,6 +50,16 @@ export function LandingShowcase({ locale }: { locale: Locale }) {
 			id="example"
 			aria-label={ar ? "مثال تفاعلي" : "Interactive example"}
 		>
+			{expanded && (
+				<ExpandedPortfolioPreview
+					locale={locale}
+					draft={draft}
+					slug="illustrative-example"
+					assetUrls={{}}
+					device={device}
+					onClose={onClose}
+				/>
+			)}
 			<div className="showcase-bar">
 				<span className="showcase-dots" aria-hidden="true">
 					● ● ●
@@ -71,7 +92,7 @@ export function LandingShowcase({ locale }: { locale: Locale }) {
 }
 
 /** Explains implemented product benefits and the real draft-to-release workflow. */
-export function LandingDetails({ locale, onStart }: { locale: Locale; onStart: () => void }) {
+export function LandingDetails({ locale }: { locale: Locale }) {
 	const ar = locale === "ar";
 	const features = ar
 		? [
@@ -182,9 +203,9 @@ export function LandingDetails({ locale, onStart }: { locale: Locale; onStart: (
 							: "Your draft is yours. So is the decision to publish."}
 					</p>
 				</div>
-				<button type="button" className="primary" onClick={onStart}>
+				<Link className="primary" href={`/signup?lang=${locale}`}>
 					{ar ? "إنشاء حساب" : "Create an account"}
-				</button>
+				</Link>
 			</section>
 		</div>
 	);

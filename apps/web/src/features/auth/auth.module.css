@@ -1,0 +1,30 @@
+.page {
+	display: flex;
+	flex-direction: column;
+}
+.main {
+	flex: 1;
+	display: grid;
+	place-items: center;
+	padding: 40px 20px 56px;
+}
+.card {
+	width: min(100%, 460px);
+}
+.eyebrow {
+	display: block;
+	margin-top: 28px;
+}
+.title {
+	font-size: clamp(25px, 4vw, 30px);
+	line-height: 1.4;
+	margin: 12px 0;
+}
+@media (max-width: 480px) {
+	.main {
+		padding: 24px 16px 40px;
+	}
+	.card {
+		padding: 24px;
+	}
+}

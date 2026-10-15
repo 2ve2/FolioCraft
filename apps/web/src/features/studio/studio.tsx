@@ -23,12 +23,6 @@ export function Studio() {
 		isPending,
 		sessionError,
 		refetchSession,
-		authMode,
-		setAuthMode,
-		authBusy,
-		authError,
-		setAuthError,
-		authenticate,
 		site,
 		draft,
 		loaded,
@@ -74,19 +68,7 @@ export function Studio() {
 			</LoadingScreen>
 		);
 
-	if (!session?.user)
-		return (
-			<WelcomeScreen
-				locale={locale}
-				localeControl={localeControl}
-				authMode={authMode}
-				authBusy={authBusy}
-				authError={authError}
-				setAuthMode={setAuthMode}
-				setAuthError={setAuthError}
-				authenticate={authenticate}
-			/>
-		);
+	if (!session?.user) return <WelcomeScreen locale={locale} localeControl={localeControl} />;
 
 	if (!loaded || loadError || loadedIdentity !== sessionIdentity)
 		return (

@@ -1,14 +1,8 @@
 "use client";
-import {
-	collectAssetIds,
-	type Draft,
-	draftSchema,
-	type Locale,
-	type Site,
-	slugSchema,
-} from "@folio/contracts";
+import { collectAssetIds, type Draft, draftSchema, type Site, slugSchema } from "@folio/contracts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, api, authClient } from "../../lib/api";
+import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import { useAssetUrls } from "../assets/use-asset-urls";
 import { copy } from "./copy";
 import { formatDraftIssues } from "./draft-errors";
@@ -18,7 +12,7 @@ import type { SaveState, Section } from "./types";
 /** Owns authenticated draft loading, recovery, revisioned saves and publication operations. */
 export function useStudioController() {
 	// Session identity and the current owned workspace.
-	const [locale, setLocale] = useState<Locale>("en");
+	const [locale, setLocale] = useInterfaceLocale();
 	const t = copy[locale];
 	const {
 		data: session,
@@ -33,9 +27,6 @@ export function useStudioController() {
 	const workspaceOwner = useRef("");
 	const intentionalLogout = useRef(false);
 	const recoveries = useRef(new Map<string, { site: Site; draft: Draft; savedJson: string }>());
-	const [authMode, setAuthMode] = useState<"login" | "signup" | null>(null);
-	const [authBusy, setAuthBusy] = useState(false);
-	const [authError, setAuthError] = useState("");
 	const [site, setSite] = useState<Site | null>(null);
 	const [draft, setDraft] = useState<Draft | null>(null);
 	const assetUrls = useAssetUrls(site?.id, draft ? collectAssetIds(draft) : []);
@@ -82,10 +73,6 @@ export function useStudioController() {
 		return c.error;
 	}, []);
 
-	useEffect(() => {
-		document.documentElement.lang = locale;
-		document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
-	}, [locale]);
 	useEffect(() => {
 		mounted.current = true;
 		if (window.matchMedia("(max-width: 720px)").matches) setDevice("mobile");
@@ -299,40 +286,6 @@ export function useStudioController() {
 			void flush().catch(() => undefined);
 		}, 900);
 	};
-
-	/** Runs the native Better Auth signup or sign-in protocol and refreshes the session. */
-	async function authenticate(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault();
-		setAuthBusy(true);
-		setAuthError("");
-		const data = new FormData(event.currentTarget);
-		try {
-			const input = { email: String(data.get("email")), password: String(data.get("password")) };
-			const result =
-				authMode === "signup"
-					? await authClient.signUp.email({ ...input, name: String(data.get("name")) })
-					: await authClient.signIn.email(input);
-			if (result.error) {
-				const code = result.error.code || "";
-				setAuthError(
-					code.includes("ALREADY_EXISTS")
-						? t.authExists
-						: code === "INVALID_EMAIL_OR_PASSWORD"
-							? t.authCredentials
-							: result.error.status === 429
-								? t.authRateLimit
-								: t.authFailure,
-				);
-				return;
-			}
-			setAuthMode(null);
-			await refetchSession();
-		} catch {
-			setAuthError(t.unavailable);
-		} finally {
-			setAuthBusy(false);
-		}
-	}
 
 	/** Creates an owned site from the validated address and chosen content language. */
 	async function createSite(event: React.FormEvent<HTMLFormElement>) {
@@ -584,12 +537,6 @@ export function useStudioController() {
 		isPending,
 		sessionError,
 		refetchSession,
-		authMode,
-		setAuthMode,
-		authBusy,
-		authError,
-		setAuthError,
-		authenticate,
 		site,
 		draft,
 		loaded,
