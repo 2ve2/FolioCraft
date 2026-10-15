@@ -13,7 +13,7 @@ describe("downloaded draft restoration", () => {
 		draft.profile.name = "اختبار استعادة";
 		draft.appearance.theme = "dark";
 		const restored = await readDraftBackup(backup(draft));
-		expect(restored.profile).toEqual({ ...draft.profile, socialLinks: [] });
+		expect(restored.profile).toEqual({ ...draft.profile, socialLinks: [], imageAssetId: null });
 		expect(restored.appearance).toEqual(draft.appearance);
 		expect(restored.locale).toBe("ar");
 	});
