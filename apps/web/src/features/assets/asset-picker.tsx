@@ -90,7 +90,9 @@ export function AssetPicker({
 	const [loading, setLoading] = useState(false);
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<keyof typeof copy.en | "">("");
-	const [notice, setNotice] = useState<"success" | "deleted" | "">("");
+	const [notice, setNotice] = useState<"success" | "deleted" | "deletionPending" | "detached" | "">(
+		"",
+	);
 	const [confirm, setConfirm] = useState<string | null>(null);
 	const [open, setOpen] = useState(false);
 	const [previewRefresh, setPreviewRefresh] = useState(0);
@@ -233,6 +235,14 @@ export function AssetPicker({
 		});
 	}
 
+	/** Removes only this local reference; autosave and release retention still own persistence. */
+	function detach() {
+		if (!canAct) return;
+		live.current.onChange(null);
+		setError("");
+		setNotice("detached");
+	}
+
 	/** Retries server verification when a browser upload succeeded but completion was interrupted. */
 	async function complete(id: string) {
 		await mutate(async (current) => {
@@ -265,7 +275,7 @@ export function AssetPicker({
 				),
 			}));
 			setConfirm(null);
-			setNotice("deleted");
+			setNotice(result.status === "deleted" ? "deleted" : "deletionPending");
 		});
 	}
 
@@ -297,7 +307,7 @@ export function AssetPicker({
 					{t.refresh}
 				</button>
 				{value && (
-					<button type="button" disabled={!canAct} onClick={() => live.current.onChange(null)}>
+					<button type="button" disabled={!canAct} onClick={detach}>
 						{t.clear}
 					</button>
 				)}
@@ -361,6 +371,11 @@ export function AssetPicker({
 									{value === asset.id ? t.selected : t.choose}
 								</button>
 							)}
+							{value === asset.id && (
+								<button type="button" disabled={!canAct} onClick={detach}>
+									{t.clear}
+								</button>
+							)}
 							{asset.status === "pending" && (
 								<button type="button" disabled={!canAct} onClick={() => void complete(asset.id)}>
 									{t.complete}
@@ -388,7 +403,7 @@ export function AssetPicker({
 									className={styles.danger}
 									onClick={() => setConfirm(asset.id)}
 								>
-									{t.remove}
+									{asset.status === "deleting" ? t.retryDelete : t.remove}
 								</button>
 							)}
 							{(value === asset.id || protectedIds.includes(asset.id)) && (
