@@ -7,17 +7,20 @@ import { text } from "../shared/copy";
 import type { AdminSite, AdminUser, Audit, Counts } from "../shared/types";
 
 /** Coordinates guarded administrator requests, selection epochs and native account actions. */
-export function useAdminController(locale: Locale) {
+export function useAdminController(locale: Locale, tab: "sites" | "audit" | "users") {
 	const t = text[locale];
 
 	// Active resource tab, page and platform totals.
-	const [tab, setTab] = useState<"sites" | "audit" | "users">("sites");
+	const [siteFilter, setSiteFilter] = useState<"all" | "accessible" | "suspended">("all");
 	const [offset, setOffset] = useState(0);
 	const page = usePage<AdminSite | Audit>(
-		`/api/admin/${tab === "users" ? "sites" : tab}?limit=20&offset=${offset}`,
+		`/api/admin/${tab === "users" ? "sites" : tab}?limit=20&offset=${offset}${tab === "sites" && siteFilter !== "all" ? `&suspended=${siteFilter === "suspended"}` : ""}`,
 		locale,
 	);
 	const [counts, setCounts] = useState<Counts | null>(null);
+	const [countsLoading, setCountsLoading] = useState(true);
+	const [countsError, setCountsError] = useState("");
+	const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
 
 	// Official identity list and its independent request feedback.
 	const [users, setUsers] = useState<AdminUser[]>([]);
@@ -66,12 +69,20 @@ export function useAdminController(locale: Locale) {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Refresh resource counts after a completed operation.
 	useEffect(() => {
 		let current = true;
+		setCountsLoading(true);
+		setCountsError("");
 		api<Counts>("/api/admin/resources")
 			.then((value) => {
-				if (current) setCounts(value);
+				if (current) {
+					setCounts(value);
+					setUpdatedAt(new Date());
+				}
 			})
 			.catch((e) => {
-				if (current) setError(errorText(e, locale));
+				if (current) setCountsError(errorText(e, locale));
+			})
+			.finally(() => {
+				if (current) setCountsLoading(false);
 			});
 		return () => {
 			current = false;
@@ -162,12 +173,12 @@ export function useAdminController(locale: Locale) {
 		});
 	}
 
-	/** Changes the administrative tab and invalidates stale selection feedback. */
-	function changeTab(value: "sites" | "audit" | "users") {
+	/** Filters server-side site access and resets selection and pagination. */
+	function changeSiteFilter(value: "all" | "accessible" | "suspended") {
+		if (actionPending.current) return;
 		viewVersion.current += 1;
-		setTab(value);
+		setSiteFilter(value);
 		setOffset(0);
-		setSelected(null);
 		setDetails(null);
 		setReason("");
 		setError("");
@@ -190,6 +201,7 @@ export function useAdminController(locale: Locale) {
 		const current = () => mounted.current && viewVersion.current === version;
 
 		setBusy(true);
+		setReason("");
 		setError("");
 		api<AdminSite>(`/api/admin/sites/${row.id}`)
 			.then((value) => {
@@ -271,7 +283,11 @@ export function useAdminController(locale: Locale) {
 		selectedHeading,
 		detailsHeading,
 		native,
-		changeTab,
+		changeSiteFilter,
+		siteFilter,
+		countsLoading,
+		countsError,
+		updatedAt,
 		refresh,
 		openSiteDetails,
 		moderateSite,

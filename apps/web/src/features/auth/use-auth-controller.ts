@@ -15,20 +15,23 @@ export function useAuthController(mode: AuthMode) {
 	const { data: session, isPending, error: sessionError, refetch } = authClient.useSession();
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState("");
+	const [returnToAdmin, setReturnToAdmin] = useState(false);
 	const [verificationRequired, setVerificationRequired] = useState(false);
 	const pending = useRef(false);
 	const mounted = useRef(true);
 
 	useEffect(() => {
 		mounted.current = true;
+		setReturnToAdmin(new URLSearchParams(window.location.search).get("from") === "admin");
 		return () => {
 			mounted.current = false;
 		};
 	}, []);
 
 	useEffect(() => {
-		if (localeReady && session?.user) router.replace(`/?lang=${locale}`);
-	}, [session?.user, locale, localeReady, router]);
+		if (localeReady && session?.user)
+			router.replace(`/${returnToAdmin ? "admin" : "studio"}?lang=${locale}`);
+	}, [session?.user, locale, localeReady, router, returnToAdmin]);
 
 	/** Submits the existing Better Auth protocol and keeps failures beside the current form. */
 	async function authenticate(event: FormEvent<HTMLFormElement>) {
@@ -81,6 +84,7 @@ export function useAuthController(mode: AuthMode) {
 		busy,
 		error,
 		verificationRequired,
+		returnToAdmin,
 		authenticate,
 	};
 }

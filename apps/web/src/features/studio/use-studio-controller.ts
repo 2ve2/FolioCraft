@@ -12,7 +12,7 @@ import type { SaveState, Section } from "./types";
 /** Owns authenticated draft loading, recovery, revisioned saves and publication operations. */
 export function useStudioController() {
 	// Session identity and the current owned workspace.
-	const [locale, setLocale] = useInterfaceLocale();
+	const [locale, setLocale, localeReady] = useInterfaceLocale();
 	const t = copy[locale];
 	const {
 		data: session,
@@ -415,6 +415,26 @@ export function useStudioController() {
 		}
 	}
 
+	/** Saves owned edits before leaving the studio for the independent administration area. */
+	async function openAdministration() {
+		if (operation.current) return;
+		const identity = sessionIdentityRef.current;
+		operation.current = true;
+		setBusy(true);
+		try {
+			await flush();
+			if (identity === sessionIdentityRef.current && mounted.current)
+				window.location.assign(`/admin?lang=${locale}`);
+		} catch {
+			// The revisioned save already reports the specific validation or network failure.
+		} finally {
+			if (identity === sessionIdentityRef.current && mounted.current) {
+				operation.current = false;
+				setBusy(false);
+			}
+		}
+	}
+
 	// Owned settings and backup operations.
 
 	/** Flushes the current draft before changing the owned site's revisioned address. */
@@ -531,6 +551,7 @@ export function useStudioController() {
 
 	return {
 		locale,
+		localeReady,
 		setLocale,
 		t,
 		session,
@@ -563,6 +584,7 @@ export function useStudioController() {
 		publish,
 		unpublish,
 		logout,
+		openAdministration,
 		renameSite,
 		exportDraft,
 		importDraft,

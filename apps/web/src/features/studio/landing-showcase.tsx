@@ -92,7 +92,13 @@ export function LandingShowcase({
 }
 
 /** Explains implemented product benefits and the real draft-to-release workflow. */
-export function LandingDetails({ locale }: { locale: Locale }) {
+export function LandingDetails({
+	locale,
+	authenticated = false,
+}: {
+	locale: Locale;
+	authenticated?: boolean;
+}) {
 	const ar = locale === "ar";
 	const features = ar
 		? [
@@ -203,8 +209,14 @@ export function LandingDetails({ locale }: { locale: Locale }) {
 							: "Your draft is yours. So is the decision to publish."}
 					</p>
 				</div>
-				<Link className="primary" href={`/signup?lang=${locale}`}>
-					{ar ? "إنشاء حساب" : "Create an account"}
+				<Link className="primary" href={`/${authenticated ? "studio" : "signup"}?lang=${locale}`}>
+					{authenticated
+						? ar
+							? "فتح الاستوديو"
+							: "Open studio"
+						: ar
+							? "إنشاء حساب"
+							: "Create an account"}
 				</Link>
 			</section>
 		</div>

@@ -22,6 +22,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 		busy,
 		error,
 		verificationRequired,
+		returnToAdmin,
 		authenticate,
 	} = useAuthController(mode);
 	const firstInput = useRef<HTMLInputElement>(null);
@@ -125,7 +126,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 					</form>
 					<Link
 						className="text-button auth-switch"
-						href={`/${mode === "signup" ? "login" : "signup"}?lang=${locale}`}
+						href={`/${mode === "signup" ? "login" : "signup"}?lang=${locale}${returnToAdmin ? "&from=admin" : ""}`}
 					>
 						{mode === "signup" ? t.switchLogin : t.switchSignup}
 					</Link>

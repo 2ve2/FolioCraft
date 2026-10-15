@@ -1,6 +1,6 @@
-import { Studio } from "../features/studio/studio";
+import { LandingPage } from "../features/studio/landing-page";
 
-/** Mounts the portfolio studio entry experience. */
+/** Mounts the public product introduction; private editing lives at /studio. */
 export default function Home() {
-	return <Studio />;
+	return <LandingPage />;
 }

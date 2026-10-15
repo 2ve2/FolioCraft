@@ -1,6 +1,7 @@
 "use client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { LanguageSwitch } from "../../components/ui/language-switch";
-import { AdminPanel } from "../management/admin/admin-panel";
 import { SiteOperations } from "../management/site/site-operations";
 import { LoadingScreen } from "./loading-screen";
 import { OnboardingScreen } from "./onboarding-screen";
@@ -8,7 +9,6 @@ import { AppearanceSection } from "./sections/appearance-section";
 import { ContentSection } from "./sections/content-section";
 import { SettingsSection } from "./sections/settings-section";
 import { useStudioController } from "./use-studio-controller";
-import { WelcomeScreen } from "./welcome-screen";
 import { WorkspaceHeader } from "./workspace-header";
 import { WorkspacePreview } from "./workspace-preview";
 import { WorkspaceSidebar } from "./workspace-sidebar";
@@ -17,6 +17,7 @@ import { WorkspaceSidebar } from "./workspace-sidebar";
 export function Studio() {
 	const {
 		locale,
+		localeReady,
 		setLocale,
 		t,
 		session,
@@ -49,6 +50,7 @@ export function Studio() {
 		publish,
 		unpublish,
 		logout,
+		openAdministration,
 		renameSite,
 		exportDraft,
 		importDraft,
@@ -57,8 +59,13 @@ export function Studio() {
 		flush,
 		requestSavedReload,
 	} = useStudioController();
+	const router = useRouter();
+	useEffect(() => {
+		if (localeReady && !isPending && !sessionError && !session?.user)
+			router.replace(`/login?lang=${locale}`);
+	}, [localeReady, isPending, sessionError, session?.user, locale, router]);
 	const localeControl = <LanguageSwitch locale={locale} onChange={setLocale} />;
-	if (isPending) return <LoadingScreen locale={locale} message={t.authLoading} />;
+	if (isPending || !localeReady) return <LoadingScreen locale={locale} message={t.authLoading} />;
 	if (sessionError)
 		return (
 			<LoadingScreen locale={locale} message={t.startupError} error>
@@ -68,7 +75,7 @@ export function Studio() {
 			</LoadingScreen>
 		);
 
-	if (!session?.user) return <WelcomeScreen locale={locale} localeControl={localeControl} />;
+	if (!session?.user) return <LoadingScreen locale={locale} message={t.authLoading} />;
 
 	if (!loaded || loadError || loadedIdentity !== sessionIdentity)
 		return (
@@ -139,7 +146,6 @@ export function Studio() {
 					/>
 				</>
 			)}
-			{section === "admin" && <AdminPanel locale={locale} />}
 			{section === "appearance" && (
 				<AppearanceSection draft={draft} locale={locale} update={update} />
 			)}
@@ -168,6 +174,7 @@ export function Studio() {
 				setMobileTab={setMobileTab}
 				busy={busy}
 				logout={logout}
+				openAdministration={openAdministration}
 			/>
 			<div className="studio-main">
 				<WorkspaceHeader

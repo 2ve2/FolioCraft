@@ -35,7 +35,7 @@ export function OnboardingScreen({
 				<div className="header-actions">
 					{localeControl}
 					{role?.split(",").includes("admin") && (
-						<a className="secondary" href="/admin">
+						<a className="secondary" href={`/admin?lang=${locale}`}>
 							{t.admin}
 						</a>
 					)}

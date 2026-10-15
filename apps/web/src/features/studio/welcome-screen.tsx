@@ -10,9 +10,11 @@ import { LandingDetails, LandingShowcase } from "./landing-showcase";
 export function WelcomeScreen({
 	locale,
 	localeControl,
+	authenticated = false,
 }: {
 	locale: Locale;
 	localeControl: ReactNode;
+	authenticated?: boolean;
 }) {
 	const t = copy[locale];
 	const [expandedPreview, setExpandedPreview] = useState(false);
@@ -36,8 +38,11 @@ export function WelcomeScreen({
 						{locale === "ar" ? "كيف يعمل" : "How it works"}
 					</a>
 					{localeControl}
-					<Link className="secondary" href={`/login?lang=${locale}`}>
-						{t.login}
+					<Link
+						className="secondary"
+						href={`/${authenticated ? "studio" : "login"}?lang=${locale}`}
+					>
+						{authenticated ? (locale === "ar" ? "فتح الاستوديو" : "Open studio") : t.login}
 					</Link>
 				</nav>
 			</header>
@@ -51,8 +56,11 @@ export function WelcomeScreen({
 						<h1>{t.tagline}</h1>
 						<p>{t.intro}</p>
 						<div className="landing-actions">
-							<Link className="primary" href={`/signup?lang=${locale}`}>
-								{t.signup}
+							<Link
+								className="primary"
+								href={`/${authenticated ? "studio" : "signup"}?lang=${locale}`}
+							>
+								{authenticated ? (locale === "ar" ? "فتح الاستوديو" : "Open studio") : t.signup}
 								<LinkArrow locale={locale} />
 							</Link>
 							<button
@@ -73,7 +81,7 @@ export function WelcomeScreen({
 						onClose={() => setExpandedPreview(false)}
 					/>
 				</div>
-				<LandingDetails locale={locale} />
+				<LandingDetails locale={locale} authenticated={authenticated} />
 			</main>
 			<footer className="welcome-footer">
 				<span>FolioCraft © 2026</span>

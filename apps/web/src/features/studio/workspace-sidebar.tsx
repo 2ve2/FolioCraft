@@ -1,5 +1,5 @@
 import type { Locale } from "@folio/contracts";
-import { FileText, LogOut, Palette, Settings2 } from "lucide-react";
+import { FileText, LogOut, Palette, Settings2, ShieldCheck } from "lucide-react";
 import { Brand } from "../../components/ui/brand";
 import { TooltipButton } from "../../components/ui/tooltip-button";
 import { copy } from "./copy";
@@ -14,6 +14,7 @@ export function WorkspaceSidebar({
 	setMobileTab,
 	busy,
 	logout,
+	openAdministration,
 }: {
 	locale: Locale;
 	user: { name: string; email: string; role?: string | null };
@@ -22,6 +23,7 @@ export function WorkspaceSidebar({
 	setMobileTab: (tab: "edit" | "preview") => void;
 	busy: boolean;
 	logout: () => Promise<void>;
+	openAdministration: () => Promise<void>;
 }) {
 	const t = copy[locale];
 	return (
@@ -44,9 +46,7 @@ export function WorkspaceSidebar({
 						{ key: "content", icon: FileText },
 						{ key: "appearance", icon: Palette },
 						{ key: "operations", icon: FileText },
-						...(user.role?.split(",").includes("admin")
-							? [{ key: "admin" as const, icon: Settings2 }]
-							: []),
+
 						{ key: "settings", icon: Settings2 },
 					] as const
 				).map(({ key, icon: Icon }) => (
@@ -65,6 +65,17 @@ export function WorkspaceSidebar({
 						{section === key && <span className="nav-dot" />}
 					</button>
 				))}
+				{user.role?.split(",").includes("admin") && (
+					<button
+						type="button"
+						className="nav-item"
+						disabled={busy}
+						onClick={() => void openAdministration()}
+					>
+						<ShieldCheck size={18} />
+						{t.admin}
+					</button>
+				)}
 			</nav>
 			<div className="sidebar-bottom">
 				<div className="sidebar-note">

@@ -1,241 +1,160 @@
 "use client";
-import type { Locale } from "@folio/contracts";
-import { SelectControl } from "../../../components/ui/select-control";
-import { date, Pager } from "../shared";
+import { RefreshCw } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { TooltipButton } from "../../../components/ui/tooltip-button";
 import { text } from "../shared/copy";
-import styles from "../shared/management.module.css";
-import type { Counts } from "../shared/types";
+import type { AdminSite, Audit } from "../shared/types";
+import styles from "./admin.module.css";
+import { useAdminSession } from "./admin-context";
+import { type AdminView, adminCopy } from "./admin-copy";
+import { AdminAccounts, AdminActivity, AdminPagination, AdminSites } from "./admin-lists";
+import { AdminManagementDialogs } from "./admin-management-dialogs";
+import { AdminOverview, AdminStats } from "./admin-overview";
 import { useAdminController } from "./use-admin-controller";
 
-/** Renders administration tabs while the controller owns request and mutation state. */
-export function AdminPanel({
-	locale,
-	standalone = false,
-}: {
-	locale: Locale;
-	standalone?: boolean;
-}) {
-	const {
-		tab,
-		offset,
-		page,
-		counts,
-		users,
-		userMore,
-		usersLoaded,
-		usersError,
-		userLoading,
-		busy,
-		error,
-		notice,
-		reason,
-		setReason,
-		selected,
-		confirmation,
-		setConfirmation,
-		role,
-		setRole,
-		details,
-		selectedHeading,
-		detailsHeading,
-		native,
-		changeTab,
-		refresh,
-		openSiteDetails,
-		moderateSite,
-		openUser,
-		closeUser,
-		closeSiteDetails,
-		changePage,
-	} = useAdminController(locale);
-	const t = text[locale];
-	const Heading = standalone ? "h1" : "h2";
-	const CardHeading = standalone ? "h2" : "h3";
+/** Composes the selected route's administrative view while preserving existing request guards. */
+export function AdminPanel({ view }: { view: AdminView }) {
+	const { locale, user } = useAdminSession();
+	const c = useAdminController(locale, view === "overview" ? "sites" : view);
+	const [refreshVersion, setRefreshVersion] = useState(0);
+	const feedback = useRef<HTMLParagraphElement>(null);
+
+	// Announce completed actions after refreshed rows replace the original dialog opener.
+	useEffect(() => {
+		if (c.notice && !c.page.loading && !c.userLoading) feedback.current?.focus();
+	}, [c.notice, c.page.loading, c.userLoading]);
+	const t = adminCopy[locale];
+	const shared = text[locale];
+	const loading = view === "users" ? c.userLoading : c.page.loading;
+	const sites = (c.page.data?.items || []).filter((row): row is AdminSite => "slug" in row);
+	const events = (c.page.data?.items || []).filter((row): row is Audit => "action" in row);
+	const pageError = view === "users" ? c.usersError : c.page.error;
+	const description =
+		view === "overview"
+			? t.overviewDescription
+			: view === "sites"
+				? t.sitesDescription
+				: view === "users"
+					? t.usersDescription
+					: t.auditDescription;
+
+	/** Refreshes the current view, totals and the overview activity without changing route state. */
+	function refresh() {
+		c.refresh();
+		setRefreshVersion((value) => value + 1);
+	}
+
 	return (
-		<section
-			className={styles.panel}
-			dir={locale === "ar" ? "rtl" : "ltr"}
-			aria-busy={busy || (tab === "users" ? userLoading : page.loading)}
-		>
-			<Heading>{t.admin}</Heading>
-			{counts && (
-				<dl className={styles.counts}>
-					{(Object.keys(t.counts) as (keyof Counts)[]).map((key) => (
-						<div key={key}>
-							<dt>{t.counts[key]}</dt>
-							<dd>{counts[key]}</dd>
-						</div>
-					))}
-				</dl>
-			)}
-			<div className={styles.actions}>
-				{(["sites", "audit", "users"] as const).map((value) => (
-					<button
+		<section aria-busy={c.busy || loading}>
+			<header className={styles.pageHeader}>
+				<div>
+					<h1>{view === "overview" ? t.intro : t[view]}</h1>
+					<p>{description}</p>
+				</div>
+				<div className={styles.refreshArea}>
+					{c.updatedAt && (
+						<small>
+							{t.updated}{" "}
+							{new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" }).format(
+								c.updatedAt,
+							)}
+						</small>
+					)}
+					<TooltipButton
 						type="button"
-						key={value}
-						disabled={busy}
-						aria-pressed={tab === value}
-						onClick={() => changeTab(value)}
+						className={styles.iconButton}
+						aria-label={t.refresh}
+						hint={t.refresh}
+						disabled={c.busy || loading || c.countsLoading}
+						onClick={refresh}
 					>
-						{t[value]}
-					</button>
-				))}
-				<button type="button" disabled={busy || page.loading || userLoading} onClick={refresh}>
-					{t.reload}
-				</button>
-			</div>
-			{(error || (tab === "users" ? usersError : page.error)) && (
-				<p role="alert">{error || (tab === "users" ? usersError : page.error)}</p>
+						<RefreshCw size={17} className={loading || c.countsLoading ? "spin" : undefined} />
+					</TooltipButton>
+				</div>
+			</header>
+			{c.error && !c.details && !c.selected && (
+				<p className={styles.error} role="alert">
+					{c.error}
+				</p>
 			)}
-			{notice && <p role="status">{notice}</p>}
-			{(tab === "users" ? userLoading : page.loading) && <p role="status">{t.loading}</p>}
-			{tab === "sites" && (
-				<label>
-					{t.reason}
-					<textarea
-						maxLength={500}
-						minLength={3}
-						value={reason}
-						disabled={busy}
-						onChange={(e) => setReason(e.target.value)}
-					/>
-				</label>
+			{c.notice && (
+				<p className={styles.notice} role="status" ref={feedback} tabIndex={-1}>
+					{c.notice}
+				</p>
 			)}
-			{tab !== "users" &&
-				page.data?.items.map((row) =>
-					"slug" in row ? (
-						<article key={row.id} className={styles.card}>
-							<CardHeading dir="ltr">{row.slug}</CardHeading>
-							<p>
-								{row.suspended ? t.suspended : t.enabled} · {t.revision} {row.revision}
-							</p>
-							{row.suspensionReason && <p dir="auto">{row.suspensionReason}</p>}
-							<div className={styles.actions}>
-								<button type="button" disabled={busy} onClick={() => openSiteDetails(row)}>
-									{t.details}
-								</button>
-								<button
-									type="button"
-									disabled={busy || reason.trim().length < 3}
-									onClick={() => moderateSite(row)}
-								>
-									{row.suspended ? t.resume : t.suspend}
-								</button>
-							</div>
-						</article>
-					) : (
-						<article key={row.id} className={styles.card}>
-							<strong dir="ltr">{row.action}</strong>
-							<p>
-								{date(row.createdAt, locale)} ·{" "}
-								{row.status === "failed" ? t.failedStatus : t[row.status]}
-							</p>
-							<p dir="ltr">
-								{row.actorId} → {row.targetType}: {row.targetId}
-							</p>
-							{row.reason && <p dir="auto">{row.reason}</p>}
-						</article>
-					),
-				)}
-			{details && (
-				<article className={styles.card}>
-					<CardHeading dir="ltr" tabIndex={-1} ref={detailsHeading}>
-						{details.slug}
-					</CardHeading>
-					<p>
-						{t.counts.releases}: {details.releaseCount} · {t.counts.assets}: {details.assetCount} ·{" "}
-						{t.counts.inquiries}: {details.inquiryCount}
-					</p>
-					<button type="button" onClick={closeSiteDetails}>
-						{t.close}
-					</button>
-				</article>
-			)}
-			{tab === "users" &&
-				users.map((user) => (
-					<article key={user.id} className={styles.card}>
-						<CardHeading dir="auto">{user.name}</CardHeading>
-						<p dir="ltr">{user.email}</p>
-						<p dir="ltr">{user.id}</p>
-						<p>
-							{user.role === "admin" ? t.administrator : t.user} · {user.banned ? t.ban : t.enabled}
+			{view === "overview" ? (
+				<>
+					{c.countsError && (
+						<p className={styles.error} role="alert">
+							{c.countsError}
 						</p>
-						<button type="button" disabled={busy} onClick={() => openUser(user)}>
-							{t.manageUser}
-						</button>
-					</article>
-				))}
-			{tab === "users" && selected && (
-				<article className={styles.card}>
-					<div className={styles.actions}>
-						<CardHeading dir="auto" tabIndex={-1} ref={selectedHeading}>
-							{selected.name}
-						</CardHeading>
-						<button type="button" disabled={busy} onClick={closeUser}>
-							{t.close}
-						</button>
-					</div>
-					<p dir="ltr">{selected.id}</p>
-					<label>
-						{t.confirm}
-						<input
-							dir="ltr"
-							value={confirmation}
-							disabled={busy}
-							onChange={(e) => setConfirmation(e.target.value)}
+					)}
+					<AdminStats counts={c.counts} locale={locale} loading={c.countsLoading} />
+					<AdminOverview
+						locale={locale}
+						counts={c.counts}
+						sites={sites}
+						sitesLoading={loading}
+						sitesError={pageError}
+						busy={c.busy}
+						openSite={c.openSiteDetails}
+						activityVersion={`${refreshVersion}:${c.notice}`}
+					/>
+				</>
+			) : (
+				<>
+					{view === "sites" && (
+						<div className={styles.toolbar}>
+							<fieldset className={styles.filters} aria-label={t.siteFilter}>
+								{(
+									[
+										["all", t.allSites],
+										["accessible", t.accessibleSites],
+										["suspended", t.suspendedSites],
+									] as const
+								).map(([value, label]) => (
+									<button
+										key={value}
+										type="button"
+										aria-pressed={c.siteFilter === value}
+										disabled={c.busy || loading}
+										onClick={() => c.changeSiteFilter(value)}
+									>
+										{label}
+									</button>
+								))}
+							</fieldset>
+						</div>
+					)}
+					{view === "audit" && <p className={styles.caption}>{t.auditHelp}</p>}
+					<section className={styles.card} aria-label={t[view]}>
+						{loading ? (
+							<p role="status" className={styles.skeleton}>
+								{shared.loading}
+							</p>
+						) : pageError ? (
+							<p className={styles.error} role="alert">
+								{pageError}
+							</p>
+						) : view === "users" ? (
+							<AdminAccounts users={c.users} locale={locale} busy={c.busy} open={c.openUser} />
+						) : view === "sites" ? (
+							<AdminSites sites={sites} locale={locale} busy={c.busy} open={c.openSiteDetails} />
+						) : (
+							<AdminActivity items={events} locale={locale} />
+						)}
+						<AdminPagination
+							locale={locale}
+							count={view === "users" ? c.users.length : c.page.data?.items.length || 0}
+							offset={c.offset}
+							more={view === "users" ? c.userMore : Boolean(c.page.data?.hasMore)}
+							disabled={c.busy || loading}
+							change={c.changePage}
 						/>
-					</label>
-					<label>
-						{t.reason}
-						<textarea
-							value={reason}
-							disabled={busy}
-							maxLength={500}
-							onChange={(e) => setReason(e.target.value)}
-						/>
-					</label>
-					<div className="field">
-						{t.role}
-						<SelectControl
-							label={t.role}
-							value={role}
-							disabled={busy}
-							onChange={(value) => setRole(value as "admin" | "user")}
-							options={[
-								{ value: "user", label: t.user },
-								{ value: "admin", label: t.administrator },
-							]}
-						/>
-					</div>
-					<div className={styles.actions}>
-						{([selected.banned ? "unban" : "ban", "revoke", "role"] as const).map((action) => (
-							<button
-								type="button"
-								key={action}
-								disabled={
-									busy ||
-									confirmation !== selected.id ||
-									(action === "ban" && reason.trim().length < 3)
-								}
-								onClick={() => native(action)}
-							>
-								{action === "role" ? t.setRole : t[action]}
-							</button>
-						))}
-					</div>
-				</article>
+					</section>
+				</>
 			)}
-			{(tab === "users"
-				? usersLoaded && !userLoading && users.length === 0
-				: page.data?.items.length === 0) && <p>{t.empty}</p>}
-			<Pager
-				count={tab === "users" ? users.length : page.data?.items.length || 0}
-				offset={offset}
-				hasMore={tab === "users" ? userMore : Boolean(page.data?.hasMore)}
-				disabled={busy || (tab === "users" ? userLoading : page.loading)}
-				locale={locale}
-				change={changePage}
-			/>
+			<AdminManagementDialogs controller={c} locale={locale} currentUserId={user.id} />
 		</section>
 	);
 }
