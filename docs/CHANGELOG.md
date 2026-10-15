@@ -364,3 +364,8 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Landing page means the public entry before authentication: product introduction and signup/signin calls to action, preserving FolioCraft identity. Do not confuse it with the editor or a published user's portfolio.
 - These are newly requested tasks, not completed fixes. Reproduce upload/delete failures in the hosted trial before claiming a cause; preserve image ownership and retained-release reference guards. Changing the default UI language must not translate/overwrite existing user drafts.
 - Current source and remote main b67c23c match except the known generated next-env.d.ts build difference. Latest trial web fee5d122-d173-4dc9-8ea1-f4538807e8c8, API970d67cc-4caa-4ab8-aac7-b73c034989a2. JSON restore acceptance is complete; see STATUS/CLOUDFLARE for evidence and remaining broader limitations.
+
+## 2026-10-15 — hosted media and product entry correction scope
+- Scope: reproduce and fix trial image upload/delete reports with actual provider evidence; retain ownership and all release-reference protections; clarify draft removal versus original deletion. Correct auth back arrows, default application UI to English without changing portfolio data, and improve the bilingual responsive pre-auth product introduction.
+- Plan: diagnose media first, implement focused changes with local/provider/browser verification, rebuild and update the authorized friends trial, then push granular commits through the independent checkout. No schema reset, paid provider upgrade or real-account content changes.
+- Initial state: independent checkout HEAD6f2fe0f; only known generated next-env.d.ts difference. Runtime state and hosted failure mechanism are under investigation.
