@@ -1,9 +1,11 @@
 import type { Locale } from "@folio/contracts";
-import { ArrowUpRight, Check, ChevronLeft, LoaderCircle, Sparkles } from "lucide-react";
-import type { FormEvent, ReactNode } from "react";
+import { LinkArrow } from "@folio/portfolio";
+import { ChevronLeft, ChevronRight, LoaderCircle } from "lucide-react";
+import { type FormEvent, type ReactNode, useEffect, useRef } from "react";
 import { Brand } from "../../components/ui/brand";
 import { Field } from "../../components/ui/field";
 import { copy } from "./copy";
+import { LandingDetails, LandingShowcase } from "./landing-showcase";
 export function WelcomeScreen({
 	locale,
 	localeControl,
@@ -24,50 +26,56 @@ export function WelcomeScreen({
 	authenticate: (event: FormEvent<HTMLFormElement>) => Promise<void>;
 }) {
 	const t = copy[locale];
+	const formArea = useRef<HTMLElement>(null);
+	useEffect(() => {
+		if (authMode) {
+			formArea.current?.scrollIntoView({ block: "nearest" });
+			formArea.current?.querySelector<HTMLInputElement>("input")?.focus({ preventScroll: true });
+		}
+	}, [authMode]);
 	return (
 		<div className="welcome-page">
 			<header className="welcome-header">
 				<Brand />
-				{localeControl}
+				<nav
+					className="welcome-nav"
+					aria-label={locale === "ar" ? "القائمة الرئيسية" : "Main navigation"}
+				>
+					<a className="welcome-how" href="#how-it-works">
+						{locale === "ar" ? "كيف يعمل" : "How it works"}
+					</a>
+					{localeControl}
+					<button type="button" className="secondary" onClick={() => setAuthMode("login")}>
+						{t.login}
+					</button>
+				</nav>
 			</header>
-			<main className="welcome-main">
-				<div className="welcome-story">
-					<span className="eyebrow">
-						<span className="tiny-dot" />
-						{t.eyebrow}
-					</span>
-					<h1>{t.tagline}</h1>
-					<p>{t.intro}</p>
-					<div className="journey">
-						<small>{t.journey}</small>
-						{[t.stepOne, t.stepTwo, t.stepThree].map((label, index) => (
-							<span key={label}>
-								<b>0{index + 1}</b>
-								{label}
-								<Check size={16} />
-							</span>
-						))}
-					</div>
-				</div>
-				<section className="auth-card">
-					{!authMode ? (
-						<>
-							<span className="large-mark">
-								<Sparkles size={30} />
-							</span>
-							<h2>{t.authIntro}</h2>
-							<p>{t.authText}</p>
-							<button type="button" className="primary wide" onClick={() => setAuthMode("signup")}>
+			<main>
+				<div className="welcome-main">
+					<div className="welcome-story">
+						<span className="eyebrow">
+							<span className="tiny-dot" />
+							{t.eyebrow}
+						</span>
+						<h1>{t.tagline}</h1>
+						<p>{t.intro}</p>
+						<div className="landing-actions">
+							<button type="button" className="primary" onClick={() => setAuthMode("signup")}>
 								{t.signup}
-								<ArrowUpRight size={18} />
+								<LinkArrow locale={locale} />
 							</button>
-							<button type="button" className="secondary wide" onClick={() => setAuthMode("login")}>
-								{t.login}
-							</button>
-							<small className="auth-privacy">{t.privacy}</small>
-						</>
+							{!authMode && (
+								<a className="text-button" href="#example">
+									{locale === "ar" ? "جرّب القالب" : "Explore the template"}
+								</a>
+							)}
+						</div>
+						<p className="landing-note">{t.privacy}</p>
+					</div>
+					{!authMode ? (
+						<LandingShowcase locale={locale} />
 					) : (
-						<>
+						<section className="auth-card" ref={formArea} id="get-started">
 							<button
 								type="button"
 								className="text-button"
@@ -76,7 +84,7 @@ export function WelcomeScreen({
 									setAuthError("");
 								}}
 							>
-								<ChevronLeft size={16} />
+								{locale === "ar" ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
 								{t.back}
 							</button>
 							<h2>{authMode === "signup" ? t.signup : t.login}</h2>
@@ -125,9 +133,10 @@ export function WelcomeScreen({
 							>
 								{authMode === "signup" ? t.switchLogin : t.switchSignup}
 							</button>
-						</>
+						</section>
 					)}
-				</section>
+				</div>
+				<LandingDetails locale={locale} onStart={() => setAuthMode("signup")} />
 			</main>
 			<footer className="welcome-footer">
 				<span>FolioCraft © 2026</span>
