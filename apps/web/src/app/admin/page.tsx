@@ -7,7 +7,7 @@ import { authClient } from "../../lib/api";
 
 /** Administration remains accessible without creating a personal portfolio. */
 export default function Administration() {
-	const [locale, setLocale] = useState<Locale>("ar");
+	const [locale, setLocale] = useState<Locale>("en");
 	const { data: session, isPending, error } = authClient.useSession();
 	const admin = session?.user.role?.split(",").includes("admin");
 	return (
