@@ -72,3 +72,9 @@ Private evidence remains in ignored `work/worker-http-evidence.json`, `work/work
 
 ## JSON restore frontend update — 2026-10-15
 Frontend rebuilt and redeployed after five focused parser tests, typechecks/Biome and guarded local browser restoration/cancel/ownership/persistence/public-isolation proof. Root, existing public portfolio and new client chunk returned200 through curl; new restore labels were present in the deployed chunk. Authenticated hosted restoration was not repeated on the real owner account. No API deployment, secret update or schema change. Local fixture cleanup removed2 generated users with0 remaining. See STATUS for precise evidence and remaining general-launch limits.
+
+## Local-only media investigation — 2026-10-15
+- No new deployment. The human explicitly chose local-only work; prior versions above remain authoritative. Automatic review rejected a deployment and later a hosted-copy diagnostic; neither executed.
+- Initial bounded disposable fixture before that decision: authenticated intent200, generated PNG PUT200, completion502 STORAGE_PROVIDER_ERROR. Local workerd subsequently read the same staging bytes with HEAD200/GET200;174 bytes matched. Local Images decoded48x48. Exact hosted phase remains unknown; no claim that Images billing, CORS or any particular S3 operation caused it.
+- Source adds safe storage phase/code diagnostics without signed URLs/keys/provider messages. These remain undeployed. Local UI/guarded lifecycle proof covers removal, deletion cleanup and retained releases with simulated storage transport; it is not live hosted upload/delete acceptance.
+- Future authorized rollout must update API before web for the additive optional visual fields; old API parsing may discard new appearance preferences. No DDL migration or secret transfer is needed for these source changes. Complete live decoding/copy/render and bounded deletion/fixture cleanup before marking hosted media accepted.
