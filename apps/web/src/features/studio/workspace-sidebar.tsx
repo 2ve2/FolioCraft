@@ -1,6 +1,7 @@
 import type { Locale } from "@folio/contracts";
 import { FileText, LogOut, Palette, Settings2 } from "lucide-react";
 import { Brand } from "../../components/ui/brand";
+import { TooltipButton } from "../../components/ui/tooltip-button";
 import { copy } from "./copy";
 import type { Section } from "./types";
 export function WorkspaceSidebar({
@@ -24,16 +25,16 @@ export function WorkspaceSidebar({
 	return (
 		<aside className="sidebar">
 			<Brand />
-			<button
+			<TooltipButton
 				type="button"
 				className="mobile-logout icon-button"
 				aria-label={t.logout}
-				title={t.logout}
+				hint={t.logout}
 				onClick={() => void logout()}
 				disabled={busy}
 			>
 				<LogOut size={18} />
-			</button>
+			</TooltipButton>
 			<div className="workspace-label">{t.workspace}</div>
 			<nav aria-label={t.workspace}>
 				{(
@@ -74,16 +75,16 @@ export function WorkspaceSidebar({
 						<b>{user.name}</b>
 						<small dir="ltr">{user.email}</small>
 					</span>
-					<button
+					<TooltipButton
 						type="button"
 						className="icon-button"
 						aria-label={t.logout}
-						title={t.logout}
+						hint={t.logout}
 						onClick={() => void logout()}
 						disabled={busy}
 					>
 						<LogOut size={17} />
-					</button>
+					</TooltipButton>
 				</div>
 			</div>
 		</aside>
