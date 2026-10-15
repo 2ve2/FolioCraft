@@ -176,6 +176,8 @@ export const appearanceSchema = z.object({
 	size: z.enum(["small", "medium", "large"]),
 	accent: z.enum(["violet", "blue", "green", "rose"]),
 	projectsVisible: z.boolean(),
+	profileVisualVisible: z.boolean().optional(),
+	projectFallbackVisible: z.boolean().optional(),
 });
 const uniqueIds = (items: { id: string }[]) =>
 	new Set(items.map((item) => item.id)).size === items.length;
