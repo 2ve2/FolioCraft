@@ -1,0 +1,62 @@
+.bubble {
+	position: fixed;
+	z-index: 1200;
+	width: max-content;
+	max-width: min(260px, calc(100vw - 24px));
+	padding: 9px 13px;
+	border: 1px solid #725694;
+	border-radius: 9px;
+	background: #30213f;
+	color: #fff;
+	box-shadow: 0 6px 20px #35214526;
+	font-family: "Noto Sans Arabic Variable", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.7;
+	text-align: start;
+	overflow-wrap: anywhere;
+	pointer-events: auto;
+	animation: appear 120ms ease-out;
+}
+.bubble::after {
+	content: "";
+	position: absolute;
+	left: var(--tip-arrow);
+	width: 7px;
+	height: 7px;
+	background: #30213f;
+	transform: translateX(-50%) rotate(45deg);
+}
+.bubble[data-side="top"]::after {
+	bottom: -4px;
+	border-right: 1px solid #725694;
+	border-bottom: 1px solid #725694;
+}
+.bubble[data-side="bottom"]::after {
+	top: -4px;
+	border-left: 1px solid #725694;
+	border-top: 1px solid #725694;
+}
+@keyframes appear {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.bubble {
+		animation: none;
+	}
+}
+@media (forced-colors: active) {
+	.bubble {
+		background: Canvas;
+		color: CanvasText;
+		border-color: CanvasText;
+	}
+	.bubble::after {
+		display: none;
+	}
+}
