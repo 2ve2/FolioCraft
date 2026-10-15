@@ -1,6 +1,7 @@
 import type { Article, Project } from "@folio/contracts";
 import { copy } from "./copy";
 import { readingTime, safeHttpUrl } from "./format";
+import { LinkArrow } from "./link-arrow";
 import { Portfolio } from "./portfolio";
 import { Gallery, RichContent } from "./rich-content";
 import type { PortfolioProps } from "./types";
@@ -76,8 +77,13 @@ export function PortfolioDetail({
 					)}
 					{project && <Gallery project={project} assetUrls={assetUrls} />}
 					{url && (
-						<a className="folio__project-link" href={url} target="_blank" rel="noopener noreferrer">
-							{t.visit} ↗
+						<a
+							className="folio__arrow-link folio__project-link"
+							href={url}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{t.visit} <LinkArrow locale={draft.locale} />
 						</a>
 					)}
 				</section>
