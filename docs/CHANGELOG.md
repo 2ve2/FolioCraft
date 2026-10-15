@@ -411,3 +411,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Scope: correct only invitation CTA sizing/spacing and tablet padding/gaps, retain the signup route, English/Arabic and surrounding layout. Verify tablet/breakpoint/phone/desktop geometry and actual signup navigation. Local-only; no deployment or GitHub push.
 
 - Completed the invitation link selector correction, nonshrinking48px action, nowrap label and tablet spacing; flexible text preserves independent layout. Biome206 passes and real local20-case locale/width geometry matrix has no overlap/overflow. Bottom signup click reaches its independent route. Viewport reset/tab closed; no new tests/build, provider action or account mutation.
+
+## 2026-10-16 — normal local sign-in runtime
+- Human clarified that normal account sign-in is required. Started the existing development configuration on localhost3000/4000 against the project's configured database instead of folio_test. Login/session/readiness HTTP200; readiness confirms database reachability and configured storage/disabled mail. Open requested for /login. No source/env/migration/account/provider change or deployment/push; services remain running for human inspection.

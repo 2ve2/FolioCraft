@@ -1,5 +1,11 @@
 # Current status
 
+## Normal local development handoff — 2026-10-16
+- Human requested normal local sign-in instead of the isolated QA database. Started the existing unmodified development commands using apps/api/.env and apps/web/.env.local: web localhost:3000, API localhost:4000. The API connects to the existing configured project Neon database, not folio_test; no migrations, account writes, credential changes or provider storage operations performed by the agent.
+- Actual checks: GET localhost:3000/login200; native get-session200 with the matching localhost:3000 Origin; GET localhost:4000/ready200/status true, storage configured/mail disabled. This proves process/database reachability, not successful user sign-in or live media/mail acceptance. User performs their own sign-in at http://localhost:3000/login; browser opening requested. The old4300/4400 pair is QA-only and must not be presented as the normal account environment.
+- Active work/blockers: none for starting normal local development. Services left running; no source/env changes, deployment or GitHub push. Earlier hosted-media and push-approval limitations remain. Next action: human sign in and inspect the normal local application.
+
+
 ## Bottom signup CTA tablet layout — 2026-10-16
 - Corrected the bottom landing invitation action after its conversion from button to signup link left a stale button-only no-shrink selector. At820px the original label wrapped to two lines with69px height; the corrected link remains one line at48px height with stable padding. Invitation text can shrink independently; tablet padding36px/gap24px retain space around the action, and the existing phone column remains.
 - Changed only apps/web/src/styles/landing.css. Biome206 files passes. Actual Chromium geometry verified English and Arabic at320/390/720/721/768/820/970/971/1024/1440px:48px button height, contained in the card, no text overlap or horizontal document overflow. Actual English bottom-link click opens /signup?lang=en. Screenshot/evidence: work/tablet-cta/. These are viewport checks, not physical iPad certification; no new build/API test was required for this CSS-only change.
