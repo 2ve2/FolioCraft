@@ -25,6 +25,28 @@ describe("downloaded draft restoration", () => {
 		expect(restored.articles).toEqual([]);
 		expect(restored.profile.socialLinks).toEqual([]);
 	});
+	test("legacy project restore clears rich text and gallery fields retained by old-client merge", async () => {
+		const draft = emptyDraft("en");
+		draft.projects = [
+			{
+				id: "e3fe6a82-6e4b-4e37-9306-45e2f0cf57fa",
+				title: "Original project",
+				summary: "",
+				body: "Original plain text",
+				role: "",
+				year: "",
+				tools: "",
+				url: "",
+				coverAssetId: null,
+			},
+		];
+		const restored = await readDraftBackup(backup(draft));
+		expect(restored.projects[0].body).toBe("Original plain text");
+		expect(restored.projects[0].richBody).toEqual([]);
+		expect(restored.projects[0].galleryAssetIds).toEqual([]);
+		expect(restored.projects[0].featured).toBe(false);
+		expect(restored.sectionVisibility?.skills).toBe(true);
+	});
 	test("rejects unsupported versions, malformed JSON and unsafe content", async () => {
 		await expect(
 			readDraftBackup(backup({ ...emptyDraft("en"), schemaVersion: 2 })),
