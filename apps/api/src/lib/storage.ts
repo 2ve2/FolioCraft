@@ -16,19 +16,20 @@ export { validateImageBytes };
 
 /** Converts provider errors into safe, stable domain failures while preserving intentional errors. */
 function providerError(error: unknown, stage: string): never {
-	if (error instanceof ApiError) throw error;
 	const value = error as { name?: string; $metadata?: { httpStatusCode?: number } };
 	// Never log provider messages, object keys, signed URLs or credentials.
 	console.warn(
 		JSON.stringify({
 			event: "storage_provider_failure",
 			stage,
+			code: error instanceof ApiError ? error.code : null,
 			kind: ["TypeError", "NoSuchKey", "AccessDenied", "TimeoutError"].includes(value.name ?? "")
 				? value.name
 				: "provider",
 			status: value.$metadata?.httpStatusCode ?? null,
 		}),
 	);
+	if (error instanceof ApiError) throw error;
 	if (value.$metadata?.httpStatusCode === 404 || value.name === "NoSuchKey")
 		throw new ApiError(409, "UPLOAD_NOT_FOUND");
 	if (value.$metadata?.httpStatusCode === 412) throw new ApiError(409, "UPLOAD_CHANGED");
