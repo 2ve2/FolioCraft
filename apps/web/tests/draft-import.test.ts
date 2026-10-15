@@ -14,8 +14,18 @@ describe("downloaded draft restoration", () => {
 		draft.appearance.theme = "dark";
 		const restored = await readDraftBackup(backup(draft));
 		expect(restored.profile).toEqual({ ...draft.profile, socialLinks: [], imageAssetId: null });
-		expect(restored.appearance).toEqual(draft.appearance);
+		expect(restored.appearance).toEqual({
+			...draft.appearance,
+			profileVisualVisible: true,
+			projectFallbackVisible: true,
+		});
 		expect(restored.locale).toBe("ar");
+	});
+	test("explicit hidden visuals survive backup restoration", async () => {
+		const draft = emptyDraft("en");
+		draft.appearance.profileVisualVisible = false;
+		draft.appearance.projectFallbackVisible = false;
+		expect((await readDraftBackup(backup(draft))).appearance).toEqual(draft.appearance);
 	});
 	test("legacy exports explicitly clear absent optional content collections", async () => {
 		const restored = await readDraftBackup(backup(emptyDraft("en")));
