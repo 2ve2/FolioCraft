@@ -1,9 +1,12 @@
 # Project handoff
 
-## Requested new project chat — 2026-10-15
-- Work next on hosted image upload/delete failures, login/signup back arrow direction, English application default, and pre-auth product landing page polish. Human explicitly requested this new chat. These tasks are not yet implemented or verified.
-- Reproduce image failures and preserve ownership, immutable public release references, exact-byte validation and truthful errors. Use only guarded folio_test for database suites; live trial probes must be bounded and preserve real accounts/content. Existing portfolio locale/persona must remain unchanged when changing UI default.
-- Read current STATUS/CLOUDFLARE/DECISIONS and AGENTS before work. Canonical source is the project root; independent Git checkout work/github-upload is the only staging/push location. One completed change/file per commit, English Markdown only, no subagents unless authorized.
+## Current continuation — 2026-10-15
+- Local product-entry/media-UX/optional-visual/tooltip corrections are implemented and checked; see STATUS for evidence. All updates are committed only through work/github-upload, with explicit canonical-source synchronization. Never stage the home repository. Generated next-env.d.ts remains excluded.
+- Human chose local-only work: do not deploy Cloudflare or mutate hosted storage. Existing deployment is unchanged. Initial hosted upload reproduced PUT200 followed by completion502 STORAGE_PROVIDER_ERROR; root cause and hosted deletion acceptance remain unresolved. Source-only stage diagnostics will require future explicit deployment authorization. Do not claim the uploader is fixed on the hosted trial.
+- New optional appearance fields profileVisualVisible/projectFallbackVisible preserve existing behavior when absent, retain image references and use the shared renderer. Old JSON restores normalize both to true; explicit false survives. No DDL migration. Future rollout must update API before web so old API validation cannot strip new preferences.
+- Shared TooltipButton covers logout/remove/accent controls with custom violet styling, keyboard description, Escape and bounded RTL placement. Shared LinkArrow standardizes16px SVG/8px gaps. React hooks remain; Query/Zustand was discussion only.
+- Verification: local API18/851, source web tests7/85, both typechecks, Biome177 and final independent-checkout OpenNext build pass. Actual local browser covered onboarding, locale separation, saved optional visuals, tooltip focus/Escape/RTL and real logout; image UI transport was explicitly a local fixture. Source renderer tests cover both locales/three themes and real-cover retention. See private work/media-fix/ and work/media-ui/.
+- Finish current documentation/push and inspect fixture cleanup evidence before handing off. Keep generated hosted fixture identity metadata private for later authorized cleanup; remove temporary cookies/passwords/dev-vars. Broader mail/hosted-media/device/operations launch gates remain open.
 
 ## Current feature handoff — 2026-10-15
 - JSON draft restore completed and deployed to the Cloudflare testing frontend, versionfee5d122-d173-4dc9-8ea1-f4538807e8c8. Human can refresh and use Settings > Restore draft from JSON. Existing public release/address remain unchanged until a separate publication.
