@@ -1,5 +1,10 @@
 # Project handoff
 
+## Requested new project chat — 2026-10-15
+- Work next on hosted image upload/delete failures, login/signup back arrow direction, English application default, and pre-auth product landing page polish. Human explicitly requested this new chat. These tasks are not yet implemented or verified.
+- Reproduce image failures and preserve ownership, immutable public release references, exact-byte validation and truthful errors. Use only guarded folio_test for database suites; live trial probes must be bounded and preserve real accounts/content. Existing portfolio locale/persona must remain unchanged when changing UI default.
+- Read current STATUS/CLOUDFLARE/DECISIONS and AGENTS before work. Canonical source is the project root; independent Git checkout work/github-upload is the only staging/push location. One completed change/file per commit, English Markdown only, no subagents unless authorized.
+
 ## Current feature handoff — 2026-10-15
 - JSON draft restore completed and deployed to the Cloudflare testing frontend, versionfee5d122-d173-4dc9-8ea1-f4538807e8c8. Human can refresh and use Settings > Restore draft from JSON. Existing public release/address remain unchanged until a separate publication.
 - Five tests/18 assertions, both typechecks, Biome171 files, final OpenNext build and isolated browser acceptance passed. Confirm/cancel, malformed JSON, invalid asset references, reload persistence and legacy rich-body replacement were exercised. Hosted root/public/chunk200 and restore-label proof passed. Do not claim hosted authenticated restoration or broader launch acceptance.
