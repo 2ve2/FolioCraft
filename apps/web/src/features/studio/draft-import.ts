@@ -22,6 +22,11 @@ export async function readDraftBackup(file: Pick<File, "name" | "size" | "text">
 	// Older exports omit optional collections; restoring them must clear those sections.
 	const restored: Draft = {
 		...draft,
+		appearance: {
+			...draft.appearance,
+			profileVisualVisible: draft.appearance.profileVisualVisible ?? true,
+			projectFallbackVisible: draft.appearance.projectFallbackVisible ?? true,
+		},
 		profile: {
 			...draft.profile,
 			socialLinks: draft.profile.socialLinks ?? [],
