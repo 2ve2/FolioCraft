@@ -67,7 +67,8 @@ apps/web/src/
     studio/
       studio.tsx               Screen state and workspace section composition
       use-studio-controller.ts Draft loading/recovery/saving and site operations
-      welcome-screen.tsx       Sign-in and sign-up screens
+      welcome-screen.tsx       Product entry, sign-in and sign-up screens
+      landing-showcase.tsx     Fictional shared-template demo and product explanation
       onboarding-screen.tsx    First site creation
       loading-screen.tsx       Loading and recoverable errors
       workspace-sidebar.tsx    Workspace and account navigation
@@ -152,3 +153,8 @@ Comparison material and temporary copies in `work/structure-refactor` are eviden
 
 ## Draft backup restoration
 `features/studio/draft-import.ts` reads bounded JSON files and validates/normalizes current and older schemaVersion1 exports. Settings owns local file selection and visible confirmation/cancellation; use-studio-controller serializes restoration with earlier saves and accepts the server result only for the same session. Existing owned revisioned PUT draft remains authoritative for asset ownership and conflicts. No new import backend route or migration. Tests are in apps/web/tests/draft-import.test.ts.
+
+## Local UI additions — 2026-10-15
+- components/ui/tooltip-button.tsx and its CSS module own custom button hints; do not add parallel native title popups to covered controls. packages/portfolio/src/link-arrow.tsx supplies the shared text-action SVG.
+- Optional visual choices belong to the shared appearance contract and renderer; draft-import.ts normalizes old intentional backups. Assets remain referenced even when their visual is hidden, so lifecycle protection is not bypassed.
+- tests/assets.integration.test.ts uses real guarded PostgreSQL/HTTP with explicitly simulated storage transport. Web renderer/import tests are under apps/web/tests. These are separate from actual hosted provider acceptance.
