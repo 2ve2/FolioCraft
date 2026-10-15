@@ -150,3 +150,9 @@ Human-confirmed: all project Markdown must be entirely in English, including exa
 - Human-confirmed: populate actual domain folders, including administrator routes, remove obsolete empty scaffolding, and make functions understandable with descriptions and separation. Preserve product behavior; local-only deployment boundary remains.
 - Engineering choice: API admin/sites/public route indexes; site/admin services; auth/storage helper groups. Web profile/projects sections, separate administration controller and shared management helpers; seven shared portfolio sections. Exact directory names are implementation choices, not separately human-confirmed.
 - Keep coupled draft/session/recovery/publication transitions in one controller; split presentation and pure formatting instead. Renderer108-case and admin-action AST8-case comparisons plus existing tests guard preservation. No schema/dependency change.
+
+## 2026-10-16 — independent authentication and explicit template preview
+- Human-confirmed: /login and /signup are independent pages; their forms must not replace the landing example inside the introduction. Share the visual identity and retain both languages.
+- Engineering choice: a dedicated auth feature owns form requests/state; existing Studio keeps coupled workspace operations. A shared URL-based interface locale follows entry/auth/workspace navigation while English remains the default and portfolio content locale remains independent.
+- Human reported that Explore the template appeared ineffective. Engineering choice: reuse the existing expanded shared preview instead of an anchor to an already visible sibling. This changes only the landing action; the example is still explicitly fictional and inquiries remain disabled.
+- Local acceptance recorded in STATUS. No new deployment or GitHub destination approval was provided.

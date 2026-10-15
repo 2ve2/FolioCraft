@@ -95,6 +95,10 @@ apps/web/src/
   app/                           Thin routes, metadata and layout
   components/ui/                 Shared controls, TooltipButton and local styles
   features/
+    auth/
+      auth-screen.tsx            Dedicated login/signup presentation
+      use-auth-controller.ts     Native auth requests and workspace redirect
+      auth.module.css            Responsive standalone auth layout
     studio/
       studio.tsx                 Screen and workspace composition
       use-studio-controller.ts   Session, recovery, save and publication coordination
@@ -106,7 +110,7 @@ apps/web/src/
         projects-section.tsx     Project editor
         appearance-section.tsx   Appearance controls
         settings-section.tsx     Address and backup settings
-      welcome-screen.tsx         Authentication entry
+      welcome-screen.tsx         Product landing and independent auth-route links
       landing-showcase.tsx       Fictional shared-template example
       onboarding-screen.tsx      First-site creation
       workspace-*.tsx            Navigation, header and preview frame
@@ -130,7 +134,7 @@ apps/web/src/
         copy.ts, types.ts        Management copy and resource contracts
         management.module.css   Shared management styles
     portfolio/                   Preview integration and public inquiry form
-  lib/                           API/auth clients and public metadata
+  lib/                           API/auth clients, public metadata and interface-locale hook
   styles/                        Ordered global styles
 ```
 
@@ -180,3 +184,9 @@ When adding a feature, update the shared contract first, then its owned route/se
 Use Bun from the root: `bun run check`, `bun run typecheck`, `bun run test`, and the documented web tests/build. The root database wrapper rejects production/remote databases. For a local fixture use `bun run test --admin-browser`; point both `API_URL` and `NEXT_PUBLIC_API_URL` at its local origin. `FOLIO_QA_BUILD=1` isolates web build output.
 
 This refactor retained 108 deterministic renderer outputs and eight extracted administrative action AST bodies. Ordered CSS rules match, with only a blank newline at the extracted landing-file boundary. Test/build/browser evidence is recorded in STATUS/CHANGELOG; it does not establish hosted provider acceptance. Private comparison material is in `work/source-organization/`.
+
+## Authentication entry routes
+
+`app/login/page.tsx` and `app/signup/page.tsx` mount the shared auth feature with a fixed mode. WelcomeScreen contains only product introduction, example and links. Auth requests do not belong in the workspace save controller. `lib/use-interface-locale.ts` reads/updates the `lang` URL parameter and document direction; its readiness guard prevents authenticated redirects from losing the requested language. This is interface state, never portfolio draft content.
+
+Explore the template opens ExpandedPortfolioPreview through WelcomeScreen state; LandingShowcase supplies the same fictional draft/theme used by its inline preview. Reuse the modal focus/Escape/scroll handling instead of implementing a second overlay.

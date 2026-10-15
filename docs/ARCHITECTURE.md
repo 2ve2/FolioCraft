@@ -69,3 +69,6 @@ The authorized Cloudflare-only trial runs the independent API as a Hono Worker a
 
 ## Current measured UI and discovery
 Self-hosted fonts, type/spacing tokens and actual-size private preview are described in DESIGN_SYSTEM.md. Metadata/canonical/share current available covers consume published projection only. Cursor-based public slug/date discovery reuses moderation eligibility, XML index and per-site sitemap avoid private/draft pages. No-store retained. Database server statement deadline and separate client read deadline prevent silent unbounded wait;503 errors retain truthful failure semantics, not replay success. See STATUS for actual evidence and limits.
+
+## Independent authentication pages — 2026-10-16
+The product introduction links to /login and /signup. Their shared auth feature owns native Better Auth requests, visible request feedback and authenticated workspace redirects. Studio owns session-aware workspace composition and coupled saves, without embedded credential forms. URL interface locale is independent of saved portfolio locale. The landing template action reuses the shared native expanded-preview modal; fictional content never becomes a published site.

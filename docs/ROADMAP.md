@@ -68,3 +68,9 @@ Custom domains; actual aggregate analytics; subscriptions; imports; AI assistanc
 - [x] Separate profile/projects editors, admin view/controller, management utilities, image preview and shared portfolio sections.
 - [x] Add function descriptions/separation, remove obsolete empty web scaffolding and rewrite the actual source map.
 - [x] Preserve108 renderer outputs, eight admin action bodies, CSS rule order; pass existing API/web tests, typechecks and independent builds with local browser checks.
+
+## Authentication page separation — 2026-10-16
+- [x] Independent /login and /signup routes, real landing/home/mode links and separate auth ownership.
+- [x] Preserve translated credentials/errors and route locale; verify real guarded local signup/login and workspace entry.
+- [x] Give Explore the template an explicit expanded shared preview; verify both locales,390px layout, project navigation, Close/Escape/focus restoration.
+- [x] Typechecks, Biome, web tests and final Next/OpenNext build pass; local fixture cleanup confirmed.
