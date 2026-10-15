@@ -73,8 +73,11 @@
 	}
 	.studio-shell .mobile-logout {
 		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		flex: 0 0 44px;
 		margin-inline-start: auto;
-		flex-shrink: 0;
 	}
 	.studio-shell .sidebar nav {
 		width: 100%;
