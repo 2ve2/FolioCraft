@@ -74,3 +74,9 @@ Custom domains; actual aggregate analytics; subscriptions; imports; AI assistanc
 - [x] Preserve translated credentials/errors and route locale; verify real guarded local signup/login and workspace entry.
 - [x] Give Explore the template an explicit expanded shared preview; verify both locales,390px layout, project navigation, Close/Escape/focus restoration.
 - [x] Typechecks, Biome, web tests and final Next/OpenNext build pass; local fixture cleanup confirmed.
+
+## Independent administration acceptance — 2026-10-16
+- [x] Separate product landing, personal /studio and /admin child routes; retain administrator-only access and shared login return.
+- [x] Replace raw embedded administration with responsive navigation, real resource overview, bounded account/site/audit views, server filters and focused management dialogs.
+- [x] Verify native confirmations, self-account protections, site moderation, session revocation/audit, RTL/mobile menu focus and save-before-administration behavior on isolated accounts.
+- [x] Existing API/web tests, typechecks, Biome and final independent build pass; clean temporary accounts and leave normal localhost development ready for human review.

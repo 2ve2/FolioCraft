@@ -25,3 +25,8 @@ Desktop>=971px uses independently scrolling editor and preview beneath a fixed a
 
 ## Landing invitation action — 2026-10-16
 The bottom signup route link uses a nonshrinking48px minimum height,12px/22px vertical/horizontal padding and a single-line label. Its text sibling flexes with min-width0. Invitation card padding/gap is36px/24px at tablet widths through970px; existing phone rules below721px stack the text and action with28px/24px card padding and16px gap. Target the direct .primary action rather than its HTML element type, since navigation uses a link. Verified in both locales across320–1440px viewport samples.
+
+## Independent administration dashboard — 2026-10-16
+Administration uses a white236px navigation rail, a quiet cool background, violet active navigation, an85px desktop topbar and36px content spacing. Overview cards show actual totals with32px-scale numerals; resource/record cards have14px radii and restrained borders. Captions/metadata use13px, with larger section/page titles. Mobile/tablet navigation becomes a top row at970px; record tables become labelled stacked rows at600px. Language, Studio and sign-out remain available on small screens.
+
+Compact refresh uses the existing accessible tooltip, not a large competing primary action. Management uses a native modal, bounded viewport/scroll, matching account ID confirmation, required reasons and distinct destructive/secondary actions. Native dialog Escape/focus rules also apply to role menus through their dialog-local portal. No decorative charts or fabricated metrics. Actual viewport/browser evidence and limits are in STATUS.

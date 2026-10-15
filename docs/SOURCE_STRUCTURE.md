@@ -110,6 +110,7 @@ apps/web/src/
         projects-section.tsx     Project editor
         appearance-section.tsx   Appearance controls
         settings-section.tsx     Address and backup settings
+      landing-page.tsx           Public entry and session-aware studio links
       welcome-screen.tsx         Product landing and independent auth-route links
       landing-showcase.tsx       Fictional shared-template example
       onboarding-screen.tsx      First-site creation
@@ -124,8 +125,17 @@ apps/web/src/
       asset-picker.module.css    Local styles
     management/
       admin/
-        admin-panel.tsx          Administrative presentation
-        use-admin-controller.ts  Requests, selection, paging and named actions
+        admin-shell.tsx          Role-aware navigation, session gate and account exit
+        admin-context.tsx        Authorized identity and interface-locale context
+        admin-panel.tsx          Route view composition and refresh feedback
+        admin-overview.tsx       Real totals, resources and recent activity
+        admin-lists.tsx          Site/account/audit records and bounded pagination
+        admin-management-dialogs.tsx Site moderation and native account confirmation
+        admin-dialog.tsx         Native modal lifecycle and focus restoration
+        use-admin-controller.ts  Requests, filtering, paging and guarded mutations
+        admin-copy.ts            Bilingual dashboard copy and audit action labels
+        admin-shell.module.css   Navigation/session layout and responsive rules
+        admin.module.css         Records, metrics and dialog styles
       site/site-operations.tsx   Inbox and release management
       shared/
         index.ts                 Shared helper exports
@@ -190,3 +200,9 @@ This refactor retained 108 deterministic renderer outputs and eight extracted ad
 `app/login/page.tsx` and `app/signup/page.tsx` mount the shared auth feature with a fixed mode. WelcomeScreen contains only product introduction, example and links. Auth requests do not belong in the workspace save controller. `lib/use-interface-locale.ts` reads/updates the `lang` URL parameter and document direction; its readiness guard prevents authenticated redirects from losing the requested language. This is interface state, never portfolio draft content.
 
 Explore the template opens ExpandedPortfolioPreview through WelcomeScreen state; LandingShowcase supplies the same fictional draft/theme used by its inline preview. Reuse the modal focus/Escape/scroll handling instead of implementing a second overlay.
+
+## Independent administration routes
+
+`app/admin/layout.tsx` mounts AdminShell; its overview/sites/accounts/activity page modules mount the matching view only after the client session gate. Domain/native backend gates remain the security boundary. /studio owns the personal editor; / always mounts LandingPage. Auth normally returns to /studio; only the fixed from=admin intent selects /admin.
+
+Administration no longer appears as a Studio section type. The Studio navigation action awaits the controller's owned revisioned flush before changing location; invalid saves keep the editor mounted. Admin controller preserves native protocol and stale-view guards. Dialogs keep their own selection/confirmation context; native account roles are not changed just by choosing a menu option. Shared SelectControl uses the closest dialog as its portal container when applicable.

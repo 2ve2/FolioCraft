@@ -11,7 +11,7 @@ A fixed-layout portfolio platform with a Next.js frontend independent of the Bun
 3. Copy `apps/web/.env.example` to `apps/web/.env.local` and configure the API URL.
 4. Run `bun run db:migrate` to apply the reviewed schema to the project database.
 5. Run `bun run dev:api` and `bun run dev:web` in separate terminals.
-6. Open `http://localhost:3000`. The API runs on `http://localhost:4000`.
+6. Open `http://localhost:3000` for the product introduction. Sign in to use `/studio`; authorized platform administrators use `/admin` and its sites/accounts/activity pages. The API runs on `http://localhost:4000`.
 
 Use `bun run typecheck`, `bun run check`, `bun run build`, and `bun run test` for verification. Integration tests run exclusively against a local PostgreSQL database named `folio_test`; the wrapper rejects production URLs and isolates the test environment. Database setup details are in docs/OPERATIONS.md.
 

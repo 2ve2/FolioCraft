@@ -72,3 +72,8 @@ Self-hosted fonts, type/spacing tokens and actual-size private preview are descr
 
 ## Independent authentication pages — 2026-10-16
 The product introduction links to /login and /signup. Their shared auth feature owns native Better Auth requests, visible request feedback and authenticated workspace redirects. Studio owns session-aware workspace composition and coupled saves, without embedded credential forms. URL interface locale is independent of saved portfolio locale. The landing template action reuses the shared native expanded-preview modal; fictional content never becomes a published site.
+
+## Platform administration boundary — 2026-10-16
+/ is the product landing; /studio owns personal portfolio editing; /admin and sites/accounts/activity child routes own platform management. The shared client layout withholds administrative children for anonymous/ordinary sessions, while existing backend/native authentication gates authorize all data and mutations independently. Administrative aggregates retain their real semantics, including publication pointers on suspended sites. UI role/self-ID confirmations supplement backend checks.
+
+Studio administration navigation awaits revisioned draft saving and blocks departure on invalid input. Admin management dialogs reuse native focus containment and the shared select's dialog-aware portal. Shared login chooses only /studio or the fixed /admin return intent. No independent admin backend, new role hierarchy or schema is introduced.
