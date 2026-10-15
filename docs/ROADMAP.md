@@ -62,3 +62,9 @@ Custom domains; actual aggregate analytics; subscriptions; imports; AI assistanc
 - [x] Group frontend features/UI and split studio views/controller, content collections, management/admin and assets/hooks; keep shared public/preview renderer.
 - [x] Preserve CSS cascade and package exports; source guide and per-app README updated.
 - [x] Verify backend suite, both typechecks, Biome, web build/API bundle, before/after renderer comparison and actual browser paths. See latest STATUS for precise results and limits.
+
+## Source responsibility/readability acceptance — 2026-10-16
+- [x] Populate admin/sites/public route groups and align service/auth/storage ownership and build aliases.
+- [x] Separate profile/projects editors, admin view/controller, management utilities, image preview and shared portfolio sections.
+- [x] Add function descriptions/separation, remove obsolete empty web scaffolding and rewrite the actual source map.
+- [x] Preserve108 renderer outputs, eight admin action bodies, CSS rule order; pass existing API/web tests, typechecks and independent builds with local browser checks.

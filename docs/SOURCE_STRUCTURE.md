@@ -1,160 +1,182 @@
 # Source structure guide
 
-Last updated: 2026-10-15. This guide describes the actual implementation, not a proposed library list.
+Last updated: 2026-10-16. This is the current source map; dated CHANGELOG entries describe earlier layouts.
 
-## Project boundaries
+## Independent applications
 
-`apps/api` is the independent backend and `apps/web` the independent frontend. The frontend imports neither the database nor backend configuration or secrets. Both applications share data contracts in `packages/contracts`; public output and private preview share `packages/portfolio`.
+`apps/api` owns Bun/Hono/Better Auth/Drizzle and database access. `apps/web` owns Next.js and browser clients; it never imports backend credentials or database code. Shared contracts live in `packages/contracts`; public pages and private preview use the same `packages/portfolio` renderer.
 
-Cloudflare target configuration is in each app `wrangler.toml`; web adapter settings are in `apps/web/open-next.config.ts` and its Bun patch is under root `patches/`. Generated `.open-next`/`.wrangler` output and private evidence in `work/` are ignored, not product source. See [CLOUDFLARE.md](CLOUDFLARE.md).
+`work/` contains ignored local evidence and the independent Git checkout used for commits. It is not runtime source. Generated build output, dependencies and provider settings are not feature modules. Cloudflare targets remain independently configured per application; see [CLOUDFLARE.md](CLOUDFLARE.md).
 
-## Backend: where should a change go?
+## Backend: routes by domain
 
 ```text
 apps/api/src/
-  server.ts                    Bun execution, shutdown and connection limits
-  worker.ts                    Cloudflare entry, trusted edge address and request scopes
-  app.ts                       Middleware and route composition only
-  config/env.ts                Configuration loading and validation
-  middleware/                  Authentication, administration, protection and HTTP errors
-  routes/                      Request validation and delegation to the responsible service
+  app.ts                         Middleware and domain-router composition
+  server.ts                      Bun process lifecycle
+  worker.ts                      Cloudflare request entry and request scopes
+  config/env.ts                  Validated configuration
+  middleware/                    Session, administration, protections and errors
+  routes/
+    account.ts                   Account/site association
+    runtime.ts                   Runtime status
+    admin/
+      index.ts                   Administrator gate and child-router composition
+      sites.ts                   Site lookup, suspension and resumption
+      resources.ts               Platform and selected-site resource counts
+      audit.ts                   Administrative action log
+      validation.ts              Moderation reasons and pagination validation
+    sites/
+      index.ts                   Private-site router composition
+      drafts.ts                  Site creation, draft, address and settings
+      assets.ts                  Owned media lifecycle
+      inquiries.ts               Owned inquiry inbox
+      releases.ts                Publication and release history
+      content/
+        index.ts                 Content-router composition
+        profile.ts               Introduction and contact fields
+        appearance.ts            Appearance preferences
+        sections.ts              Section visibility and ordering
+        projects.ts              Projects
+        experiences.ts           Experience
+        education.ts             Education and certificates
+        skills.ts                Skill groups
+        articles.ts              Articles
+        shared/                  Collection route and validation helpers
+    public/
+      index.ts                   Public-router composition
+      sites.ts                   Published releases
+      assets.ts                  Published media
+      inquiries.ts               Public inquiry submission
+      sitemap.ts                 Published-site discovery
   services/
-    siteDraftService.ts        Drafts, ownership, revisions and site settings
-    releaseService.ts          Publish, unpublish, history and prior release activation
-    publicSiteService.ts       Accessible published release reads only
-    siteService.ts             Small compatibility facade for existing consumers
-    contentService.ts          Content collection updates and ordering
-    assetService.ts            Owned asset lifecycle, attachment and verification
-    inquiryService.ts          Messages and inquiry inbox
-    adminService.ts            Administrative resources, suspension and resumption
-    auditService.ts            Administrative action recording
-    publicAccess.ts            Shared public availability predicate
-    rateLimitService.ts        Atomic PostgreSQL request limits
+    sites/
+      draft-service.ts           Ownership, revisions, drafts and settings
+      release-service.ts         Atomic publication and release history
+      public-service.ts          Published release reads
+      content-service.ts         Content collection operations
+      public-access.ts           Shared public availability predicate
+      index.ts                   Small siteService compatibility facade
+    admin/
+      site-service.ts            Administrative resources and site moderation
+      audit-service.ts           Administrative action recording
+    assets.ts                    Owned attachment and storage lifecycle
+    inquiries.ts                 Inquiry rules
+    rate-limit.ts                Atomic PostgreSQL limits
   lib/
-    auth.ts                    Better Auth configuration and database adapter
-    auth-hooks.ts              Mail rules, administrative permissions and protocol audit
-    mail.ts                    Real mail transport when configured
-    storage-client.ts          Storage client configuration
-    storage.ts                 Storage operations and image verification delegation
-    image-validation.ts        Bun Sharp full-image validation
-    image-validation.worker.ts Workers Images validation and forced decode
-    worker-images-context.ts   Request-local Images binding
-    response-helpers.ts        Safe success and error response contract
-    validation.ts              Resource identifiers and pagination
+    auth/
+      index.ts                   Better Auth configuration and adapter
+      hooks.ts                   Mail/permission rules and protocol audit
+      mail.ts                    Configured real mail transport
+    storage/
+      index.ts                   Storage operations
+      client.ts                  Storage client configuration
+      image-validation.ts        Bun Sharp decoder
+      image-validation.worker.ts Workers Images decoder
+      worker-images-context.ts   Request-local Images binding
+    response-helpers.ts          Domain response contract
+    validation.ts                Identifiers and pagination
   db/
-    index.ts                   Bun pool, Workers request-scoped DB and deadlines
-    schema/                    Actual tables grouped by domain
-    migrations/                Explicit migrations and Drizzle metadata
-apps/api/tests/
-  *.test.ts                    Database, protocol and authorization tests
-  test-guard.ts                Reject production and remote databases
-  fixtures/browser-server.ts  Temporary browser accounts/server on folio_test only
+    index.ts                     Bun pool and Workers request-scoped database
+    schema/                      Tables grouped by domain
+    migrations/                  Explicit reviewable migrations
 ```
 
-Content routes in `routes/content.ts` compose profile/projects/appearance/experiences/education/skills/articles/sections. `collection-router.ts` and `content-validation.ts` are domain helpers; remaining route files have descriptive names: `account`, `sites`, `releases`, `assets`, `inquiries`, `admin`, `public-*`, `runtime`.
+Routes validate requests and delegate to services; database rules do not belong in route handlers. `admin/index.ts` applies the administrator gate before mounting its children. Private operations retain ownership/session checks. Publication retains its transaction and immutable snapshot. Better Auth owns its protocol responses.
 
-Start request changes in a route and implement database rules and transactions in its service. Routes must not write directly to the database. Draft operations use site locking, ownership, draft revisions, and asset verification. Publication retains its atomic transaction and immutable snapshot. Better Auth owns its protocol; do not wrap its responses in the domain API envelope.
+Internal callers import the responsible site service. Keep `services/sites/index.ts` as a compatibility facade, without adding implementation there. The `#image-validation` Bun import and Wrangler alias intentionally select different decoders; update both when moving their targets.
 
-The `siteService.ts` facade remains for compatibility with tests and existing consumers. Internal runtime source imports the specific responsible service. Do not add new logic to the facade.
+Guarded database tests live in `apps/api/tests`; `tests/fixtures/browser-server.ts` creates disposable local browser accounts through the root test wrapper. Never use that fixture against hosted databases.
 
-## Frontend: thin routes and independent features
+## Frontend: feature ownership
 
 ```text
 apps/web/src/
-  app/                         Next routes, layout, metadata and robots/sitemap
-  components/ui/               Brand, Field, LanguageSwitch and SelectControl
+  app/                           Thin routes, metadata and layout
+  components/ui/                 Shared controls, TooltipButton and local styles
   features/
     studio/
-      studio.tsx               Screen state and workspace section composition
-      use-studio-controller.ts Draft loading/recovery/saving and site operations
-      welcome-screen.tsx       Product entry, sign-in and sign-up screens
-      landing-showcase.tsx     Fictional shared-template demo and product explanation
-      onboarding-screen.tsx    First site creation
-      loading-screen.tsx       Loading and recoverable errors
-      workspace-sidebar.tsx    Workspace and account navigation
-      workspace-header.tsx     Language, save state and publication controls
-      workspace-preview.tsx    Preview frame, device and expansion controls
-      site-address.tsx         Site address editing
-      sections/                content/appearance/settings
-      copy.ts, types.ts        Feature copy and internal contracts
-    content/
-      content-editors.tsx      Section editor composition only
-      experiences-editor.tsx   Experience
-      education-editor.tsx     Education and certificates
-      skills-editor.tsx        Skill groups
-      articles-editor.tsx      Articles
-      visibility-editor.tsx    Section visibility
-      project-extras.tsx       Additional project fields, cover and gallery
-      rich-editor.tsx          Constrained text blocks
-      collection-actions.tsx   Ordering and confirmed deletion
-      input.tsx, reorder.ts    Content input and array ordering without ID changes
-      copy.ts, types.ts        Shared copy and props
+      studio.tsx                 Screen and workspace composition
+      use-studio-controller.ts   Session, recovery, save and publication coordination
+      draft-errors.ts            Localized validation-path messages
+      draft-import.ts            Bounded JSON backup parsing and normalization
+      sections/
+        content-section.tsx      Content-section composition
+        profile-section.tsx      Profile/contact/social editor
+        projects-section.tsx     Project editor
+        appearance-section.tsx   Appearance controls
+        settings-section.tsx     Address and backup settings
+      welcome-screen.tsx         Authentication entry
+      landing-showcase.tsx       Fictional shared-template example
+      onboarding-screen.tsx      First-site creation
+      workspace-*.tsx            Navigation, header and preview frame
+      copy.ts, types.ts          Studio copy and contracts
+    content/                     Dedicated collection/rich-content editors and helpers
     assets/
-      asset-picker.tsx         Upload, library and image states
-      use-asset-urls.ts         Private asset URL renewal scoped to account/session
-      copy.ts, types.ts        Copy and internal contracts
-      asset-picker.module.css  Local library styles
+      asset-picker.tsx           Upload, library and selection actions
+      asset-preview.tsx          Image preview and retry state
+      use-asset-urls.ts          Session-scoped private URL renewal
+      copy.ts, types.ts          Asset copy and contracts
+      asset-picker.module.css    Local styles
     management/
-      site-operations.tsx      Inbox and publication history
-      admin-panel.tsx          Standalone or embedded administration UI
-      shared.tsx               Pagination, requests, errors and dates
-      copy.ts, types.ts        Administrative/operations resource copy and contracts
-      management.module.css    Shared resource management styles
-    portfolio/
-      portfolio-preview.tsx    Preview dimensions, private navigation and modal
-      inquiry-form.tsx         Inquiry form; preview submission is disabled
-  lib/
-    api-origin.ts              Backend origin allowed for browser requests
-    auth-client.ts             Official Better Auth client
-    api.ts                     Domain API requests and ApiError contract
-    public-metadata.ts         Metadata from the published release only
-  styles/                      Tokens and global styles with explicit ordering
+      admin/
+        admin-panel.tsx          Administrative presentation
+        use-admin-controller.ts  Requests, selection, paging and named actions
+      site/site-operations.tsx   Inbox and release management
+      shared/
+        index.ts                 Shared helper exports
+        errors.ts, date.ts       Error/date formatting
+        pager.tsx, use-page.ts   Pagination UI and request state
+        copy.ts, types.ts        Management copy and resource contracts
+        management.module.css   Shared management styles
+    portfolio/                   Preview integration and public inquiry form
+  lib/                           API/auth clients and public metadata
+  styles/                        Ordered global styles
 ```
 
-`use-studio-controller.ts` remains the single coordinator for saving, revisions, recovery, and session changes. Splitting this state into independent stores could race draft saving against publication or account switching, so its algorithm was preserved during reorganization. Editing sections receive `draft` and an `update` callback and render controlled fields. Do not bypass operation locks or site revisions with another API write.
+`use-studio-controller.ts` deliberately keeps coupled session/recovery/save/publication ordering together. Editors receive the controlled draft and update callback; do not add independent writes that bypass revision checks or operation locks. Presentation sections and pure validation formatting are separate from that algorithm. Administration requests and named handlers belong in its controller, not inline JSX.
 
-Reusable controls belong in `components/ui`. Feature-specific components stay in `features/<name>` alongside their copy, types, and local CSS Module. Features must not import implementation files from `app`: dependencies point from route to feature, not the reverse.
+Feature-specific components, copy, types and local CSS stay with their feature. Reusable controls belong in `src/components/ui`. Do not recreate obsolete empty top-level `apps/web/components`, `lib` or `public` scaffolding without actual files and responsibility.
 
-## Styles and shared portfolio
-
-`app/globals.css` is only a CSS entry point. Import order deliberately preserves the existing cascade: tokens, foundation, welcome, workspace, responsive, editor-groups, loading, select-control, readability, workspace-preview, workspace-scroll, scrollbars. Do not alphabetize these imports; readability and some responsive rules are ordered refinements over the base rules.
+## Shared renderer and styles
 
 ```text
 packages/portfolio/src/
-  index.tsx           Stable package exports
-  portfolio.tsx       Same public layout for preview and published releases
-  portfolio-detail.tsx Project and article details
-  appearance.ts       Themes, fonts, text sizes and CSS variable generation
-  copy.ts             Arabic and English portfolio copy
-  format.ts           Allowed links, keys and reading time
-  section-elements.tsx Headings and date ranges
-  rich-content.tsx    Safe React blocks and image gallery
-  styles.ts           Readable portfolio rules; excludes Studio styles
-  types.ts            Internal rendering props
+  index.tsx                      Stable package exports
+  portfolio.tsx                  Fixed layout and section composition
+  sections/
+    hero.tsx                     Introduction/navigation
+    projects.tsx                 Projects
+    experience.tsx               Experience
+    education.tsx                Education
+    skills.tsx                   Skill groups
+    articles.tsx                 Articles
+    contact.tsx                  Contact/inquiry section
+  portfolio-detail.tsx           Project/article detail layout
+  appearance.ts                  Themes and typography variables
+  copy.ts, format.ts, types.ts   Shared localized contracts and formatting
+  section-elements.tsx          Headings and date ranges
+  rich-content.tsx               Safe blocks and galleries
+  link-arrow.tsx                 Shared locale-aware text-action arrow
+  styles.ts                     Portfolio styles only
 ```
 
-The `@folio/portfolio` exports remain unchanged: `Portfolio`, `PortfolioDetail`, `RichContent`, `portfolioFontNames`, `portfolioTextSizes`. `packages/contracts/src/index.ts` is the shared data contract: Zod, versions, content limits, public projection, and reading-time calculation. It was unchanged during this round.
+`app/globals.css` is an ordered import entry point: Tailwind, tokens, foundation, welcome, landing, workspace, responsive, editor-groups, loading, select-control, readability, workspace-preview, workspace-scroll, scrollbars. `landing.css` follows `welcome.css` to preserve the extracted rules' cascade. Do not alphabetize imports.
 
-## Adding a section or extending a feature
+TooltipButton owns covered action hints; avoid adding a second native title popup. Optional avatar/initials and decorative project-cover visibility belong in shared appearance contracts/rendering. Hiding a visual retains its asset references and lifecycle protections. Restored legacy backups normalize the earlier visual defaults.
 
-1. Define the data contract in contracts and test input limits and the public projection.
-2. Add a route and service using existing ownership/revision guards, with a transaction for multi-step operations.
-3. Add the editor in the appropriate feature using the shared update callback and translated field names.
-4. Add rendering to the shared portfolio with its copy and RTL support; do not create a second preview layout.
-5. Verify saving, publication, account isolation, and desktop/phone output.
+## Readability and extension rules
 
-## Verification and execution
+- Give named functions a short English purpose description. Explain the operation and its responsibility rather than repeating the identifier.
+- Separate named functions, route handlers and state groups with blank lines. Use route-specific descriptions and named UI actions for nontrivial callbacks.
+- Keep files cohesive: composition in entry points, request state in controllers, domain rules in services, rendering in sections. Do not split coupled state transitions merely to reduce line count.
+- Create a folder when it owns actual modules. Avoid empty scaffolding and duplicate forwarding layers.
+- Keep HTTP paths, middleware order, package exports, ownership/transaction boundaries and preview/public rendering stable during structural refactors.
 
-Run API and web in separate terminals as described in README and OPERATIONS. Use `bun run check`, `bun run typecheck`, `bun run test`, and `bun run build`. Database tests use the root wrapper and folio_test only; never run them with Neon settings.
+When adding a feature, update the shared contract first, then its owned route/service, controlled editor and shared renderer. Verify revisioned saving, account isolation, publication and both locales.
 
-For an isolated local build while the user-facing web app runs: `FOLIO_QA_BUILD=1 bun run --cwd apps/web build --webpack`. For isolated administration testing, `bun run test --admin-browser` starts the fixture on4400; web4300 uses API origin127.0.0.1:4400. Temporary credentials stay inside work with0600 permissions and are cleaned on shutdown; never copy them into documentation.
+## Verification and limits
 
-Comparison material and temporary copies in `work/structure-refactor` are evidence for this round, not product modules or importable libraries. Exact verification evidence and limitations are in STATUS and CHANGELOG; a successful build does not prove production deployment or coverage of every browser and screen reader.
+Use Bun from the root: `bun run check`, `bun run typecheck`, `bun run test`, and the documented web tests/build. The root database wrapper rejects production/remote databases. For a local fixture use `bun run test --admin-browser`; point both `API_URL` and `NEXT_PUBLIC_API_URL` at its local origin. `FOLIO_QA_BUILD=1` isolates web build output.
 
-## Draft backup restoration
-`features/studio/draft-import.ts` reads bounded JSON files and validates/normalizes current and older schemaVersion1 exports. Settings owns local file selection and visible confirmation/cancellation; use-studio-controller serializes restoration with earlier saves and accepts the server result only for the same session. Existing owned revisioned PUT draft remains authoritative for asset ownership and conflicts. No new import backend route or migration. Tests are in apps/web/tests/draft-import.test.ts.
-
-## Local UI additions — 2026-10-15
-- components/ui/tooltip-button.tsx and its CSS module own custom button hints; do not add parallel native title popups to covered controls. packages/portfolio/src/link-arrow.tsx supplies the shared text-action SVG.
-- Optional visual choices belong to the shared appearance contract and renderer; draft-import.ts normalizes old intentional backups. Assets remain referenced even when their visual is hidden, so lifecycle protection is not bypassed.
-- tests/assets.integration.test.ts uses real guarded PostgreSQL/HTTP with explicitly simulated storage transport. Web renderer/import tests are under apps/web/tests. These are separate from actual hosted provider acceptance.
+This refactor retained 108 deterministic renderer outputs and eight extracted administrative action AST bodies. Ordered CSS rules match, with only a blank newline at the extracted landing-file boundary. Test/build/browser evidence is recorded in STATUS/CHANGELOG; it does not establish hosted provider acceptance. Private comparison material is in `work/source-organization/`.

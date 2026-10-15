@@ -2,7 +2,9 @@
 
 An independent backend using Bun, Hono, Better Auth, PostgreSQL, and Drizzle. Start at `src/server.ts` for execution and `src/app.ts` for route and protection composition. Database rules live in services, request validation in routes, and schema and migrations in db.
 
-Site services are separate: `siteDraftService` owns drafts, ownership, and revisions; `releaseService` owns publication and release history; `publicSiteService` owns public releases. `siteService` is a small compatibility facade; do not add new implementation there. Authentication configuration is in `lib/auth.ts`; its rules and audits are in `lib/auth-hooks.ts`.
+Routes are grouped into `routes/admin`, `routes/sites` and `routes/public`, each with an index that composes its children. Administrator site moderation, resources and audit routes are actual modules inside `routes/admin`, behind the same administrator gate.
+
+Site services live in `services/sites`: `draft-service.ts` owns drafts/ownership/revisions; `release-service.ts` owns publication/history; `public-service.ts` reads published releases. Its index is only the `siteService` compatibility facade. Administrative domain rules live in `services/admin`. Better Auth configuration/hooks/mail live in `lib/auth`; storage and environment-specific image decoders live in `lib/storage`. Keep the Bun import and Wrangler alias aligned when moving decoder modules.
 
 Run from the root with `bun run dev:api`. Environment examples are in `.env.example`; actual configuration stays in the ignored `.env`. The backend runs without Next.js. Data tests use root `bun run test`, which guards folio_test and rejects Neon or production databases.
 
