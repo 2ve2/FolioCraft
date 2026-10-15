@@ -7,7 +7,8 @@
 			"!**/.next-qa",
 			"!**/.open-next",
 			"!**/.wrangler",
-			"!**/work",
+			"!work",
+			"!apps/*/work",
 			"!**/bun.lock",
 			"!**/next-env.d.ts",
 			"!**/src/db/migrations"
