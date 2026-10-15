@@ -338,6 +338,16 @@ export const portfolioCss = `.folio .folio__skills-grid{
 	white-space:pre-wrap;
 	color:var(--folio-muted)
 }
+.folio__project-actions{
+	display:flex;
+	align-items:center;
+	flex-wrap:wrap;
+	gap:8px 16px;
+	margin-block:12px
+}
+.folio__project-actions>.folio__project-link{
+	margin-top:0
+}
 .folio__project-link{
 	display:inline-flex;
 	gap:14px;
@@ -345,6 +355,11 @@ export const portfolioCss = `.folio .folio__skills-grid{
 	font-size:max(13px,.8em);
 	font-weight:600;
 	margin-top:15px
+}
+.folio .folio__arrow-link{
+	display:inline-flex;
+	align-items:center;
+	gap:8px
 }
 .folio__project-link:hover{
 	text-decoration:underline;
