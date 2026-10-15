@@ -6,6 +6,8 @@ import { Brand } from "../../components/ui/brand";
 import { Field } from "../../components/ui/field";
 import { copy } from "./copy";
 import { LandingDetails, LandingShowcase } from "./landing-showcase";
+
+/** Composes the product introduction and real sign-in or signup form. */
 export function WelcomeScreen({
 	locale,
 	localeControl,

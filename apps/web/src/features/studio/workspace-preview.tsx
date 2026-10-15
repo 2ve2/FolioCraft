@@ -3,6 +3,8 @@ import { LinkArrow } from "@folio/portfolio";
 import { Circle, Globe2, Maximize2, Monitor, Smartphone } from "lucide-react";
 import { ExpandedPortfolioPreview, PortfolioPreview } from "../portfolio/portfolio-preview";
 import { copy } from "./copy";
+
+/** Composes device previews, expansion and the published-page link. */
 export function WorkspacePreview({
 	draft,
 	site,

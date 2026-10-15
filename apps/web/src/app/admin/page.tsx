@@ -2,7 +2,7 @@
 import type { Locale } from "@folio/contracts";
 import { useState } from "react";
 import { SelectControl } from "../../components/ui/select-control";
-import { AdminPanel } from "../../features/management/admin-panel";
+import { AdminPanel } from "../../features/management/admin/admin-panel";
 import { authClient } from "../../lib/api";
 
 /** Administration remains accessible without creating a personal portfolio. */

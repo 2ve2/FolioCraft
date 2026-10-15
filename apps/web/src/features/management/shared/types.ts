@@ -1,5 +1,6 @@
 import type { Draft } from "@folio/contracts";
 import type { text } from "./copy";
+
 export type Page<T> = { items: T[]; hasMore: boolean; limit: number; offset: number };
 export type Inquiry = {
 	id: string;

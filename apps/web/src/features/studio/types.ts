@@ -1,4 +1,5 @@
 import type { Draft, Locale, Site } from "@folio/contracts";
+
 export type Section = "content" | "appearance" | "settings" | "operations" | "admin";
 export type SaveState = "saved" | "saving" | "unsaved" | "failed";
 

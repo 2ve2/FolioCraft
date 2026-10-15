@@ -2,6 +2,7 @@ import type { PublicSite } from "@folio/contracts";
 import type { Metadata } from "next";
 
 export const webOrigin = new URL(process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000").origin;
+
 /** Uses only published content for search/share identity; never reads editor state. */
 export function publishedMetadata(
 	site: PublicSite,

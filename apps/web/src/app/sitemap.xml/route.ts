@@ -1,6 +1,7 @@
 import { escapeXml, webOrigin } from "../../lib/public-metadata";
 
 export const dynamic = "force-dynamic";
+
 /** Builds a sitemap index from bounded public-only API pages; failures never become a fake empty index. */
 export async function GET() {
 	const api = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";

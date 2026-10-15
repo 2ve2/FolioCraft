@@ -3,6 +3,7 @@ import { escapeXml, webOrigin } from "../../../../lib/public-metadata";
 import { readPublished } from "../_public";
 
 export const dynamic = "force-dynamic";
+
 /** Lists the same currently visible release content used by public pages. */
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
 	const { slug } = await params;

@@ -2,7 +2,10 @@ import type { Article, PublicSite } from "@folio/contracts";
 import { PortfolioDetail } from "@folio/portfolio";
 import { publishedMetadata } from "../../../../../lib/public-metadata";
 import { PublicUnavailable, publicAssets, readPublished } from "../../_public";
+
 export const dynamic = "force-dynamic";
+
+/** Builds metadata from the accessible published release only. */
 export async function generateMetadata({
 	params,
 }: {
@@ -22,6 +25,8 @@ export async function generateMetadata({
 			)
 		: { robots: { index: false, follow: false } };
 }
+
+/** Renders one article from the matching public release. */
 export default async function PublicArticle({
 	params,
 }: {

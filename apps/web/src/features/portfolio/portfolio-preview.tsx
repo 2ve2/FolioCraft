@@ -36,6 +36,7 @@ export function PortfolioPreview({
 				? Math.min(390, metrics.width)
 				: 390;
 	useEffect(() => {
+		/** Measures preview content so scaling preserves the selected device layout. */
 		const measure = () => {
 			if (!container.current || !content.current) return;
 			const next = { width: container.current.clientWidth, height: content.current.scrollHeight };
@@ -43,6 +44,7 @@ export function PortfolioPreview({
 				previous.width === next.width && previous.height === next.height ? previous : next,
 			);
 		};
+
 		const observer = new ResizeObserver(measure);
 		if (container.current) observer.observe(container.current);
 		if (content.current) observer.observe(content.current);
@@ -73,6 +75,7 @@ export function PortfolioPreview({
 		});
 		return () => cancelAnimationFrame(frame);
 	}, [detail]);
+
 	/** Keeps preview anchors inside their own scroll surface without changing the editor URL. */
 	function navigatePreview(event: MouseEvent<HTMLDivElement>) {
 		if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
@@ -127,6 +130,7 @@ export function PortfolioPreview({
 			behavior: "instant",
 		});
 	}
+
 	const project =
 		detail?.type === "project" ? draft.projects.find((item) => item.id === detail.id) : undefined;
 	const article =

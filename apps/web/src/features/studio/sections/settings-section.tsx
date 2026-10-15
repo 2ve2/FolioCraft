@@ -7,6 +7,8 @@ import { copy } from "../copy";
 import { DraftImportError, readDraftBackup } from "../draft-import";
 import { SiteAddress } from "../site-address";
 import type { EditorSectionProps } from "../types";
+
+/** Displays owned site settings, backup restore and publication controls. */
 export function SettingsSection({
 	draft,
 	site,
@@ -36,6 +38,7 @@ export function SettingsSection({
 		},
 		[],
 	);
+
 	/** Validates the chosen file without applying it until the user confirms in this screen. */
 	async function selectBackup(file: File) {
 		const version = ++selection.current;
@@ -52,6 +55,7 @@ export function SettingsSection({
 			if (version === selection.current) setReading(false);
 		}
 	}
+
 	return (
 		<>
 			<div className="section-heading">

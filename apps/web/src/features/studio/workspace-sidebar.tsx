@@ -4,6 +4,8 @@ import { Brand } from "../../components/ui/brand";
 import { TooltipButton } from "../../components/ui/tooltip-button";
 import { copy } from "./copy";
 import type { Section } from "./types";
+
+/** Renders workspace navigation and the actual account sign-out action. */
 export function WorkspaceSidebar({
 	locale,
 	user,

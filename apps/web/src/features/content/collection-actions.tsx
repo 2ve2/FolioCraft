@@ -4,6 +4,8 @@ import type { Article, Education, Experience, Skill } from "@folio/contracts";
 import { labels } from "./copy";
 import { moveItem } from "./reorder";
 import type { ContentEditorProps } from "./types";
+
+/** Provides ordering and confirmed removal controls for a draft collection. */
 export function CollectionActions({
 	draft,
 	locale,

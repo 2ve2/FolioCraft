@@ -4,13 +4,18 @@ import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";
 import { Input } from "./input";
 import type { ContentEditorProps } from "./types";
+
+/** Edits ordered experience entries through the shared draft updater. */
 export function ExperiencesEditor({ draft, locale, update }: Omit<ContentEditorProps, "siteId">) {
 	const t = labels[locale];
+
+	/** Changes one experience entry while preserving all other draft data. */
 	const patchExperience = (id: string, patch: Partial<Experience>) =>
 		update((d) => ({
 			...d,
 			experiences: (d.experiences ?? []).map((x) => (x.id === id ? { ...x, ...patch } : x)),
 		}));
+
 	return (
 		<section className="editor-card" id="studio-experiences">
 			<h2>{t.experiences}</h2>

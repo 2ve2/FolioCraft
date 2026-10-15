@@ -6,8 +6,12 @@ import { SelectControl } from "../../../components/ui/select-control";
 import { TooltipButton } from "../../../components/ui/tooltip-button";
 import { copy } from "../copy";
 import type { EditorSectionProps } from "../types";
+
+/** Edits appearance preferences without rewriting portfolio content. */
 export function AppearanceSection({ draft, locale, update }: Omit<EditorSectionProps, "site">) {
 	const t = copy[locale];
+
+	/** Updates one visual preference and synchronizes project visibility compatibility. */
 	const changeAppearance = (key: keyof Draft["appearance"], value: string | boolean) =>
 		update({
 			...draft,
@@ -16,6 +20,7 @@ export function AppearanceSection({ draft, locale, update }: Omit<EditorSectionP
 				? { sectionVisibility: { ...draft.sectionVisibility, projects: Boolean(value) } }
 				: {}),
 		});
+
 	return (
 		<>
 			<div className="section-heading">

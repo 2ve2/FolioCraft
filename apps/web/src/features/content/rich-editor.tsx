@@ -5,6 +5,7 @@ import { SelectControl } from "../../components/ui/select-control";
 import { labels } from "./copy";
 import { Input } from "./input";
 import { moveItem } from "./reorder";
+
 /** Edit only allowed structured blocks; text is never interpreted as HTML. */
 export function RichEditor({
 	value = [],
@@ -148,4 +149,5 @@ export function RichEditor({
 		</div>
 	);
 }
+
 /** Extra project fields share the studio's revisioned aggregate save. */

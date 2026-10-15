@@ -1,4 +1,6 @@
 import { Sparkles } from "lucide-react";
+
+/** Renders the shared FolioCraft identity mark. */
 export function Brand() {
 	return (
 		<span className="brand">

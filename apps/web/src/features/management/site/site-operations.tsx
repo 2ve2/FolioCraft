@@ -2,14 +2,16 @@
 import { collectAssetIds, type Locale, type Site } from "@folio/contracts";
 import { Portfolio } from "@folio/portfolio";
 import { useEffect, useRef, useState } from "react";
-import { SelectControl } from "../../components/ui/select-control";
-import { api } from "../../lib/api";
-import { useAssetUrls } from "../assets/use-asset-urls";
-import { InquiryForm } from "../portfolio/inquiry-form";
-import { text } from "./copy";
-import styles from "./management.module.css";
-import { date, errorText, Pager, usePage } from "./shared";
-import type { Inquiry, Release, Snapshot } from "./types";
+import { SelectControl } from "../../../components/ui/select-control";
+import { api } from "../../../lib/api";
+import { useAssetUrls } from "../../assets/use-asset-urls";
+import { InquiryForm } from "../../portfolio/inquiry-form";
+import { date, errorText, Pager, usePage } from "../shared";
+import { text } from "../shared/copy";
+import styles from "../shared/management.module.css";
+import type { Inquiry, Release, Snapshot } from "../shared/types";
+
+/** Coordinates the owned inbox, release history and saved-release preview. */
 export function SiteOperations({
 	site,
 	locale,
@@ -50,6 +52,8 @@ export function SiteOperations({
 		setOffset(0);
 		setError("");
 	}, [site.id]);
+
+	/** Runs a management mutation and translates its failure into current-view feedback. */
 	async function act(operation: () => Promise<void>) {
 		setBusy(true);
 		setError("");
@@ -61,6 +65,7 @@ export function SiteOperations({
 			setBusy(false);
 		}
 	}
+
 	return (
 		<section
 			className={styles.panel}

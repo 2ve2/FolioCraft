@@ -5,13 +5,18 @@ import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";
 import { Input } from "./input";
 import type { ContentEditorProps } from "./types";
+
+/** Edits education and certificate entries through the shared draft updater. */
 export function EducationEditor({ draft, locale, update }: Omit<ContentEditorProps, "siteId">) {
 	const t = labels[locale];
+
+	/** Changes one education entry while preserving all other draft data. */
 	const patchEducation = (id: string, patch: Partial<Education>) =>
 		update((d) => ({
 			...d,
 			education: (d.education ?? []).map((x) => (x.id === id ? { ...x, ...patch } : x)),
 		}));
+
 	return (
 		<section className="editor-card" id="studio-education">
 			<h2>{t.education}</h2>

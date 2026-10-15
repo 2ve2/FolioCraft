@@ -1,3 +1,4 @@
+/** Renders the application missing-page response. */
 export default function NotFound() {
 	return (
 		<main className="public-error">

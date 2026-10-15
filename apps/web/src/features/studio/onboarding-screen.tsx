@@ -6,6 +6,8 @@ import { Brand } from "../../components/ui/brand";
 import { Field } from "../../components/ui/field";
 import { SelectControl } from "../../components/ui/select-control";
 import { copy } from "./copy";
+
+/** Validates a portfolio address before submitting site creation. */
 export function OnboardingScreen({
 	locale,
 	localeControl,

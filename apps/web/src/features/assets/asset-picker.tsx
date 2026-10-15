@@ -4,60 +4,10 @@ import type { Locale } from "@folio/contracts";
 import { type ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, api, authClient } from "../../lib/api";
 import styles from "./asset-picker.module.css";
-
+import { AssetPreview } from "./asset-preview";
 import { copy } from "./copy";
 import type { Asset, UploadIntent } from "./types";
 import { useAssetUrls } from "./use-asset-urls";
-
-/** Replaces failed image downloads with honest feedback and an explicit permission refresh. */
-function AssetPreview({
-	url,
-	label,
-	unavailable,
-	retryLabel,
-	disabled,
-	onRetry,
-	selected = false,
-}: {
-	url?: string;
-	label: string;
-	unavailable: string;
-	retryLabel: string;
-	disabled: boolean;
-	onRetry: () => void;
-	selected?: boolean;
-}) {
-	const [failedSource, setFailedSource] = useState<string | null>(null);
-	if (url && url !== failedSource)
-		return (
-			// These owned, expiring URLs cannot be passed through the Next image optimizer.
-			// biome-ignore lint/performance/noImgElement: private signed image permission
-			<img
-				className={selected ? styles.selectedImage : undefined}
-				src={url}
-				alt={label}
-				referrerPolicy="no-referrer"
-				onError={() => setFailedSource(url)}
-			/>
-		);
-	return (
-		<div className={styles.previewFailure}>
-			<div className={styles.placeholder} role="status">
-				{unavailable}
-			</div>
-			<button
-				type="button"
-				disabled={disabled}
-				onClick={() => {
-					setFailedSource(null);
-					onRetry();
-				}}
-			>
-				{retryLabel}
-			</button>
-		</div>
-	);
-}
 
 /** Manages owned image uploads, verified attachments and explicit protected file deletion. */
 export function AssetPicker({
@@ -162,8 +112,11 @@ export function AssetPicker({
 		setNotice("");
 		++request.current;
 		const startedEpoch = epoch.current;
+
+		/** Rejects completion work from stale requests, sessions or unmounted views. */
 		const current = () =>
 			live.current.mounted && live.current.context === context && epoch.current === startedEpoch;
+
 		try {
 			await action(current);
 		} catch (cause) {

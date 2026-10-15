@@ -27,25 +27,34 @@ export function TooltipButton({ hint, children, ...props }: Props) {
 		side: "top" | "bottom";
 		dir: "rtl" | "ltr";
 	} | null>(null);
+
+	/** Cancels a pending tooltip visibility transition. */
 	const clearTimer = () => {
 		if (timer.current) clearTimeout(timer.current);
 		timer.current = null;
 	};
+
+	/** Closes the transient control without changing its selected value. */
 	const close = () => {
 		clearTimer();
 		setOpen(false);
 		setPlacement(null);
 	};
+
+	/** Schedules a tooltip only while its trigger is enabled. */
 	const show = (delay = 0) => {
 		clearTimer();
 		if (!props.disabled) timer.current = setTimeout(() => setOpen(true), delay);
 	};
+
+	/** Dismisses pointer hints while preserving keyboard-focused explanations. */
 	const leave = () => {
 		if (!button.current?.matches(":focus-visible")) {
 			clearTimer();
 			timer.current = setTimeout(close, 120);
 		}
 	};
+
 	useEffect(
 		() => () => {
 			if (timer.current) clearTimeout(timer.current);
@@ -84,13 +93,18 @@ export function TooltipButton({ hint, children, ...props }: Props) {
 	}, [open, hint]);
 	useEffect(() => {
 		if (!open) return;
+
+		/** Removes a tooltip whose viewport position is no longer current. */
 		const dismiss = () => {
 			setOpen(false);
 			setPlacement(null);
 		};
+
+		/** Dismisses an open tooltip without moving keyboard focus. */
 		const onEscape = (event: KeyboardEvent) => {
 			if (event.key === "Escape") dismiss();
 		};
+
 		document.addEventListener("keydown", onEscape);
 		window.addEventListener("resize", dismiss);
 		window.addEventListener("scroll", dismiss, true);

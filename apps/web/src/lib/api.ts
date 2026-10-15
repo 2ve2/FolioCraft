@@ -11,6 +11,8 @@ export class ApiError extends Error {
 		super(message);
 	}
 }
+
+/** Sends credentialed domain requests and preserves stable server failure codes. */
 export async function api<T>(path: string, method = "GET", body?: unknown): Promise<T> {
 	let response: Response;
 	try {

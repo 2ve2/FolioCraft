@@ -1,7 +1,7 @@
 "use client";
 import { LanguageSwitch } from "../../components/ui/language-switch";
-import { AdminPanel } from "../management/admin-panel";
-import { SiteOperations } from "../management/site-operations";
+import { AdminPanel } from "../management/admin/admin-panel";
+import { SiteOperations } from "../management/site/site-operations";
 import { LoadingScreen } from "./loading-screen";
 import { OnboardingScreen } from "./onboarding-screen";
 import { AppearanceSection } from "./sections/appearance-section";
@@ -13,6 +13,7 @@ import { WorkspaceHeader } from "./workspace-header";
 import { WorkspacePreview } from "./workspace-preview";
 import { WorkspaceSidebar } from "./workspace-sidebar";
 
+/** Selects the authenticated workspace screen and composes its editing sections. */
 export function Studio() {
 	const {
 		locale,

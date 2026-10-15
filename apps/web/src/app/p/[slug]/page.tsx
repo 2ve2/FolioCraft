@@ -3,7 +3,10 @@ import { Portfolio } from "@folio/portfolio";
 import { InquiryForm } from "../../../features/portfolio/inquiry-form";
 import { publishedMetadata } from "../../../lib/public-metadata";
 import { PublicUnavailable, publicAssets, readPublished } from "./_public";
+
 export const dynamic = "force-dynamic";
+
+/** Builds metadata from the accessible published release only. */
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
 	const { slug } = await params;
 	const site = await readPublished<PublicSite>(slug);
@@ -11,6 +14,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		? publishedMetadata(site, `/p/${encodeURIComponent(site.slug)}`)
 		: { robots: { index: false, follow: false } };
 }
+
+/** Renders the public release or its explicit unavailable state. */
 export default async function PublicPortfolio({ params }: { params: Promise<{ slug: string }> }) {
 	const { slug } = await params;
 	const site = await readPublished<PublicSite>(slug);

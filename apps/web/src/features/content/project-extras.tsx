@@ -6,6 +6,8 @@ import { labels } from "./copy";
 import { Input } from "./input";
 import { moveItem } from "./reorder";
 import { RichEditor } from "./rich-editor";
+
+/** Edits additional project fields, media references and structured content. */
 export function ProjectExtras({
 	project,
 	siteId,
@@ -121,4 +123,5 @@ export function ProjectExtras({
 		</>
 	);
 }
+
 /** Extended collections preserve all unrelated draft content on every edit. */

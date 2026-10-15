@@ -2,6 +2,7 @@ import type { Locale } from "@folio/contracts";
 import { Circle, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
 import { Brand } from "../../components/ui/brand";
+
 /** A focused branded shell for actual session/site loading and recoverable errors. */
 export function LoadingScreen({
 	locale,

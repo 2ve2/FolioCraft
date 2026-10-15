@@ -7,13 +7,18 @@ import { labels } from "./copy";
 import { Input } from "./input";
 import { RichEditor } from "./rich-editor";
 import type { ContentEditorProps } from "./types";
+
+/** Edits article drafts, publication flags and optional media. */
 export function ArticlesEditor({ draft, locale, update, siteId }: ContentEditorProps) {
 	const t = labels[locale];
+
+	/** Changes one article while retaining the rest of the draft. */
 	const patchArticle = (id: string, patch: Partial<Article>) =>
 		update((d) => ({
 			...d,
 			articles: (d.articles ?? []).map((x) => (x.id === id ? { ...x, ...patch } : x)),
 		}));
+
 	return (
 		<section className="editor-card" id="studio-articles">
 			<h2>{t.articles}</h2>

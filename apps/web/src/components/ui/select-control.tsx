@@ -16,6 +16,7 @@ type Props = {
 	icon?: ReactNode;
 	menuTitle?: string;
 };
+
 /** Shared styled selection with native form values, keyboard navigation and viewport-safe placement. */
 export function SelectControl({
 	label,
@@ -45,10 +46,15 @@ export function SelectControl({
 	const id = useId();
 	const active = options.find((option) => option.value === selected);
 	const effectiveDisabled = disabled || inheritedDisabled;
+
+	/** Includes inherited fieldset disabling when deciding whether selection is allowed. */
 	const isDisabled = () => effectiveDisabled || Boolean(trigger.current?.matches(":disabled"));
+
 	/** Carries native fieldset disabling through the menu's document-body portal. */
 	useEffect(() => {
+		/** Synchronizes inherited fieldset disabling with the portaled selection menu. */
 		const sync = () => setInheritedDisabled(Boolean(trigger.current?.matches(":disabled")));
+
 		const observer = new MutationObserver(sync);
 		let ancestor = root.current?.parentElement;
 		while (ancestor) {
@@ -59,6 +65,7 @@ export function SelectControl({
 		sync();
 		return () => observer.disconnect();
 	}, []);
+
 	/** Selects the initial focus target once for each opening. */
 	const show = (index?: number) => {
 		if (isDisabled()) return;
@@ -70,16 +77,21 @@ export function SelectControl({
 			);
 		setOpen(true);
 	};
+
+	/** Closes the transient control without changing its selected value. */
 	const close = (focus = false) => {
 		setOpen(false);
 		if (focus) trigger.current?.focus();
 	};
+
 	useEffect(() => {
 		if (!open) return;
 		if (effectiveDisabled) {
 			setOpen(false);
 			return;
 		}
+
+		/** Positions the selection menu inside the current viewport. */
 		const place = () => {
 			if (!root.current) return;
 			const rect = root.current.getBoundingClientRect();
@@ -104,14 +116,20 @@ export function SelectControl({
 				},
 			});
 		};
+
 		place();
+
+		/** Dismisses the selection menu when a pointer leaves both control surfaces. */
 		const outside = (e: PointerEvent) => {
 			const target = e.target as Node;
 			if (!root.current?.contains(target) && !menu.current?.contains(target)) setOpen(false);
 		};
+
+		/** Repositions the menu when an ancestor scrolls outside its own options. */
 		const scroll = (e: Event) => {
 			if (!menu.current?.contains(e.target as Node)) place();
 		};
+
 		document.addEventListener("pointerdown", outside);
 		window.addEventListener("resize", place);
 		window.addEventListener("scroll", scroll, true);
@@ -125,6 +143,8 @@ export function SelectControl({
 	useEffect(() => {
 		if (focusReady) optionRefs.current[initialFocus.current]?.focus();
 	}, [focusReady]);
+
+	/** Commits the chosen option and returns focus to the trigger. */
 	const choose = (next: string) => {
 		if (!isDisabled()) {
 			setLocalValue(next);
@@ -132,6 +152,7 @@ export function SelectControl({
 		}
 		close(true);
 	};
+
 	return (
 		<div className={`select-root${compact ? " select-root--compact" : ""}`} ref={root}>
 			{name && <input type="hidden" name={name} value={selected} disabled={effectiveDisabled} />}

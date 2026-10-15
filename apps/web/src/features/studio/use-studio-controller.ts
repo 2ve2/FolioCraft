@@ -11,11 +11,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, api, authClient } from "../../lib/api";
 import { useAssetUrls } from "../assets/use-asset-urls";
 import { copy } from "./copy";
+import { formatDraftIssues } from "./draft-errors";
 import { DraftImportError, readDraftBackup } from "./draft-import";
 import type { SaveState, Section } from "./types";
 
 /** Owns authenticated draft loading, recovery, revisioned saves and publication operations. */
 export function useStudioController() {
+	// Session identity and the current owned workspace.
 	const [locale, setLocale] = useState<Locale>("en");
 	const t = copy[locale];
 	const {
@@ -48,6 +50,7 @@ export function useStudioController() {
 	const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
 	const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
 	const [expandedPreview, setExpandedPreview] = useState(false);
+	// Mutable save coordination stays together to preserve session and publication ordering.
 	const siteRef = useRef<Site | null>(null);
 	const draftRef = useRef<Draft | null>(null);
 	const saveJob = useRef<{ identity: string; promise: Promise<void> } | null>(null);
@@ -57,12 +60,17 @@ export function useStudioController() {
 	const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const operation = useRef(false);
 	const publicationVersion = useRef(0);
+
+	/** Keeps the operation guard and visible busy state synchronized. */
 	const operationsBusy = useCallback((active: boolean) => {
 		operation.current = active;
 		setBusy(active);
 	}, []);
+
 	const textRef = useRef(t);
 	textRef.current = t;
+
+	/** Translates domain failures using the current interface language. */
 	const explain = useCallback((e: unknown): string => {
 		const c = textRef.current;
 		if (e instanceof ApiError) {
@@ -73,6 +81,7 @@ export function useStudioController() {
 		}
 		return c.error;
 	}, []);
+
 	useEffect(() => {
 		document.documentElement.lang = locale;
 		document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
@@ -85,6 +94,8 @@ export function useStudioController() {
 			if (timer.current) clearTimeout(timer.current);
 		};
 	}, []);
+
+	/** Accepts an owned server snapshot and resets the matching save baseline. */
 	const acceptSite = useCallback((value: Site | null) => {
 		setLoadedIdentity(sessionIdentityRef.current);
 		workspaceOwner.current = value ? sessionIdentityRef.current.split(":")[0] : "";
@@ -97,6 +108,8 @@ export function useStudioController() {
 		setSaveState("saved");
 		setError("");
 	}, []);
+
+	/** Retains unsaved edits only for their owning account during session recovery. */
 	const rememberEdits = useCallback(() => {
 		if (
 			!intentionalLogout.current &&
@@ -111,16 +124,21 @@ export function useStudioController() {
 				savedJson: savedJson.current,
 			});
 	}, []);
+
+	/** Loads the owned site and recovers matching in-memory edits when requested. */
 	const loadSite = useCallback(
 		async (recover = false) => {
 			const identity = sessionIdentityRef.current;
 			const owner = identity.split(":")[0];
 			if (recover) rememberEdits();
 			const version = ++siteLoadVersion.current;
+
+			/** Rejects completion work from stale requests, sessions or unmounted views. */
 			const current = () =>
 				identity === sessionIdentityRef.current &&
 				version === siteLoadVersion.current &&
 				mounted.current;
+
 			setLoadError(false);
 			setLoaded(false);
 			try {
@@ -156,6 +174,7 @@ export function useStudioController() {
 		},
 		[acceptSite, rememberEdits],
 	);
+
 	const userId = session?.user?.id;
 	const requestedIdentity = useRef("");
 	useEffect(() => {
@@ -180,14 +199,18 @@ export function useStudioController() {
 	}, [userId, sessionIdentity, isPending, loadSite, acceptSite, rememberEdits]);
 
 	useEffect(() => {
+		/** Warns before navigation when the current draft has unsaved edits. */
 		const warn = (event: BeforeUnloadEvent) => {
 			if (dirty.current) {
 				event.preventDefault();
 			}
 		};
+
 		window.addEventListener("beforeunload", warn);
 		return () => window.removeEventListener("beforeunload", warn);
 	}, []);
+
+	/** Serializes revisioned draft writes before publication or another owned operation. */
 	const flush = useCallback(async () => {
 		if (timer.current) {
 			clearTimeout(timer.current);
@@ -204,6 +227,8 @@ export function useStudioController() {
 			if (saveJob.current === pending) saveJob.current = null;
 		}
 		const jobIdentity = sessionIdentityRef.current;
+
+		/** Persists pending draft snapshots until the current owner has no unsaved changes. */
 		const task = async () => {
 			const identity = sessionIdentityRef.current;
 			while (
@@ -216,82 +241,7 @@ export function useStudioController() {
 				const validation = draftSchema.safeParse(snapshot);
 				if (!validation.success) {
 					setSaveState("failed");
-					const groups =
-						textRef.current === copy.ar
-							? {
-									experiences: "الخبرات",
-									education: "التعليم",
-									skills: "المهارات",
-									articles: "المقالات",
-									projects: "المشاريع",
-									profile: "النبذة",
-									startDate: "تاريخ البداية",
-									endDate: "تاريخ النهاية",
-									title: "العنوان",
-									slug: "عنوان الرابط",
-									organization: "الجهة",
-									role: "المسمى",
-									items: "العناصر",
-									category: "المجموعة",
-									qualification: "المؤهل",
-									description: "الوصف",
-									accomplishments: "الإنجازات",
-									richBody: "كتل المحتوى",
-									text: "النص",
-									level: "مستوى العنوان",
-									summary: "الملخص",
-									body: "النص",
-									verificationUrl: "رابط التحقق",
-									socialLinks: "روابط التواصل",
-									label: "اسم الرابط",
-									url: "الرابط",
-									email: "البريد",
-									website: "الموقع",
-									galleryAssetIds: "صور المعرض",
-									results: "النتائج",
-								}
-							: {
-									experiences: "Experience",
-									education: "Education",
-									skills: "Skills",
-									articles: "Articles",
-									projects: "Projects",
-									profile: "Profile",
-									startDate: "Start date",
-									endDate: "End date",
-									title: "Title",
-									slug: "URL slug",
-									organization: "Organization",
-									role: "Role",
-									items: "Items",
-									category: "Skill group",
-									qualification: "Qualification",
-									description: "Description",
-									accomplishments: "Accomplishments",
-									richBody: "Content blocks",
-									text: "Text",
-									level: "Heading level",
-									summary: "Summary",
-									body: "Text",
-									verificationUrl: "Verification link",
-									socialLinks: "Social links",
-									label: "Link label",
-									url: "Link",
-									email: "Email",
-									website: "Website",
-									galleryAssetIds: "Gallery images",
-									results: "Results",
-								};
-					const paths = validation.error.issues
-						.slice(0, 3)
-						.map((issue) =>
-							issue.path
-								.map((key) =>
-									typeof key === "number" ? key + 1 : (groups[key as keyof typeof groups] ?? key),
-								)
-								.join(" / "),
-						)
-						.join("؛ ");
+					const paths = formatDraftIssues(validation.error.issues, textRef.current === copy.ar);
 					setError(`${textRef.current.invalid} (${paths})`);
 					throw new Error("Invalid draft");
 				}
@@ -322,6 +272,7 @@ export function useStudioController() {
 				}
 			}
 		};
+
 		const promise = task();
 		const job = { identity: jobIdentity, promise };
 		saveJob.current = job;
@@ -331,6 +282,8 @@ export function useStudioController() {
 			if (saveJob.current === job) saveJob.current = null;
 		}
 	}, [explain]);
+
+	/** Applies a local draft edit and schedules its guarded autosave. */
 	const update = (value: Draft | ((current: Draft) => Draft)) => {
 		if (!draftRef.current) return;
 		const next = typeof value === "function" ? value(draftRef.current) : value;
@@ -346,6 +299,8 @@ export function useStudioController() {
 			void flush().catch(() => undefined);
 		}, 900);
 	};
+
+	/** Runs the native Better Auth signup or sign-in protocol and refreshes the session. */
 	async function authenticate(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		setAuthBusy(true);
@@ -378,6 +333,8 @@ export function useStudioController() {
 			setAuthBusy(false);
 		}
 	}
+
+	/** Creates an owned site from the validated address and chosen content language. */
 	async function createSite(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		setError("");
@@ -403,6 +360,8 @@ export function useStudioController() {
 			if (identity === sessionIdentityRef.current && mounted.current) setBusy(false);
 		}
 	}
+
+	/** Flushes draft edits before requesting an atomic public release. */
 	async function publish() {
 		if (operation.current) return;
 		const value = draftRef.current;
@@ -443,6 +402,8 @@ export function useStudioController() {
 			}
 		}
 	}
+
+	/** Clears public availability only after confirmation and a successful server response. */
 	async function unpublish() {
 		if (operation.current || !window.confirm(t.unpublishConfirm)) return;
 		const identity = sessionIdentityRef.current;
@@ -475,6 +436,8 @@ export function useStudioController() {
 			}
 		}
 	}
+
+	/** Signs out through Better Auth after handling unsaved work safely. */
 	async function logout() {
 		if (saveJob.current) {
 			setError(t.savingWait);
@@ -498,6 +461,9 @@ export function useStudioController() {
 			setBusy(false);
 		}
 	}
+
+	// Owned settings and backup operations.
+
 	/** Flushes the current draft before changing the owned site's revisioned address. */
 	async function renameSite(slug: string) {
 		if (operation.current) return;
@@ -531,6 +497,8 @@ export function useStudioController() {
 			}
 		}
 	}
+
+	/** Downloads the current draft as a local JSON backup. */
 	function exportDraft() {
 		if (!draftRef.current) return;
 		const url = URL.createObjectURL(
@@ -542,11 +510,15 @@ export function useStudioController() {
 		anchor.click();
 		URL.revokeObjectURL(url);
 	}
+
 	/** Restores a validated backup through the owned revision guard before changing editor state. */
 	async function importDraft(file: File) {
 		if (operation.current || !siteRef.current) return;
 		const identity = sessionIdentityRef.current;
+
+		/** Rejects completion work from stale requests, sessions or unmounted views. */
 		const current = () => identity === sessionIdentityRef.current && mounted.current;
+
 		operation.current = true;
 		setBusy(true);
 		setError("");
@@ -587,6 +559,8 @@ export function useStudioController() {
 			}
 		}
 	}
+
+	/** Updates the public pointer without replacing the local editing snapshot. */
 	const publicationChanged = (value: Site) => {
 		if (siteRef.current?.id !== value.id) return;
 		if (siteRef.current.publishedReleaseId !== value.publishedReleaseId)
@@ -597,9 +571,11 @@ export function useStudioController() {
 		setSite(next);
 	};
 
+	/** Reloads saved data only after addressing any unsaved local changes. */
 	function requestSavedReload() {
 		if (!dirty.current || window.confirm(t.reloadConfirm)) void loadSite();
 	}
+
 	return {
 		locale,
 		setLocale,

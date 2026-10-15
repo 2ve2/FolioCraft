@@ -1,6 +1,8 @@
 "use client";
 import { labels } from "./copy";
 import type { ContentEditorProps } from "./types";
+
+/** Changes which content sections appear in the portfolio. */
 export function VisibilityEditor({ draft, locale, update }: Omit<ContentEditorProps, "siteId">) {
 	const t = labels[locale];
 	return (

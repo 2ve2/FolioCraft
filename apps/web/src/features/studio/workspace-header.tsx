@@ -3,6 +3,8 @@ import { Check, ChevronLeft, Circle, Globe2, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
 import { copy } from "./copy";
 import type { SaveState, Section } from "./types";
+
+/** Shows current save feedback and the guarded publication action. */
 export function WorkspaceHeader({
 	locale,
 	localeControl,

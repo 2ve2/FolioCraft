@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { ApiError, api, authClient } from "../../lib/api";
+
 /** Resolves private URLs in bounded batches and renews their short-lived permission while mounted. */
 export function useAssetUrls(
 	siteId: string | undefined,
@@ -25,6 +26,7 @@ export function useAssetUrls(
 		if (!siteId || !owner || isPending) return;
 		const assetIds = JSON.parse(idKey) as string[];
 		if (!assetIds.length) return;
+
 		/** Loads fresh links without retaining expired or rejected permissions. */
 		async function renew() {
 			if (stopped || refreshing) return;
@@ -34,6 +36,7 @@ export function useAssetUrls(
 			let delay = 45_000;
 			let cursor = 0;
 			let denied = false;
+
 			/** Limits parallel private download requests regardless of portfolio size. */
 			async function worker() {
 				while (!stopped && cursor < assetIds.length && !denied) {
@@ -55,6 +58,7 @@ export function useAssetUrls(
 					}
 				}
 			}
+
 			await Promise.all(Array.from({ length: Math.min(4, assetIds.length) }, worker));
 			refreshing = false;
 			if (stopped) return;
@@ -76,6 +80,7 @@ export function useAssetUrls(
 			}
 			if (!denied) timer = setTimeout(renew, delay);
 		}
+
 		/** Renews expired permissions when returning from a throttled background tab. */
 		function onVisible() {
 			if (document.visibilityState !== "visible" || Date.now() < earliestExpiry) return;
@@ -83,6 +88,7 @@ export function useAssetUrls(
 			clearTimeout(timer);
 			void renew();
 		}
+
 		document.addEventListener("visibilitychange", onVisible);
 		void renew();
 		return () => {

@@ -1,4 +1,5 @@
 import type { Draft, Locale } from "@folio/contracts";
+
 export type ContentEditorProps = {
 	draft: Draft;
 	locale: Locale;

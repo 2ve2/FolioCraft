@@ -31,6 +31,8 @@ const copy = {
 		unavailable: "This portfolio is currently unavailable for messages.",
 	},
 };
+
+/** Submits public inquiries while keeping preview forms non-submitting. */
 export function InquiryForm({
 	slug,
 	locale,
@@ -44,6 +46,8 @@ export function InquiryForm({
 	const [pending, setPending] = useState(false);
 	const [status, setStatus] = useState<{ text: string; error: boolean } | null>(null);
 	const sending = useRef(false);
+
+	/** Validates and submits the public contact form with truthful result feedback. */
 	async function submit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		if (preview || sending.current) return;
@@ -93,6 +97,7 @@ export function InquiryForm({
 			setPending(false);
 		}
 	}
+
 	return (
 		<form
 			className="folio__inquiry"

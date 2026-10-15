@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+
+/** Groups a labelled native control with optional supporting text. */
 export function Field({
 	label,
 	hint,

@@ -4,13 +4,18 @@ import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";
 import { Input } from "./input";
 import type { ContentEditorProps } from "./types";
+
+/** Edits categorized skill entries through the shared draft updater. */
 export function SkillsEditor({ draft, locale, update }: Omit<ContentEditorProps, "siteId">) {
 	const t = labels[locale];
+
+	/** Changes one skill group while preserving all other draft data. */
 	const patchSkill = (id: string, patch: Partial<Skill>) =>
 		update((d) => ({
 			...d,
 			skills: (d.skills ?? []).map((x) => (x.id === id ? { ...x, ...patch } : x)),
 		}));
+
 	return (
 		<section className="editor-card" id="studio-skills">
 			<h2>{t.skills}</h2>
