@@ -105,7 +105,8 @@ export const copy = {
 		invalid:
 			"راجع الحقول المحددة: العناوين المطلوبة، التواريخ الصحيحة، العناصر غير الفارغة، وروابط وبريد صالحان.",
 		requiredPublish: "أضف اسمك ومسمى أو تخصصًا قبل النشر.",
-		slugError: "استخدم عنوانًا من ٣–٥٠ حرفًا لاتينيًا صغيرًا وأرقام وشرطات فقط.",
+		slugError:
+			"استخدم ٣–٥٠ حرفًا إنجليزيًا أو رقمًا، مع شرطة واحدة بين الكلمات بدل المسافات. مثال: sara-design. لا تبدأ أو تنهِ بشرطة.",
 		slugTaken: "هذا العنوان مستخدم. اختر عنوانًا آخر.",
 		publishSuccess: "تم نشر النسخة المحفوظة. التعديلات التالية تبقى مسودة حتى تنشرها.",
 		unpublishedSuccess: "تم إلغاء النشر. مسودتك ما زالت محفوظة.",
@@ -267,7 +268,8 @@ export const copy = {
 		invalid:
 			"Complete or correct these fields before saving: required titles, valid dates, non-empty items, valid links and email.",
 		requiredPublish: "Add your name and role or specialty before publishing.",
-		slugError: "Use 3–50 lowercase Latin letters, numbers and hyphens only.",
+		slugError:
+			"Use 3–50 English letters or numbers, with single hyphens between words instead of spaces. Example: sara-design. Do not start or end with a hyphen.",
 		slugTaken: "That address is already taken. Choose another one.",
 		publishSuccess:
 			"Your saved version is published. Further edits remain private until you publish again.",
