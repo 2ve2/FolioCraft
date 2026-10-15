@@ -396,3 +396,7 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Final readability refinement groups administrative controller state, focus effects and invalidation effects with purpose comments and spacing; eight action AST comparisons remain identical and Biome passes. Source guide rewritten to match actual folders; app READMEs, architecture, decisions and roadmap reconciled.
 
 - Git synchronization checkpoint: canonical files match the independent checkout, excluding known generated next-env.d.ts. Configured credential-value scan clean. Commits through649a027 retained locally. Fetch in the default sandbox failed DNS; automatic review rejected the escalated fetch/push before execution for lack of explicit destination-specific authorization. No remote update claimed. Push awaits human approval.
+
+## 2026-10-16 — separate authentication routes scope
+- Human confirmed separate /login and /signup pages instead of embedding their forms inside the landing page. Preserve bilingual styling and real Better Auth behavior; landing calls to action become route links, with home/back and mode-switch navigation.
+- Move authentication state/submission into a dedicated auth feature, keep workspace/session/save operations in Studio, and carry interface locale across these routes without changing portfolio content locale. Verify direct routes, switches, back/forward, errors and local authenticated entry. No backend/schema/dependency change, Cloudflare deployment or GitHub push authorization implied. Prior push approval remains pending.
