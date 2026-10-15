@@ -1,8 +1,13 @@
 # Project handoff
 
+## Current feature handoff — 2026-10-15
+- JSON draft restore completed and deployed to the Cloudflare testing frontend, versionfee5d122-d173-4dc9-8ea1-f4538807e8c8. Human can refresh and use Settings > Restore draft from JSON. Existing public release/address remain unchanged until a separate publication.
+- Five tests/18 assertions, both typechecks, Biome171 files, final OpenNext build and isolated browser acceptance passed. Confirm/cancel, malformed JSON, invalid asset references, reload persistence and legacy rich-body replacement were exercised. Hosted root/public/chunk200 and restore-label proof passed. Do not claim hosted authenticated restoration or broader launch acceptance.
+- QA accounts cleaned2/0 remaining, credentials removed, web/API fixture stopped; PostgreSQL was preexisting and remains. API unchanged. Next product work requires a new request; broader launch limitations remain in CLOUDFLARE/STATUS.
+
 > **Testing only:** The Cloudflare-hosted instance is a trial for friends to test and report issues. It is not a final launch or an accepted production release. Deployment to Cloudflare makes the test instance reachable; it does not establish production readiness.
 
-## Latest continuation — 2026-10-15
+## Earlier continuation — 2026-10-15
 - Documentation-only reconciliation completed; no application/provider/account change or new runtime test. See STATUS for current evidence and limits.
 - Arabic fictional demo flow completed through hosted signup, owned draft, publication, separate public view and page scrolling. Edited local MP4 under ignored work/demo-video/. Group message prepared only, not sent. Demo session signed out after capture; human must sign in again for private editing.
 - Real owner public portfolio now works following web global_fetch_strictly_public routing fix. Current web deployment6fb18ac0-1a72-4963-b61f-4f996f81c547; no change to owner content during demo.
