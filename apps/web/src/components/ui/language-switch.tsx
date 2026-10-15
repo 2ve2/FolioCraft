@@ -7,15 +7,17 @@ import { SelectControl } from "./select-control";
 export function LanguageSwitch({
 	locale,
 	onChange,
+	label,
 }: {
 	locale: Locale;
 	onChange: (locale: Locale) => void;
+	label?: string;
 }) {
 	const ar = locale === "ar";
 	return (
 		<SelectControl
 			compact
-			label={ar ? "لغة الاستوديو" : "Studio language"}
+			label={label ?? (ar ? "لغة الاستوديو" : "Studio language")}
 			value={locale}
 			onChange={(value) => onChange(value as Locale)}
 			icon={<Languages size={16} />}

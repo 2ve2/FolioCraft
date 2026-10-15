@@ -50,7 +50,7 @@ export function SelectControl({
 	/** Includes inherited fieldset disabling when deciding whether selection is allowed. */
 	const isDisabled = () => effectiveDisabled || Boolean(trigger.current?.matches(":disabled"));
 
-	/** Carries native fieldset disabling through the menu's document-body portal. */
+	/** Carries native fieldset disabling through the menu's portal. */
 	useEffect(() => {
 		/** Synchronizes inherited fieldset disabling with the portaled selection menu. */
 		const sync = () => setInheritedDisabled(Boolean(trigger.current?.matches(":disabled")));
@@ -268,7 +268,7 @@ export function SelectControl({
 							</button>
 						))}
 					</div>,
-					document.body,
+					root.current?.closest("dialog") ?? document.body,
 				)}
 		</div>
 	);
