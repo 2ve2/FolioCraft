@@ -164,8 +164,15 @@
 .landing-invitation h2 {
 	max-width: 630px;
 }
-.landing-invitation button {
-	flex-shrink: 0;
+.landing-invitation > div {
+	flex: 1;
+	min-width: 0;
+}
+.landing-invitation > .primary {
+	flex: 0 0 auto;
+	min-height: 48px;
+	padding: 12px 22px;
+	white-space: nowrap;
 }
 .onboarding-hint {
 	font-size: 13px;
@@ -173,6 +180,10 @@
 	margin: -8px 0 22px;
 }
 @media (max-width: 970px) {
+	.landing-invitation {
+		padding: 36px;
+		gap: 24px;
+	}
 	.welcome-page .welcome-main {
 		gap: 28px;
 		grid-template-columns: 1fr 1fr;

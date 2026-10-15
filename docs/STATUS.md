@@ -1,5 +1,11 @@
 # Current status
 
+## Bottom signup CTA tablet layout — 2026-10-16
+- Corrected the bottom landing invitation action after its conversion from button to signup link left a stale button-only no-shrink selector. At820px the original label wrapped to two lines with69px height; the corrected link remains one line at48px height with stable padding. Invitation text can shrink independently; tablet padding36px/gap24px retain space around the action, and the existing phone column remains.
+- Changed only apps/web/src/styles/landing.css. Biome206 files passes. Actual Chromium geometry verified English and Arabic at320/390/720/721/768/820/970/971/1024/1440px:48px button height, contained in the card, no text overlap or horizontal document overflow. Actual English bottom-link click opens /signup?lang=en. Screenshot/evidence: work/tablet-cta/. These are viewport checks, not physical iPad certification; no new build/API test was required for this CSS-only change.
+- Active work/blockers: none for this scope. QA viewport reset and tab closed. Local web4300 restarted; API4400 was already running and retained. No account/data mutation, deployment or GitHub push. Existing hosted-media and push-approval limitations remain unchanged. Next action: human inspect local tablet appearance.
+
+
 ## Separate authentication pages and template action — 2026-10-16
 - Completed human-confirmed /login and /signup pages, separate from the product landing content. Landing signup/signin links and auth home/mode links use actual routes. Authentication presentation, form state and Better Auth submissions live in features/auth; Studio retains workspace/session/save coordination. lib/use-interface-locale.ts carries the interface language in lang query parameters and browser history without changing portfolio locale.
 - Explore the template now opens the existing shared expanded preview modal rather than targeting the already visible example. It uses the selected fictional theme, readable desktop/mobile layout, local project navigation and disabled message submission. Close/Escape restores focus and document scrolling.
