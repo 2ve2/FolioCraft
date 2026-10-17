@@ -478,3 +478,15 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Reviewed current operations/roadmap/Cloudflare evidence and auth UI/backend source. Added LAUNCH.md separating critical hosted media/mail/recovery/release/acceptance/operations/usage/public-information work from later features. Found actual missing recovery/resend UI despite existing backend mail hooks; recorded without fabricating provider acceptance. Existing unverified trial accounts require an explicit transition.
 - Verified current official Better Auth/Cloudflare references. New-source CI status is unknown: unauthenticated GitHub API404, gh unavailable; neither indicates a failing run. Last known green hosted source isadc76cf. No new product tests needed for upload/documentation; earlier225-file quality check, web7/85 tests and production-build proof remain historical evidence.
 - Completion checkpoint: upload succeeded; launch review documented. Final documentation commit will be included in this authorized upload. No hosted mutation, deployment, domain purchase or provider credentials used.
+
+## 2026-10-17 — confirmed ichnara product name scope
+- Human explicitly adopted the new platform name "ichnara". Replace the former working name in product-controlled UI, page metadata, auth application/mail subject labels and current README headings; record the decision and current status.
+- Preserve historical documentation/prototype titles, repository/package/runtime identifiers, configured hosts, database records and user-authored portfolio content. No deployment, DNS/domain purchase, secret or real-account mutation. Synchronize and commit in work/github-upload only; verify types, quality/build and actual local brand/footer display.
+
+### Ichnara display capitalization
+- Human immediately refined the adopted name to start with a capital letter. Final display spelling is Ichnara; the earlier lowercase request remains historical. Updated source/UI/auth labels and current README identity accordingly. No user data or deployment identifiers changed.
+
+### Ichnara naming completed
+- Updated shared brand, landing/auth/loading/footer copy, import feedback, root404/admin metadata, Better Auth appName/mail subject and current README identity. Existing reference/history, technical identifiers/hosts and user content preserved.
+- Final API/web typechecks and Biome225 files pass. Final independent-checkout Next production build passes with12 static pages and existing dynamic routes. Actual local browser shows Ichnara in both shared brand instances, document title and footer; screenshot work/not-found-redesign/ichnara-brand.jpg. Product-source search finds no remaining former/lowercase display name. No mail delivery, authentication protocol, new integration tests or domain availability claim made for this display-text change.
+- Synchronized and committed only in work/github-upload. Generated next-env.d.ts left unstaged; no deployment or GitHub push for this naming step. No active blocker; next action is human review or the selected launch gate in LAUNCH.md.

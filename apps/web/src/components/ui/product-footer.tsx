@@ -14,7 +14,7 @@ export function ProductFooter({ locale }: { locale: Locale }) {
 			<div className={styles.inner}>
 				<div className={styles.top}>
 					<div className={styles.identity}>
-						<Link href={home} aria-label={ar ? "FolioCraft — الرئيسية" : "FolioCraft — Home"}>
+						<Link href={home} aria-label={ar ? "Ichnara — الرئيسية" : "Ichnara — Home"}>
 							<Brand />
 						</Link>
 						<p>
@@ -26,7 +26,7 @@ export function ProductFooter({ locale }: { locale: Locale }) {
 							{ar ? "قالب واحد. لمستك الخاصة." : "One considered layout. Your own expression."}
 						</span>
 					</div>
-					<nav className={styles.group} aria-label={ar ? "اكتشف المنصة" : "Discover FolioCraft"}>
+					<nav className={styles.group} aria-label={ar ? "اكتشف المنصة" : "Discover Ichnara"}>
 						<h2>{ar ? "اكتشف المنصة" : "Discover"}</h2>
 						<Link href={home}>{ar ? "الرئيسية" : "Home"}</Link>
 						<Link href={`${home}#how-it-works`}>{ar ? "كيف يعمل" : "How it works"}</Link>
@@ -44,9 +44,7 @@ export function ProductFooter({ locale }: { locale: Locale }) {
 				</div>
 				<div className={styles.bottom}>
 					<span>
-						{ar
-							? "© 2026 FolioCraft. جميع الحقوق محفوظة."
-							: "© 2026 FolioCraft. All rights reserved."}
+						{ar ? "© 2026 Ichnara. جميع الحقوق محفوظة." : "© 2026 Ichnara. All rights reserved."}
 					</span>
 					<span>
 						{ar

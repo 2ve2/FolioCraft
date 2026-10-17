@@ -1,5 +1,10 @@
 # Current status
 
+## Ichnara name adopted and applied — 2026-10-17
+- Human confirmed the new platform name and then specified an uppercase first letter: final display spelling Ichnara. Applied to product-controlled UI/brand/footer/auth labels, root404/admin metadata, Better Auth app/mail subjects and current READMEs. Historical evidence, technical package/repository/runtime identifiers, hosts and existing user portfolio content retained.
+- Verification: API/web typechecks pass; Biome225 files passes; final independent-checkout Next production build passes (12 static pages plus existing dynamic public routes). Actual local browser confirms shared header/footer marks, title and footer copyright; screenshot work/not-found-redesign/ichnara-brand.jpg. Display-text edits do not establish mail delivery, hosted rollout or domain/trademark availability.
+- Completed: confirmed naming, source/docs synchronization and local commit in work/github-upload. Active work/blockers: none for branding. Generated next-env.d.ts remains unstaged. No deployment, provider/account mutation or GitHub push for this step. Next action: human review or resume launch blockers from LAUNCH.md.
+
 ## GitHub upload and launch assessment — 2026-10-17
 - Human-requested ordinary upload succeeded: origin/main advanced adc76cf→3013eec with the four disclosed commits e8892fd,1994061,e28a975,3013eec. Fetch confirmed0 remote-only commits; generated next-env.d.ts remains unstaged. No deployment or account/provider mutation.
 - Added LAUNCH.md after reviewing current source/operations evidence: critical hosted media502, real verified mail plus missing reset/resend UI, final environment/release acceptance, recovery/monitoring, usage limits and truthful public operating information. Core portfolio/admin implementation exists; later AI/payment/custom-user-domain features are not launch blockers. This is a documented assessment, not a fresh hosted security/provider acceptance test.

@@ -6,7 +6,7 @@ import "@fontsource/ibm-plex-mono/latin-600.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-	title: "FolioCraft — Portfolio Studio",
+	title: "Ichnara — Portfolio Studio",
 	description: "مساحة لعرض عملك بطريقتك. A considered home for your work.",
 	robots: { index: false, follow: false },
 };

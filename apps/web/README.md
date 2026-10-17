@@ -1,4 +1,4 @@
-# FolioCraft Web
+# Ichnara Web
 
 A Next.js frontend independent of the backend. `src/app` owns routes, layout, and metadata. Application components live in `src/features`, grouped into studio/content/assets/management/portfolio; shared controls live in `src/components/ui`.
 

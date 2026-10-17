@@ -1,6 +1,6 @@
 import { Sparkles } from "lucide-react";
 
-/** Renders the shared FolioCraft identity mark. */
+/** Renders the shared Ichnara identity mark. */
 export function Brand() {
 	return (
 		<span className="brand">
@@ -8,7 +8,7 @@ export function Brand() {
 				<Sparkles size={19} />
 			</span>
 			<span>
-				Folio<span className="brand-light">Craft</span>
+				Ichnara
 				<small>PORTFOLIO STUDIO</small>
 			</span>
 		</span>

@@ -1,4 +1,4 @@
-# FolioCraft API
+# Ichnara API
 
 An independent backend using Bun, Hono, Better Auth, PostgreSQL, and Drizzle. Start at `src/server.ts` for execution and `src/app.ts` for route and protection composition. Database rules live in services, request validation in routes, and schema and migrations in db.
 

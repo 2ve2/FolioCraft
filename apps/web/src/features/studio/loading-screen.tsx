@@ -42,7 +42,7 @@ export function LoadingScreen({
 				{children && <div className="loading-actions">{children}</div>}
 			</section>
 			<p className="loading-footnote">
-				FolioCraft · {locale === "ar" ? "مساحة لأعمالك" : "A home for your work"}
+				Ichnara · {locale === "ar" ? "مساحة لأعمالك" : "A home for your work"}
 			</p>
 		</main>
 	);

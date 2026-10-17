@@ -1,6 +1,6 @@
 import { AdminPanel } from "../../../features/management/admin/admin-panel";
 
-export const metadata = { title: "Sites — FolioCraft Admin" };
+export const metadata = { title: "Sites — Ichnara Admin" };
 
 /** Mounts the independently addressable administrative sites view. */
 export default function AdministrationPage() {

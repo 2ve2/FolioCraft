@@ -47,7 +47,7 @@ export async function sendAuthMail(
 		const delivery = await transport.sendMail({
 			from: env.MAIL_FROM,
 			to,
-			subject: `FolioCraft — ${action}`,
+			subject: `Ichnara — ${action}`,
 			text: `${name}\n\n${action}\n${url}\n\nIf you did not request this, ignore this message.\nإذا لم تطلب ذلك، تجاهل هذه الرسالة.`,
 			html: `<p>${escapeHtml(name)}</p><p>${escapeHtml(action)}</p><p><a href="${escapeHtml(url)}">${escapeHtml(action)}</a></p><p>If you did not request this, ignore this message.<br>إذا لم تطلب ذلك، تجاهل هذه الرسالة.</p>`,
 		});

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { NotFoundScreen } from "../features/not-found/not-found-screen";
 
 export const metadata: Metadata = {
-	title: "404 — FolioCraft",
+	title: "404 — Ichnara",
 };
 
 /** Renders the branded missing-page boundary without changing public lookup semantics. */

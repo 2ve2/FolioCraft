@@ -61,7 +61,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 						{ar ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
 						{t.back}
 					</Link>
-					<span className={`eyebrow ${styles.eyebrow}`}>FolioCraft</span>
+					<span className={`eyebrow ${styles.eyebrow}`}>Ichnara</span>
 					<h1 id="auth-title" className={styles.title}>
 						{title}
 					</h1>

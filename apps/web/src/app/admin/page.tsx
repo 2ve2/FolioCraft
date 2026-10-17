@@ -1,6 +1,6 @@
 import { AdminPanel } from "../../features/management/admin/admin-panel";
 
-export const metadata = { title: "Overview — FolioCraft Admin" };
+export const metadata = { title: "Overview — Ichnara Admin" };
 
 /** Mounts the platform overview, independently of the personal studio. */
 export default function Administration() {

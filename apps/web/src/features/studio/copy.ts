@@ -150,7 +150,7 @@ export const copy = {
 		draftImportConfirm:
 			"هل تريد استبدال مسودتك الحالية بمحتوى هذا الملف وحفظها؟ تشمل العملية المحتوى واللغة والمظهر، وتستبدل التعديلات غير المحفوظة. لن تتغير النسخة المنشورة.",
 		draftImportInvalid:
-			"الملف ليس نسخة JSON صالحة من مسودة FolioCraft، أو إصدار الملف غير مدعوم. لم يتم استبدال المسودة.",
+			"الملف ليس نسخة JSON صالحة من مسودة Ichnara، أو إصدار الملف غير مدعوم. لم يتم استبدال المسودة.",
 		draftImportSize: "الملف أكبر من ٢ ميغابايت. لم يتم استبدال المسودة.",
 		draftImportAssets:
 			"يحتوي الملف على صور غير متاحة أو لا تتبع هذا الموقع. لم يتم استبدال المسودة.",
@@ -317,7 +317,7 @@ export const copy = {
 		draftImportConfirm:
 			"Replace and save your current draft with this file? Content, language, appearance and unsaved edits will be replaced. Your public release will stay unchanged.",
 		draftImportInvalid:
-			"This is not a valid FolioCraft draft JSON file, or its version is unsupported. Your draft was not replaced.",
+			"This is not a valid Ichnara draft JSON file, or its version is unsupported. Your draft was not replaced.",
 		draftImportSize: "The file exceeds 2 MiB. Your draft was not replaced.",
 		draftImportAssets:
 			"The file references unavailable images or images belonging to another site. Your draft was not replaced.",

@@ -8,7 +8,7 @@ import { authHooks } from "./hooks";
 import { sendAuthMail } from "./mail";
 
 export const auth = betterAuth({
-	appName: "FolioCraft",
+	appName: "Ichnara",
 	plugins: [admin()],
 	logger: {
 		level: "warn",

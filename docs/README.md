@@ -1,8 +1,8 @@
-# FolioCraft — Project handoff
+# Ichnara — Project handoff
 
 Last updated: 2026-10-15, Asia/Riyadh.
 
-FolioCraft is a working name taken from the prototype; the final product name has not been decided.
+The human confirmed "Ichnara" as the platform name on 2026-10-17. FolioCraft was the prototype working name. Historical references, existing repository/package identifiers and trial hosts retain that earlier name until explicitly migrated.
 
 ## Goal
 A portfolio builder with one fixed, comprehensive layout. Users customize themes, colors, font family/style, and text size while retaining a consistent UI structure. Support Arabic and English and content suitable for different disciplines.

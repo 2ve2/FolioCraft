@@ -1,4 +1,4 @@
-# FolioCraft
+# Ichnara
 
 > **Testing only:** The Cloudflare-hosted instance is a trial for friends to test and report issues. It is not a final launch or an accepted production release. Deployment to Cloudflare makes the test instance reachable; it does not establish production readiness.
 
