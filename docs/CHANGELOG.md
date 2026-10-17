@@ -498,3 +498,11 @@ Human requests their own website from an attached CV and explicitly selects Engl
 ### Powerful logo concept generated
 - Human corrected the direction: explicitly rejected simple/minimal and requested a very strong identity. Generated one premium sculptural I/wing emblem with violet/silver dimensional treatment, exact Ichnara wordmark, matching flat applications and app-icon mockup using the built-in image tool.
 - Visually inspected generated output: name and requested applications present. Saved project copy and English brief to work/ichnara-logo/ichnara-powerful-concept-v1.png and BRIEF.md. This is a raster concept, not a vector master; small-size legibility, trademark uniqueness and deployment are not verified. No application source changes or tests needed. Human design selection pending; existing brand retained.
+
+## 2026-10-17 — professional logo redesign scope
+- Human rejected the initial metallic wing concept as unprofessional and explicitly requested professional skills. Reuse imagegen logo-brand guidance to create a new, concept-led flat identity with strong typography and a reproducible monochrome symbol.
+- Preserve confirmed Ichnara spelling/violet direction; reject wings, sculptural metal, gaming/crest decoration and effects-led presentation. Produce a review concept only, with no site integration or claim of trademark/vector/small-size certification.
+
+### Professional logo proposal v2 completed
+- Used imagegen logo-specific sample/prompting guidance. Replaced rejected wing/metal direction with a flat violet architectural ribbon symbol, strong geometric lettering, inverse treatment and symbol scale examples. Initial generated lowercase first letter corrected through a targeted image edit; final Ichnara capitalization visually checked.
+- Saved work/ichnara-logo/ichnara-professional-concept-v2.png and English BRIEF-v2.md. Raster visual review only; no vector master, measured small-size/trademark validation, product-source change, test run, deployment or human adoption claimed. Prior concept remains preserved as rejected history.
