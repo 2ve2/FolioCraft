@@ -1,5 +1,9 @@
 # Current status
 
+## Five Ichnara identity choices ready — 2026-10-17
+- Human requested five distinct stronger identity ideas using skills. Built-in imagegen logo-brand workflow generated01 imprint,02 editorial,03 architecture,04 expressive path and05 bilingual directions; visually inspected and preserved under work/ichnara-logo/identity-01.png through identity-05.png. Full prompts and limitations in FIVE-DIRECTIONS.md.
+- Completed: five raster proposals. Active work: human selection, then refinement. Blockers: none for comparison. Next action: choose a direction or elements to combine; prepare exact typography/vector assets only after selection.03 geometric lettering needs cleanup;05 Arabic spelling remains proposed. No product integration, software-test, trademark, actual-small-size validation or deployment claim. Existing site unchanged.
+
 ## Revised professional logo proposal — 2026-10-17
 - Human rejected the metallic wing concept and requested professional skills. Applied imagegen logo-brand guidance to a new flat violet architectural ribbon symbol and strong wordmark. Targeted edit corrected the first letter to uppercase; final Ichnara text and applications visually inspected.
 - Completed: raster proposal v2 at work/ichnara-logo/ichnara-professional-concept-v2.png; English brief alongside. Active work: human review/selection. Blockers: none for delivery. Next action: refine the selected direction, then prepare production assets. Existing site remains unchanged; no vector/actual favicon/trademark verification or deployment claimed. No source tests required for an image-only proposal.
