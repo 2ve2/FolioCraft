@@ -452,3 +452,17 @@ Human requests their own website from an attached CV and explicitly selects Engl
 ## 2026-10-16 — hosted CI repair verified
 - Uploaded investigation e8cda48 and configuration repair adc76cf to origin/main. GitHub Actions run38814768836 completed success for adc76cf: integration completed success and validate completed success, including the formerly failing quality check and the build. Fresh jobs response independently confirms both results. Evidence: https://github.com/2ve2/FolioCraft/actions/runs/38814768836 .
 - Completed: CI path-exclusion fix and actual hosted acceptance. Active work/blockers: none for this scope. This final evidence checkpoint is local documentation; hosted source is adc76cf with2/2 successful checks. Previous failed runs remain historical. Cloudflare deployment/media502 and mail/provider acceptance are unchanged.
+
+## 2026-10-17 — missing-page redesign scope
+- Human requested a local redesign of the unsuitable Not Found page. Inspect the existing root missing-page boundary and visual system, then implement a violet branded, responsive Arabic/English page with truthful missing-resource copy and real navigation to product home and Studio.
+- Reuse the established interface-locale and shared brand/language controls; preserve published-only routing, backend behavior and existing service-error presentation. Verify browser geometry, language/direction, keyboard/navigation and appropriate source/build checks.
+- Synchronize completed source/docs to the independent work/github-upload checkout and commit only there. No subagents, deployment, real-account mutation or hosted-media/mail changes.
+
+### Missing-page implementation and local acceptance
+- Added apps/web/src/features/not-found/not-found-screen.tsx and not-found.module.css; app/not-found.tsx delegates to the branded screen and exports the404 title. Shared brand/language selector and URL locale remain authoritative. Generic missing-resource text replaces the incorrect universal unpublished-portfolio claim.
+- Web TypeScript passes; Biome223 files passes; canonical web tests7 pass/85 assertions. Browser final geometry covers Arabic/English at320/390/768/1024/1440px: zero document overflow, contained action links51.5px high, correct locale/direction. The initial320px header overflow was corrected with scoped brand sizing/spacing. Language selection, visible keyboard focus, actual product-home navigation and Studio navigation with the existing signed-in session passed without editing account data.
+- Evidence: work/not-found-redesign/geometry.json and arabic-mobile.jpg. Production build verification is still in progress; no backend/provider tests or physical-device coverage claimed.
+
+## 2026-10-17 — shared product footer scope
+- Human additionally requested the usual information-rich site footer. Implement a shared bilingual responsive product footer for landing, authentication and404 pages with brand/product explanation and working existing navigation. Studio/admin remain work areas and public portfolios retain their owner's renderer/footer.
+- Exact group names/layout are engineering choices. Do not invent legal policies, contact addresses or social destinations. Verify language retention, real link destinations and responsive containment; keep all changes local and commit completed steps in the independent checkout.

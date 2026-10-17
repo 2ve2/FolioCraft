@@ -1,14 +1,11 @@
-/** Renders the application missing-page response. */
+import type { Metadata } from "next";
+import { NotFoundScreen } from "../features/not-found/not-found-screen";
+
+export const metadata: Metadata = {
+	title: "404 — FolioCraft",
+};
+
+/** Renders the branded missing-page boundary without changing public lookup semantics. */
 export default function NotFound() {
-	return (
-		<main className="public-error">
-			<h1>الموقع غير منشور · Portfolio not published</h1>
-			<p>
-				لم يتم العثور على نسخة منشورة لهذا العنوان.
-				<br />
-				There is no published portfolio at this address.
-			</p>
-			<a href="/">FolioCraft Studio ←</a>
-		</main>
-	);
+	return <NotFoundScreen />;
 }
