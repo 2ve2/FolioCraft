@@ -175,3 +175,8 @@ Human-confirmed: all project Markdown must be entirely in English, including exa
 - Human-confirmed: replace the prototype working name FolioCraft with Ichnara. The immediate follow-up explicitly capitalizes the first letter; Ichnara is the final display spelling.
 - Apply to product-controlled brand, titles, interface labels, authentication application/mail subjects and current README identity. Preserve historical prototype evidence, technical package/repository/runtime identifiers and existing hosts until a separate migration. Never rewrite user-authored portfolio content or existing database rows as part of a branding edit.
 - No domain purchase/availability claim, trademark check, hosted rename or deployment is implied. Exact mark styling retains the existing violet identity.
+
+## 2026-10-18 — geometric reference and distinctiveness requirement
+- Human explicitly selected the original violet interlocking geometric reference as the direction and requested platform-specific symbol and lettering. This supersedes agent-led editorial exploration. Human additionally emphasized avoiding a movement already used by another brand.
+- Preliminary visual review of Hostinger's owner-published h-icon found a related angular/violet impression, not identity or legal infringement. Source: https://github.com/hostinger/logo/blob/master/v3/h-icon.png . Retain the preferred geometric personality but develop a materially different symbol silhouette rather than merely rename/recolor it.
+- Agent proposed an asymmetric I/n-inspired ligature and coordinated wordmark cuts. This new exact drawing is awaiting human review; no worldwide uniqueness, bespoke-font ownership or trademark-clearance claim. No application integration or deployment authorized by a concept review.

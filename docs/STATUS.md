@@ -1,5 +1,9 @@
 # Current status
 
+## Geometric Ichnara direction selected; distinct ligature proposed — 2026-10-18
+- Human explicitly returned to the original interlocking violet geometric reference and required distinctive symbol/lettering. Do not resume the editorial direction without a new instruction. Preliminary web/visual review found a related angular/violet impression in Hostinger's official h-icon, not an identical design or legal finding; source linked in DECISIONS.
+- Completed: imagegen near-reference edit, similarity review and a second materially different asymmetric I/n-inspired proposal. Final review image work/ichnara-logo/ichnara-distinct-ligature-v1.png; prompt/limits in SELECTED-REFERENCE-REFINEMENT.md; comparison screenshot retained. Active work: human review of exact revised mark; no approved production drawing yet. Next action: refine the selected geometric symbol/wordmark, then validate precise vector/small-size applications before integration. No exhaustive trademark/uniqueness/font-originality certification, source change, test run or deployment. Current site unchanged.
+
 ## Ichnara vector editorial review ready — 2026-10-18
 - Human delegated professional creative development after viewing logo concepts. Produced a real vector review identity: drawn framed-I symbol, STIX Two Text SemiBold outlined wordmark with adjusted spacing, three color variants, simplified favicon, transparent PNG exports and real browser header/footer application sheet. Source/font/license and limits in docs/brand/ichnara-editorial-review/README.md; editable study under work/ichnara-logo/refined.
 - Actual verification: seven SVGs XML-parse with viewBox and no text/raster dependencies; PNG export visually inspected. Browser at1280/390px: no document overflow, all images loaded.48/32/24/16px icon examples included for visual review, not broad-device certification. No application source change or product tests/build required. No trademark/font-exclusivity claim.
