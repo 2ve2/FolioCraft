@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, FileQuestion, House, PanelsTopLeft } from "lucid
 import Link from "next/link";
 import { Brand } from "../../components/ui/brand";
 import { LanguageSwitch } from "../../components/ui/language-switch";
+import { ProductFooter } from "../../components/ui/product-footer";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import styles from "./not-found.module.css";
 
@@ -61,10 +62,7 @@ export function NotFoundScreen() {
 					</p>
 				</div>
 			</main>
-			<footer className={styles.footer}>
-				<span dir="ltr">FolioCraft</span>
-				<span>{ar ? "مساحة لأعمالك، بطريقتك." : "A considered home for your work."}</span>
-			</footer>
+			<ProductFooter locale={locale} />
 		</div>
 	);
 }

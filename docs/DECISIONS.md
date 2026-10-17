@@ -165,3 +165,8 @@ Human-confirmed: all project Markdown must be entirely in English, including exa
 
 ## 2026-10-16 — explicit GitHub upload authorization
 - Human-confirmed: list required commits before uploading them. This authorizes synchronization to the existing origin https://github.com/2ve2/FolioCraft.git main while preserving history. It does not authorize Cloudflare deployment or hosted-storage mutations.
+
+## 2026-10-17 — missing-page recovery and shared product footer
+- Human-confirmed: redesign the unsuitable Not Found page and add the usual information-rich site footer. Engineering defaults: a violet404 illustration, generic missing-resource copy, URL-based Arabic/English interface language and real home/Studio recovery links. Do not identify all missing routes as unpublished portfolios.
+- Reuse one ProductFooter on product landing, login/signup and404 pages: brand/description, product discovery anchors and account/workspace routes, with locale retained. Do not invent social/contact/legal destinations. Studio/admin remain work areas; user portfolio footers remain owned by the shared portfolio renderer. These exact placements/groups are engineering choices explained to the human, not separately confirmed configuration values.
+- Scoped CSS preserves existing service-error styling and avoids changing backend/public lookup behavior. Local verification and limitations are in STATUS; no deployment or real-account mutation.

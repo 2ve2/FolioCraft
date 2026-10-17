@@ -3,6 +3,7 @@ import { LinkArrow } from "@folio/portfolio";
 import Link from "next/link";
 import { type ReactNode, useState } from "react";
 import { Brand } from "../../components/ui/brand";
+import { ProductFooter } from "../../components/ui/product-footer";
 import { copy } from "./copy";
 import { LandingDetails, LandingShowcase } from "./landing-showcase";
 
@@ -83,10 +84,7 @@ export function WelcomeScreen({
 				</div>
 				<LandingDetails locale={locale} authenticated={authenticated} />
 			</main>
-			<footer className="welcome-footer">
-				<span>FolioCraft © 2026</span>
-				<span>{t.footer}</span>
-			</footer>
+			<ProductFooter locale={locale} />
 		</div>
 	);
 }

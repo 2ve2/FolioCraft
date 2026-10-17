@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { Brand } from "../../components/ui/brand";
 import { Field } from "../../components/ui/field";
 import { LanguageSwitch } from "../../components/ui/language-switch";
+import { ProductFooter } from "../../components/ui/product-footer";
 import { LoadingScreen } from "../studio/loading-screen";
 import styles from "./auth.module.css";
 import { type AuthMode, useAuthController } from "./use-auth-controller";
@@ -133,10 +134,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 					<span className="auth-privacy">{t.privacy}</span>
 				</section>
 			</main>
-			<footer className="welcome-footer">
-				<span>FolioCraft © 2026</span>
-				<span>{t.footer}</span>
-			</footer>
+			<ProductFooter locale={locale} />
 		</div>
 	);
 }
