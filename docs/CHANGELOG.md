@@ -490,3 +490,11 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Updated shared brand, landing/auth/loading/footer copy, import feedback, root404/admin metadata, Better Auth appName/mail subject and current README identity. Existing reference/history, technical identifiers/hosts and user content preserved.
 - Final API/web typechecks and Biome225 files pass. Final independent-checkout Next production build passes with12 static pages and existing dynamic routes. Actual local browser shows Ichnara in both shared brand instances, document title and footer; screenshot work/not-found-redesign/ichnara-brand.jpg. Product-source search finds no remaining former/lowercase display name. No mail delivery, authentication protocol, new integration tests or domain availability claim made for this display-text change.
 - Synchronized and committed only in work/github-upload. Generated next-env.d.ts left unstaged; no deployment or GitHub push for this naming step. No active blocker; next action is human review or the selected launch gate in LAUNCH.md.
+
+## 2026-10-17 — Ichnara logo concept scope
+- Human requested a premium logo for the visual identity. Generate a reviewable visual concept using the confirmed Ichnara spelling and existing violet identity, including a distinctive symbol and legible wordmark.
+- This is a proposed design, not a human-approved replacement for the current site mark. Preserve current UI until selection; no deployment, domain/trademark availability claim or user-content mutation. Keep project artifacts under work/ichnara-logo and record actual output/limitations.
+
+### Powerful logo concept generated
+- Human corrected the direction: explicitly rejected simple/minimal and requested a very strong identity. Generated one premium sculptural I/wing emblem with violet/silver dimensional treatment, exact Ichnara wordmark, matching flat applications and app-icon mockup using the built-in image tool.
+- Visually inspected generated output: name and requested applications present. Saved project copy and English brief to work/ichnara-logo/ichnara-powerful-concept-v1.png and BRIEF.md. This is a raster concept, not a vector master; small-size legibility, trademark uniqueness and deployment are not verified. No application source changes or tests needed. Human design selection pending; existing brand retained.
