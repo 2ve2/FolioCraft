@@ -51,7 +51,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 		<div className={`welcome-page ${styles.page}`}>
 			<header className="welcome-header">
 				<Link href={`/?lang=${locale}`} aria-label={ar ? "الصفحة الرئيسية" : "Home"}>
-					<Brand />
+					<Brand locale={locale} />
 				</Link>
 				<LanguageSwitch locale={locale} onChange={setLocale} />
 			</header>
@@ -61,7 +61,9 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 						{ar ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
 						{t.back}
 					</Link>
-					<span className={`eyebrow ${styles.eyebrow}`}>Ichnara</span>
+					<span className={`eyebrow ${styles.eyebrow}`}>
+						{locale === "ar" ? "إيكنارا" : "Ichnara"}
+					</span>
 					<h1 id="auth-title" className={styles.title}>
 						{title}
 					</h1>

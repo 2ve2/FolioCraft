@@ -14,8 +14,8 @@ export function ProductFooter({ locale }: { locale: Locale }) {
 			<div className={styles.inner}>
 				<div className={styles.top}>
 					<div className={styles.identity}>
-						<Link href={home} aria-label={ar ? "Ichnara — الرئيسية" : "Ichnara — Home"}>
-							<Brand />
+						<Link href={home} aria-label={ar ? "إيكنارا — الرئيسية" : "Ichnara — Home"}>
+							<Brand locale={locale} />
 						</Link>
 						<p>
 							{ar
@@ -44,7 +44,7 @@ export function ProductFooter({ locale }: { locale: Locale }) {
 				</div>
 				<div className={styles.bottom}>
 					<span>
-						{ar ? "© 2026 Ichnara. جميع الحقوق محفوظة." : "© 2026 Ichnara. All rights reserved."}
+						{ar ? "© 2026 إيكنارا. جميع الحقوق محفوظة." : "© 2026 Ichnara. All rights reserved."}
 					</span>
 					<span>
 						{ar

@@ -8,8 +8,13 @@ const config: NextConfig = {
 	async redirects() {
 		return [
 			{
+				source: "/brand/ichnara/ichnara-brand-kit-v1.1.zip",
+				destination: "/brand/ichnara/ichnara-brand-kit-v1.2.zip",
+				permanent: true,
+			},
+			{
 				source: "/brand/ichnara/ichnara-brand-kit-v1.zip",
-				destination: "/brand/ichnara/ichnara-brand-kit-v1.1.zip",
+				destination: "/brand/ichnara/ichnara-brand-kit-v1.2.zip",
 				permanent: true,
 			},
 		];

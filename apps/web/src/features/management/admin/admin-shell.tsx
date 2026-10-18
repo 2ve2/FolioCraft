@@ -70,7 +70,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 			<div className={styles.gate} dir={locale === "ar" ? "rtl" : "ltr"}>
 				<header>
 					<Link href={`/?lang=${locale}`}>
-						<Brand />
+						<Brand locale={locale} />
 					</Link>
 					<LanguageSwitch
 						locale={locale}
@@ -113,7 +113,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 				</a>
 				<aside className={styles.sidebar}>
 					<Link className={styles.brand} href={`/admin?lang=${locale}`}>
-						<Brand />
+						<Brand locale={locale} />
 					</Link>
 					<span className={styles.navLabel}>{t.label}</span>
 					<nav aria-label={t.platform} className={styles.nav}>

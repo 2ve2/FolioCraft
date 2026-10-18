@@ -194,3 +194,6 @@ Human-confirmed: all project Markdown must be entirely in English, including exa
 ## 2026-10-18 — round2 identity accepted
 - Human-confirmed after viewing round2: capital-I option I1, Arabic lockup A1, accent C1 (#3F46C8) and the proposed Arabic spelling encoded in the A1 artwork. Local integration is now authorized; no deployment/push or legal-clearance claim follows.
 - Human-confirmed hygiene scope permits generalized documentation paths/hosts, one canonical AGENTS, complete STATUS archival and conditional duplicate ZIP removal after reference/equality checks. Existing Worker configuration remains unchanged; legacy download URLs must remain usable.
+
+## 2026-10-18 — Arabic lockup optical correction
+- Human reported excessive symbol/name separation on the local Arabic site while accepting the English version. Actual outlined word bounds end at812.75 and original symbol begins1130 (317.25-unit gap). Implementation reduces this to60 units by moving only the Arabic symbol and tightly cropping its viewBox; shapes, approved font/color and English files remain unchanged. Exact gap is an engineering choice under the correction request, not a separately human-selected number.

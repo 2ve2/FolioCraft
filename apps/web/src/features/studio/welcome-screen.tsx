@@ -30,7 +30,7 @@ export function WelcomeScreen({
 	return (
 		<div className="welcome-page">
 			<header className="welcome-header">
-				<Brand />
+				<Brand locale={locale} />
 				<nav
 					className="welcome-nav"
 					aria-label={locale === "ar" ? "القائمة الرئيسية" : "Main navigation"}

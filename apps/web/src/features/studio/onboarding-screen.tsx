@@ -31,7 +31,7 @@ export function OnboardingScreen({
 	return (
 		<div className="welcome-page">
 			<header className="welcome-header">
-				<Brand />
+				<Brand locale={locale} />
 				<div className="header-actions">
 					{localeControl}
 					{role?.split(",").includes("admin") && (

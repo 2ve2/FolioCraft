@@ -109,7 +109,7 @@
 .primary {
 	background: var(--purple);
 	color: #fff;
-	box-shadow: 0 5px 12px #6e46d61a;
+	box-shadow: 0 5px 12px #3f46c81a;
 }
 .primary:hover {
 	background: #5e38bf;

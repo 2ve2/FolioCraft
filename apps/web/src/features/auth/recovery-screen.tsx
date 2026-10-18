@@ -30,7 +30,7 @@ export function RecoveryScreen({ mode }: { mode: RecoveryMode }) {
 		<div className={`welcome-page ${styles.page}`}>
 			<header className="welcome-header">
 				<Link href={`/?lang=${locale}`} aria-label={locale === "ar" ? "الرئيسية" : "Home"}>
-					<Brand />
+					<Brand locale={locale} />
 				</Link>
 				<LanguageSwitch locale={locale} onChange={setLocale} />
 			</header>

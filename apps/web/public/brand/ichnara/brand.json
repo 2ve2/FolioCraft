@@ -1,16 +1,21 @@
 {
 	"brand": "Ichnara",
-	"version": "1.1",
+	"arabicName": "إيكنارا",
+	"version": "1.2",
 	"primary": "ichnara-logo-ink.svg",
 	"reverse": "ichnara-logo-white.svg",
 	"accent": "ichnara-logo-violet.svg",
+	"arabicPrimary": "ichnara-logo-ar-ink.svg",
+	"arabicReverse": "ichnara-logo-ar-white.svg",
+	"arabicAccent": "ichnara-logo-ar-violet.svg",
+	"emblem": "ichnara-emblem-violet.svg",
 	"favicon": "favicon.svg",
-	"construction": "hand-authored outlined wordmark, not an installable font",
+	"wordmark": "ichnara-wordmark-ink.svg",
 	"colors": {
-		"violet": "#6E46D6",
+		"accent": "#3F46C8",
 		"ink": "#241B38",
 		"white": "#FFFFFF"
 	},
-	"emblem": "ichnara-emblem-violet.svg",
-	"wordmark": "ichnara-wordmark-ink.svg"
+	"construction": "Drawn Latin I1 wordmark; Arabic A1 derived from Noto Sans Arabic700 under SIL OFL; preserved folded-band emblem",
+	"humanApproved": "2026-10-18: I1/A1/C1 and Arabic spelling"
 }

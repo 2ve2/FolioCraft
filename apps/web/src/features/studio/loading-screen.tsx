@@ -18,7 +18,7 @@ export function LoadingScreen({
 	return (
 		<main className="loading-screen" lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
 			<div className="loading-brand">
-				<Brand />
+				<Brand locale={locale} />
 			</div>
 			<section className={`loading-card${error ? " loading-card--error" : ""}`} aria-busy={!error}>
 				<div className="loading-emblem" aria-hidden="true">
@@ -42,7 +42,8 @@ export function LoadingScreen({
 				{children && <div className="loading-actions">{children}</div>}
 			</section>
 			<p className="loading-footnote">
-				Ichnara · {locale === "ar" ? "مساحة لأعمالك" : "A home for your work"}
+				{locale === "ar" ? "إيكنارا" : "Ichnara"} ·{" "}
+				{locale === "ar" ? "مساحة لأعمالك" : "A home for your work"}
 			</p>
 		</main>
 	);

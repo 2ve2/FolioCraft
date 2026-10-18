@@ -28,7 +28,7 @@ export function WorkspaceSidebar({
 	const t = copy[locale];
 	return (
 		<aside className="sidebar">
-			<Brand />
+			<Brand locale={locale} />
 			<TooltipButton
 				type="button"
 				className="mobile-logout icon-button"

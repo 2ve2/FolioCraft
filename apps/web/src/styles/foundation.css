@@ -3,7 +3,7 @@
 	--muted: #706c80;
 	--line: #e9e6ef;
 	--paper: #faf9fc;
-	--purple: #6e46d6;
+	--purple: #3f46c8;
 	--soft: #f0eafb;
 	font-family: var(--font-ui);
 	color: var(--ink);
@@ -71,7 +71,7 @@ textarea:focus,
 select:focus {
 	outline: none;
 	border-color: #9a7ae4;
-	box-shadow: 0 0 0 3px #6e46d615;
+	box-shadow: 0 0 0 3px #3f46c815;
 }
 textarea {
 	resize: vertical;
@@ -154,7 +154,7 @@ textarea {
 	display: grid;
 	place-items: center;
 	border-radius: 11px 11px 4px 11px;
-	box-shadow: 0 4px 10px #6e46d623;
+	box-shadow: 0 4px 10px #3f46c823;
 }
 .brand-light {
 	font-weight: 450;
@@ -187,10 +187,10 @@ textarea {
 .primary {
 	background: var(--purple);
 	color: #fff;
-	box-shadow: 0 4px 10px #6e46d615;
+	box-shadow: 0 4px 10px #3f46c815;
 }
 .primary:hover:not(:disabled) {
-	background: #5933bf;
+	background: #3036a6;
 }
 .secondary {
 	background: #fff;

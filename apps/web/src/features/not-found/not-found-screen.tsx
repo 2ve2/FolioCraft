@@ -18,7 +18,7 @@ export function NotFoundScreen() {
 		<div className={styles.page} lang={locale} dir={ar ? "rtl" : "ltr"}>
 			<header className={styles.header}>
 				<Link href={`/?lang=${locale}`} aria-label={ar ? "الصفحة الرئيسية" : "Home"}>
-					<Brand />
+					<Brand locale={locale} />
 				</Link>
 				<LanguageSwitch
 					locale={locale}

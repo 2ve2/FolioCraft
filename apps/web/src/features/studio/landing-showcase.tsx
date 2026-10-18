@@ -199,7 +199,7 @@ export function LandingDetails({
 			</section>
 			<section className="landing-invitation">
 				<div>
-					<span className="eyebrow">Ichnara</span>
+					<span className="eyebrow">{locale === "ar" ? "إيكنارا" : "Ichnara"}</span>
 					<h2>
 						{ar ? "ابدأ بما لديك. وطوّره بطريقتك." : "Start with what you have. Make it your own."}
 					</h2>

@@ -2,7 +2,7 @@
 
 Date: 2026-10-18. Scope: restored folded-band emblem, custom outlined wordmark, icon package and platform UI refinements. This records evidence rather than claiming universal design or legal certification.
 
-## Technical evidence
+## Historical v1.1 technical evidence
 
 - Application inline geometry equals the composed SVG master's path/transform structure. Independent2400px rasterizations produce0 pixel differences.
 - Next icon.svg, apple-icon.png and favicon.ico equal supplied source assets byte-for-byte. ICO contains16/32/48px sizes. Version1.1 ZIP passes CRC; old v1 download URL remains a matching alias.
@@ -35,3 +35,9 @@ SVG title commonly supplies native hover tooltips; an accessible name may instea
 ## Round2 proposals — 2026-10-18
 
 Review-only capital-I variants, font-derived Arabic studies, color contrast measurements and overview-spacing correction are in review-round-2/. None is adopted. Arabic spelling/pronunciation and exact Latin/color choice require human acceptance. Source construction and measured contrast do not establish legal availability, exclusivity, independent readability or aesthetic success. Approved application/public assets remain unchanged in this round.
+
+## Current approved v1.2 — 2026-10-18
+
+Human selected I1/A1/C1 and confirmed the Arabic spelling; current local product uses locale-specific Latin/Arabic outlined marks and accent #3F46C8. Later human feedback prompted an Arabic-only optical correction: actual gap317.25→60 source units, cropped Arabic viewBoxes. Twelve Latin lockup/wordmark SVG/PNG files are unchanged from the accepted English preview. Human selection is product approval, not an external user-study finding.
+
+Final typecheck/Biome276/Next18/guarded API21-878/web11-144 pass. Independent final OpenNext build passes. Pre-spacing24-case browser matrix and post-spacing normal-site inspection have distinct scopes. Actual normalized2400px inline/master raster comparisons have0 differing channels for both languages. Twenty SVGs parse; one v1.2 ZIP has47 files and passes CRC; direct legacy v1/v1.1 HTTP308 downloads match it. The overview explanation baseline is514 and the Arabic strip is included. Header uses inherited UI ink; footer reverse white. No backend/provider deployment or legal/device/accessibility certification follows.

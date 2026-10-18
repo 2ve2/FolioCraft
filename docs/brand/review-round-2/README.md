@@ -1,6 +1,6 @@
 # Ichnara — round2 identity review
 
-Date: 2026-10-18. **Proposals only; no approved asset, icon or UI changed.** Open index.html for the Arabic review, review-sheet.png for a combined comparison, or individual SVG files for editable outlines.
+Date: 2026-10-18. **Historical review submission.** The human subsequently selected I1/A1/C1 and confirmed the Arabic spelling. Current installed artwork and later spacing correction are recorded in STATUS and the v1.2 public kit; the original studies below remain unchanged as evidence. Open index.html for the Arabic review, review-sheet.png for a combined comparison, or individual SVG files for editable outlines.
 
 ## Capital-I studies
 
