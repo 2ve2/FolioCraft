@@ -44,6 +44,7 @@ export function ExperiencesEditor({ draft, locale, update }: Omit<ContentEditorP
 						<Input
 							label={t.start}
 							type="date"
+							locale={locale}
 							value={x.startDate}
 							onChange={(startDate) => patchExperience(x.id, { startDate })}
 						/>
@@ -51,6 +52,7 @@ export function ExperiencesEditor({ draft, locale, update }: Omit<ContentEditorP
 							<Input
 								label={t.end}
 								type="date"
+								locale={locale}
 								value={x.endDate ?? ""}
 								onChange={(endDate) => patchExperience(x.id, { endDate: endDate || null })}
 							/>

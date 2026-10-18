@@ -2,6 +2,13 @@
 
 Updated: 2026-10-18, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: mobile date-field correction implemented locally
+
+- Human supplied a mobile screenshot showing reversed Arabic native day/month/year words; exact phone/browser is unknown. Explicit English LTR requirement preserved. Shared Input now receives the interface locale from all four experience/education date fields, declares date lang/dir, and scopes native segment bidi isolation plus a48px minimum touch height. Native date type, ISO values, input/change handlers and current-experience end-date behavior remain unchanged. No new dependency or custom calendar.
+- Local checks pass: typecheck; Biome278 files; Next18 static outputs plus dynamic routes; guarded API21 tests/878 assertions; web14 tests/207 assertions. Initial API attempt failed because localhost55432 was stopped; restarted only work/postgres and the guarded API rerun passed. Logs: work/review-fixes/date-picker. No production database used.
+- Isolated shared-component browser fixture: both languages at320/390/1280, no horizontal overflow and53.5px field height; ISO selection/clearing updates observed in both languages, including leap-day initial value. Native calendar popup appeared in the accessibility tree. Browser evidence: work/date-picker. Temporary preview stopped and viewport/tab cleaned up.
+- Limitation: the available browser keeps its own English native date presentation even with Arabic lang/dir; its computed control direction remains LTR. It does not reproduce the supplied phone's Arabic placeholder rendering. The segment correction is implemented, but exact-device resolution remains unverified and must not be represented as proven mobile acceptance. Next: refresh the actual affected phone and inspect the blank Arabic date field and selected date. Source updated locally; no new push/deployment in this task.
+
 ## Latest: loading redesign and authorized GitHub upload completed
 
 - Human rejected the initial sparse trial and requested specialized trustworthy skills. Read official Anthropic frontend-design and Vercel web-interface guidance; applied a product-specific abstract portfolio-sheet composition, approved emblem/outlined locale wordmark and contextual status. No new dependency/global skill install, fabricated percentage, security claim or fetched private-content placeholder. Existing auth/data/retry ordering is unchanged.

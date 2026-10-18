@@ -6,6 +6,7 @@ export function Input({
 	multiline = false,
 	max = 5000,
 	type = "text",
+	locale = "en",
 }: {
 	label: string;
 	value: string;
@@ -13,6 +14,7 @@ export function Input({
 	multiline?: boolean;
 	max?: number;
 	type?: string;
+	locale?: "ar" | "en";
 }) {
 	return (
 		// biome-ignore lint/a11y/noLabelWithoutControl: Both conditional branches contain the native control inside this label.
@@ -28,7 +30,11 @@ export function Input({
 				/>
 			) : (
 				<input
-					dir={type === "url" || type === "date" ? "ltr" : "auto"}
+					className={type === "date" ? "content-date" : undefined}
+					lang={type === "date" ? locale : undefined}
+					dir={
+						type === "date" ? (locale === "ar" ? "rtl" : "ltr") : type === "url" ? "ltr" : "auto"
+					}
 					type={type}
 					onInput={type === "date" ? (e) => onChange(e.currentTarget.value) : undefined}
 					maxLength={max}

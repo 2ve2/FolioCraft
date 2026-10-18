@@ -57,12 +57,14 @@ export function EducationEditor({ draft, locale, update }: Omit<ContentEditorPro
 						<Input
 							label={t.start}
 							type="date"
+							locale={locale}
 							value={x.startDate}
 							onChange={(startDate) => patchEducation(x.id, { startDate })}
 						/>
 						<Input
 							label={t.end}
 							type="date"
+							locale={locale}
 							value={x.endDate ?? ""}
 							onChange={(endDate) => patchEducation(x.id, { endDate: endDate || null })}
 						/>

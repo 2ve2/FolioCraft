@@ -75,3 +75,24 @@
 .editor-card + .editor-card {
 	margin-top: 24px;
 }
+
+/* Native date words need their own bidi runs; numbers keep their natural LTR order. */
+.content-date {
+	min-height: 48px;
+	text-align: start;
+}
+.content-date[dir="rtl"] {
+	direction: rtl;
+}
+.content-date[dir="ltr"] {
+	direction: ltr;
+}
+.content-date::-webkit-datetime-edit-day-field,
+.content-date::-webkit-datetime-edit-month-field,
+.content-date::-webkit-datetime-edit-year-field {
+	display: inline-block;
+	unicode-bidi: plaintext;
+}
+.content-date::-webkit-date-and-time-value {
+	text-align: start;
+}
