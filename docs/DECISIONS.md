@@ -1,5 +1,12 @@
 # Decision ledger
 
+## 2026-10-18 — Admin Console P0 boundary and proposed security design
+- Human-confirmed scope: P0 documentation only, entirely in English; no code or migrations, and stop for human review before P1. ADMIN_CONSOLE_TASK.md was read in full, including its corrective appendix. No GitHub push, deployment, account promotion or provider/database operation is authorized.
+- Task-fixed future architecture: /admin and /api/admin, shared Better Auth access-control policy, owner/moderator/support/analyst roles, explicit deny-by-default permissions, staff TOTP, sensitive-action reason/password freshness, last-owner protection, limited impersonation and published-only default inspection. These requirements are not yet implemented.
+- Proposed, not human-confirmed: replace legacy admin without an alias; single-use server-only invocation capability for native wrappers/hooks; per-action password check plus 300-second session.freshAge; enrollment-only self-service and a narrowly authenticated impersonation-stop wrapper outside /api/admin; 900-second impersonation limit; target-specific notes permissions; separate append-only attempt/outcome rows. See ADMIN_CONSOLE.md A1–A6 for approval gates, alternatives, audit-FK limitation, retention/deadline/export limits and operational unknowns.
+- Evidence correction: current native audit hooks UPDATE outcome rows and current account UI reveals full email. No automatic bootstrap exists in source, but the claim that no administrator was ever promoted cannot be verified from files; hosted role inventory was not queried. No account identifiers or grant evidence are versioned.
+- Verification boundary: the required root API test wrapper runs db:migrate before tests. The explicit no-migration instruction takes precedence in P0, so that suite is deliberately not executed; this is not a passing integration result. Other actual command results are recorded in STATUS/CHANGELOG.
+
 Date: 2026-10-13 (Asia/Riyadh).
 
 ## Human-confirmed

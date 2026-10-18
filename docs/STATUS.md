@@ -2,6 +2,14 @@
 
 Updated: 2026-10-18, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: Admin Console P0 documentation only
+
+- Completed: read ADMIN_CONSOLE_TASK.md in full and inspect the existing administration routes/services/UI, authentication hooks, installed Better Auth 1.7.7 permissions/freshness behavior and relevant schema. Added [ADMIN_CONSOLE.md](ADMIN_CONSOLE.md) with current findings, fixed requirements, complete permission/native mapping, reason/password/wrapper enforcement proposals, MFA/impersonation exceptions, data/audit limits, phase acceptance and approval items A1–A6. Scope/evidence recorded in CHANGELOG; decision status recorded in DECISIONS. Only these four English documentation files belong to this change.
+- Findings reported to the human: native audit outcomes currently UPDATE existing rows, full account emails are visible, and source cannot establish whether an existing administrator has been promoted. No database role inventory or account-grant identifiers were accessed/copied. The existing task input remains untouched and is not added to the commit.
+- Active implementation: none. P1–P7 remain unimplemented and are not authorized by this P0 request. Blocker for P1: human approval of legacy-admin handling and the wrapper/reason/password-freshness design, including narrowly scoped enrollment and impersonation restoration. Additional notes/audit/retention/deadline choices are explicitly proposed, not confirmed. Next action: present Arabic approval summary and wait; do not resume launch tasks.
+- Verification: typecheck exit 0; Biome exit 0, 280 files; web tests exit 0, 14 tests/207 assertions. Initial isolated Turbopack build stalled without compilation output and was interrupted (exit 130); FOLIO_QA_BUILD=1 bun run build --webpack then passed (exit 0, 18 static outputs plus dynamic routes). Root bun run test deliberately not run: scripts/test-api.ts invokes db:migrate and the human forbids any migration in P0. No API/security/MFA/browser/hosted acceptance is claimed. Non-document source bytes match the independent checkout, excluding the preexisting generated next-env.d.ts difference.
+- Commit operations use work/github-upload only; generated next-env.d.ts remains unstaged. No application code, SQL, migration, environment or dependency edit; no push/deployment/promotion/provider operation. Earlier date-field physical-phone and external launch gates below remain unresolved.
+
 ## Latest: authorized GitHub upload and session handoff
 
 - Human explicitly requested uploading the local commits, updating Markdown as needed, and opening a new project chat that waits for the next human command. No new implementation or deployment is requested.

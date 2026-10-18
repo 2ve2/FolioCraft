@@ -1,5 +1,10 @@
 # Action log
 
+## 2026-10-18 — Admin Console P0 scope
+- Human authorizes P0 only: read ADMIN_CONSOLE_TASK.md in full, inspect current administration/authentication source and write English docs/ADMIN_CONSOLE.md covering observed state, fixed decisions, permissions, reason/reauthentication enforcement and phased acceptance. Update continuity documentation only; no application code, dependency, environment, SQL or migration changes.
+- Record discrepancies and unknowns without consulting hosted account data. Propose the legacy-admin policy and a non-spoofable wrapper/native-hook boundary for human approval before P1. P1 through P7 are not authorized by this request.
+- Preserve existing independent-checkout history and generated next-env.d.ts changes. Commit this documentation phase only in work/github-upload; no push, deployment, account promotion, provider operation or database migration. Review the required test wrapper before execution because this request prohibits migrations even locally.
+
 ## 2026-10-13 — planning handoff
 - Human request: create execution chat, preserve project information in Markdown, follow the reference project backend style.
 - Inspected: listed local Codex projects (neither is portfolio-related); found `<read-only reference backend>` through filesystem inventory.
@@ -665,3 +670,12 @@ Human requests their own website from an attached CV and explicitly selects Engl
 ## 2026-10-18 — authorized date/badge upload and new-session handoff
 - Human requested GitHub upload, Markdown update if needed, then a new project session waiting for the next command. Disclosed2fc0a82/a4d9a26 and documentation checkpoint before upload. Fetch shows0 remote-only/2 local-only; ordinary push succeeds origin/main7922f02→a4d9a26. No force push/deployment/production mutation.
 - STATUS updated with actual upload evidence, unchanged verification limits and idle handoff instructions. This documentation-only checkpoint is included in the authorized upload; no new runtime test or remote CI result claimed. New session must wait for the human rather than resume any launch blocker.
+
+
+## 2026-10-18 — Admin Console P0 documentation completed
+- Added docs/ADMIN_CONSOLE.md: source-backed baseline/discrepancies, fixed architecture, all 25 product permission actions with native defaultStatements mapping, legacy-admin alternatives, internal single-use wrapper capability, reason/password/freshAge design, enrollment and impersonation escape exceptions, concurrent last-owner proposal, append-only audit transition, privacy/data/deletion limits and P0–P7 acceptance plan. Approval items A1–A6 remain proposals.
+- Updated docs/DECISIONS.md and docs/STATUS.md with the P0-only authorization, evidence limits and next action: Arabic summary followed by waiting for the human. Existing task input was read in full, preserved and excluded from this commit. No ROADMAP acceptance box changed for unimplemented behavior.
+- Reported differences before drafting: current native hooks update audit outcomes; no source-only proof exists for the no-promoted-admin premise. Full account emails and 3-character moderation minimum are current behavior, not the proposed privacy/reason policy. No hosted inventory or private account evidence was collected.
+- Actual commands: bun run typecheck exit 0; bun run check exit 0 (280 files); cd apps/web && bun test tests exit 0 (14 pass, 0 fail, 207 assertions). FOLIO_QA_BUILD=1 bun run build stalled in sandboxed Turbopack and was interrupted (130); FOLIO_QA_BUILD=1 bun run build --webpack passed outside the sandbox (exit 0, 18 static outputs plus dynamic routes). No browser run claimed.
+- Deliberately skipped bun run test because the required guarded wrapper applies migrations before tests and the human explicitly forbids migrations now. No new integration, RBAC, MFA, reauthentication, concurrency or hosted-security acceptance claimed. Source/dependency inspection is not execution proof.
+- Byte comparison of independent-checkout tracked non-document source reports zero differences, excluding known generated next-env.d.ts. Four authored documentation files pass the English-only scan and synchronization/diff checks. Commit only this phase in work/github-upload; no push, code/SQL/env/dependency change, database operation, promotion or deployment. P1 requires explicit human approval of the P0 design.
