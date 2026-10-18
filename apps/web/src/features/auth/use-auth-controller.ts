@@ -4,6 +4,8 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { authClient } from "../../lib/auth-client";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import { copy } from "../studio/copy";
+import { recoveryCopy } from "./recovery-copy";
+import { recoveryError } from "./recovery-request";
 
 export type AuthMode = "login" | "signup";
 
@@ -46,19 +48,31 @@ export function useAuthController(mode: AuthMode) {
 			const input = { email: String(data.get("email")), password: String(data.get("password")) };
 			const result =
 				mode === "signup"
-					? await authClient.signUp.email({ ...input, name: String(data.get("name")) })
+					? await authClient.signUp.email({
+							...input,
+							name: String(data.get("name")),
+							callbackURL: `${window.location.origin}/verify-email?lang=${locale}&verified=1`,
+						})
 					: await authClient.signIn.email(input);
 			if (!mounted.current) return;
 			if (result.error) {
 				const code = result.error.code || "";
 				setError(
-					code.includes("ALREADY_EXISTS")
-						? t.authExists
-						: code === "INVALID_EMAIL_OR_PASSWORD"
-							? t.authCredentials
-							: result.error.status === 429
-								? t.authRateLimit
-								: t.authFailure,
+					code === "MAIL_UNAVAILABLE" ||
+						code === "MAIL_DELIVERY_FAILED" ||
+						code === "EMAIL_NOT_VERIFIED"
+						? code === "EMAIL_NOT_VERIFIED"
+							? locale === "ar"
+								? "يلزم تأكيد بريدك. استخدم رابط إعادة إرسال رسالة التحقق أدناه."
+								: "Verify your email. Use the resend verification link below."
+							: recoveryCopy[locale][recoveryError(result.error)]
+						: code.includes("ALREADY_EXISTS")
+							? t.authExists
+							: code === "INVALID_EMAIL_OR_PASSWORD"
+								? t.authCredentials
+								: result.error.status === 429
+									? t.authRateLimit
+									: t.authFailure,
 				);
 				return;
 			}

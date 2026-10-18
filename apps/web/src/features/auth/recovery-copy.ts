@@ -1,0 +1,53 @@
+export const recoveryCopy = {
+	en: {
+		forgot: "Forgot password",
+		reset: "Reset password",
+		verify: "Resend verification email",
+		intro:
+			"Use your account email address. Links expire and can only be used as allowed by the service.",
+		email: "Email address",
+		password: "New password",
+		confirm: "Confirm new password",
+		send: "Request link",
+		login: "Back to sign in",
+		mismatch: "The passwords do not match.",
+		passwordLength: "Use 10 to 128 characters.",
+		mailUnavailable: "Email delivery is not configured. Try again after the service is enabled.",
+		mailFailed: "The email service could not accept the message. Please try again later.",
+		invalid: "This link is invalid, expired or already used. Request a new link.",
+		rate: "Too many attempts. Please wait before trying again.",
+		failure: "The request failed. Please try again.",
+		accepted:
+			"Request accepted. If this address is eligible, check its inbox and spam folder. Delivery is not confirmed here.",
+		resetDone: "Password updated. Sign in with your new password.",
+		verificationReturn:
+			"Try signing in after following your verification link. If verification did not complete, request a new link below.",
+		forgotLink: "Request another reset link",
+		loading: "Preparing account recovery…",
+	},
+	ar: {
+		forgot: "نسيت كلمة المرور",
+		reset: "إعادة تعيين كلمة المرور",
+		verify: "إعادة إرسال رسالة التحقق",
+		intro: "استخدم بريد حسابك. تنتهي صلاحية الروابط ويحدد النظام إمكانية استخدامها.",
+		email: "البريد الإلكتروني",
+		password: "كلمة المرور الجديدة",
+		confirm: "تأكيد كلمة المرور الجديدة",
+		send: "طلب الرابط",
+		login: "العودة لتسجيل الدخول",
+		mismatch: "كلمتا المرور غير متطابقتين.",
+		passwordLength: "استخدم من ١٠ إلى ١٢٨ حرفاً.",
+		mailUnavailable: "خدمة البريد غير مُعدّة حالياً. حاول بعد تفعيلها.",
+		mailFailed: "تعذر على خدمة البريد قبول الرسالة. حاول لاحقاً.",
+		invalid: "الرابط غير صالح أو انتهت صلاحيته أو استُخدم مسبقاً. اطلب رابطاً جديداً.",
+		rate: "محاولات كثيرة. انتظر قبل المحاولة مجدداً.",
+		failure: "تعذر تنفيذ الطلب. حاول مجدداً.",
+		accepted:
+			"تم قبول الطلب. إذا كان العنوان مؤهلاً، تحقق من صندوق البريد والرسائل غير المرغوبة. لا تؤكد هذه الرسالة وصول البريد.",
+		resetDone: "تم تحديث كلمة المرور. سجّل الدخول بكلمة المرور الجديدة.",
+		verificationReturn:
+			"حاول تسجيل الدخول بعد فتح رابط التحقق. إذا لم يكتمل التحقق، اطلب رابطاً جديداً أدناه.",
+		forgotLink: "طلب رابط جديد لإعادة تعيين كلمة المرور",
+		loading: "جارٍ تجهيز استعادة الحساب…",
+	},
+} as const;

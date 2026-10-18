@@ -131,6 +131,12 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 					>
 						{mode === "signup" ? t.switchLogin : t.switchSignup}
 					</Link>
+					<Link className="text-button auth-switch" href={`/forgot-password?lang=${locale}`}>
+						{ar ? "نسيت كلمة المرور؟" : "Forgot password?"}
+					</Link>
+					<Link className="text-button auth-switch" href={`/verify-email?lang=${locale}`}>
+						{ar ? "إعادة إرسال رسالة التحقق" : "Resend verification email"}
+					</Link>
 					<span className="auth-privacy">{t.privacy}</span>
 				</section>
 			</main>

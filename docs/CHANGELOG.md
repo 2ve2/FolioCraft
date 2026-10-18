@@ -590,3 +590,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 
 ## 2026-10-18 — task2 local preparation completed
 - Decoder distinguishes service failures from invalid input, emits redacted phase/code diagnostics and preserves existing storage/ownership controls. MEDIA_DIAGNOSIS documents hypotheses and exact future operator commands. Full gates pass: typecheck, Biome249, build15, guarded API20/867, web7/85. Hosted cause/fix remains unverified; no deployment.
+
+## 2026-10-18 — task3 local implementation completed
+- Added native bilingual recovery/reset/resend routes, login/signup entry points, safe token/result states and precise SMTP/verification-transition runbook. Guarded API21/878 and web10/111, typecheck, Biome258 and build18 pass;12 browser geometry cases plus actual unavailable-mail forms pass. No SMTP delivery or hosted acceptance claimed.
