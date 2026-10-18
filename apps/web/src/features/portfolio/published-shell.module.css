@@ -1,0 +1,57 @@
+/* Footer clearance lets the last content scroll above the floating link. */
+.shell > :global(.folio) {
+	padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+}
+.badge {
+	position: fixed;
+	inset-block-end: calc(16px + env(safe-area-inset-bottom, 0px));
+	inset-inline-end: max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+	z-index: 20;
+	display: grid;
+	place-items: center;
+	width: 48px;
+	height: 48px;
+	border: 1px solid #ffffff80;
+	border-radius: 50%;
+	background: #3f46c8;
+	color: #fff;
+	box-shadow: 0 3px 14px #17152b26;
+}
+.badge:hover {
+	background: #3339ad;
+}
+.badge:focus-visible {
+	outline: 3px solid #3f46c8;
+	outline-offset: 4px;
+	box-shadow: 0 0 0 4px white;
+}
+.badge svg {
+	display: block;
+}
+@media print {
+	.badge {
+		display: none;
+	}
+	.shell > :global(.folio) {
+		padding-bottom: 0;
+	}
+}
+@media (forced-colors: active) {
+	.badge {
+		background: Canvas;
+		border-color: LinkText;
+		color: LinkText;
+	}
+}
+
+.label {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}

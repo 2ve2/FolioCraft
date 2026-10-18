@@ -206,3 +206,7 @@ Human-confirmed: all project Markdown must be entirely in English, including exa
 ## 2026-10-18 — native date field locale and segment isolation
 - Human-confirmed requirement: English date fields remain left-to-right; reported Arabic mobile placeholder reversal requires correction. Phone/browser identification is unavailable.
 - Engineering choice: preserve native date input/calendar and ISO storage; pass locale explicitly from experience/education editors and isolate native date segments. No new calendar dependency or date/timezone conversion. Exact-device rendering remains unverified; the available browser's English native presentation cannot establish resolution of the supplied Arabic mobile symptom.
+
+## 2026-10-18 — published portfolio platform attribution link
+- Human requested and confirmed a small floating circle with the platform logo on every published personal site, navigating to the platform on activation.
+- Engineering defaults: approved emblem in a48px C1 circle, bottom inline-end with16px safe-area spacing; native same-tab homepage link uses existing configured platform webOrigin and includes portfolio locale. Apply to public home/project/article chrome, without changing owner content or draft/release behavior. No separate human approval of exact size/placement is implied.

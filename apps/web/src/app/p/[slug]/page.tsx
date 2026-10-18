@@ -1,6 +1,7 @@
 import type { PublicSite } from "@ichnara/contracts";
 import { Portfolio } from "@ichnara/portfolio";
 import { InquiryForm } from "../../../features/portfolio/inquiry-form";
+import { PublishedShell } from "../../../features/portfolio/published-shell";
 import { publishedMetadata } from "../../../lib/public-metadata";
 import { PublicUnavailable, publicAssets, readPublished } from "./_public";
 
@@ -21,11 +22,13 @@ export default async function PublicPortfolio({ params }: { params: Promise<{ sl
 	const site = await readPublished<PublicSite>(slug);
 	if (!site) return <PublicUnavailable />;
 	return (
-		<Portfolio
-			draft={site.draft}
-			assetUrls={publicAssets(site)}
-			publicBasePath={`/p/${encodeURIComponent(site.slug)}`}
-			contactForm={<InquiryForm slug={site.slug} locale={site.draft.locale} />}
-		/>
+		<PublishedShell locale={site.draft.locale}>
+			<Portfolio
+				draft={site.draft}
+				assetUrls={publicAssets(site)}
+				publicBasePath={`/p/${encodeURIComponent(site.slug)}`}
+				contactForm={<InquiryForm slug={site.slug} locale={site.draft.locale} />}
+			/>
+		</PublishedShell>
 	);
 }

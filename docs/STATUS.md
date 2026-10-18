@@ -2,6 +2,13 @@
 
 Updated: 2026-10-18, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: published platform badge completed locally
+
+- Human confirmed a small floating circle with the platform logo on every published personal website, linking to the platform. Added PublishedShell/component CSS and integrated it after existing release checks on portfolio, project and article pages. Approved emblem/C1 circle48px; localized link name, keyboard focus, safe-area offsets and footer clearance. Uses existing configured webOrigin, native same-tab homepage navigation and locale query. Owner content/shared renderer/private previews unchanged.
+- Final gates pass: typecheck; Biome280; Next18 static outputs plus dynamic routes; guarded API21/878; web14/207. Logs: work/review-fixes/platform-badge-final. Initial lint failure corrected before final gates; no test success inferred from that earlier run.
+- Actual isolated production-build browser matrix18 cases:3 public route types, both languages and320/390/1280 widths;48px fixed badges, no horizontal overflow. Exact approved2-path emblem, Arabic accessible link count1, visible keyboard focus and Enter navigation to localhost3000/?lang=ar verified. Homepage destination rendered English despite that query; the badge propagates the query but does not control existing homepage language resolution. At bottom, footer720.47px ends before badge736px. Evidence/screenshots: work/platform-badge.
+- Temporary fictional release fixture initially lacked article body; fixed ignored fixture before final matrix. No real portfolio/database/provider data used. QA services stopped, tab closed and viewport restored. CSS print/forced-color/physical safe-area behavior has no physical-device proof. Next: human local visual review; deployment is not authorized. Source/docs committed only in the independent checkout; no new push/deployment. Prior date-field mobile proof and external launch gates remain open below.
+
 ## Latest: mobile date-field correction implemented locally
 
 - Human supplied a mobile screenshot showing reversed Arabic native day/month/year words; exact phone/browser is unknown. Explicit English LTR requirement preserved. Shared Input now receives the interface locale from all four experience/education date fields, declares date lang/dir, and scopes native segment bidi isolation plus a48px minimum touch height. Native date type, ISO values, input/change handlers and current-experience end-date behavior remain unchanged. No new dependency or custom calendar.

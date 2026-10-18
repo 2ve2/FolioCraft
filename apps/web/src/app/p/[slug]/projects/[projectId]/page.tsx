@@ -1,5 +1,6 @@
 import type { Project, PublicSite } from "@ichnara/contracts";
 import { PortfolioDetail } from "@ichnara/portfolio";
+import { PublishedShell } from "../../../../../features/portfolio/published-shell";
 import { publishedMetadata } from "../../../../../lib/public-metadata";
 import { PublicUnavailable, publicAssets, readPublished } from "../../_public";
 
@@ -42,11 +43,13 @@ export default async function PublicProject({
 	);
 	if (!detail || detail.releaseId !== site.releaseId) return <PublicUnavailable />;
 	return (
-		<PortfolioDetail
-			draft={site.draft}
-			project={detail.project}
-			assetUrls={publicAssets(site)}
-			publicBasePath={`/p/${encodeURIComponent(site.slug)}`}
-		/>
+		<PublishedShell locale={site.draft.locale}>
+			<PortfolioDetail
+				draft={site.draft}
+				project={detail.project}
+				assetUrls={publicAssets(site)}
+				publicBasePath={`/p/${encodeURIComponent(site.slug)}`}
+			/>
+		</PublishedShell>
 	);
 }
