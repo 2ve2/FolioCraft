@@ -33,3 +33,7 @@ The custom asset construction does not establish global logo/name uniqueness, fo
 ## Restoration and proof — 2026-10-18
 
 Inline application geometry matches the composed master exactly, and independent rasterization at2400px produced zero pixel differences. Icon source files equal the Next application icon/apple-icon/favicon files byte-for-byte; ICO contains16/32/48px sizes. Final browser home/404 checks across Arabic/English at320/390/1280px show12 passing containment cases, accessible name Ichnara, nine paths per mark, no SVG title or ancestor title attribute (no native name tooltip), dark header/white footer and no document overflow. Final source checks/build and limitations are recorded in docs/STATUS.md. These restoration results supersede the earlier wordmark-only dimensions above.
+
+## Archive download compatibility — 2026-10-18
+
+The sole stored download is ichnara-brand-kit-v1.1.zip. The earlier v1.zip bytes were identical (SHA256 e4908a27308d1863b326a669396c4628b76fa63f954f8248b866a54f3fab1250); the old URL remains a Next308 redirect to v1.1. No application code linked the old file, but historical documentation did, so the alias is retained. Existing artwork and latest ZIP bytes are unchanged; round2 proposals are separate review files.

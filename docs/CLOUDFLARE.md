@@ -6,8 +6,8 @@ Last reconciled: 2026-10-15, Asia/Riyadh. Deployment and browser initial evidenc
 
 ## Deployed trial
 
-- Web: https://foliocraft-trial.bdalrhmnmtwq53.workers.dev/
-- API: https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev
+- Actual API and web Worker names/origins remain in apps/api/wrangler.toml and apps/web/wrangler.toml. They were not renamed or redeployed by the2026-10-18 cleanup.
+- Any trial-api.example.com/trial-web.example.com URLs in documentation are reserved illustrative placeholders; replace them with the existing reviewed origins before an authorized build.
 - Last verified web version: `fee5d122-d173-4dc9-8ea1-f4538807e8c8`.
 - Last verified API version: `970d67cc-4caa-4ab8-aac7-b73c034989a2`.
 
@@ -39,7 +39,7 @@ Use the independent checkout or a clean build directory so OpenNext's `.next` ou
 
 ```sh
 bun install --frozen-lockfile
-NEXT_PUBLIC_API_URL=https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev NEXT_PUBLIC_WEB_URL=https://foliocraft-trial.bdalrhmnmtwq53.workers.dev bun run --cwd apps/web build:cloudflare
+NEXT_PUBLIC_API_URL=https://trial-api.example.com NEXT_PUBLIC_WEB_URL=https://trial-web.example.com bun run --cwd apps/web build:cloudflare
 bunx --no-install wrangler deploy --config apps/web/wrangler.toml --dry-run
 bunx --no-install wrangler deploy --config apps/api/wrangler.toml --dry-run
 ```

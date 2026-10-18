@@ -53,7 +53,7 @@ Custom domains; actual aggregate analytics; subscriptions; imports; AI assistanc
 - [x] Platform admin routes, audited moderation actions and public suspension/ban enforcement.
 - [x] Admin authorization, escalation prevention, ban/session and moderation integration tests.
 - [x] English comments above every function, spacing and remaining middleware/storage organization.
-- [x] Inspect Sooqha R2, app/middleware, IDs and timestamps read-only; record actual conventions.
+- [x] Inspect the reference project R2, app/middleware, IDs and timestamps read-only; record actual conventions.
 - [x] Resolve ID/timestamp compatibility policy explicitly before any migration of existing identifiers or instants.
 - [x] Live Neon readiness/session recheck: readiness200 and existing authenticated owner browser; no live administrator grant/mutation claimed.
 

@@ -10,7 +10,7 @@ A portfolio builder with one fixed, comprehensive layout. Users customize themes
 ## Human-confirmed decisions
 - The backend is independent of the frontend.
 - Backend: Bun + Hono + Better Auth + Drizzle ORM.
-- Use `/home/lord2ve/Desktop/sooqha-backend` as a style reference without modifying that project.
+- Use `<read-only reference backend>` as a style reference without modifying that project.
 - Open a new implementation session, transfer context, and create Markdown files to preserve decisions and progress.
 
 ## Initial proposed plan
@@ -24,7 +24,7 @@ Start a new session with `HANDOFF.md`, then `STATUS.md`; they describe the curre
 1. `AGENTS.md`: work continuity and documentation protocol.
 2. `REQUIREMENTS.md`: product, scope, and acceptance criteria.
 3. `ARCHITECTURE.md`: frontend, backend, data, API, and deployment.
-4. `BACKEND_STYLE.md`: patterns observed in Sooqha source and reuse boundaries.
+4. `BACKEND_STYLE.md`: patterns observed in the reference project source and reuse boundaries.
 5. `UI_UX_REVIEW.md`: actual prototype test findings.
 6. `DECISIONS.md`: confirmed decisions, proposals, and open questions.
 7. `ROADMAP.md`: implementation phases and completion criteria.
@@ -42,7 +42,7 @@ Original handoff instruction: copy this package into the implementation project'
 
 ## Current implementation
 
-This copy at `/home/lord2ve/Desktop/blog-website/docs/` is the source of truth. Content, appearance, inbox, release, and administration editors work locally. The human adopted independent desktop editor/preview scrolling and the violet styling. Backend source is organized by responsibility and frontend source by feature; see SOURCE_STRUCTURE for the map and STATUS for evidence and actual remaining work. A Cloudflare-only friends-testing trial is deployed; see [CLOUDFLARE.md](CLOUDFLARE.md) for actual targets, runtime adapters, the human-authorized temporary email-verification exception and verification limits. Mail delivery, live hosted uploads, a broader browser matrix and general-launch operations remain pending. The root README explains local execution.
+This copy at `docs/` is the source of truth. Content, appearance, inbox, release, and administration editors work locally. The human adopted independent desktop editor/preview scrolling and the violet styling. Backend source is organized by responsibility and frontend source by feature; see SOURCE_STRUCTURE for the map and STATUS for evidence and actual remaining work. A Cloudflare-only friends-testing trial is deployed; see [CLOUDFLARE.md](CLOUDFLARE.md) for actual targets, runtime adapters, the human-authorized temporary email-verification exception and verification limits. Mail delivery, live hosted uploads, a broader browser matrix and general-launch operations remain pending. The root README explains local execution.
 
 Current typography and spacing are documented in DESIGN_SYSTEM.md; real-site evidence and limitations are in STATUS.md.
 

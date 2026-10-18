@@ -22,7 +22,7 @@ bun run typecheck
 bun run check
 ```
 
-Copy the environment example locally and supply configuration for this project. Never use accounts or the database of the Sooqha reference project. Match hostnames: `localhost:3000` and `localhost:4000` differ from `127.0.0.1` for origins and cookies.
+Copy the environment example locally and supply configuration for this project. Never use accounts or the database of the the reference project reference project. Match hostnames: `localhost:3000` and `localhost:4000` differ from `127.0.0.1` for origins and cookies.
 
 After reviewing migrations, before starting API against a new database:
 

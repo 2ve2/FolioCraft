@@ -1,6 +1,6 @@
-# Sooqha backend reference findings
+# the reference project backend reference findings
 
-Inspected read-only on 2026-10-13: `/home/lord2ve/Desktop/sooqha-backend`.
+Inspected read-only on 2026-10-13: `<read-only reference backend>`.
 This is a reference for style, not the new application's production backend. No reference files changed; no secrets/env files read; no code, migrations or production commands executed.
 
 ## Observed files and reusable patterns

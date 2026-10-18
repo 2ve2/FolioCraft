@@ -1,7 +1,7 @@
 # Product requirements
 
 ## Confirmed concept
-A universal portfolio builder with one fixed, comprehensive layout. Users customize theme/colors, font family/style/size. The UI structure remains consistent. Backend independent: Bun + Hono + Better Auth + Drizzle ORM. Sooqha backend is the implementation-style reference.
+A universal portfolio builder with one fixed, comprehensive layout. Users customize theme/colors, font family/style/size. The UI structure remains consistent. Backend independent: Bun + Hono + Better Auth + Drizzle ORM. the reference project backend is the implementation-style reference.
 
 ## Proposed first-release scope
 Arabic/English; one site per account initially; profile, projects, experience, skills, education/certificates, articles and contact. Optional empty sections automatically disappear. Users can toggle section visibility and curate project order/featured status. No freeform drag-and-drop page builder.

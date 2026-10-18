@@ -1,8 +1,8 @@
 # Action log
 
 ## 2026-10-13 — planning handoff
-- Human request: create execution chat, preserve project information in Markdown, follow Sooqha backend style.
-- Inspected: listed local Codex projects (neither is portfolio-related); found `/home/lord2ve/Desktop/sooqha-backend` through filesystem inventory.
+- Human request: create execution chat, preserve project information in Markdown, follow the reference project backend style.
+- Inspected: listed local Codex projects (neither is portfolio-related); found `<read-only reference backend>` through filesystem inventory.
 - Read representative API route/service, auth, DB and runtime files and reference continuity docs; no source mutation or execution.
 - Recovered available original ChatGPT turns; confirmed fixed comprehensive template with configurable typography/theme.
 - Created: README, AGENTS, REQUIREMENTS, ARCHITECTURE, BACKEND_STYLE, UI_UX_REVIEW, DECISIONS, ROADMAP, STATUS and this log.
@@ -12,21 +12,21 @@
 ### Dispatch completed
 - Verified initial handoff: 10 Markdown files/387 lines; inventory and line-count command exit 0.
 - Created execution chat `01a13516-e5ab-7bf1-bd9d-d3ecdbf0cf70` on local host, titled "Build the portfolio platform — frontend and independent backend" (translated title).
-- Returned projectless output path: `/home/lord2ve/Documents/Codex/2026-10-13/foliocraft/outputs`.
+- Returned projectless output path: `<historical projectless output directory>`.
 - Prompt contains full stack correction, reference repository path/read-only scope, all handoff files, prototype URL/review, documentation maintenance protocol and first vertical slice.
 - No runtime validation performed by planning chat; startup snapshot requested next.
 
 ### Human workspace correction
 - User explicitly selected existing blog-website and requested a new session there.
 - Told prior projectless chat to stop and log completed/pending work.
-- Created correct local project chat `01a13518-4550-7362-9be2-65ce43248bb2`, title "Build the portfolio platform in blog-website" (translated title) in project `8732368a-c64d-4230-84cc-ec4e23821051` at `/home/lord2ve/Desktop/blog-website`.
+- Created correct local project chat `01a13518-4550-7362-9be2-65ce43248bb2`, title "Build the portfolio platform in blog-website" (translated title) in project `8732368a-c64d-4230-84cc-ec4e23821051` at `<project workspace>`.
 - Transfer prompt emphasizes preserving existing code/git changes/AGENTS, adapting architecture and merging documentation without overwrites. This is the current authoritative implementation destination.
 
 ## Entry template
 Date/task/step; files changed; decision reference; exact check + observed result; pending/deferred work. Append corrections instead of rewriting history misleadingly.
 
 ## 2026-10-13 — implementation started in authoritative workspace
-- Empty source workspace verified; parent Git root is /home/lord2ve, so no Git mutations outside this project.
+- Empty source workspace verified; parent Git root is <parent home repository>, so no Git mutations outside this project.
 - Copied all ten handoff documents to docs/ and continuity instructions to root AGENTS.md. Project docs/ is now the source of truth.
 - Read original documents and reference middleware/response/service patterns without opening secrets or changing reference.
 - Scope: independently runnable Next.js web and Bun/Hono API; real PostgreSQL auth, draft save, shared preview, atomic published release, two-user proof.
@@ -94,7 +94,7 @@ Date/task/step; files changed; decision reference; exact check + observed result
 - STATUS and ROADMAP rewritten to distinguish complete backend implementation from pending real R2/SMTP/hosting integration and frontend feature work.
 
 ## Backend organization and platform admin extension
-- Human requested English function documentation/spacing, domain-specific route files and Sooqha-style response helpers; native Better Auth protocol must remain unchanged.
+- Human requested English function documentation/spacing, domain-specific route files and reference-style response helpers; native Better Auth protocol must remain unchanged.
 - Human explicitly selected Better Auth Admin plugin for account roles/ban/session administration. Platform resource moderation/audit routes will rely on that plugin's role/session authority.
 - Behavior-preservation baseline: 549 assertions passed before refactor; same proof will run after route/service organization. New admin features validated separately.
 
@@ -605,3 +605,8 @@ Human requests their own website from an attached CV and explicitly selects Engl
 
 ## 2026-10-18 — task7 review deliverables completed
 - Review-only Latin/Arabic SVGs, two accents/contrast300 pairs, licenses/provenance and overview-spacing copy ready. All40 accepted brand/component/icon files unchanged. SVG/visual proof and full gates pass (Biome267/build18/API21-878/web10-111). Human choice requested; no integration or commercial-clearance claim.
+
+## 2026-10-18 — task8 completed
+- Generalized personal docs paths/reference names/trial hosts without changing Wrangler. Root AGENTS is authoritative; docs/AGENTS is a pointer. Moved all55 previous STATUS sections to STATUS-ARCHIVE; normalized body equality proves no text lost beyond requested identifier replacements. New STATUS summarizes current evidence/blockers/next action.
+- ZIPs were byte-identical and no runtime code referenced the old name. Removed duplicate v1 bytes, added Next308 compatibility redirect, verified real local HTTP/download equality/ZIP CRC. Latest v1.1 bytes/artwork unchanged.
+- Full gates pass: API/web typecheck, Biome267, isolated Next18, guarded API21/878, web10/111. Docs scan confirms English/no personal paths/hosts/reference names; actual Worker config byte-unchanged. Temporary local download server stopped. No deployment/push/production mutation. Newly human-approved round2 integration is next and separate.

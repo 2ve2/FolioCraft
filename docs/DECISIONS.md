@@ -6,9 +6,9 @@ Date: 2026-10-13 (Asia/Riyadh).
 - D01: One fixed comprehensive portfolio UI; configurable theme/colors and font type/style/size. Source: original user message recovered from referenced conversation.
 - D02: Backend separate from frontend. Explicit correction overrides earlier Next.js backend/Supabase proposal.
 - D03: Backend uses Bun, Hono, Better Auth, Drizzle ORM.
-- D04: Use sooqha-backend as inspiration for backend style. Identified local reference path in BACKEND_STYLE.md.
+- D04: Use the read-only reference backend as inspiration for backend style. Identified local reference path in BACKEND_STYLE.md.
 - D05: Create a new execution chat, transfer required information, create Markdown project memory.
-- D06: Start implementation in existing `/home/lord2ve/Desktop/blog-website` and create its own new project session; supersedes proposed fresh projectless workspace. Preserve existing code/changes and follow its local instructions.
+- D06: Start implementation in existing `<project workspace>` and create its own new project session; supersedes proposed fresh projectless workspace. Preserve existing code/changes and follow its local instructions.
 
 ## Proposed implementation defaults
 - P01: Next.js, TypeScript, Tailwind, shadcn/ui dashboard; custom public template renderer.
@@ -72,7 +72,7 @@ ID/date; status (human-confirmed/default/implemented/superseded); choice; ration
 - Initial administrator grant requires an explicitly authorized existing account; no account silently promoted.
 
 ## D09 / implemented — backend organization and continuity (2026-10-13)
-- Human requested domain-specific route files, useful response helpers, spacing and English explanations above every function, informed by Sooqha source.
+- Human requested domain-specific route files, useful response helpers, spacing and English explanations above every function, informed by the reference project source.
 - Human authorized parallel delegation and requested Markdown continuity followed by a new local session. Reuse this workspace; do not overwrite existing work or start duplicate development servers.
 - Reference CUID2/text IDs and JavaScript Date defaults are confirmed observations. Existing UUID data is retained; adopting or converting conventions requires a deliberate compatibility migration, not an unannounced reset.
 - Better Auth Admin, platform moderation, audited native admin operations and isolated admin-specific acceptance are implemented (13 tests/741 assertions overall). No real existing user was granted administrator rights.
@@ -190,3 +190,7 @@ Human-confirmed: all project Markdown must be entirely in English, including exa
 - Human-confirmed: option A, Ichnara, selected in response to the explicit name comparison. Apply to root/workspace package names and imports as well as current product identity. Existing Worker names/URLs, database resource names and x-folio-client-ip protocol remain compatibility identifiers; no hosted rename authorized.
 - Human requires local-only corrections, separate conventional commits, guarded folio_test integration tests and full local checks after change groups. Prior upload permission does not authorize a new push in this scope.
 - Brand round2 is proposals only. No legal clearance, aesthetic approval, remote CI, hosted upload fix or recipient delivery can be inferred from local checks.
+
+## 2026-10-18 — round2 identity accepted
+- Human-confirmed after viewing round2: capital-I option I1, Arabic lockup A1, accent C1 (#3F46C8) and the proposed Arabic spelling encoded in the A1 artwork. Local integration is now authorized; no deployment/push or legal-clearance claim follows.
+- Human-confirmed hygiene scope permits generalized documentation paths/hosts, one canonical AGENTS, complete STATUS archival and conditional duplicate ZIP removal after reference/equality checks. Existing Worker configuration remains unchanged; legacy download URLs must remain usable.
