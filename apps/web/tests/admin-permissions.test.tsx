@@ -5,6 +5,7 @@ import { AdminContext } from "../src/features/management/admin/admin-context";
 import { adminCopy } from "../src/features/management/admin/admin-copy";
 import { AdminManagementDialogs } from "../src/features/management/admin/admin-management-dialogs";
 import { AdminOverview } from "../src/features/management/admin/admin-overview";
+import { adminSecurityCopy } from "../src/features/management/admin/admin-security-copy";
 
 /** Renders only the existing permission-controlled presentation with real role-derived grants. */
 function overview(role: string, locale: "en" | "ar") {
@@ -86,4 +87,14 @@ test("read-only roles cannot render moderation actions and sensitive account con
 		expect(html).not.toContain("<input");
 		expect(html).not.toContain('role="combobox"');
 	}
+});
+
+test("MFA enrollment and challenge copy is complete in both interface locales", () => {
+	expect(Object.keys(adminSecurityCopy.ar).sort()).toEqual(
+		Object.keys(adminSecurityCopy.en).sort(),
+	);
+	for (const locale of ["ar", "en"] as const)
+		for (const value of Object.values(adminSecurityCopy[locale]))
+			expect(value.trim().length).toBeGreaterThan(0);
+	expect(adminSecurityCopy.ar.title).not.toBe(adminSecurityCopy.en.title);
 });

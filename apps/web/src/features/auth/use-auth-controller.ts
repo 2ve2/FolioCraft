@@ -76,6 +76,10 @@ export function useAuthController(mode: AuthMode) {
 				);
 				return;
 			}
+			if (result.data && "twoFactorRedirect" in result.data && result.data.twoFactorRedirect) {
+				router.replace(`/admin/mfa-required?lang=${locale}&challenge=1`);
+				return;
+			}
 			await refetch();
 			if (mounted.current && mode === "signup" && !result.data?.token)
 				setVerificationRequired(true);

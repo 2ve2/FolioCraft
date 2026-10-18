@@ -16,7 +16,7 @@ import { type ReactNode, useEffect, useState } from "react";
 import { Brand } from "../../../components/ui/brand";
 import { LanguageSwitch } from "../../../components/ui/language-switch";
 import { TooltipButton } from "../../../components/ui/tooltip-button";
-import { api } from "../../../lib/api";
+import { ApiError, api } from "../../../lib/api";
 import { authClient } from "../../../lib/auth-client";
 import { useInterfaceLocale } from "../../../lib/use-interface-locale";
 import { LoadingScreen } from "../../studio/loading-screen";
@@ -33,7 +33,7 @@ const navigation = [
 ] as const;
 
 /** Gates administration children and supplies an independent responsive navigation shell. */
-export function AdminShell({ children }: { children: ReactNode }) {
+function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 	const [locale, setLocale, localeReady] = useInterfaceLocale();
 	const t = adminCopy[locale];
 	const pathname = usePathname();
@@ -58,13 +58,17 @@ export function AdminShell({ children }: { children: ReactNode }) {
 				.then((value) => {
 					if (current) setAuthorization({ ...value, sessionId });
 				})
-				.catch(() => {
+				.catch((error) => {
+					if (current && error instanceof ApiError && error.code === "ADMIN_MFA_REQUIRED") {
+						router.replace(`/admin/security?lang=${locale}`);
+						return;
+					}
 					if (current) setAuthorizationError(true);
 				});
 		return () => {
 			current = false;
 		};
-	}, [admin, sessionId, authorizationVersion]);
+	}, [admin, sessionId, authorizationVersion, locale, router]);
 	const permissions =
 		authorization?.sessionId === sessionId ? (authorization?.permissions ?? []) : [];
 	const activeView =
@@ -248,4 +252,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
 			</div>
 		</AdminContext.Provider>
 	);
+}
+
+/** Excludes enrollment/challenge pages from management providers and permission/data requests. */
+export function AdminShell({ children }: { children: ReactNode }) {
+	const pathname = usePathname();
+	if (pathname === "/admin/security" || pathname === "/admin/mfa-required") return children;
+	return <AuthorizedAdminShell>{children}</AuthorizedAdminShell>;
 }

@@ -9,11 +9,14 @@ if (
 		"Integration tests require isolated local folio_test; production databases are rejected",
 	);
 }
-const adminBrowser = process.argv.includes("--admin-browser");
+const mfaBrowser = process.argv.includes("--mfa-browser");
+const adminBrowser = process.argv.includes("--admin-browser") || mfaBrowser;
 const environment = {
 	...process.env,
 	DATABASE_URL: database,
 	NODE_ENV: "test",
+	ADMIN_REQUIRE_MFA: mfaBrowser ? "true" : "false",
+	BETTER_AUTH_SECRETS: "",
 	BETTER_AUTH_SECRET: "isolated-test-secret-at-least-32-characters-only",
 	API_URL: adminBrowser ? "http://127.0.0.1:4400" : "http://localhost:4000",
 	WEB_URL: adminBrowser ? "http://127.0.0.1:4300" : "http://localhost:3000",

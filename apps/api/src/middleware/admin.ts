@@ -8,6 +8,8 @@ import {
 import type { MiddlewareHandler } from "hono";
 import { createMiddleware } from "hono/factory";
 import { matchedRoutes } from "hono/route";
+import { env } from "../config/env";
+import { hasTotpSession } from "../lib/auth/mfa";
 import { ApiError } from "../lib/response-helpers";
 import { type AuthEnv, requireAuth } from "./auth";
 
@@ -35,6 +37,8 @@ export const requireAdmin = createMiddleware<AuthEnv>(async (c, next) => {
 	const session = c.get("authSession");
 	if (!isStaff(session?.user.role) || session.session.impersonatedBy)
 		throw new ApiError(403, "ADMIN_REQUIRED");
+	if (env.ADMIN_REQUIRE_MFA && !(await hasTotpSession(session)))
+		throw new ApiError(403, "ADMIN_MFA_REQUIRED");
 	const routes = matchedRoutes(c).filter(
 		(route) => route.path.startsWith("/api/admin/") && route.handler !== requireAdmin,
 	);

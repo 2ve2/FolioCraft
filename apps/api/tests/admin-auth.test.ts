@@ -326,11 +326,17 @@ test("shared policy matches native grants and keeps disabled/P2 operations unava
 	expect(unchanged.role).toBe("user");
 	expect(unchanged.banned).toBe(false);
 	// Signup-supplied authority remains invalid; no legacy/owner account can be created by signup.
-	const response = await request("/api/auth/sign-up/email", "POST", {
-		name: "Invalid grant",
-		email: `invalid-${crypto.randomUUID()}@example.com`,
-		password: "Fixture-password-123",
-		role: "owner",
-	});
+	const response = await request(
+		"/api/auth/sign-up/email",
+		"POST",
+		{
+			name: "Invalid grant",
+			email: `invalid-${crypto.randomUUID()}@example.com`,
+			password: "Fixture-password-123",
+			role: "owner",
+		},
+		undefined,
+		`127.99.${Math.floor(Math.random() * 254)}.${Math.floor(Math.random() * 254)}`,
+	);
 	expect(response.status).toBe(400);
 });

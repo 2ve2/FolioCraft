@@ -79,9 +79,10 @@ async function cleanup() {
 		new URL("../../../../work/admin-browser-qa/cleanup.json", import.meta.url),
 		JSON.stringify({ deletedFixtureUsers: ids.length, remainingFixtureUsers: remaining.length }),
 	);
-	await Bun.file(
+	const credentialsFile = Bun.file(
 		new URL("../../../../work/admin-browser-qa/credentials.json", import.meta.url),
-	).delete();
+	);
+	if (await credentialsFile.exists()) await credentialsFile.delete();
 	await pool.end();
 }
 

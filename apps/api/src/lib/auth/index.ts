@@ -1,6 +1,7 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth } from "better-auth";
 import { admin } from "better-auth/plugins/admin";
+import { twoFactor } from "better-auth/plugins/two-factor";
 import { env, requireEmailVerification } from "../../config/env";
 import { db } from "../../db";
 import * as schema from "../../db/schema/auth";
@@ -11,6 +12,7 @@ import { sendAuthMail } from "./mail";
 export const auth = betterAuth({
 	appName: "Ichnara",
 	plugins: [
+		twoFactor({ issuer: "Ichnara", skipVerificationOnEnable: false, allowPasswordless: false }),
 		admin({
 			ac: accessControl,
 			roles: accessRoles,
@@ -28,6 +30,7 @@ export const auth = betterAuth({
 	},
 	baseURL: env.API_URL,
 	secret: env.BETTER_AUTH_SECRET,
+	secrets: env.BETTER_AUTH_SECRETS,
 	database: drizzleAdapter(db, { provider: "pg", schema, transaction: true }),
 	trustedOrigins: [env.WEB_URL],
 	emailAndPassword: {
@@ -52,7 +55,12 @@ export const auth = betterAuth({
 		},
 	},
 	hooks: authHooks,
-	session: { cookieCache: { enabled: false } },
+	session: {
+		cookieCache: { enabled: false },
+		additionalFields: {
+			adminTotpFactor: { type: "string", required: false, input: false, returned: false },
+		},
+	},
 	advanced: {
 		useSecureCookies: env.NODE_ENV === "production",
 		ipAddress: { ipAddressHeaders: ["x-folio-client-ip"] },

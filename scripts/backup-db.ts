@@ -117,6 +117,7 @@ try {
 				"rate_buckets",
 				"rate_limit",
 				"admin_audit",
+				"two_factor",
 			]) {
 				const query = `select count(*)::integer from "${table}"`;
 				const before = await command(["psql", "-At", "-v", "ON_ERROR_STOP=1", "-c", query]);
@@ -153,7 +154,7 @@ try {
 			console.info(
 				JSON.stringify({
 					event: "restore_verified",
-					tables: 11,
+					tables: 12,
 					immutableTrigger: true,
 					portfolioContent: true,
 					publishedPointer: true,

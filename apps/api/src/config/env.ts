@@ -9,10 +9,45 @@ const origin = z.url().refine((v) => {
 	const u = new URL(v);
 	return ["http:", "https:"].includes(u.protocol) && u.origin === v && !u.username && !u.password;
 }, "Expected an HTTP(S) origin without a path");
-const schema = z
+export const envSchema = z
 	.object({
 		DATABASE_URL: z.string().startsWith("postgresql://"),
 		BETTER_AUTH_SECRET: z.string().min(32),
+		BETTER_AUTH_SECRETS: optional(
+			z
+				.string()
+				.superRefine((value, context) => {
+					const entries = value.split(",");
+					const versions = new Set<number>();
+					for (const entry of entries) {
+						const separator = entry.indexOf(":");
+						const version = entry.slice(0, separator);
+						if (
+							separator < 1 ||
+							!/^\d+$/.test(version) ||
+							!Number.isSafeInteger(Number(version)) ||
+							versions.has(Number(version)) ||
+							entry.slice(separator + 1).length < 32
+						)
+							context.addIssue({
+								code: "custom",
+								message:
+									"Expected unique version:secret entries with secrets at least 32 characters",
+							});
+						versions.add(Number(version));
+					}
+				})
+				.transform((value) =>
+					value.split(",").map((entry) => ({
+						version: Number(entry.slice(0, entry.indexOf(":"))),
+						value: entry.slice(entry.indexOf(":") + 1),
+					})),
+				),
+		),
+		ADMIN_REQUIRE_MFA: z
+			.enum(["true", "false"])
+			.default("true")
+			.transform((value) => value === "true"),
 		API_URL: origin,
 		WEB_URL: origin,
 		PORT: z.coerce.number().int().min(1).max(65535).default(4000),
@@ -75,6 +110,12 @@ const schema = z
 				});
 		}
 		if (v.NODE_ENV === "production") {
+			if (!v.ADMIN_REQUIRE_MFA)
+				ctx.addIssue({
+					code: "custom",
+					path: ["ADMIN_REQUIRE_MFA"],
+					message: "Production administration requires MFA",
+				});
 			if (!v.API_URL.startsWith("https://") || !v.WEB_URL.startsWith("https://"))
 				ctx.addIssue({ code: "custom", message: "Production origins require HTTPS" });
 			if (!v.SMTP_HOST && !v.TRIAL_SKIP_EMAIL_VERIFICATION)
@@ -84,7 +125,7 @@ const schema = z
 				});
 		}
 	});
-export const env = schema.parse(process.env);
+export const env = envSchema.parse(process.env);
 export const requireEmailVerification =
 	env.NODE_ENV === "production" && !env.TRIAL_SKIP_EMAIL_VERIFICATION;
 export const storageConfigured = Boolean(
