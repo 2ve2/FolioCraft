@@ -2,6 +2,13 @@
 
 Updated: 2026-10-18, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: authorized GitHub upload and session handoff
+
+- Human explicitly requested uploading the local commits, updating Markdown as needed, and opening a new project chat that waits for the next human command. No new implementation or deployment is requested.
+- Fetch confirms0 remote-only/2 local-only commits. Ordinary push succeeded: origin/main7922f02→a4d9a26, including2fc0a82 (native date locale/segment isolation) and a4d9a26 (published platform emblem link). No force push/history rewrite. This documentation checkpoint follows under the same upload authorization.
+- Latest runtime evidence remains the platform-badge-final gates below; no new runtime run claimed for documentation/upload. Remote CI/deployment remain unverified. Generated apps/web/next-env.d.ts remains unstaged in the independent checkout. All commit operations stay under work/github-upload.
+- Active implementation: none. Next: new project chat must read continuity notes when human supplies the next command and wait without starting work. Date-field exact-phone proof, homepage language resolution and external launch dependencies remain open; do not silently expand scope.
+
 ## Latest: published platform badge completed locally
 
 - Human confirmed a small floating circle with the platform logo on every published personal website, linking to the platform. Added PublishedShell/component CSS and integrated it after existing release checks on portfolio, project and article pages. Approved emblem/C1 circle48px; localized link name, keyboard focus, safe-area offsets and footer clearance. Uses existing configured webOrigin, native same-tab homepage navigation and locale query. Owner content/shared renderer/private previews unchanged.

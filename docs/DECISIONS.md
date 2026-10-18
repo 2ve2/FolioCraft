@@ -210,3 +210,6 @@ Human-confirmed: all project Markdown must be entirely in English, including exa
 ## 2026-10-18 — published portfolio platform attribution link
 - Human requested and confirmed a small floating circle with the platform logo on every published personal site, navigating to the platform on activation.
 - Engineering defaults: approved emblem in a48px C1 circle, bottom inline-end with16px safe-area spacing; native same-tab homepage link uses existing configured platform webOrigin and includes portfolio locale. Apply to public home/project/article chrome, without changing owner content or draft/release behavior. No separate human approval of exact size/placement is implied.
+
+## 2026-10-18 — date/badge GitHub upload and idle handoff authorization
+- Human explicitly authorizes uploading the completed local commits and necessary Markdown updates, then opening a new chat in this project that waits for the human's next command. This authorizes GitHub upload only; deployment/provider/production operations remain outside scope.
