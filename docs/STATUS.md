@@ -2,6 +2,11 @@
 
 Updated: 2026-10-19, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: authorized P2a/P2b-1 GitHub upload completed
+
+- Human explicitly requested uploading the local commits. Fetch succeeded and showed0 remote-only/3 local-only commits. Ordinary push exited0, advancing origin/main063d73a to f273584 with96cf08a (P2a design/draft),8c902a6 (generated MFA schema) and f273584 (MFA implementation/evidence). Tracking comparison afterward is0 remote-only/0 local-only. No force push or history rewrite.
+- This documentation checkpoint follows under the same upload authorization. Existing generated apps/web/next-env.d.ts remains unstaged. No new runtime verification, remote CI result, deployment, production connection or real role/secret change is claimed. P2b-2 remains unimplemented and requires separate authorization; next action is wait for the human.
+
 ## Latest: P2b-1 MFA complete locally; stopped before P2b-2
 
 - Completed: schema/design commit8c902a6 adds native two_factor/user.two_factor_enabled plus hidden session.admin_totp_factor in a drizzle-kit-generated additive migration0004/meta. Draft differences documented in ADMIN_CONSOLE appendix14. Applied only via the guarded local folio_test wrapper; no manual SQL/BEGIN/COMMIT or production migration. Existing real roles/IDs are not changed.
