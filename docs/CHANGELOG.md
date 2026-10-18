@@ -587,3 +587,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 ## 2026-10-18 — task1 completed
 - Unified root/workspace packages and imports to Ichnara under explicit option A. Current docs updated; existing external identifiers/history preserved. No dependency version or migration change.
 - Full local checks pass: typecheck, Biome248, Next15 static outputs, guarded API18/851, web7/85. Independent checkout synchronization and commit only; no push or deployment.
+
+## 2026-10-18 — task2 local preparation completed
+- Decoder distinguishes service failures from invalid input, emits redacted phase/code diagnostics and preserves existing storage/ownership controls. MEDIA_DIAGNOSIS documents hypotheses and exact future operator commands. Full gates pass: typecheck, Biome249, build15, guarded API20/867, web7/85. Hosted cause/fix remains unverified; no deployment.

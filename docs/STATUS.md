@@ -1,5 +1,10 @@
 # Current status
 
+## Reviewed task2 — local media diagnostics ready — 2026-10-18
+- Affected: image-validation.worker.ts, worker-images.test.ts and MEDIA_DIAGNOSIS.md. Existing storage phase diagnostics retained; Images logs now distinguish binding/info/decode/decode-read without exception messages, bytes, keys or URLs. Unknown service failures and failed/empty decoder output return502 instead of mislabeling valid input422. Explicit bounds/type/container checks retain422. No authorization/signing/CORS/migration change.
+- Full local gates pass: API/web typecheck, Biome249 files, isolated Next production build15 static outputs, guarded API20 tests/867 assertions, web7/85. New fake-binding cases cover provider codes, redaction, missing binding, bounds and concurrent async scopes. Logs under ignored work/review-fixes/task2. This is local interface proof, not hosted provider evidence.
+- Completed: local task2 preparation. Active: task3 recovery/resend UI. Blocker: actual hosted failure phase remains unknown. Next: separate authorized API diagnostic rollout and bounded hosted fixture per MEDIA_DIAGNOSIS; no rollout performed. No push or production mutation.
+
 ## Reviewed task1 — Ichnara packages unified — 2026-10-18
 - Human selected option A. Root package/lock identity and four workspace packages/imports now use ichnara/@ichnara. Current display, auth app/mail subjects and assets already use Ichnara. Updated current documentation wording; historical evidence, Worker names/URLs, database names and x-folio-client-ip remain unchanged.
 - Checks: frozen install succeeds after setting writable TMPDIR/BUN_INSTALL; API/web typecheck, Biome248 files, isolated Next build15 static outputs, guarded API18 tests/851 assertions and web7 tests/85 assertions pass. Initial lint found one longer import (formatted); first sandbox build could not complete and was stopped before the successful unsandboxed local build. Local test PostgreSQL was already running; sandbox could not see it. No production database operation.

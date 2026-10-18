@@ -36,11 +36,22 @@ export async function validateImageBytes(
 	if (bytes.length < 1 || bytes.length > MAX_ASSET_BYTES)
 		throw new ApiError(422, "UPLOAD_SIZE_MISMATCH");
 	const images = currentImagesBinding();
-	if (!images) throw new ApiError(503, "STORAGE_UNAVAILABLE");
+	if (!images) {
+		console.warn(
+			JSON.stringify({
+				event: "image_validation_failure",
+				stage: "binding",
+				code: "STORAGE_UNAVAILABLE",
+				providerCode: null,
+			}),
+		);
+		throw new ApiError(503, "STORAGE_UNAVAILABLE");
+	}
 
 	/** Creates a fresh bounded byte stream for each decoder operation. */
 	const stream = () => new Blob([new Uint8Array(bytes)]).stream();
 
+	let stage = "info";
 	try {
 		const meta = await images.info(stream());
 		const expected = { "image/png": "png", "image/jpeg": "jpeg", "image/webp": "webp" }[mime];
@@ -56,15 +67,21 @@ export async function validateImageBytes(
 			meta.height > 4096 ||
 			meta.width * meta.height > MAX_PIXELS
 		)
-			throw new Error("Unsupported image dimensions/type");
-		rejectMultipleFrames(bytes, format);
+			throw new ApiError(422, "INVALID_IMAGE");
+		try {
+			rejectMultipleFrames(bytes, format);
+		} catch {
+			throw new ApiError(422, "INVALID_IMAGE");
+		}
+		stage = "decode";
 		// Consume a generated one-pixel image to force decoding; metadata alone is insufficient.
 		const decoded = await images
 			.input(stream())
 			.transform({ width: 1, height: 1 })
 			.output({ format: "image/png" });
 		const response = decoded.response();
-		if (!response.ok || !response.body) throw new Error("Image decoding failed");
+		if (!response.ok || !response.body) throw new ApiError(502, "STORAGE_PROVIDER_ERROR");
+		stage = "decode-read";
 		const reader = response.body.getReader();
 		let outputBytes = 0;
 		try {
@@ -74,16 +91,34 @@ export async function validateImageBytes(
 				outputBytes += part.value.byteLength;
 				if (outputBytes > MAX_ASSET_BYTES) {
 					await reader.cancel();
-					throw new Error("Unexpected decoder output size");
+					throw new ApiError(502, "STORAGE_PROVIDER_ERROR");
 				}
 			}
 		} finally {
 			reader.releaseLock();
 		}
-		if (!outputBytes) throw new Error("Empty decoder output");
+		if (!outputBytes) throw new ApiError(502, "STORAGE_PROVIDER_ERROR");
 		return { width: meta.width, height: meta.height };
 	} catch (error) {
-		if (String(error).includes("9422")) throw new ApiError(502, "STORAGE_PROVIDER_ERROR");
-		throw new ApiError(422, "INVALID_IMAGE");
+		// Extract only a known numeric code; never log the exception text or private bytes.
+		const providerCode = String(error).match(/\b(94\d{2}|95\d{2})\b/)?.[1] ?? null;
+		const failure =
+			error instanceof ApiError
+				? error
+				: new ApiError(
+						providerCode === "9520" || providerCode === "9523" ? 422 : 502,
+						providerCode === "9520" || providerCode === "9523"
+							? "INVALID_IMAGE"
+							: "STORAGE_PROVIDER_ERROR",
+					);
+		console.warn(
+			JSON.stringify({
+				event: "image_validation_failure",
+				stage,
+				code: failure.code,
+				providerCode,
+			}),
+		);
+		throw failure;
 	}
 }
