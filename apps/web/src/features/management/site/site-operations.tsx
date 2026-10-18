@@ -1,6 +1,6 @@
 "use client";
-import { collectAssetIds, type Locale, type Site } from "@folio/contracts";
-import { Portfolio } from "@folio/portfolio";
+import { collectAssetIds, type Locale, type Site } from "@ichnara/contracts";
+import { Portfolio } from "@ichnara/portfolio";
 import { useEffect, useRef, useState } from "react";
 import { SelectControl } from "../../../components/ui/select-control";
 import { api } from "../../../lib/api";

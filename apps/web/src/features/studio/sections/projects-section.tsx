@@ -1,4 +1,4 @@
-import { collectAssetIds, type Project } from "@folio/contracts";
+import { collectAssetIds, type Project } from "@ichnara/contracts";
 import { LayoutGrid, Plus, Trash2 } from "lucide-react";
 import { Field } from "../../../components/ui/field";
 import { TooltipButton } from "../../../components/ui/tooltip-button";

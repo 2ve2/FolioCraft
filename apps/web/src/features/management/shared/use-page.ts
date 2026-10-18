@@ -1,5 +1,5 @@
 "use client";
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../../../lib/api";
 import { errorText } from "./errors";

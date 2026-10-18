@@ -1,4 +1,4 @@
-import { draftSchema, publishedDraft } from "@folio/contracts";
+import { draftSchema, publishedDraft } from "@ichnara/contracts";
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "../../db";
 import { releases, sites } from "../../db/schema/site";

@@ -1,5 +1,5 @@
-import type { Draft } from "@folio/contracts";
-import { portfolioFontNames, portfolioTextSizes } from "@folio/portfolio";
+import type { Draft } from "@ichnara/contracts";
+import { portfolioFontNames, portfolioTextSizes } from "@ichnara/portfolio";
 import { Check, Sparkles } from "lucide-react";
 import { Field } from "../../../components/ui/field";
 import { SelectControl } from "../../../components/ui/select-control";

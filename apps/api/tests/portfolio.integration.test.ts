@@ -1,6 +1,6 @@
 import "./test-guard";
 import { afterAll, expect, test } from "bun:test";
-import type { Draft, PublicSite, Site } from "@folio/contracts";
+import type { Draft, PublicSite, Site } from "@ichnara/contracts";
 import { eq, inArray } from "drizzle-orm";
 import app from "../src/app";
 import { env } from "../src/config/env";

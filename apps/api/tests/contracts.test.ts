@@ -7,7 +7,7 @@ import {
 	experienceSchema,
 	publishedDraft,
 	richBodySchema,
-} from "@folio/contracts";
+} from "@ichnara/contracts";
 
 const article = (published: boolean) => ({
 	id: crypto.randomUUID(),

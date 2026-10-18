@@ -1,5 +1,5 @@
 "use client";
-import type { Experience } from "@folio/contracts";
+import type { Experience } from "@ichnara/contracts";
 import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";
 import { Input } from "./input";

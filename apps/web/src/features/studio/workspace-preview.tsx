@@ -1,5 +1,5 @@
-import type { Draft, Locale, Site } from "@folio/contracts";
-import { LinkArrow } from "@folio/portfolio";
+import type { Draft, Locale, Site } from "@ichnara/contracts";
+import { LinkArrow } from "@ichnara/portfolio";
 import { Circle, Globe2, Maximize2, Monitor, Smartphone } from "lucide-react";
 import { ExpandedPortfolioPreview, PortfolioPreview } from "../portfolio/portfolio-preview";
 import { copy } from "./copy";

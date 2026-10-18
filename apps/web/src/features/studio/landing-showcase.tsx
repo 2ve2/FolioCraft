@@ -1,4 +1,4 @@
-import { type Draft, emptyDraft, type Locale } from "@folio/contracts";
+import { type Draft, emptyDraft, type Locale } from "@ichnara/contracts";
 import Link from "next/link";
 import { useState } from "react";
 import { ExpandedPortfolioPreview, PortfolioPreview } from "../portfolio/portfolio-preview";

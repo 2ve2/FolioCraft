@@ -1,6 +1,6 @@
 "use client";
 
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { type FormEvent, useRef, useState } from "react";
 
 const copy = {

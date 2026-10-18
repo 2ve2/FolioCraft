@@ -1,4 +1,4 @@
-import type { Draft, Locale } from "@folio/contracts";
+import type { Draft, Locale } from "@ichnara/contracts";
 import { copy } from "../copy";
 import { keyed } from "../format";
 import { SectionHeading } from "../section-elements";

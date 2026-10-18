@@ -1,4 +1,4 @@
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { FileText, LogOut, Palette, Settings2, ShieldCheck } from "lucide-react";
 import { Brand } from "../../components/ui/brand";
 import { TooltipButton } from "../../components/ui/tooltip-button";

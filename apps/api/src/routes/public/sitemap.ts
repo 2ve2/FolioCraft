@@ -1,4 +1,4 @@
-import { slugSchema } from "@folio/contracts";
+import { slugSchema } from "@ichnara/contracts";
 import { and, asc, eq, gt } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";

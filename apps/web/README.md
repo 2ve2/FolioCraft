@@ -6,7 +6,7 @@ Studio composes screens, while `features/studio/use-studio-controller.ts` coordi
 
 Management is grouped into `management/admin`, `management/site` and `management/shared`. The admin view delegates requests, selection and named actions to `use-admin-controller.ts`; shared pagination, errors, dates, copy, types and styles stay together. Asset preview/retry is separate from picker actions.
 
-Public output and preview share `@folio/portfolio`; data contracts use `@folio/contracts`. This application imports neither database source nor API secrets. Better Auth client configuration is in `lib/auth-client.ts`, and domain requests are in `lib/api.ts`.
+Public output and preview share `@ichnara/portfolio`; data contracts use `@ichnara/contracts`. This application imports neither database source nor API secrets. Better Auth client configuration is in `lib/auth-client.ts`, and domain requests are in `lib/api.ts`.
 
 `src/app/globals.css` is an ordered import entry point. The order of `src/styles` files is part of the cascade, not alphabetical sorting. CSS Modules remain beside their feature. `landing.css` follows `welcome.css` to preserve rule order. Public portfolio styles live in `packages/portfolio/src/styles.ts`.
 

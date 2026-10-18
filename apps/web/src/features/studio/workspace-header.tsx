@@ -1,4 +1,4 @@
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { Check, ChevronLeft, Circle, Globe2, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
 import { copy } from "./copy";

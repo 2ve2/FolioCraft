@@ -1,4 +1,4 @@
-import type { Draft } from "@folio/contracts";
+import type { Draft } from "@ichnara/contracts";
 import { ApiError } from "../../lib/response-helpers";
 import { mutateOwnedDraft, siteDraftService } from "./draft-service";
 

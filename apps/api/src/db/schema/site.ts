@@ -1,4 +1,4 @@
-import type { Draft } from "@folio/contracts";
+import type { Draft } from "@ichnara/contracts";
 import { sql } from "drizzle-orm";
 import {
 	boolean,

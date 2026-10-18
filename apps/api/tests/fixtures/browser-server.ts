@@ -1,6 +1,6 @@
 import "../test-guard";
 import { chmod } from "node:fs/promises";
-import { collectAssetIds, draftSchema } from "@folio/contracts";
+import { collectAssetIds, draftSchema } from "@ichnara/contracts";
 import { eq, inArray } from "drizzle-orm";
 import app from "../../src/app";
 import { db, pool } from "../../src/db";

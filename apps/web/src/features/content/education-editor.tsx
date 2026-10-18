@@ -1,5 +1,5 @@
 "use client";
-import type { Education } from "@folio/contracts";
+import type { Education } from "@ichnara/contracts";
 import { SelectControl } from "../../components/ui/select-control";
 import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";

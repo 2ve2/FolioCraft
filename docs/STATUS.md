@@ -1,5 +1,10 @@
 # Current status
 
+## Reviewed task1 — Ichnara packages unified — 2026-10-18
+- Human selected option A. Root package/lock identity and four workspace packages/imports now use ichnara/@ichnara. Current display, auth app/mail subjects and assets already use Ichnara. Updated current documentation wording; historical evidence, Worker names/URLs, database names and x-folio-client-ip remain unchanged.
+- Checks: frozen install succeeds after setting writable TMPDIR/BUN_INSTALL; API/web typecheck, Biome248 files, isolated Next build15 static outputs, guarded API18 tests/851 assertions and web7 tests/85 assertions pass. Initial lint found one longer import (formatted); first sandbox build could not complete and was stopped before the successful unsandboxed local build. Local test PostgreSQL was already running; sandbox could not see it. No production database operation.
+- Completed: task1. Active: task2 local hosted-media diagnosis. Blockers: hosted phase unknown; mail/provider acceptance and remote CI remain open. Next: decoder/storage regression tests and safe diagnostics. Existing next-env.d.ts excluded; no deployment/push.
+
 ## GitHub upload and new implementation chat completed — 2026-10-18
 - Human requested upload, Markdown updates and a fresh chat. Uploaded the11 disclosed commits with an ordinary fast-forward: origin/main95d4338→92a2927; fetch confirmed0 remote-only commits. New-source CI not verified. Final upload/handoff documentation checkpoint follows in the same authorized push scope. No Cloudflare deployment.
 - New local project chat:01a14cd6-c508-7992-9eba-6519b9da2117, "Ichnara — next fixes and additions". Prompt transfers confirmed name/restored emblem, actual checks, menu/hover/control-selection decisions, independent-checkout-only commit rules, service state and unresolved provider/trademark/user-study evidence. It should read startup docs and wait for the human's new fixes/additions rather than invent scope.

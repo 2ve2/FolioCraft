@@ -1,5 +1,5 @@
 "use client";
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { useEffect, useState } from "react";
 
 /** Carries interface language in the URL without modifying the portfolio content language. */

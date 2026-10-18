@@ -1,4 +1,4 @@
-import { collectAssetIds, type Draft, publishedDraft } from "@folio/contracts";
+import { collectAssetIds, type Draft, publishedDraft } from "@ichnara/contracts";
 import { and, asc, desc, eq, inArray, lt, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import { assets } from "../db/schema/asset";

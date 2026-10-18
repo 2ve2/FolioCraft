@@ -1,4 +1,4 @@
-import type { Draft } from "@folio/contracts";
+import type { Draft } from "@ichnara/contracts";
 import { copy } from "../copy";
 import { safeHttpUrl } from "../format";
 import { LinkArrow } from "../link-arrow";

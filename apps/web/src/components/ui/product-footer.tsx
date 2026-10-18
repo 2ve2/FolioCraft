@@ -1,4 +1,4 @@
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Brand } from "./brand";

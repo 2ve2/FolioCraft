@@ -1,4 +1,4 @@
-import { createSiteSchema, localeSchema, saveSchema, slugSchema } from "@folio/contracts";
+import { createSiteSchema, localeSchema, saveSchema, slugSchema } from "@ichnara/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { successResponse } from "../../lib/response-helpers";

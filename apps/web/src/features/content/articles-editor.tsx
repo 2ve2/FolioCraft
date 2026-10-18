@@ -1,6 +1,6 @@
 "use client";
-import type { Article } from "@folio/contracts";
-import { collectAssetIds } from "@folio/contracts";
+import type { Article } from "@ichnara/contracts";
+import { collectAssetIds } from "@ichnara/contracts";
 import { AssetPicker } from "../assets/asset-picker";
 import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";

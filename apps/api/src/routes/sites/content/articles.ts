@@ -1,4 +1,4 @@
-import { articleInputSchema } from "@folio/contracts";
+import { articleInputSchema } from "@ichnara/contracts";
 import { createCollectionRoutes } from "./shared/collection-router";
 
 /** Registers owned articles operations using the shared revision-aware protocol. */

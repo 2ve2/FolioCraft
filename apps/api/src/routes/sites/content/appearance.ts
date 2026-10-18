@@ -1,4 +1,4 @@
-import { appearanceSchema } from "@folio/contracts";
+import { appearanceSchema } from "@ichnara/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { successResponse } from "../../../lib/response-helpers";

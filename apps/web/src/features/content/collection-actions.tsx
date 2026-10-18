@@ -1,5 +1,5 @@
 "use client";
-import type { Article, Education, Experience, Skill } from "@folio/contracts";
+import type { Article, Education, Experience, Skill } from "@ichnara/contracts";
 
 import { labels } from "./copy";
 import { moveItem } from "./reorder";

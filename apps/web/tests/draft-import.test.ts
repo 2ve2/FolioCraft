@@ -1,6 +1,6 @@
 /// <reference types="bun" />
 import { describe, expect, test } from "bun:test";
-import { emptyDraft } from "@folio/contracts";
+import { emptyDraft } from "@ichnara/contracts";
 import { DraftImportError, readDraftBackup } from "../src/features/studio/draft-import";
 
 function backup(value: unknown, name = "portfolio-draft.json") {

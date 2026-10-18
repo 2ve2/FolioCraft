@@ -1,4 +1,4 @@
-import { projectSchema } from "@folio/contracts";
+import { projectSchema } from "@ichnara/contracts";
 import { createCollectionRoutes } from "./shared/collection-router";
 
 /** Registers owned projects operations using the shared revision-aware protocol. */

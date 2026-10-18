@@ -1,4 +1,4 @@
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { ApiError } from "../../../lib/api";
 import { text } from "./copy";
 

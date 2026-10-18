@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "foliocraft",
+      "name": "ichnara",
       "devDependencies": {
         "@biomejs/biome": "2.5.15",
         "@types/bun": "1.4.3",
@@ -12,12 +12,12 @@
       },
     },
     "apps/api": {
-      "name": "@folio/api",
+      "name": "@ichnara/api",
       "dependencies": {
         "@aws-sdk/client-s3": "3.1150.0",
         "@aws-sdk/s3-request-presigner": "3.1150.0",
         "@better-auth/drizzle-adapter": "1.7.7",
-        "@folio/contracts": "workspace:*",
+        "@ichnara/contracts": "workspace:*",
         "better-auth": "1.7.7",
         "drizzle-orm": "0.45.4",
         "hono": "4.13.13",
@@ -33,10 +33,10 @@
       },
     },
     "apps/web": {
-      "name": "@folio/web",
+      "name": "@ichnara/web",
       "dependencies": {
-        "@folio/contracts": "workspace:*",
-        "@folio/portfolio": "workspace:*",
+        "@ichnara/contracts": "workspace:*",
+        "@ichnara/portfolio": "workspace:*",
         "@fontsource-variable/noto-naskh-arabic": "5.3.0",
         "@fontsource-variable/noto-sans-arabic": "5.3.0",
         "@fontsource/ibm-plex-mono": "5.3.0",
@@ -59,15 +59,15 @@
       },
     },
     "packages/contracts": {
-      "name": "@folio/contracts",
+      "name": "@ichnara/contracts",
       "dependencies": {
         "zod": "4.6.7",
       },
     },
     "packages/portfolio": {
-      "name": "@folio/portfolio",
+      "name": "@ichnara/portfolio",
       "dependencies": {
-        "@folio/contracts": "workspace:*",
+        "@ichnara/contracts": "workspace:*",
         "react": "19.3.0",
       },
       "devDependencies": {
@@ -313,13 +313,13 @@
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.28.2", "", { "os": "win32", "cpu": "x64" }, "sha512-5ebpxr3nWMzrL/rnUI755Jkuee0bHL/Gq0WTF9lvcpv73wAp5eu8MfBUgWK9bhWvZjj7yX8etf/8tI8Ney695g=="],
 
-    "@folio/api": ["@folio/api@workspace:apps/api"],
+    "@ichnara/api": ["@ichnara/api@workspace:apps/api"],
 
-    "@folio/contracts": ["@folio/contracts@workspace:packages/contracts"],
+    "@ichnara/contracts": ["@ichnara/contracts@workspace:packages/contracts"],
 
-    "@folio/portfolio": ["@folio/portfolio@workspace:packages/portfolio"],
+    "@ichnara/portfolio": ["@ichnara/portfolio@workspace:packages/portfolio"],
 
-    "@folio/web": ["@folio/web@workspace:apps/web"],
+    "@ichnara/web": ["@ichnara/web@workspace:apps/web"],
 
     "@fontsource-variable/noto-naskh-arabic": ["@fontsource-variable/noto-naskh-arabic@5.3.0", "", {}, "sha512-Ot0G5iln5MeLPKp1WNt6AGi4KHbPIVm0GEow2ED6rZ+8Rao+OuswhX4D+RPerc3aQ6teneLdqXSL8VPGorJvGg=="],
 

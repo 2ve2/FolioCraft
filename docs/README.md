@@ -2,7 +2,7 @@
 
 Last updated: 2026-10-15, Asia/Riyadh.
 
-The human confirmed "Ichnara" as the platform name on 2026-10-17. FolioCraft was the prototype working name. Historical references, existing repository/package identifiers and trial hosts retain that earlier name until explicitly migrated.
+The human confirmed "Ichnara" as the platform name on 2026-10-17. FolioCraft was the prototype working name. Historical references, the existing repository and trial hosts retain that earlier name. On 2026-10-18 the human selected Ichnara again; current root/workspace package names and imports now use ichnara/@ichnara. Worker names, URLs, database resources and existing protocol headers retain their compatibility identifiers.
 
 ## Goal
 A portfolio builder with one fixed, comprehensive layout. Users customize themes, colors, font family/style, and text size while retaining a consistent UI structure. Support Arabic and English and content suitable for different disciplines.

@@ -1,4 +1,4 @@
-import type { Draft } from "@folio/contracts";
+import type { Draft } from "@ichnara/contracts";
 import type { CSSProperties } from "react";
 
 const themes = {

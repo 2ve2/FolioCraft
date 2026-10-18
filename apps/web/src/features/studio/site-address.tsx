@@ -1,5 +1,5 @@
 "use client";
-import { type Locale, slugSchema } from "@folio/contracts";
+import { type Locale, slugSchema } from "@ichnara/contracts";
 import { useEffect, useState } from "react";
 
 /** Changes the real public address through the studio's revision-checked mutation. */

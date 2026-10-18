@@ -1,5 +1,5 @@
 "use client";
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { createContext, useContext } from "react";
 
 export type AdminSession = {

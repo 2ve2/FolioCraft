@@ -1,4 +1,4 @@
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 
 /** Gives text actions one 16px arrow, stable stroke and locale-aware direction. */
 export function LinkArrow({ locale }: { locale: Locale }) {

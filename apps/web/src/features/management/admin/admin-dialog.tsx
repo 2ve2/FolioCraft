@@ -1,5 +1,5 @@
 "use client";
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { X } from "lucide-react";
 import { type ReactNode, type Ref, useEffect, useId, useRef } from "react";
 import styles from "./admin.module.css";

@@ -1,4 +1,4 @@
-import type { Draft } from "@folio/contracts";
+import type { Draft } from "@ichnara/contracts";
 import type { text } from "./copy";
 
 export type Page<T> = { items: T[]; hasMore: boolean; limit: number; offset: number };

@@ -1,4 +1,4 @@
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { Circle, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
 import { Brand } from "../../components/ui/brand";

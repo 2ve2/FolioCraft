@@ -1,4 +1,4 @@
-import { type Draft, draftSchema } from "@folio/contracts";
+import { type Draft, draftSchema } from "@ichnara/contracts";
 
 export class DraftImportError extends Error {
 	constructor(readonly reason: "size" | "invalid") {

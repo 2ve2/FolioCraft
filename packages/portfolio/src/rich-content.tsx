@@ -1,4 +1,4 @@
-import { hasRichContent, type Project, type RichBlock } from "@folio/contracts";
+import { hasRichContent, type Project, type RichBlock } from "@ichnara/contracts";
 import { keyed } from "./format";
 
 /** Structured text renders React nodes; saved markup is never interpreted as HTML. */

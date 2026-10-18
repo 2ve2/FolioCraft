@@ -1,5 +1,5 @@
 "use client";
-import type { Locale, RichBlock } from "@folio/contracts";
+import type { Locale, RichBlock } from "@ichnara/contracts";
 import { SelectControl } from "../../components/ui/select-control";
 
 import { labels } from "./copy";

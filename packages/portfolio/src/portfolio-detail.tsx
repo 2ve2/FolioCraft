@@ -1,4 +1,4 @@
-import type { Article, Project } from "@folio/contracts";
+import type { Article, Project } from "@ichnara/contracts";
 import { copy } from "./copy";
 import { readingTime, safeHttpUrl } from "./format";
 import { LinkArrow } from "./link-arrow";

@@ -1,4 +1,4 @@
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 
 /** Formats a server timestamp using the selected interface locale. */
 export function date(value: string, locale: Locale) {

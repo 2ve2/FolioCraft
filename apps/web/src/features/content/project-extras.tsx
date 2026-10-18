@@ -1,5 +1,5 @@
 "use client";
-import type { Locale, Project } from "@folio/contracts";
+import type { Locale, Project } from "@ichnara/contracts";
 import { AssetPicker } from "../assets/asset-picker";
 
 import { labels } from "./copy";

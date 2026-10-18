@@ -1,6 +1,6 @@
 "use client";
-import type { Draft } from "@folio/contracts";
-import { Portfolio, PortfolioDetail } from "@folio/portfolio";
+import type { Draft } from "@ichnara/contracts";
+import { Portfolio, PortfolioDetail } from "@ichnara/portfolio";
 import { type MouseEvent, useEffect, useId, useRef, useState } from "react";
 import { InquiryForm } from "./inquiry-form";
 

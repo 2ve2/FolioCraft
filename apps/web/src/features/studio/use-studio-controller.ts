@@ -1,5 +1,11 @@
 "use client";
-import { collectAssetIds, type Draft, draftSchema, type Site, slugSchema } from "@folio/contracts";
+import {
+	collectAssetIds,
+	type Draft,
+	draftSchema,
+	type Site,
+	slugSchema,
+} from "@ichnara/contracts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, api, authClient } from "../../lib/api";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";

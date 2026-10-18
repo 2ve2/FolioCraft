@@ -1,5 +1,5 @@
-import { type Locale, slugSchema } from "@folio/contracts";
-import { LinkArrow } from "@folio/portfolio";
+import { type Locale, slugSchema } from "@ichnara/contracts";
+import { LinkArrow } from "@ichnara/portfolio";
 import { Globe2, LoaderCircle } from "lucide-react";
 import { type FormEvent, type ReactNode, useRef, useState } from "react";
 import { Brand } from "../../components/ui/brand";

@@ -5,7 +5,7 @@ COPY apps/api/package.json apps/api/package.json
 COPY apps/web/package.json apps/web/package.json
 COPY packages/contracts/package.json packages/contracts/package.json
 COPY packages/portfolio/package.json packages/portfolio/package.json
-RUN bun install --frozen-lockfile --production --filter @folio/api
+RUN bun install --frozen-lockfile --production --filter @ichnara/api
 FROM oven/bun:1.4.2
 WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules

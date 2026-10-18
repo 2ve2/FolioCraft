@@ -15,7 +15,7 @@ Mini-preview scale is an inspection aid, not a change to published font sizes. U
 Human requested a slight reduction after readability fixes. Current UI caption13,label/body15,subheading17,heading22,title30/phone26; public size keys14/15/17px and metadata minimum13px. Spacing/touch targets retained. Device names are visible; Settings is last; desktop sidebar248px prevents English nav wrapping. Preview parity and skill-group spacing evidence are recorded in STATUS.
 
 ## Approved workspace scrolling — 2026-10-14
-Desktop>=971px uses independently scrolling editor and preview beneath a fixed action header. Phone retains normal document scrolling and edit/preview tabs. FolioCraft chrome uses native violet gradient scroll thumbs/lavender tracks, including editor textareas, with standards and forced-colors fallbacks. Human approved the demonstrated result; no prototype controls remain. Skill headings have16px space before tags and skill groups40px row/32px column separation.
+Desktop>=971px uses independently scrolling editor and preview beneath a fixed action header. Phone retains normal document scrolling and edit/preview tabs. Ichnara chrome uses native violet gradient scroll thumbs/lavender tracks, including editor textareas, with standards and forced-colors fallbacks. Human approved the demonstrated result; no prototype controls remain. Skill headings have16px space before tags and skill groups40px row/32px column separation.
 
 ## Local product and action refinements — 2026-10-15
 - Product landing preserves the violet identity, uses a real shared-renderer fictional example, responsive benefit/process sections and functional authentication entry. No invented adoption statistics/testimonials.

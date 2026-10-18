@@ -1,4 +1,4 @@
-import type { PublicSite } from "@folio/contracts";
+import type { PublicSite } from "@ichnara/contracts";
 import { escapeXml, webOrigin } from "../../../../lib/public-metadata";
 import { readPublished } from "../_public";
 

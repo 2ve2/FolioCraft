@@ -1,4 +1,4 @@
-import type { Draft, Locale } from "@folio/contracts";
+import type { Draft, Locale } from "@ichnara/contracts";
 
 export type ContentEditorProps = {
 	draft: Draft;

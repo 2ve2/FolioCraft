@@ -1,5 +1,5 @@
-import type { Locale } from "@folio/contracts";
-import { LinkArrow } from "@folio/portfolio";
+import type { Locale } from "@ichnara/contracts";
+import { LinkArrow } from "@ichnara/portfolio";
 import { useEffect, useRef, useState } from "react";
 import { Field } from "../../../components/ui/field";
 import { SelectControl } from "../../../components/ui/select-control";

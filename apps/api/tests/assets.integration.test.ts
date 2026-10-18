@@ -1,6 +1,6 @@
 import "./test-guard";
 import { afterAll, expect, spyOn, test } from "bun:test";
-import type { Site } from "@folio/contracts";
+import type { Site } from "@ichnara/contracts";
 import { eq, inArray } from "drizzle-orm";
 import sharp from "sharp";
 import { db } from "../src/db";

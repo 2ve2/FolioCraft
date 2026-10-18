@@ -1,4 +1,4 @@
-import { type Article, calculateReadTime, type Locale } from "@folio/contracts";
+import { type Article, calculateReadTime, type Locale } from "@ichnara/contracts";
 
 /** Allows only explicit HTTP or HTTPS links for public rendering. */
 export function safeHttpUrl(value: string): string | undefined {

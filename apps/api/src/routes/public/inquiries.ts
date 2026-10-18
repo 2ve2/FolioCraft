@@ -1,4 +1,4 @@
-import { slugSchema } from "@folio/contracts";
+import { slugSchema } from "@ichnara/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { ApiError, successResponse } from "../../lib/response-helpers";

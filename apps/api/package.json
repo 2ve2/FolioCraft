@@ -1,5 +1,5 @@
 {
-	"name": "@folio/api",
+	"name": "@ichnara/api",
 	"private": true,
 	"type": "module",
 	"imports": {
@@ -21,7 +21,7 @@
 		"@aws-sdk/client-s3": "3.1150.0",
 		"@aws-sdk/s3-request-presigner": "3.1150.0",
 		"@better-auth/drizzle-adapter": "1.7.7",
-		"@folio/contracts": "workspace:*",
+		"@ichnara/contracts": "workspace:*",
 		"better-auth": "1.7.7",
 		"drizzle-orm": "0.45.4",
 		"hono": "4.13.13",

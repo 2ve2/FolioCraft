@@ -1,5 +1,5 @@
 "use client";
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { useEffect, useRef, useState } from "react";
 import { api, authClient } from "../../../lib/api";
 import { errorText, nativeError, usePage } from "../shared";

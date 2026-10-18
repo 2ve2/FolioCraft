@@ -1,6 +1,6 @@
 "use client";
 
-import type { Locale } from "@folio/contracts";
+import type { Locale } from "@ichnara/contracts";
 import { type ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, api, authClient } from "../../lib/api";
 import styles from "./asset-picker.module.css";

@@ -583,3 +583,7 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - No Cloudflare deployment, GitHub push, Neon/production mutation, purchases or external messages. Integration checks use the guarded local folio_test runner only. Brand proposals require separate human acceptance before adoption.
 - Record one completed task per commit with actual checks; full local typecheck, lint, build, API and web tests required after each change group. Remote CI, hosted media and actual mail delivery remain unverified until their separate environment acceptance.
 - Preparation: inspected source/continuity/deployment/launch notes and independent checkout; generated ignored name inventory. Existing next-env.d.ts change is excluded from commits. Local Bun is1.4.2, matching current CI.
+
+## 2026-10-18 — task1 completed
+- Unified root/workspace packages and imports to Ichnara under explicit option A. Current docs updated; existing external identifiers/history preserved. No dependency version or migration change.
+- Full local checks pass: typecheck, Biome248, Next15 static outputs, guarded API18/851, web7/85. Independent checkout synchronization and commit only; no push or deployment.

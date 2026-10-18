@@ -1,4 +1,4 @@
-import type { Draft } from "@folio/contracts";
+import type { Draft } from "@ichnara/contracts";
 import type { ReactNode } from "react";
 
 /** Shared by the private preview and the immutable published release. */

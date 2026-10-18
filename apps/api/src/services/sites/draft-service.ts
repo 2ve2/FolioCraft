@@ -1,4 +1,4 @@
-import { type Draft, draftSchema, emptyDraft, type Locale } from "@folio/contracts";
+import { type Draft, draftSchema, emptyDraft, type Locale } from "@ichnara/contracts";
 import { and, eq } from "drizzle-orm";
 import { db } from "../../db";
 import { sites } from "../../db/schema/site";

@@ -1,5 +1,5 @@
-import type { PublicSite } from "@folio/contracts";
-import { Portfolio } from "@folio/portfolio";
+import type { PublicSite } from "@ichnara/contracts";
+import { Portfolio } from "@ichnara/portfolio";
 import { InquiryForm } from "../../../features/portfolio/inquiry-form";
 import { publishedMetadata } from "../../../lib/public-metadata";
 import { PublicUnavailable, publicAssets, readPublished } from "./_public";

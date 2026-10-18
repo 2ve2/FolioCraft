@@ -1,4 +1,4 @@
-import type { Draft, Locale, Site } from "@folio/contracts";
+import type { Draft, Locale, Site } from "@ichnara/contracts";
 
 export type Section = "content" | "appearance" | "settings" | "operations";
 export type SaveState = "saved" | "saving" | "unsaved" | "failed";

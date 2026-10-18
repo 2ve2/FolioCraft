@@ -1,5 +1,5 @@
 "use client";
-import type { Skill } from "@folio/contracts";
+import type { Skill } from "@ichnara/contracts";
 import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";
 import { Input } from "./input";

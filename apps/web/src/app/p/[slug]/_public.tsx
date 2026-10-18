@@ -1,4 +1,4 @@
-import { collectAssetIds, type PublicSite } from "@folio/contracts";
+import { collectAssetIds, type PublicSite } from "@ichnara/contracts";
 import { notFound } from "next/navigation";
 
 /** Loads the accessible public release without forwarding a private session. */

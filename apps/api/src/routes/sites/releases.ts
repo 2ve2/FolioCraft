@@ -1,4 +1,4 @@
-import { publishSchema } from "@folio/contracts";
+import { publishSchema } from "@ichnara/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { successResponse } from "../../lib/response-helpers";

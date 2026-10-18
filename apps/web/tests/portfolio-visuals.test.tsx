@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
-import { collectAssetIds, draftSchema, emptyDraft } from "@folio/contracts";
-import { Portfolio } from "@folio/portfolio";
+import { collectAssetIds, draftSchema, emptyDraft } from "@ichnara/contracts";
+import { Portfolio } from "@ichnara/portfolio";
 import { renderToStaticMarkup } from "react-dom/server";
 
 /** Hides optional decoration in the shared renderer without dropping content or owned references. */

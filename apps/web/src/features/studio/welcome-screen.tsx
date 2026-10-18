@@ -1,5 +1,5 @@
-import type { Locale } from "@folio/contracts";
-import { LinkArrow } from "@folio/portfolio";
+import type { Locale } from "@ichnara/contracts";
+import { LinkArrow } from "@ichnara/portfolio";
 import Link from "next/link";
 import { type ReactNode, useState } from "react";
 import { Brand } from "../../components/ui/brand";

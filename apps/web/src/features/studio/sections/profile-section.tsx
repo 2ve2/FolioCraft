@@ -1,4 +1,4 @@
-import { collectAssetIds, type Draft } from "@folio/contracts";
+import { collectAssetIds, type Draft } from "@ichnara/contracts";
 import { FileText } from "lucide-react";
 import { Field } from "../../../components/ui/field";
 import { AssetPicker } from "../../assets/asset-picker";
