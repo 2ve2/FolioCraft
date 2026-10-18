@@ -1,5 +1,10 @@
 # Current status
 
+## Reviewed task6 — README claims corrected — 2026-10-18
+- Affected: README.md explicitly separates code support from hosted acceptance, records last hosted intent200/PUT200/completion502, unverified SMTP delivery and local-only recovery/diagnostics. Testing-only warning retained verbatim; verification instructions include test:web.
+- Full requested local gates pass: typecheck, Biome258, isolated Next18, guarded API21/878 and web10/111. Logs: work/review-fixes/task6. No hosted test, delivery, deployment or push performed.
+- Completed: task6. Active: task7 review-only vector proposals. Blocker: human acceptance required before applying any brand variant. Next: three capital-I options, two Arabic studies and measured color alternatives in docs/brand/review-round-2 without changing accepted assets/UI.
+
 ## Reviewed task5 — reported dependency findings remediated — 2026-10-18
 - Affected: root package.json, bun.lock and DEPENDENCIES.md. `bun audit fix` fixed0/2 because parent ranges pin vulnerable transitive versions. Scoped overrides change only @node-minify/core's glob10.3.3→10.5.0 and @esbuild-kit/core-utils's esbuild0.18.20→0.25.12. Other consumers retain their versions. LockfileVersion3 is supported by the matching local/CI Bun1.4.2.
 - Actual final audit: no vulnerabilities found (495 packages), exit0. Full local gates pass: typecheck, Biome258, Next18, guarded API21/878, web10/111. Independent frozen install and OpenNext build pass; installed unchanged patch includes preview-props. No deploy, production migration or remote CI claim. Evidence: work/review-fixes/task5 and audit outputs.

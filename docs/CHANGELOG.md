@@ -599,3 +599,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 
 ## 2026-10-18 — task5 completed
 - Scoped transitive overrides remove the two reported audit findings; automatic range-only fix was blocked. Audit495 packages clean, full local gates pass, independent frozen install/OpenNext build and installed preview-props patch verified. No dependency-risk exception or hosted/remote claim. See DEPENDENCIES.
+
+## 2026-10-18 — task6 completed
+- README now states exact hosted-media failure and mail/rollout limits; Testing-only warning unchanged. Full local gates pass: typecheck/Biome258/build18/API21-878/web10-111.
