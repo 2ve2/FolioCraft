@@ -222,3 +222,8 @@ Self-hosted fonts live in web dependencies/lockfile; no runtime CDN credentials.
 Source ownership is documented in SOURCE_STRUCTURE.md. The reusable browser seed server lives under apps/api/tests/fixtures/browser-server.ts; scripts/admin-browser-fixture.ts is its thin entry point. Always use the guarded root command `bun run test --admin-browser`, not an inherited development/Neon environment. It uses local folio_test and API127.0.0.1:4400 with web127.0.0.1:4300, uniquely generated users and private0600 temporary credentials. Closing the process cleans only that run's fixture users/audit rows.
 
 During an observed local Neon connection delay, a read-only connection took7857ms against a5000ms deadline. The ongoing local API session was restarted with `DB_CONNECT_TIMEOUT_MS=20000` as a temporary runtime override; source defaults, hidden environment files and production policy were not changed. Recheck connectivity and choose deployment deadlines from real measurements, not this one sample.
+
+## Web checks and runtime alignment — 2026-10-18
+- `bun run test:web` runs apps/web/tests independently of the guarded database suite. GitHub validate job and scripts/check.sh include this command. Integration job still calls only the existing root `bun run test` wrapper, which refuses remote hosts and any database other than local folio_test.
+- Local `bun --version` is1.4.2. Both CI jobs already pin1.4.2, so no version update is required; do not change it solely to create a diff. Workspace package types may have a different release number than the installed runtime.
+- Local gates do not establish remote CI. This scope does not push, and no new remote run has been observed.

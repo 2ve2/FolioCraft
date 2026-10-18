@@ -1,5 +1,10 @@
 # Current status
 
+## Reviewed task4 — web tests included in CI — 2026-10-18
+- Affected: package.json adds test:web; .github/workflows/check.yml validate job and scripts/check.sh run it; OPERATIONS documents execution. Database integration runner/guard unchanged. Local Bun1.4.2 equals both existing CI pins1.4.2; no version change needed.
+- Full local gates pass: typecheck, Biome258, isolated Next18 static outputs, guarded API21/878 and web10/111. `bun run test:web` also executes successfully. Logs: work/review-fixes/task4. No new remote CI observed; no push authorized/performed.
+- Completed: task4 local CI configuration. Active: task5 dependency remediation. Blockers: remote CI needs a future authorized push and observed run. Next: resolve actual audit report and verify OpenNext patch/build.
+
 ## Reviewed task3 — native recovery/resend UI completed locally — 2026-10-18
 - Affected: auth feature, three new account routes, recovery web/API tests and LAUNCH mail runbook. Login/signup link to forgot/reset/resend; native callbacks retain locale. Error states distinguish mail unavailable/delivery failure, rate limit, invalid/expired/used token and mismatched password. No simulated mail success; accepted requests do not assert delivery. Token removed from URL after reset; no-referrer/noindex on recovery routes. Hosted trial flag unchanged; roadmap mail acceptance stays open.
 - Full gates: API/web typecheck, Biome258 files, isolated Next build18 static outputs, guarded API21 tests/878 assertions and web10/111 pass. An initial typecheck caught an omitted callback-error binding; corrected before all final gates. Real local native-token test covers expired/reused token, changed-password sign-in and old-session revocation; tokens are seeded only in folio_test, not sent through SMTP.

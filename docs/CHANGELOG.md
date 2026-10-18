@@ -593,3 +593,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 
 ## 2026-10-18 — task3 local implementation completed
 - Added native bilingual recovery/reset/resend routes, login/signup entry points, safe token/result states and precise SMTP/verification-transition runbook. Guarded API21/878 and web10/111, typecheck, Biome258 and build18 pass;12 browser geometry cases plus actual unavailable-mail forms pass. No SMTP delivery or hosted acceptance claimed.
+
+## 2026-10-18 — task4 completed locally
+- Added test:web to root scripts, CI validate and local check helper. Bun1.4.2 already matches both CI jobs. Database guard unchanged. Full local gates and explicit test:web pass (API21/878, web10/111, build18, Biome258). Remote CI remains unverified.
