@@ -1,5 +1,10 @@
 # Current status
 
+## Reviewed task5 — reported dependency findings remediated — 2026-10-18
+- Affected: root package.json, bun.lock and DEPENDENCIES.md. `bun audit fix` fixed0/2 because parent ranges pin vulnerable transitive versions. Scoped overrides change only @node-minify/core's glob10.3.3→10.5.0 and @esbuild-kit/core-utils's esbuild0.18.20→0.25.12. Other consumers retain their versions. LockfileVersion3 is supported by the matching local/CI Bun1.4.2.
+- Actual final audit: no vulnerabilities found (495 packages), exit0. Full local gates pass: typecheck, Biome258, Next18, guarded API21/878, web10/111. Independent frozen install and OpenNext build pass; installed unchanged patch includes preview-props. No deploy, production migration or remote CI claim. Evidence: work/review-fixes/task5 and audit outputs.
+- Completed: task5. Active: task6 README accuracy. Blockers: hosted media and recipient delivery still open. Next: distinguish source support from hosted acceptance in README.
+
 ## Reviewed task4 — web tests included in CI — 2026-10-18
 - Affected: package.json adds test:web; .github/workflows/check.yml validate job and scripts/check.sh run it; OPERATIONS documents execution. Database integration runner/guard unchanged. Local Bun1.4.2 equals both existing CI pins1.4.2; no version change needed.
 - Full local gates pass: typecheck, Biome258, isolated Next18 static outputs, guarded API21/878 and web10/111. `bun run test:web` also executes successfully. Logs: work/review-fixes/task4. No new remote CI observed; no push authorized/performed.

@@ -596,3 +596,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 
 ## 2026-10-18 — task4 completed locally
 - Added test:web to root scripts, CI validate and local check helper. Bun1.4.2 already matches both CI jobs. Database guard unchanged. Full local gates and explicit test:web pass (API21/878, web10/111, build18, Biome258). Remote CI remains unverified.
+
+## 2026-10-18 — task5 completed
+- Scoped transitive overrides remove the two reported audit findings; automatic range-only fix was blocked. Audit495 packages clean, full local gates pass, independent frozen install/OpenNext build and installed preview-props patch verified. No dependency-risk exception or hosted/remote claim. See DEPENDENCIES.
