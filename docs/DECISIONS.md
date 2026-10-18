@@ -220,3 +220,9 @@ Human-confirmed: all project Markdown must be entirely in English, including exa
 
 ## 2026-10-18 — date/badge GitHub upload and idle handoff authorization
 - Human explicitly authorizes uploading the completed local commits and necessary Markdown updates, then opening a new chat in this project that waits for the human's next command. This authorizes GitHub upload only; deployment/provider/production operations remain outside scope.
+
+## 2026-10-18 — human-approved Admin Console amendment and P1 authorization
+- Human-confirmed: ADMIN_CONSOLE.md appendix 11 supersedes conflicting P0 proposals. owner without alias; no actual role change. Reasons 10–500 including moderation. P2 requires password per sensitive action plus TOTP-authenticated session, without changing freshAge or requiring session age.
+- Evaluate Hono rejection of all external native-admin HTTP calls and internal auth.api methods before considering a capability. Impersonation and administrative password-setting are disabled for every role; no banner/escape route. TOTP enrollment-only approved, trusted devices disabled. Explicit note permissions approved with target restrictions, implementation deferred after P3. Separate audit attempt/outcome inserts approved for P2; A6 deferred before launch.
+- Last-owner P2 design must use pg_advisory_xact_lock and the native operation in one transaction compatible with transaction-mode pooling; no session lock/dedicated connection workaround. Prove adapter transaction participation or keep those operations unavailable and report the limitation.
+- Human authorizes an amendment commit first, P1 implementation second and stopping afterward. Default HEAD build rerun is a separate diagnostic; report recurring hangs before any CI/build fix. No push, deployment, real-account promotion or P2 implementation authorized.

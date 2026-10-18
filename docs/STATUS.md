@@ -2,6 +2,12 @@
 
 Updated: 2026-10-18, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: approved Admin Console amendment; P1 authorized next
+
+- Completed documentation step: ADMIN_CONSOLE.md appendix 11 records all human A1–A6 replacements and the transaction-scoped last-owner design requirement for P2. DECISIONS/CHANGELOG record confirmed authority and phase boundaries. Earlier P0 proposals remain historical and are superseded by that appendix.
+- Active: prepare the separate amendment commit, then P1 only. Next: shared RBAC/permission declarations and masked read wrappers; test Hono external rejection/internal native hooks. Sensitive new operations remain unavailable until P2. No actual account role change, alias, impersonation, password setting, P2 implementation, push or deployment.
+- Verification of this documentation step: English-only scan and staged documentation-only diff are required before commit; no new runtime success claimed. Default build rerun is an independent pending diagnostic, not authorization to alter CI/build settings. Existing P0 results follow.
+
 ## Latest: Admin Console P0 documentation only
 
 - Completed: read ADMIN_CONSOLE_TASK.md in full and inspect the existing administration routes/services/UI, authentication hooks, installed Better Auth 1.7.7 permissions/freshness behavior and relevant schema. Added [ADMIN_CONSOLE.md](ADMIN_CONSOLE.md) with current findings, fixed requirements, complete permission/native mapping, reason/password/wrapper enforcement proposals, MFA/impersonation exceptions, data/audit limits, phase acceptance and approval items A1–A6. Scope/evidence recorded in CHANGELOG; decision status recorded in DECISIONS. Only these four English documentation files belong to this change.
