@@ -185,3 +185,8 @@ Human-confirmed: all project Markdown must be entirely in English, including exa
 - Human rejected the proposed standalone ligature and requested an actual finished usable product. Implementation choice under creative authorization: make Ichnara's drawn lettering the primary logo, deriving small icons from its capital I rather than proposing another abstract symbol. Exact visual acceptance is not separately human-confirmed.
 - Construct seven geometric letter paths directly; do not use the previously generated image as a vector master or claim an existing font as custom. Deliver SVG/PNG/icon masters, usage guide and ZIP. Install in the shared local Brand component and Next favicon/touch-icon conventions. Portfolio content/fonts and hosted infrastructure remain unchanged.
 - This is a complete asset/source delivery with representative checks, not a worldwide uniqueness/trademark or full custom-font certificate. No Cloudflare deployment or GitHub upload in this step.
+
+## 2026-10-18 — reviewed corrections and Ichnara unification
+- Human-confirmed: option A, Ichnara, selected in response to the explicit name comparison. Apply to root/workspace package names and imports as well as current product identity. Existing Worker names/URLs, database resource names and x-folio-client-ip protocol remain compatibility identifiers; no hosted rename authorized.
+- Human requires local-only corrections, separate conventional commits, guarded folio_test integration tests and full local checks after change groups. Prior upload permission does not authorize a new push in this scope.
+- Brand round2 is proposals only. No legal clearance, aesthetic approval, remote CI, hosted upload fix or recipient delivery can be inferred from local checks.
