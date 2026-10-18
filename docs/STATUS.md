@@ -1,6 +1,11 @@
 # Current status
 
-Updated: 2026-10-18, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
+Updated: 2026-10-19, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
+
+## Latest: P2b-1 schema generated; MFA implementation in progress
+
+- Completed step: selected one hidden nullable session factor-fingerprint column over verification-record provenance, documented in ADMIN_CONSOLE appendix 14. Added standard user/twoFactor Drizzle fields; drizzle-kit generated 0004_magenta_catseye.sql and metadata for twelve tables. Reviewed additive delta: approved draft plus session.admin_totp_factor, separate public FK/btree formatting and no BEGIN/COMMIT. No migration applied or database connection in this generation step.
+- Active: implement native TOTP/trusted-device policy, environment validation, admin gates, enrollment-only pages, backup coverage and synthetic-key/MFA tests. Next apply only through the guarded folio_test test runner after implementation. P2b-2 password/reason/audit remains closed; no roles, push, deployment or production work.
 
 ## Latest: P1 accepted; P2a design and SQL draft ready for review
 

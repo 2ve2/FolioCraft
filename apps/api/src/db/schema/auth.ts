@@ -15,6 +15,7 @@ export const user = pgTable("user", {
 	email: text("email").notNull().unique(),
 	emailVerified: boolean("email_verified").notNull().default(false),
 	image: text("image"),
+	twoFactorEnabled: boolean("two_factor_enabled").default(false),
 	role: text("role").default("user"),
 	banned: boolean("banned").default(false),
 	banReason: text("ban_reason"),
@@ -33,6 +34,7 @@ export const session = pgTable(
 		ipAddress: text("ip_address"),
 		userAgent: text("user_agent"),
 		impersonatedBy: text("impersonated_by"),
+		adminTotpFactor: text("admin_totp_factor"),
 		userId: text("user_id")
 			.notNull()
 			.references(() => user.id, { onDelete: "cascade" }),
@@ -82,3 +84,22 @@ export const rateLimit = pgTable("rate_limit", {
 	count: integer("count").notNull(),
 	lastRequest: bigint("last_request", { mode: "number" }).notNull(),
 });
+
+export const twoFactor = pgTable(
+	"two_factor",
+	{
+		id: text("id").primaryKey(),
+		secret: text("secret").notNull(),
+		backupCodes: text("backup_codes").notNull(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
+		verified: boolean("verified").default(true),
+		failedVerificationCount: integer("failed_verification_count").default(0),
+		lockedUntil: timestamp("locked_until"),
+	},
+	(table) => [
+		index("two_factor_secret_idx").on(table.secret),
+		index("two_factor_user_idx").on(table.userId),
+	],
+);

@@ -29,6 +29,13 @@
       "when": 1791913261683,
       "tag": "0003_curly_pepper_potts",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792359101723,
+      "tag": "0004_magenta_catseye",
+      "breakpoints": true
     }
   ]
 }
