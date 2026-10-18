@@ -2,6 +2,12 @@
 
 Updated: 2026-10-18, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: authorized P0/P1 GitHub upload completed
+
+- Human explicitly authorized uploading the local commits. Fetch succeeded; origin/main had 0 remote-only and 3 local-only commits. Disclosed 14e9882, 758ace2 and 49e5701, then ordinary push succeeded (exit 0), advancing main ce32242 to 49e5701. No force push or history rewrite. This documentation checkpoint follows under the same upload authorization.
+- P1 remains complete and P2 remains stopped pending human instruction. No new runtime tests, remote CI result, deployment, account role change, provider or production operation is claimed. Previous local P1 evidence remains below.
+- All commit operations remain in work/github-upload; generated next-env.d.ts stays unstaged. Next action: wait for the human; upload does not authorize P2 or deployment.
+
 ## Latest: Admin Console P1 complete locally; stopped before P2
 
 - Amendment completed first in separate commit 758ace2; ADMIN_CONSOLE.md appendix 11 records the human A1–A6 replacements. P1 now implements shared product/native RBAC, explicit permissions on 10 endpoint patterns, runtime/test denial of undeclared routes, Hono native-admin HTTP interception and internal native masked account/session reads. No capability, bypass header or new AsyncLocalStorage authorization machinery is used. The before hook and a test-only after-hook lifecycle observer prove internal hook execution.
