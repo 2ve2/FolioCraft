@@ -1,14 +1,14 @@
 {
-  "brand": "Ichnara",
-  "version": "1.0",
-  "primary": "ichnara-wordmark-ink.svg",
-  "reverse": "ichnara-wordmark-white.svg",
-  "accent": "ichnara-wordmark-violet.svg",
-  "favicon": "favicon.svg",
-  "construction": "hand-authored outlined wordmark, not an installable font",
-  "colors": {
-    "violet": "#6E46D6",
-    "ink": "#241B38",
-    "white": "#FFFFFF"
-  }
+	"brand": "Ichnara",
+	"version": "1.0",
+	"primary": "ichnara-wordmark-ink.svg",
+	"reverse": "ichnara-wordmark-white.svg",
+	"accent": "ichnara-wordmark-violet.svg",
+	"favicon": "favicon.svg",
+	"construction": "hand-authored outlined wordmark, not an installable font",
+	"colors": {
+		"violet": "#6E46D6",
+		"ink": "#241B38",
+		"white": "#FFFFFF"
+	}
 }

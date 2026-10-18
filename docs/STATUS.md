@@ -316,3 +316,6 @@ Updated: 2026-10-14, Asia/Riyadh. Authoritative workspace: `/home/lord2ve/Deskto
 ## 2026-10-16 — hosted CI repair verified
 - Uploaded investigation e8cda48 and configuration repair adc76cf to origin/main. GitHub Actions run38814768836 completed success for adc76cf: integration completed success and validate completed success, including the formerly failing quality check and the build. Fresh jobs response independently confirms both results. Evidence: https://github.com/2ve2/FolioCraft/actions/runs/38814768836 .
 - Completed: CI path-exclusion fix and actual hosted acceptance. Active work/blockers: none for this scope. This final evidence checkpoint is local documentation; hosted source is adc76cf with2/2 successful checks. Previous failed runs remain historical. Cloudflare deployment/media502 and mail/provider acceptance are unchanged.
+
+### 2026-10-18 — restored package verification correction
+The restored wordmark package's final overview/manifest additions had not been included in the earlier240-file quality check. Fixed the overview SVG accessible name and manifest formatting, rebuilt/CRC-verified the ZIP; final Biome242 files passes and restoration web TypeScript passed. No aesthetic change or fresh production build claimed for these nonvisual corrections.
