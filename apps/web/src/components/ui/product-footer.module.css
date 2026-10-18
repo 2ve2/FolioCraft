@@ -44,6 +44,8 @@
 	margin: 0 0 16px;
 }
 .group a {
+	-webkit-user-select: none;
+	user-select: none;
 	min-height: 44px;
 	display: inline-flex;
 	align-items: center;

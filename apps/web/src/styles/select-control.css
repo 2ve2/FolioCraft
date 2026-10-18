@@ -87,6 +87,9 @@
 	color: #43344f;
 	cursor: pointer;
 }
+.select-popup .select-option + .select-option {
+	margin-block-start: 4px;
+}
 .select-popup .select-option:hover,
 .select-popup .select-option:focus-visible {
 	background: #f7f3fc;

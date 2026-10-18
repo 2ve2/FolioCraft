@@ -334,3 +334,23 @@ a:has(> .link-arrow),
 button:has(> .link-arrow) {
 	gap: 8px;
 }
+
+/* Prevent incidental control-label selection while preserving readable and editable content. */
+button,
+[role="tab"],
+.brand,
+.nav-item,
+.welcome-nav a,
+.content-jump-nav a,
+a.primary,
+a.secondary,
+a.text-button {
+	-webkit-user-select: none;
+	user-select: none;
+}
+input,
+textarea,
+[contenteditable="true"] {
+	-webkit-user-select: text;
+	user-select: text;
+}

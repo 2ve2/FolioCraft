@@ -21,19 +21,16 @@ export function LanguageSwitch({
 			value={locale}
 			onChange={(value) => onChange(value as Locale)}
 			icon={<Languages size={16} />}
-			menuTitle={ar ? "لغة الواجهة" : "Interface language"}
 			options={[
 				{
 					value: "ar",
 					label: "العربية",
 					code: "AR",
-					description: ar ? "واجهة من اليمين لليسار" : "Right-to-left interface",
 				},
 				{
 					value: "en",
 					label: "English",
 					code: "EN",
-					description: ar ? "واجهة من اليسار لليمين" : "Left-to-right interface",
 				},
 			]}
 		/>

@@ -63,6 +63,8 @@
 	gap: 7px;
 }
 .navLink {
+	-webkit-user-select: none;
+	user-select: none;
 	display: flex;
 	align-items: center;
 	gap: 12px;
