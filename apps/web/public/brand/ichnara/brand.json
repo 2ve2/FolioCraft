@@ -1,14 +1,16 @@
 {
 	"brand": "Ichnara",
-	"version": "1.0",
-	"primary": "ichnara-wordmark-ink.svg",
-	"reverse": "ichnara-wordmark-white.svg",
-	"accent": "ichnara-wordmark-violet.svg",
+	"version": "1.1",
+	"primary": "ichnara-logo-ink.svg",
+	"reverse": "ichnara-logo-white.svg",
+	"accent": "ichnara-logo-violet.svg",
 	"favicon": "favicon.svg",
 	"construction": "hand-authored outlined wordmark, not an installable font",
 	"colors": {
 		"violet": "#6E46D6",
 		"ink": "#241B38",
 		"white": "#FFFFFF"
-	}
+	},
+	"emblem": "ichnara-emblem-violet.svg",
+	"wordmark": "ichnara-wordmark-ink.svg"
 }

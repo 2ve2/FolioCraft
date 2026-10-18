@@ -552,3 +552,22 @@ Human requests their own website from an attached CV and explicitly selects Engl
 
 ### Restored-package quality correction
 - Rechecking the restored wordmark-only package also revealed the same accessibility-title/JSON-format omissions in its previously added overview/manifest; the earlier240-file check predated these static package additions. Added an SVG accessible name and formatted brand.json, without visual/logo changes. Rebuilt ZIP and verified CRC. Final Biome242 files passes; web TypeScript passed during restoration. No new build needed for the nonvisual SVG metadata/JSON formatting/ZIP correction.
+
+## 2026-10-18 — authorized emblem restoration and focused verification
+- Human explicitly requested restoring the emblem after its removal, using appropriate skills and evidence. Interpret the reference as the latest removed folded-band emblem, not the older editorial/I-n proposals. Restore the existing constructed artwork without another creative redesign.
+- Apply verify-and-stop: freeze acceptance to exact artwork/source correspondence, SVG/PNG/ICO/package validity, browser accessible naming, light/dark/RTL containment and focused web checks/build. Do not imply tests establish aesthetic quality, legal exclusivity or worldwide originality. No deployment or account/provider mutation.
+
+### Native logo hover label removed
+- Human explicitly requested removing the name box shown on logo hover. Removed the inline SVG title element from shared Brand.tsx while retaining role=img and aria-label=Ichnara for assistive naming. No global tooltip suppression or text-selection blocking introduced.
+- Human asked which pages should disable selection/copy. Recommendation: keep content, public portfolios/articles and editor fields selectable; restrict only incidental selection on controls/drag affordances when justified. CSS selection prevention is not content security.
+
+## 2026-10-18 — control selection and language menu refinement
+- Human approved incidental-selection suppression on controls, then reported adjacent hover/selected option borders touching. Added4px between adjacent SelectControl option rows so inset outlines remain separated; preserve selected background/check and keyboard focus.
+- Human additionally requested simplifying the language box. Removed direction descriptions and redundant popup title only from LanguageSwitch, retaining Arabic/English names, AR/EN codes, selected check and accessible trigger labels. Other selectors retain meaningful descriptions/titles.
+- Added user-select:none only to control/navigation affordances (buttons, tabs, brand, explicit navigation/action links); explicitly preserve text selection in input/textarea/contenteditable. No page-wide copy/context-menu/keyboard blocking or content restriction.
+
+### Restored emblem and focused proof completed
+- Restored the last folded-band emblem with the custom wordmark and independent SVG/PNG masters, composed variants and updated icon assets. Shared logo uses170x40px and no SVG title (aria-label retained). Updated brand manifest/guide and CRC-verified v1.1 ZIP; v1 URL is an alias. Actual inline/master structure matches and independent2400px PNG comparison has0 pixel differences; app/source icon files byte-match; ICO16/32/48 verified.
+- Final logo browser matrix12 cases passes; language list shows4px gap, no directional descriptions, correct selected/focused distinction, Enter language change and Escape focus restoration, with320px containment. Controls user-select none; content auto; input text. No clipboard/context-menu blocking. Final web typecheck/Biome248 and independent Next production build15 static outputs pass. Evidence in work/ichnara-logo/final and scope/limits in docs/brand/VERIFICATION.md.
+- Human requested evidence of commercial/visual claims and selected Saudi Arabia/GCC. Official sources reviewed; WIPO access challenged/blocked, SAIP required Nafath, no registry query clearance or external-user study obtained. VERIFICATION records all unknowns; no legal protection or aesthetic certification claimed. No external messages, paid inquiry or registration attempted.
+- Human requested upload and a fresh implementation chat. Source/docs synchronized to work/github-upload; final upload/handoff outcome checkpoint follows. No Cloudflare deployment.
