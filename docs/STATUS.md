@@ -2,6 +2,15 @@
 
 Updated: 2026-10-18, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: shared loading redesign ready for authorized upload
+
+- Human rejected the initial sparse trial and requested specialized trustworthy skills. Read official Anthropic frontend-design and Vercel web-interface guidance; applied a product-specific abstract portfolio-sheet composition, approved emblem/outlined locale wordmark and contextual status. No new dependency/global skill install, fabricated percentage, security claim or fetched private-content placeholder. Existing auth/data/retry ordering is unchanged.
+- Affected files: loading-screen.tsx, styles/loading.css, studio/copy.ts and loading-screen.test.tsx; design/decision/scope documentation updated. Status remains accessible outside a busy region; errors preserve actual retry/back callbacks. Delayed help after10s, a less-than5s decorative arrival and reduced-motion/forced-colors fallbacks. Technical service-start instructions replaced by user-facing failure guidance.
+- Final commands pass: `bun run typecheck`; `bun run check` (277 files); `FOLIO_QA_BUILD=1 bun run build` (18 static outputs plus dynamic routes); `bun run test` (local guarded API21 tests/878 assertions); `bun test --cwd apps/web tests` (13 tests/171 assertions). Logs: work/review-fixes/loading-final. Earlier rejected-design checks are historical, not visual acceptance.
+- Actual local fixture browser:6 pending cases (both languages at320/390/1280px),6 error cases, contained artwork/44px-or-taller actions and no horizontal overflow. Final width normalization was followed by the error matrix; pending matrix predates that narrow normalization. Long-wait help observed; actual Retry returned to the sign-in form after switching the isolated fixture from503 to null-session200. The fixture has no DB/provider access. Its initial default idle timeout interrupted the delay test; increasing only fixture idleTimeout allowed the real10s-help check. Source parser/type/import issues were corrected before final gates.
+- Temporary fixture API/web stopped and QA tab closed; normal localhost3000 remains. Screenshot: work/loading-redesign/loading-v2-ar.png. Design taste is still subject to human feedback; no physical-device/screen-reader certification claimed.
+- Human now explicitly authorizes GitHub upload and Markdown update. Fetch shows0 remote-only/11 local-only commits before this new change. Source synchronization/commit and disclosed fast-forward upload follow; do not treat upload as Cloudflare deployment or remote CI evidence.
+
 ## Completed local corrections
 
 - Task1: human selected Ichnara; current root/workspace packages and imports unified. Existing Worker names/URLs, database resources and protected protocol identifiers remain unchanged. Commit214dd8a.
@@ -17,7 +26,7 @@ Updated: 2026-10-18, Asia/Riyadh. Detailed previous checkpoints are preserved in
 - Task8 completed locally: documentation paths/reference names/personal trial hosts generalized, root AGENTS authoritative, all55 prior STATUS sections archived with normalized full-body equality. Commit5dc1199. Existing Wrangler values remain byte-unchanged.
 - Human approved I1/A1/C1 and the Arabic spelling, then requested actual-site preview and correction of excessive Arabic separation. Applied bilingual locale-specific Brand, cap-I Latin geometry, A1 Arabic outlines and C1 accent without changing portfolio content/themes. Current downloadable kit is v1.2; v1 and v1.1 are direct308 aliases, with one stored archive.
 - Arabic source gap reduced317.25→60 units based on actual outlined bounds, then viewBox cropped. All12 English wordmark/lockup SVG/PNG assets remain byte-identical to the human-reviewed local English version. Corrected header shown on the existing normal localhost3000 site. Screenshots/evidence: work/review-fixes/brand-adoption and arabic-spacing.
-- Completed: all locally authorized correction tasks and approved identity integration; source/artwork adoption committed asdbdb3c1. Active implementation: none. Next: human review the corrected local Arabic appearance, or separately authorize the hosted diagnostic/mail/environment work. No deployment/push authorization exists for these changes.
+- Completed: all locally authorized correction tasks and approved identity integration; source/artwork adoption committed asdbdb3c1. Active implementation: none. Next: human review the corrected local Arabic appearance, or separately authorize the hosted diagnostic/mail/environment work. No deployment authorization exists; the latest human request now authorizes GitHub upload.
 - Temporary QA frontend/API stopped; fixture cleanup reports2 deleted users/0 remaining and credentials removed. Existing normal localhost3000 frontend retained. No account/provider mutation on production.
 
 ## Verification evidence
@@ -34,4 +43,4 @@ Updated: 2026-10-18, Asia/Riyadh. Detailed previous checkpoints are preserved in
 - SMTP/provider setup, final Workers mail compatibility, recipient delivery and verification transition remain unproven. Hosted TRIAL_SKIP_EMAIL_VERIFICATION stays unchanged; mail roadmap gates remain open.
 - New remote CI, final hosted acceptance, backups/restore/monitoring/capacity and operating information remain launch gates in LAUNCH.md.
 - No trademark registry clearance, exclusivity finding or independent readability/aesthetic study. See brand/VERIFICATION.md. Human visual choice is not legal clearance or external-user evidence.
-- No deployment, GitHub push, Neon/production write, service purchase or external message authorized/performed in this correction scope.
+- No Cloudflare deployment, Neon/production write, purchase or external message authorized/performed. GitHub upload is newly authorized; actual outcome will be recorded after pushing.

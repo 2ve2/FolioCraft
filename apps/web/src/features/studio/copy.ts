@@ -98,7 +98,7 @@ export const copy = {
 		english: "English",
 		createLanguage: "لغة البورتفوليو",
 		loading: "جارٍ تحميل مساحتك…",
-		loadError: "تعذر تحميل بياناتك. تأكد من تشغيل خدمة الموقع، ثم حاول مجددًا.",
+		loadError: "تعذر تحميل بياناتك. حاول مجدداً بعد قليل.",
 		loadRetry: "إعادة التحميل",
 		error: "تعذر إتمام العملية. حاول مجددًا.",
 		unavailable: "تعذر الاتصال بخدمة الموقع. تحقق من اتصالك وتشغيل الخدمة ثم أعد المحاولة.",
@@ -155,7 +155,7 @@ export const copy = {
 		draftImportAssets:
 			"يحتوي الملف على صور غير متاحة أو لا تتبع هذا الموقع. لم يتم استبدال المسودة.",
 		draftImportSaved: "تمت استعادة المسودة وحفظها. راجع الحقول والمعاينة قبل النشر.",
-		startupError: "تعذر التحقق من جلسة الدخول. تأكد من تشغيل خدمة الموقع وأعد المحاولة.",
+		startupError: "تعذر التحقق من تسجيل الدخول. حاول مجدداً بعد قليل.",
 	},
 	en: {
 		publicationUpdated: "Public release updated. Your current draft is unchanged.",
@@ -261,8 +261,7 @@ export const copy = {
 		english: "English",
 		createLanguage: "Portfolio language",
 		loading: "Loading your workspace…",
-		loadError:
-			"Could not load your data. Check that the portfolio service is running and try again.",
+		loadError: "We couldn’t load your data. Please try again in a moment.",
 		loadRetry: "Try again",
 		error: "The operation failed. Please try again.",
 		unavailable:
@@ -322,7 +321,6 @@ export const copy = {
 		draftImportAssets:
 			"The file references unavailable images or images belonging to another site. Your draft was not replaced.",
 		draftImportSaved: "Draft restored and saved. Review the fields and preview before publishing.",
-		startupError:
-			"Could not check your session. Check that the portfolio service is running and try again.",
+		startupError: "We couldn’t check your sign-in status. Please try again in a moment.",
 	},
 } as const;

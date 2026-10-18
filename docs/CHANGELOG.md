@@ -624,3 +624,17 @@ Human requests their own website from an attached CV and explicitly selects Engl
 ## 2026-10-18 — correction completion checkpoint
 - Local commits: scope eaa1a4b; Ichnara214dd8a; mediafccdadc; recovery92d6283; CIc68c4f5; dependenciesdc6bda5; README51c2e5f; reviewd7a1601; hygiene5dc1199; accepted bilingual identity/Arabic spacingdbdb3c1. All source/added assets synchronized to the independent checkout; only generated next-env.d.ts remains unstaged there.
 - Latest actual checks remain those recorded above; this checkpoint changes documentation only and does not claim a new runtime run. Final external limits: hosted media needs authorized diagnostic rollout; SMTP/recipient delivery and remote CI remain unverified; no push/deployment/Neon mutation occurred.
+
+## 2026-10-18 — loading-screen redesign scope
+- Human rejected the current loading screen and requested a more effective, dependable design. Replace the shared presentation across auth/recovery/Studio/admin with a calm brand-aligned layout, one honest indeterminate indicator, contextual status, readable error/retry actions and delayed long-wait help.
+- Preserve native auth/data ordering and existing retry callbacks; do not fabricate progress, completed security checks or connection failures. No language menu in the loading state. Respect Arabic/English, reduced motion, small screens and live status announcements. Keep current brand/portfolio content and backend/provider configuration unchanged.
+- Record full local gates and actual browser evidence; synchronize/commit only in work/github-upload. No push/deployment/production mutation. Any temporary visual fixture must remain ignored and be stopped after acceptance.
+
+### Loading design direction rejected; specialized guidance applied
+- Human rejected the initial header/spinner/text redesign before acceptance. It remains uncommitted and is superseded; do not describe its passing functional gates as visual approval.
+- Read the official Anthropic frontend-design skill and Vercel web-interface guidance directly from their owner repositories using find-skills discovery. No global installation, third-party code execution or unrelated dependency added. Apply their plan/critique/build workflow, product-specific composition and motion/accessibility checks to a new local design.
+
+## 2026-10-18 — loading redesign local completion
+- Replaced the rejected trial with approved-brand geometry in an abstract portfolio-sheet illustration, locale wordmark and real status, following official Anthropic frontend-design/Vercel guidance. Kept existing native callbacks and backend behavior; clearer nontechnical failure copy. Source/style and focused accessibility/error-action tests added in one cohesive change.
+- Final full gates pass: typecheck/Biome277/Next18/API21-878/web13-171. Actual isolated browser pending/error geometry, long-help and Retry-to-sign-in proof recorded under work/loading-redesign. Fixture-only idle-timeout issue resolved; QA processes stopped. No real-account/provider data access.
+- Human explicitly requested push and MD update; origin fetch shows no remote-only commits. Current upload plan preserves all11 prior local commits plus this completed loading change. Exact disclosed list and ordinary push outcome follow.

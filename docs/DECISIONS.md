@@ -197,3 +197,8 @@ Human-confirmed: all project Markdown must be entirely in English, including exa
 
 ## 2026-10-18 — Arabic lockup optical correction
 - Human reported excessive symbol/name separation on the local Arabic site while accepting the English version. Actual outlined word bounds end at812.75 and original symbol begins1130 (317.25-unit gap). Implementation reduces this to60 units by moving only the Arabic symbol and tightly cropping its viewBox; shapes, approved font/color and English files remain unchanged. Exact gap is an engineering choice under the correction request, not a separately human-selected number.
+
+## 2026-10-18 — loading presentation redesign and upload authorization
+- Human requested a more effective/reliable loading screen, rejected the first sparse redesign and explicitly required trustworthy specialized skills. Applied owner-published Anthropic frontend-design and Vercel web-interface guidance after reading them; this is a workflow source, not a claim of external designer endorsement.
+- Engineering direction: decorative abstract portfolio sheets with the unchanged folded-band emblem, approved outlined locale wordmark and actual request status. No private-data placeholders, invented progress/stages or language selector. Motion is a brief transform/opacity sequence under5s with reduced-motion fallback; slow-request help after10s is not a failure diagnosis. Existing retry/navigation callbacks remain authoritative.
+- Human explicitly authorized uploading the resulting local commits and updating Markdown. This supersedes the earlier no-push boundary for this upload only; no Cloudflare deployment, provider/production mutation or purchase authorization follows. Preserve origin/main history and list commits before pushing.
