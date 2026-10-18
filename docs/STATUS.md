@@ -1,5 +1,11 @@
 # Current status
 
+## Reviewed task7 — round2 proposals prepared; acceptance pending — 2026-10-18
+- Affected: docs/brand/review-round-2 and brand/VERIFICATION.md. Three capital-I SVGs, two font-derived Arabic lockups, two accent alternatives, editable generator, Noto licenses, review HTML/PNG/SVG and300 WCAG contrast pairs across75 opaque background values. Arabic spelling is explicitly proposed. Recommended I1/A1/C1 is an agent recommendation, not human acceptance.
+- Review copy moves explanation baseline493→514; public overview/package/component/icons remain byte-identical (40 files). Seven SVGs parse; PNGs rendered and visually inspected, initial sheet overlap corrected. Both colors pass normal AA on white but fail3:1 on ink; use reverse white on dark. Gradients/transparency/dynamic portfolio colors and independent readability/legal clearance remain unverified.
+- Full gates pass: typecheck, Biome267, isolated Next18, guarded API21/878 and web10/111. First lint flagged generated JSON indentation; formatted before final gates. Evidence: work/review-fixes/task7. No accepted product asset/UI change, deployment or push.
+- Completed: task7 proposal delivery. Active: human review (question submitted), task8 independent repo hygiene. Blocker: capital-I/Arabic spelling/style/accent acceptance required before any integration. Next: preserve proposals while completing documentation/ZIP alias cleanup.
+
 ## Reviewed task6 — README claims corrected — 2026-10-18
 - Affected: README.md explicitly separates code support from hosted acceptance, records last hosted intent200/PUT200/completion502, unverified SMTP delivery and local-only recovery/diagnostics. Testing-only warning retained verbatim; verification instructions include test:web.
 - Full requested local gates pass: typecheck, Biome258, isolated Next18, guarded API21/878 and web10/111. Logs: work/review-fixes/task6. No hosted test, delivery, deployment or push performed.

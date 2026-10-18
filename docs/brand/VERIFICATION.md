@@ -31,3 +31,7 @@ No external designer review, target-user study or participant ratings have been 
 ## UI references
 
 SVG title commonly supplies native hover tooltips; an accessible name may instead use aria-label: https://www.w3.org/TR/SVG/struct.html . CSS user-select is an interaction-convenience mechanism rather than copy protection: https://www.w3.org/TR/css-ui-4/ .
+
+## Round2 proposals — 2026-10-18
+
+Review-only capital-I variants, font-derived Arabic studies, color contrast measurements and overview-spacing correction are in review-round-2/. None is adopted. Arabic spelling/pronunciation and exact Latin/color choice require human acceptance. Source construction and measured contrast do not establish legal availability, exclusivity, independent readability or aesthetic success. Approved application/public assets remain unchanged in this round.
