@@ -1,4 +1,5 @@
 "use client";
+import { type AdminPermissions, canViewAdmin, isStaff } from "@ichnara/contracts/admin-policy";
 import {
 	ArrowUpRight,
 	Globe2,
@@ -11,10 +12,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Brand } from "../../../components/ui/brand";
 import { LanguageSwitch } from "../../../components/ui/language-switch";
 import { TooltipButton } from "../../../components/ui/tooltip-button";
+import { api } from "../../../lib/api";
 import { authClient } from "../../../lib/auth-client";
 import { useInterfaceLocale } from "../../../lib/use-interface-locale";
 import { LoadingScreen } from "../../studio/loading-screen";
@@ -39,7 +41,43 @@ export function AdminShell({ children }: { children: ReactNode }) {
 	const { data: session, isPending, error, refetch } = authClient.useSession();
 	const [signingOut, setSigningOut] = useState(false);
 	const [signoutError, setSignoutError] = useState(false);
-	const admin = session?.user.role?.split(",").includes("admin");
+	const admin = isStaff(session?.user.role) && !session?.session.impersonatedBy;
+	const [authorization, setAuthorization] = useState<
+		(AdminPermissions & { sessionId: string }) | null
+	>(null);
+	const [authorizationError, setAuthorizationError] = useState(false);
+	const sessionId = session?.session.id ? `${session.session.id}:${session.user.role}` : undefined;
+	const [authorizationVersion, setAuthorizationVersion] = useState(0);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Explicit retry must reload permissions even when the session is unchanged.
+	useEffect(() => {
+		let current = true;
+		setAuthorization(null);
+		setAuthorizationError(false);
+		if (admin && sessionId)
+			api<AdminPermissions>("/api/admin/me/permissions")
+				.then((value) => {
+					if (current) setAuthorization({ ...value, sessionId });
+				})
+				.catch(() => {
+					if (current) setAuthorizationError(true);
+				});
+		return () => {
+			current = false;
+		};
+	}, [admin, sessionId, authorizationVersion]);
+	const permissions =
+		authorization?.sessionId === sessionId ? (authorization?.permissions ?? []) : [];
+	const activeView =
+		pathname === "/admin"
+			? "overview"
+			: pathname === "/admin/sites"
+				? "sites"
+				: pathname === "/admin/accounts"
+					? "users"
+					: pathname === "/admin/activity"
+						? "audit"
+						: null;
+	const routeAllowed = activeView !== null && canViewAdmin(permissions, activeView);
 
 	/** Uses the native sign-out operation before returning to the public website. */
 	async function logout() {
@@ -56,7 +94,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 		}
 	}
 
-	if (isPending || !localeReady)
+	if (isPending || !localeReady || (!error && admin && !authorization && !authorizationError))
 		return (
 			<LoadingScreen
 				locale={locale}
@@ -65,7 +103,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 				}
 			/>
 		);
-	if (error || !admin || !session?.user)
+	if (error || authorizationError || !admin || !routeAllowed || !session?.user)
 		return (
 			<div className={styles.gate} dir={locale === "ar" ? "rtl" : "ltr"}>
 				<header>
@@ -80,11 +118,18 @@ export function AdminShell({ children }: { children: ReactNode }) {
 				</header>
 				<main className={styles.gateCard}>
 					<ShieldX size={32} aria-hidden="true" />
-					<h1>{error ? t.sessionError : t.denied}</h1>
+					<h1>{error || authorizationError ? t.sessionError : t.denied}</h1>
 					<p>{session?.user ? t.deniedDescription : t.signInDescription}</p>
 					<div className={ui.actions}>
-						{error ? (
-							<button type="button" className={ui.primary} onClick={() => void refetch()}>
+						{error || authorizationError ? (
+							<button
+								type="button"
+								className={ui.primary}
+								onClick={() => {
+									setAuthorizationVersion((value) => value + 1);
+									void refetch();
+								}}
+							>
 								{t.retry}
 							</button>
 						) : !session?.user ? (
@@ -106,7 +151,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
 	const active = navigation.find((item) => item.path === pathname) || navigation[0];
 	return (
-		<AdminContext.Provider value={{ locale, setLocale, user: session.user }}>
+		<AdminContext.Provider value={{ locale, setLocale, user: session.user, permissions }}>
 			<div className={styles.shell} lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
 				<a className={styles.skip} href="#admin-main">
 					{t.skip}
@@ -117,18 +162,20 @@ export function AdminShell({ children }: { children: ReactNode }) {
 					</Link>
 					<span className={styles.navLabel}>{t.label}</span>
 					<nav aria-label={t.platform} className={styles.nav}>
-						{navigation.map(({ key, path, icon: Icon }) => (
-							<Link
-								key={key}
-								href={`${path}?lang=${locale}`}
-								aria-current={pathname === path ? "page" : undefined}
-								className={styles.navLink}
-							>
-								<Icon size={19} aria-hidden="true" />
-								<span>{t[key]}</span>
-								{pathname === path && <i />}
-							</Link>
-						))}
+						{navigation
+							.filter((item) => canViewAdmin(permissions, item.key))
+							.map(({ key, path, icon: Icon }) => (
+								<Link
+									key={key}
+									href={`${path}?lang=${locale}`}
+									aria-current={pathname === path ? "page" : undefined}
+									className={styles.navLink}
+								>
+									<Icon size={19} aria-hidden="true" />
+									<span>{t[key]}</span>
+									{pathname === path && <i />}
+								</Link>
+							))}
 					</nav>
 					<div className={styles.sidebarBottom}>
 						<Link className={styles.studioLink} href={`/studio?lang=${locale}`}>

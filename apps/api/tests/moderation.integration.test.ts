@@ -28,7 +28,7 @@ test("admin moderation is owned, audited, reversible and closes every public sur
 		"ADMIN_REQUIRED",
 	);
 	// Only isolated disposable fixtures receive admin privileges.
-	await db.update(user).set({ role: "admin" }).where(eq(user.id, admin.id));
+	await db.update(user).set({ role: "owner" }).where(eq(user.id, admin.id));
 	const slug = `moderation-${crypto.randomUUID()}`;
 	let site = await result<Site>(
 		await request("/api/sites", "POST", { slug, locale: "ar" }, owner.cookie),

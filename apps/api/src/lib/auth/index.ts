@@ -4,12 +4,20 @@ import { admin } from "better-auth/plugins/admin";
 import { env, requireEmailVerification } from "../../config/env";
 import { db } from "../../db";
 import * as schema from "../../db/schema/auth";
+import { accessControl, accessRoles } from "./access";
 import { authHooks } from "./hooks";
 import { sendAuthMail } from "./mail";
 
 export const auth = betterAuth({
 	appName: "Ichnara",
-	plugins: [admin()],
+	plugins: [
+		admin({
+			ac: accessControl,
+			roles: accessRoles,
+			adminRoles: ["owner", "moderator", "support", "analyst"],
+			allowImpersonatingAdmins: false,
+		}),
+	],
 	logger: {
 		level: "warn",
 

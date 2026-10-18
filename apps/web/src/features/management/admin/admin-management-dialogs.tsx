@@ -1,6 +1,6 @@
-import { SelectControl } from "../../../components/ui/select-control";
 import { text } from "../shared/copy";
 import styles from "./admin.module.css";
+import { useAdminSession } from "./admin-context";
 import { adminCopy } from "./admin-copy";
 import { AdminDialog } from "./admin-dialog";
 import type { useAdminController } from "./use-admin-controller";
@@ -20,6 +20,8 @@ export function AdminManagementDialogs({
 	const t = adminCopy[locale];
 	const shared = text[locale];
 	const self = c.selected?.id === currentUserId;
+	const { permissions } = useAdminSession();
+	const canModerate = permissions.includes(c.details?.suspended ? "site.resume" : "site.suspend");
 	return (
 		<>
 			{c.details && (
@@ -73,29 +75,31 @@ export function AdminManagementDialogs({
 							)}
 						</dl>
 					</section>
-					<section>
-						<h3>{t.moderation}</h3>
-						<p>{t.moderationDescription}</p>
-						{c.details.suspensionReason && <p dir="auto">{c.details.suspensionReason}</p>}
-						<label>
-							{shared.reason}
-							<textarea
-								minLength={3}
-								maxLength={500}
-								value={c.reason}
-								disabled={c.busy}
-								onChange={(e) => c.setReason(e.target.value)}
-							/>
-						</label>
-						<button
-							type="button"
-							className={c.details.suspended ? styles.primary : styles.danger}
-							disabled={c.busy || c.reason.trim().length < 3}
-							onClick={() => c.details && void c.moderateSite(c.details)}
-						>
-							{c.details.suspended ? shared.resume : shared.suspend}
-						</button>
-					</section>
+					{canModerate && (
+						<section>
+							<h3>{t.moderation}</h3>
+							<p>{t.moderationDescription}</p>
+							{c.details.suspensionReason && <p dir="auto">{c.details.suspensionReason}</p>}
+							<label>
+								{shared.reason}
+								<textarea
+									minLength={10}
+									maxLength={500}
+									value={c.reason}
+									disabled={c.busy}
+									onChange={(e) => c.setReason(e.target.value)}
+								/>
+							</label>
+							<button
+								type="button"
+								className={c.details.suspended ? styles.primary : styles.danger}
+								disabled={c.busy || c.reason.trim().length < 10}
+								onClick={() => c.details && void c.moderateSite(c.details)}
+							>
+								{c.details.suspended ? shared.resume : shared.suspend}
+							</button>
+						</section>
+					)}
 				</AdminDialog>
 			)}
 			{c.selected && (
@@ -119,87 +123,7 @@ export function AdminManagementDialogs({
 						</span>
 					</section>
 					{self && <p className={styles.loading}>{t.selfAccount}</p>}
-					<section>
-						<h3>{t.confirmation}</h3>
-						<p>{t.confirmationDescription}</p>
-						<dl className={styles.detailsList}>
-							<div>
-								<dt>{t.identity}</dt>
-								<dd dir="ltr">{c.selected.id}</dd>
-							</div>
-						</dl>
-						<label>
-							{shared.confirm}
-							<input
-								dir="ltr"
-								autoComplete="off"
-								value={c.confirmation}
-								disabled={c.busy || self}
-								onChange={(e) => c.setConfirmation(e.target.value)}
-							/>
-						</label>
-					</section>
-					<section>
-						<h3>{t.accountAccess}</h3>
-						<p>{t.accountAccessDescription}</p>
-						<label>
-							{shared.reason}
-							<textarea
-								value={c.reason}
-								disabled={c.busy || self}
-								maxLength={500}
-								onChange={(e) => c.setReason(e.target.value)}
-							/>
-						</label>
-						<button
-							type="button"
-							className={c.selected.banned ? styles.primary : styles.danger}
-							disabled={
-								c.busy ||
-								self ||
-								c.confirmation !== c.selected.id ||
-								(!c.selected.banned && c.reason.trim().length < 3)
-							}
-							onClick={() => void c.native(c.selected?.banned ? "unban" : "ban")}
-						>
-							{c.selected.banned ? shared.unban : shared.ban}
-						</button>
-					</section>
-					<section>
-						<h3>{t.permissions}</h3>
-						<p>{t.permissionsDescription}</p>
-						<div className="field">
-							<span>{shared.role}</span>
-							<SelectControl
-								label={shared.role}
-								value={c.role}
-								disabled={c.busy || self}
-								onChange={(value) => c.setRole(value as "admin" | "user")}
-								options={[
-									{ value: "user", label: shared.user },
-									{ value: "admin", label: shared.administrator },
-								]}
-							/>
-						</div>
-						<div className={styles.actions}>
-							<button
-								type="button"
-								className={styles.secondary}
-								disabled={c.busy || self || c.confirmation !== c.selected.id}
-								onClick={() => void c.native("role")}
-							>
-								{shared.setRole}
-							</button>
-							<button
-								type="button"
-								className={styles.secondary}
-								disabled={c.busy || self || c.confirmation !== c.selected.id}
-								onClick={() => void c.native("revoke")}
-							>
-								{shared.revoke}
-							</button>
-						</div>
-					</section>
+					<p className={styles.caption}>{t.securityPending}</p>
 				</AdminDialog>
 			)}
 		</>

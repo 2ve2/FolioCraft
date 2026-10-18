@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { successResponse } from "../../lib/response-helpers";
+import { requirePermission } from "../../middleware/admin";
 import type { AuthEnv } from "../../middleware/auth";
 import { listAdminAudit } from "../../services/admin/audit-service";
 import { auditQuery } from "./validation";
@@ -8,7 +9,7 @@ import { auditQuery } from "./validation";
 export const adminAuditRoutes = new Hono<AuthEnv>();
 
 /** Lists bounded audit history with validated filters available exclusively to administrators. */
-adminAuditRoutes.get("/audit", async (c) => {
+adminAuditRoutes.get("/audit", requirePermission("audit", "read"), async (c) => {
 	const query = auditQuery.parse(c.req.query());
 	return successResponse(
 		c,

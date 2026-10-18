@@ -95,7 +95,7 @@ try {
 		"owner",
 		"اسم طويل لاختبار المحاذاة والتفاف النص العربي مع English mixed content",
 	);
-	await db.update(user).set({ role: "admin" }).where(eq(user.id, admin.id));
+	await db.update(user).set({ role: "owner" }).where(eq(user.id, admin.id));
 	let site = await domain(
 		"/api/sites",
 		"POST",

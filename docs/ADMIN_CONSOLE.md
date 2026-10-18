@@ -1,6 +1,6 @@
 # Admin Console: P0 design and approval record
 
-Date: 2026-10-18, Asia/Riyadh. Status: documentation complete; design proposals await human approval before P1. This document is a design, not evidence that its proposed controls already exist.
+Date: 2026-10-18, Asia/Riyadh. Status: P1 complete locally. Appendix 11 records the approved replacements for historical P0 proposals; appendix 12 records implemented behavior and actual evidence. Unimplemented P2 controls remain design only.
 
 ## 1. Scope and authority
 
@@ -241,3 +241,36 @@ If the installed adapter cannot participate in that transaction through a suppor
 ### P1 safe intermediate behavior
 
 P1 introduces role/permission enforcement, masked reads and the HTTP/native boundary. Sensitive account mutations and private draft/email revelation remain closed until P2 provides the approved password/TOTP/last-owner controls. Site suspend/resume retains its existing guarded behavior with the approved 10–500 reason bound; P2 adds the new password/TOTP requirement. No misleading newly enabled sensitive UI actions or unguarded native mutations may bridge the phases. Permission grants express the policy; unavailable P2 operations must return an explicit unavailable error, never success.
+
+## 12. P1 implementation and acceptance — 2026-10-18
+
+P0 amendment was committed first as 758ace2, after P0 baseline 14e9882. P1 now implements the approved shared RBAC policy, not the earlier superseded P0 security design. No real account role has changed; only uniquely generated local test/browser-fixture users receive synthetic roles during verification. Legacy-only admin is denied without an alias.
+
+### Implemented boundaries
+
+- packages/contracts/src/admin-policy.ts supplies one pure statement/grant/membership policy, including declared note permissions for later phases and no grants for user.impersonate or user.set_password. API access.ts merges the installed native defaultStatements without losing native user/session action names and derives role objects from those product grants. No new dependency version/install/schema is needed.
+- All 10 live /api/admin endpoint patterns declare requirePermission: the six existing metadata/moderation/resources/audit endpoints plus permissions discovery and account list/detail/session reads. The central gate inspects actual matched Hono routes and denies undeclared groups, including overlapping paths and unknown routes. Tests enumerate actual mounted routes rather than a second allowlist.
+- Hono blocks every external native-admin HTTP method before Better Auth and CORS preflight. Server auth.api listUsers/getUser/listUserSessions calls execute native hooks; before-hook rejection is proved for impersonated, banned and role-revoked actors. A test-only auth instance with the same options/project before hook and an after-hook observer confirms the installed internal before/after lifecycle. No observer is added to production code. The simpler boundary works, so no capability, trusted header or new AsyncLocalStorage authorization machinery was built.
+- Domain account DTOs mask every returned email; session DTOs contain only session ID and creation/expiry dates. Wrappers translate expected native failure statuses without changing public auth protocol. Native internal reads may contain full values within the backend; only the projected domain DTO is sent to the console.
+- Console navigation, direct-page gate and data sections use /me/permissions. Support cannot request/view audit or system totals; moderator cannot request/view system totals. Account controller calls domain wrappers. Unavailable sensitive account forms/actions are removed and replaced by an honest explanation. Studio entry uses shared staff membership. Site moderation controls require the exact suspend/resume grant; API/UI reason bounds are 10–500.
+- Admin layout uses the installed Next connection API for request rendering, keeping root noindex metadata. Production-build HTTP checks verify no-store/noindex on /admin and its accounts/sites/activity pages.
+- P2 account mutations are closed even on internal invocation (ADMIN_SECURITY_PENDING for otherwise eligible actors). Impersonation and password setting deny for every role, including owner. Former native mutation attempt/outcome-update code was retired with those execution paths; P2 must implement the approved separate inserts before reopening any action. Existing transactional site moderation/audit remains active.
+
+### P2 transaction integration detail: design only
+
+Installed @better-auth/drizzle-adapter 1.7.7 invokes db.transaction and constructs its transactional adapter with the provided tx; its nested adapter sets transaction=false. Installed Drizzle node-postgres transactions implement nested transactions with savepoints. The existing project db proxy resolves a request-scoped executor on each method access.
+
+The P2 candidate is therefore an outer db.transaction that takes pg_advisory_xact_lock, re-reads actor/target/remaining owners, and supplies that transaction executor to the native adapter through the existing database execution scope while awaiting auth.api. Adapter transactions must resolve to savepoints on that same executor, never to a separate pool checkout. This is a database-execution integration, not an authorization capability; Hono interception and shared hooks remain the authority. No P2 executor/scope code was added in P1.
+
+P2 must prove matching transaction/backend identity for the check and each native write, outer rollback after an injected failure, concurrent owner-loss exclusion, nested-savepoint behavior and request isolation on Bun/Workers. A native APIError returned as a Response must be converted to rollback rather than accidentally committing. Durable audit attempts must be inserted before the mutation transaction, with outcomes/denials appended outside a rolled-back mutation; never assume an attempt survives rollback. If that integration cannot be demonstrated, keep owner-affecting operations closed and report the unsupported boundary. This inspected feasibility is not runtime atomicity or PgBouncer deployment evidence.
+
+### Actual verification and limits
+
+- Default bun run build on existing pre-P1 runtime HEAD, outside sandbox: exit 0, 18 static outputs plus dynamic routes; work/admin-p1/default-head-build.log. The previous sandboxed P0 hang did not recur. No CI problem is established and no build command/configuration was changed.
+- Final bun run typecheck: exit 0. Final bun run check: exit 0, 285 files. Initial formatting/dependency-lint issues were repaired before this gate.
+- Final FOLIO_QA_BUILD=1 bun run build: unchanged default Turbopack path, exit 0; 18 outputs generated and administrative routes now marked dynamic. This uses the existing QA output setting, not a new build workaround. Log: work/admin-p1/build-final.log.
+- Final guarded bun run test: exit 0, 24 tests, 0 failures, 1,238 assertions, local folio_test only. The wrapper ran existing reviewed migrations; no new SQL/schema/migration file was authored or applied. The matrix exercises 8 role combinations against 10 endpoint patterns (80 cases), plus 64 authorized/denied implicit-HEAD cases and unauthenticated boundaries. Also covers native interception/normalization, internal hooks, shared/native grants, email/session projection, P2 closure, reason limits and existing regressions. Log: work/admin-p1/api-final.log.
+- Final cd apps/web && bun test tests: exit 0, 16 tests, 0 failures, 241 assertions. New SSR presentation checks cover permission-driven overview/dialog controls and exact Arabic/English copy-key parity. This is not browser/device acceptance. Log: work/admin-p1/web-final.log.
+- Four actual HTTP reads against an isolated production-build server return 200 with private, no-cache, no-store, max-age=0, must-revalidate and robots noindex/nofollow. Evidence: work/admin-p1/admin-http.json. The temporary web server was stopped. No authenticated browser session or physical device was exercised.
+
+P1 is complete locally. P2–P7 have not started. No MFA enrollment/verification, per-action password, last-owner lock/rollback, audit outcome append implementation, provider/Neon operation, real role update, GitHub push or deployment is claimed. A6 remains deferred before launch; note feature/target enforcement remains deferred until after P3. Stop and wait for the human's next instruction.

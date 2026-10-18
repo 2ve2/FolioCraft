@@ -14,6 +14,7 @@ import { usePage } from "../shared";
 import { text } from "../shared/copy";
 import type { AdminSite, Audit, Counts } from "../shared/types";
 import styles from "./admin.module.css";
+import { useAdminSession } from "./admin-context";
 import { adminCopy } from "./admin-copy";
 import { AdminActivity, AdminSites } from "./admin-lists";
 
@@ -106,6 +107,7 @@ export function AdminOverview({
 	openSite: (site: AdminSite) => void;
 	activityVersion: string;
 }) {
+	const { permissions } = useAdminSession();
 	const t = adminCopy[locale];
 	const shared = text[locale];
 	return (
@@ -137,31 +139,35 @@ export function AdminOverview({
 						/>
 					)}
 				</section>
-				<section className={styles.card}>
-					<header className={styles.cardHeader}>
-						<div>
-							<h2>{t.resources}</h2>
-							<p>{t.resourcesDescription}</p>
-						</div>
-					</header>
-					<dl className={styles.resourceList}>
-						{(
-							[
-								{ key: "releases", icon: FileStack },
-								{ key: "assets", icon: FolderOpen },
-								{ key: "inquiries", icon: MessageSquare },
-							] as const
-						).map(({ key, icon: Icon }) => (
-							<div key={key}>
-								<Icon size={18} color="#9b85b5" aria-hidden="true" />
-								<dt>{shared.counts[key]}</dt>
-								<dd>{counts ? new Intl.NumberFormat(locale).format(counts[key]) : "—"}</dd>
+				{permissions.includes("system.read") && (
+					<section className={styles.card}>
+						<header className={styles.cardHeader}>
+							<div>
+								<h2>{t.resources}</h2>
+								<p>{t.resourcesDescription}</p>
 							</div>
-						))}
-					</dl>
-				</section>
+						</header>
+						<dl className={styles.resourceList}>
+							{(
+								[
+									{ key: "releases", icon: FileStack },
+									{ key: "assets", icon: FolderOpen },
+									{ key: "inquiries", icon: MessageSquare },
+								] as const
+							).map(({ key, icon: Icon }) => (
+								<div key={key}>
+									<Icon size={18} color="#9b85b5" aria-hidden="true" />
+									<dt>{shared.counts[key]}</dt>
+									<dd>{counts ? new Intl.NumberFormat(locale).format(counts[key]) : "—"}</dd>
+								</div>
+							))}
+						</dl>
+					</section>
+				)}
 			</div>
-			<AdminRecentActivity key={activityVersion} locale={locale} />
+			{permissions.includes("audit.read") && (
+				<AdminRecentActivity key={activityVersion} locale={locale} />
+			)}
 		</>
 	);
 }

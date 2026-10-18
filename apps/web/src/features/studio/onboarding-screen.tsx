@@ -1,4 +1,5 @@
 import { type Locale, slugSchema } from "@ichnara/contracts";
+import { isStaff } from "@ichnara/contracts/admin-policy";
 import { LinkArrow } from "@ichnara/portfolio";
 import { Globe2, LoaderCircle } from "lucide-react";
 import { type FormEvent, type ReactNode, useRef, useState } from "react";
@@ -34,7 +35,7 @@ export function OnboardingScreen({
 				<Brand locale={locale} />
 				<div className="header-actions">
 					{localeControl}
-					{role?.split(",").includes("admin") && (
+					{isStaff(role) && (
 						<a className="secondary" href={`/admin?lang=${locale}`}>
 							{t.admin}
 						</a>

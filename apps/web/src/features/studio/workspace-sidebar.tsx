@@ -1,4 +1,5 @@
 import type { Locale } from "@ichnara/contracts";
+import { isStaff } from "@ichnara/contracts/admin-policy";
 import { FileText, LogOut, Palette, Settings2, ShieldCheck } from "lucide-react";
 import { Brand } from "../../components/ui/brand";
 import { TooltipButton } from "../../components/ui/tooltip-button";
@@ -65,7 +66,7 @@ export function WorkspaceSidebar({
 						{section === key && <span className="nav-dot" />}
 					</button>
 				))}
-				{user.role?.split(",").includes("admin") && (
+				{isStaff(user.role) && (
 					<button
 						type="button"
 						className="nav-item"

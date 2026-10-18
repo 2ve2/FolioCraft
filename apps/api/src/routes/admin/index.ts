@@ -4,6 +4,7 @@ import type { AuthEnv } from "../../middleware/auth";
 import { adminAuditRoutes } from "./audit";
 import { adminResourceRoutes } from "./resources";
 import { adminSiteRoutes } from "./sites";
+import { adminUserRoutes } from "./users";
 
 // Apply the administrator gate before registering any child route.
 export const adminRoutes = new Hono<AuthEnv>();
@@ -13,3 +14,5 @@ adminRoutes.use("*", requireAdmin);
 adminRoutes.route("/", adminSiteRoutes);
 adminRoutes.route("/", adminResourceRoutes);
 adminRoutes.route("/", adminAuditRoutes);
+
+adminRoutes.route("/", adminUserRoutes);

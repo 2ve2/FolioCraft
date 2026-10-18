@@ -144,9 +144,7 @@ export function AdminAccounts({
 							</div>
 						</td>
 						<td data-label={shared.role}>
-							<span className={styles.caption}>
-								{user.role?.split(",").includes("admin") ? shared.administrator : shared.user}
-							</span>
+							<span className={styles.caption}>{user.role || shared.user}</span>
 						</td>
 						<td data-label={t.access}>
 							<span className={`${styles.badge} ${user.banned ? styles.bad : styles.good}`}>

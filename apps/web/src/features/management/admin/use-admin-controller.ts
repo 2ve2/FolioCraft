@@ -1,20 +1,23 @@
 "use client";
 import type { Locale } from "@ichnara/contracts";
 import { useEffect, useRef, useState } from "react";
-import { api, authClient } from "../../../lib/api";
-import { errorText, nativeError, usePage } from "../shared";
+import { api } from "../../../lib/api";
+import { errorText, usePage } from "../shared";
 import { text } from "../shared/copy";
 import type { AdminSite, AdminUser, Audit, Counts } from "../shared/types";
+import { useAdminSession } from "./admin-context";
 
 /** Coordinates guarded administrator requests, selection epochs and native account actions. */
 export function useAdminController(locale: Locale, tab: "sites" | "audit" | "users") {
 	const t = text[locale];
+	const { permissions } = useAdminSession();
+	const canReadSystem = permissions.includes("system.read");
 
 	// Active resource tab, page and platform totals.
 	const [siteFilter, setSiteFilter] = useState<"all" | "accessible" | "suspended">("all");
 	const [offset, setOffset] = useState(0);
-	const page = usePage<AdminSite | Audit>(
-		`/api/admin/${tab === "users" ? "sites" : tab}?limit=20&offset=${offset}${tab === "sites" && siteFilter !== "all" ? `&suspended=${siteFilter === "suspended"}` : ""}`,
+	const page = usePage<AdminSite | Audit | AdminUser>(
+		`/api/admin/${tab}?limit=20&offset=${offset}${tab === "sites" && siteFilter !== "all" ? `&suspended=${siteFilter === "suspended"}` : ""}`,
 		locale,
 	);
 	const [counts, setCounts] = useState<Counts | null>(null);
@@ -22,12 +25,11 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 	const [countsError, setCountsError] = useState("");
 	const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
 
-	// Official identity list and its independent request feedback.
-	const [users, setUsers] = useState<AdminUser[]>([]);
-	const [userMore, setUserMore] = useState(false);
-	const [usersLoaded, setUsersLoaded] = useState(false);
-	const [usersError, setUsersError] = useState("");
-	const [userLoading, setUserLoading] = useState(false);
+	const users = (page.data?.items ?? []).filter((row): row is AdminUser => "email" in row);
+	const userMore = Boolean(page.data?.hasMore);
+	const usersLoaded = Boolean(page.data);
+	const usersError = page.error;
+	const userLoading = tab === "users" && page.loading;
 	const [userVersion, setUserVersion] = useState(0);
 
 	// Shared mutation feedback and the selected account/site forms.
@@ -36,8 +38,6 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 	const [notice, setNotice] = useState("");
 	const [reason, setReason] = useState("");
 	const [selected, setSelected] = useState<AdminUser | null>(null);
-	const [confirmation, setConfirmation] = useState("");
-	const [role, setRole] = useState<"user" | "admin">("user");
 	const [details, setDetails] = useState<AdminSite | null>(null);
 
 	// Focus targets and request epochs prevent stale-view completion work.
@@ -69,6 +69,12 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Refresh resource counts after a completed operation.
 	useEffect(() => {
 		let current = true;
+		if (!canReadSystem) {
+			setCounts(null);
+			setCountsLoading(false);
+			setCountsError("");
+			return;
+		}
 		setCountsLoading(true);
 		setCountsError("");
 		api<Counts>("/api/admin/resources")
@@ -87,39 +93,7 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 		return () => {
 			current = false;
 		};
-	}, [locale, userVersion]);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: Explicit refresh invalidates the official identity list.
-	useEffect(() => {
-		if (tab !== "users") return;
-		let current = true;
-		setUserLoading(true);
-		setUsers([]);
-		setUserMore(false);
-		setUsersLoaded(false);
-		setUsersError("");
-		authClient.admin
-			.listUsers({ query: { limit: 20, offset, sortBy: "createdAt", sortDirection: "desc" } })
-			.then((result) => {
-				if (!current) return;
-				if (result.error) throw nativeError(result.error);
-				setUsers(result.data.users);
-				setUsersLoaded(true);
-				setUserMore(offset + result.data.users.length < result.data.total);
-			})
-			.catch((e) => {
-				if (current) {
-					setUserMore(false);
-					setUsersError(errorText(e, locale));
-				}
-			})
-			.finally(() => {
-				if (current) setUserLoading(false);
-			});
-		return () => {
-			current = false;
-		};
-	}, [tab, offset, userVersion, locale]);
+	}, [locale, userVersion, canReadSystem]);
 
 	/** Runs a management mutation and translates its failure into current-view feedback. */
 	async function act(operation: (isCurrent: () => boolean) => Promise<void>) {
@@ -145,32 +119,6 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 			actionPending.current = false;
 			if (mounted.current) setBusy(false);
 		}
-	}
-
-	/** Runs a confirmed native account action without bypassing Better Auth. */
-	async function native(action: "ban" | "unban" | "revoke" | "role") {
-		if (!selected || confirmation !== selected.id) return;
-		if (action === "ban" && (reason.trim().length < 3 || reason.trim().length > 500)) {
-			setError(t.reasonInvalid);
-			return;
-		}
-		const userId = selected.id;
-		const version = viewVersion.current;
-		await act(async () => {
-			const result =
-				action === "ban"
-					? await authClient.admin.banUser({ userId, banReason: reason.trim() })
-					: action === "unban"
-						? await authClient.admin.unbanUser({ userId })
-						: action === "revoke"
-							? await authClient.admin.revokeUserSessions({ userId })
-							: await authClient.admin.setRole({ userId, role });
-			if (result.error) throw nativeError(result.error);
-			if (!mounted.current || viewVersion.current !== version) return;
-			setSelected(null);
-			setConfirmation("");
-			setReason("");
-		});
 	}
 
 	/** Filters server-side site access and resets selection and pagination. */
@@ -238,16 +186,13 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 	function openUser(user: AdminUser) {
 		viewVersion.current += 1;
 		setSelected(user);
-		setConfirmation("");
 		setReason("");
-		setRole(user.role === "admin" ? "admin" : "user");
 	}
 
 	/** Closes account management and invalidates stale selection work. */
 	function closeUser() {
 		viewVersion.current += 1;
 		setSelected(null);
-		setConfirmation("");
 		setReason("");
 	}
 
@@ -275,14 +220,9 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 		reason,
 		setReason,
 		selected,
-		confirmation,
-		setConfirmation,
-		role,
-		setRole,
 		details,
 		selectedHeading,
 		detailsHeading,
-		native,
 		changeSiteFilter,
 		siteFilter,
 		countsLoading,

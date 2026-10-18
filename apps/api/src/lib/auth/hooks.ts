@@ -1,48 +1,24 @@
-import {
-	APIError,
-	createAuthMiddleware,
-	getAuthoritativeSessionFromCtx,
-	isAPIError,
-} from "better-auth/api";
-import { eq } from "drizzle-orm";
+import { isStaff, type Permission, permissionsFor } from "@ichnara/contracts/admin-policy";
+import { APIError, createAuthMiddleware, getAuthoritativeSessionFromCtx } from "better-auth/api";
 import { mailConfigured, requireEmailVerification } from "../../config/env";
-import { db } from "../../db";
-import { adminAudit } from "../../db/schema/admin";
 
-const auditedAdminPaths = new Set([
-	"/admin/set-role",
-	"/admin/create-user",
-	"/admin/update-user",
-	"/admin/ban-user",
-	"/admin/unban-user",
-	"/admin/impersonate-user",
-	"/admin/stop-impersonating",
-	"/admin/revoke-user-session",
-	"/admin/revoke-user-sessions",
-	"/admin/remove-user",
-	"/admin/set-user-password",
-]);
-
-type NativeAuditContext = { nativeAdminAudit?: { id: string; action: string } };
-
-/** Checks the fixed platform role without deriving privileges from request data. */
-function hasAdminRole(role: unknown) {
-	return typeof role === "string" && role.split(",").includes("admin");
-}
-
-/** Treats an expired timed ban as inactive while preserving Better Auth's expiry behavior. */
-function isActivelyBanned(user: Record<string, unknown>) {
-	if (!user.banned) return false;
-	if (!user.banExpires) return true;
-	const expiration =
-		user.banExpires instanceof Date
-			? user.banExpires.getTime()
-			: new Date(String(user.banExpires)).getTime();
-	return expiration > Date.now();
-}
+const nativePermissions: Record<string, Permission> = {
+	"/admin/list-users": "user.read",
+	"/admin/get-user": "user.read",
+	"/admin/list-user-sessions": "user.read",
+	"/admin/ban-user": "user.ban",
+	"/admin/unban-user": "user.unban",
+	"/admin/revoke-user-session": "user.revoke_session",
+	"/admin/revoke-user-sessions": "user.revoke_session",
+	"/admin/set-role": "user.set_role",
+	"/admin/remove-user": "user.remove",
+	"/admin/impersonate-user": "user.impersonate",
+	"/admin/set-user-password": "user.set_password",
+};
+const nativeReads = new Set(["/admin/list-users", "/admin/get-user", "/admin/list-user-sessions"]);
 
 export const authHooks = {
-	/** Verifies original sessions and durably records native mutation intent before execution. */
+	/** Enforces the shared policy even on in-process native calls; P2 mutations remain unavailable. */
 	before: createAuthMiddleware(async (ctx) => {
 		const needsMail =
 			["/request-password-reset", "/send-verification-email"].includes(ctx.path) ||
@@ -55,82 +31,30 @@ export const authHooks = {
 		if (!ctx.path.startsWith("/admin/")) return;
 		const session = await getAuthoritativeSessionFromCtx(ctx);
 		if (!session) throw new APIError("UNAUTHORIZED");
-		let actor = session;
-		if (ctx.path === "/admin/stop-impersonating") {
-			const cookie = ctx.context.createAuthCookie("admin_session");
-			const originalCookie = await ctx.getSignedCookie(cookie.name, ctx.context.secret);
-			const original = originalCookie
-				? await ctx.context.internalAdapter.findSession(originalCookie.split(":")[0])
-				: null;
-			if (
-				!original ||
-				original.session.expiresAt <= new Date() ||
-				original.user.id !== session.session.impersonatedBy ||
-				original.session.impersonatedBy
-			)
-				throw new APIError("FORBIDDEN", {
-					code: "ADMIN_REQUIRED",
-					message: "An original admin session is required",
-				});
-			actor = original;
-		} else if (session.session.impersonatedBy) {
+		if (session.session.impersonatedBy)
 			throw new APIError("FORBIDDEN", {
 				code: "IMPERSONATION_RESTRICTED",
-				message: "Stop impersonating before administering the platform",
+				message: "Impersonated administration is disabled",
 			});
-		}
-		if (!hasAdminRole(actor.user.role) || isActivelyBanned(actor.user))
+		if (!isStaff(session.user.role))
 			throw new APIError("FORBIDDEN", {
 				code: "ADMIN_REQUIRED",
-				message: "An active admin account is required",
+				message: "An active staff account is required",
 			});
-		if (requireEmailVerification && !actor.user.emailVerified)
-			throw new APIError("FORBIDDEN", {
-				code: "EMAIL_NOT_VERIFIED",
-				message: "Verify your email before administering the platform",
+		if (
+			session.user.banned &&
+			(!session.user.banExpires || new Date(session.user.banExpires).getTime() > Date.now())
+		)
+			throw new APIError("FORBIDDEN", { code: "ACCOUNT_BANNED", message: "Account is banned" });
+		if (requireEmailVerification && !session.user.emailVerified)
+			throw new APIError("FORBIDDEN", { code: "EMAIL_NOT_VERIFIED", message: "Verify your email" });
+		const permission = nativePermissions[ctx.path];
+		if (!permission || !permissionsFor(session.user.role).includes(permission))
+			throw new APIError("FORBIDDEN", { code: "PERMISSION_DENIED", message: "Permission denied" });
+		if (!nativeReads.has(ctx.path))
+			throw new APIError("SERVICE_UNAVAILABLE", {
+				code: "ADMIN_SECURITY_PENDING",
+				message: "Sensitive account operations require the P2 security controls",
 			});
-		if (!auditedAdminPaths.has(ctx.path)) return;
-		const id = crypto.randomUUID();
-		const action = `auth.${ctx.path.slice("/admin/".length)}`;
-		let targetId =
-			typeof ctx.body?.userId === "string" && ctx.body.userId.length <= 128
-				? ctx.body.userId
-				: null;
-		const singleSession = ctx.path === "/admin/revoke-user-session";
-		if (singleSession && typeof ctx.body?.sessionToken === "string") {
-			const target = await ctx.context.internalAdapter.findSession(ctx.body.sessionToken);
-			targetId = target?.session.id ?? null;
-		}
-		await db.insert(adminAudit).values({
-			id,
-			actorId: actor.user.id,
-			action,
-			targetType: singleSession ? "session" : "user",
-			targetId,
-			requestId: crypto.randomUUID(),
-			status: "attempted",
-			metadata: {},
-		});
-		// The hook return wraps the endpoint context; auth context is its nested context property.
-		return { context: { context: { nativeAdminAudit: { id, action } } } };
-	}),
-
-	/** Finalizes only allowlisted native mutations; no passwords, tokens or user payloads are stored. */
-	after: createAuthMiddleware(async (ctx) => {
-		const audit = (ctx.context as typeof ctx.context & NativeAuditContext).nativeAdminAudit;
-		if (!audit) return;
-		const failed = isAPIError(ctx.context.returned);
-		const response = ctx.context.returned as { user?: { id?: unknown } } | undefined;
-		const createdId =
-			audit.action === "auth.create-user" && typeof response?.user?.id === "string"
-				? response.user.id
-				: undefined;
-		await db
-			.update(adminAudit)
-			.set({
-				status: failed ? "failed" : "succeeded",
-				...(createdId ? { targetId: createdId } : {}),
-			})
-			.where(eq(adminAudit.id, audit.id));
 	}),
 };

@@ -1,9 +1,11 @@
 "use client";
 import type { Locale } from "@ichnara/contracts";
+import type { Permission } from "@ichnara/contracts/admin-policy";
 import { createContext, useContext } from "react";
 
 export type AdminSession = {
 	locale: Locale;
+	permissions: Permission[];
 	setLocale: (locale: Locale) => void;
 	user: { id: string; name: string; email: string };
 };

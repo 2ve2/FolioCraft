@@ -14,7 +14,7 @@ import { useAdminController } from "./use-admin-controller";
 
 /** Composes the selected route's administrative view while preserving existing request guards. */
 export function AdminPanel({ view }: { view: AdminView }) {
-	const { locale, user } = useAdminSession();
+	const { locale, user, permissions } = useAdminSession();
 	const c = useAdminController(locale, view === "overview" ? "sites" : view);
 	const [refreshVersion, setRefreshVersion] = useState(0);
 	const feedback = useRef<HTMLParagraphElement>(null);
@@ -89,7 +89,9 @@ export function AdminPanel({ view }: { view: AdminView }) {
 							{c.countsError}
 						</p>
 					)}
-					<AdminStats counts={c.counts} locale={locale} loading={c.countsLoading} />
+					{permissions.includes("system.read") && (
+						<AdminStats counts={c.counts} locale={locale} loading={c.countsLoading} />
+					)}
 					<AdminOverview
 						locale={locale}
 						counts={c.counts}

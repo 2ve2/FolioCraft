@@ -6,6 +6,7 @@ import { requestId } from "hono/request-id";
 import { secureHeaders } from "hono/secure-headers";
 import { env } from "../config/env";
 import { ApiError, errorResponse } from "../lib/response-helpers";
+import { blockNativeAdminHttp } from "./admin";
 import type { AuthEnv } from "./auth";
 
 /** Prevents API caching and rejects writes from origins outside the configured web app. */
@@ -47,6 +48,7 @@ export function registerHttpMiddleware(app: Hono<AuthEnv>) {
 		)
 			c.header("Cross-Origin-Resource-Policy", "cross-origin");
 	});
+	app.use("*", blockNativeAdminHttp);
 	app.use(
 		"*",
 		cors({
