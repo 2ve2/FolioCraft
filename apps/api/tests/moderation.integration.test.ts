@@ -121,7 +121,7 @@ test("admin moderation is owned, audited, reversible and closes every public sur
 		await request(
 			`/api/admin/sites/${site.id}/suspend`,
 			"POST",
-			{ reason: "Review required" },
+			{ reason: "Review required", password: admin.password },
 			admin.cookie,
 		),
 	);
@@ -129,7 +129,7 @@ test("admin moderation is owned, audited, reversible and closes every public sur
 		await request(
 			`/api/admin/sites/${site.id}/suspend`,
 			"POST",
-			{ reason: "Duplicate review" },
+			{ reason: "Duplicate review", password: admin.password },
 			admin.cookie,
 		),
 		409,
@@ -187,16 +187,31 @@ test("admin moderation is owned, audited, reversible and closes every public sur
 		await request(
 			`/api/admin/sites/${site.id}/resume`,
 			"POST",
-			{ reason: "Review completed" },
+			{ reason: "Review completed", password: admin.password },
 			admin.cookie,
 		),
 	);
 	await result(await request(publicBase));
 	const audit = await db.select().from(adminAudit).where(eq(adminAudit.actorId, admin.id));
-	expect(audit.filter((row) => row.targetId === site.id)).toHaveLength(2);
-	expect(audit.every((row) => row.status === "succeeded" && row.reason && row.requestId)).toBe(
-		true,
+	const successes = audit.filter((row) => row.targetId === site.id && row.status === "succeeded");
+	expect(successes).toHaveLength(2);
+	const completed = audit.filter((row) =>
+		successes.some((outcome) => outcome.requestId === row.requestId),
 	);
+	expect(completed).toHaveLength(4);
+	for (const outcome of successes) {
+		const pair = completed.filter((row) => row.requestId === outcome.requestId);
+		expect(pair.map((row) => row.status).sort()).toEqual(["attempted", "succeeded"]);
+		expect(
+			pair.every(
+				(row) =>
+					row.reason === outcome.reason &&
+					row.action === outcome.action &&
+					row.actorId === outcome.actorId &&
+					row.targetId === site.id,
+			),
+		).toBe(true);
+	}
 	await result(await request("/api/admin/audit?limit=1", "GET", undefined, admin.cookie));
 	await error(await request("/api/admin/sites?limit=101", "GET", undefined, admin.cookie), 400);
 	await result(await request("/api/admin/resources", "GET", undefined, admin.cookie));

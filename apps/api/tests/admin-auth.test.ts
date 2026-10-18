@@ -52,7 +52,7 @@ function endpointDeclarations() {
 
 test("actual mounted admin endpoints declare permissions and unregistered routes fail closed", async () => {
 	const endpoints = endpointDeclarations();
-	expect(endpoints.size).toBe(10);
+	expect(endpoints.size).toBe(14);
 	for (const permissions of endpoints.values()) expect(permissions.length).toBeGreaterThan(0);
 	const owner = await fixture("owner");
 	const wildcardProbe = new Hono<AuthEnv>();
@@ -108,30 +108,56 @@ test("every role against every live admin endpoint follows independent expected 
 		["GET", "/users", "user.read"],
 		["GET", `/users/${member.id}`, "user.read"],
 		["GET", `/users/${member.id}/sessions`, "user.read"],
+		["POST", `/users/${member.id}/ban`, "user.ban"],
+		["POST", `/users/${member.id}/unban`, "user.unban"],
+		["POST", `/users/${member.id}/revoke-sessions`, "user.revoke_session"],
 	] as const;
 	const expected: Record<string, readonly string[]> = {
-		owner: ["site.read", "site.suspend", "site.resume", "system.read", "audit.read", "user.read"],
+		owner: [
+			"site.read",
+			"site.suspend",
+			"site.resume",
+			"system.read",
+			"audit.read",
+			"user.read",
+			"user.ban",
+			"user.unban",
+			"user.revoke_session",
+		],
 		moderator: ["site.read", "site.suspend", "site.resume", "audit.read", "user.read"],
-		support: ["site.read", "user.read"],
+		support: ["site.read", "user.read", "user.ban", "user.unban", "user.revoke_session"],
 		analyst: ["site.read", "system.read", "audit.read", "user.read"],
-		"support,moderator": ["site.read", "site.suspend", "site.resume", "audit.read", "user.read"],
+		"support,moderator": [
+			"site.read",
+			"site.suspend",
+			"site.resume",
+			"audit.read",
+			"user.read",
+			"user.ban",
+			"user.unban",
+			"user.revoke_session",
+		],
 		user: [],
 		admin: [],
 		unknown: [],
 	};
-	expect(endpointDeclarations().size).toBe(endpoint.length);
+	expect(endpointDeclarations().size).toBe(endpoint.length + 1);
 	for (const [role, permissions] of Object.entries(expected)) {
-		const actor = role === "user" ? member : await fixture(role);
+		const actor = await fixture(role);
 		for (const [method, path, permission] of endpoint) {
-			if (method === "POST")
+			if (method === "POST") {
+				await db.update(user).set({ banned: false }).where(eq(user.id, member.id));
 				await db
 					.update(sites)
 					.set({ suspended: path.endsWith("/resume") })
 					.where(eq(sites.id, site.id));
+			}
 			const response = await request(
 				`/api/admin${path}`,
 				method,
-				method === "POST" ? { reason: "Fixture policy verification" } : undefined,
+				method === "POST"
+					? { reason: "Fixture policy verification", password: actor.password }
+					: undefined,
 				actor.cookie,
 			);
 			expect(response.status, `${role} ${method} ${path}`).toBe(
@@ -261,7 +287,7 @@ test("all identities are masked, session DTOs exclude secrets and reason bounds 
 			await request(
 				`/api/admin/sites/${site.id}/suspend`,
 				"POST",
-				{ reason: "1234567890" },
+				{ reason: "1234567890", password: owner.password },
 				owner.cookie,
 			)
 		).status,
@@ -271,14 +297,14 @@ test("all identities are masked, session DTOs exclude secrets and reason bounds 
 			await request(
 				`/api/admin/sites/${site.id}/resume`,
 				"POST",
-				{ reason: "x".repeat(500) },
+				{ reason: "x".repeat(500), password: owner.password },
 				owner.cookie,
 			)
 		).status,
 	).toBe(200);
 });
 
-test("shared policy matches native grants and keeps disabled/P2 operations unavailable", async () => {
+test("shared policy matches native grants and keeps deferred operations unavailable", async () => {
 	for (const [role, permissions] of Object.entries(rolePermissions)) {
 		for (const permission of permissions) {
 			const [resource, action] = permission.split(".");
@@ -308,11 +334,10 @@ test("shared policy matches native grants and keeps disabled/P2 operations unava
 	const owner = await fixture("owner");
 	const member = await fixture("user");
 	for (const operation of [
-		() => auth.api.banUser({ headers: owner.headers, body: { userId: member.id } }),
 		() => auth.api.setRole({ headers: owner.headers, body: { userId: member.id, role: "owner" } }),
 		() => auth.api.removeUser({ headers: owner.headers, body: { userId: member.id } }),
 	])
-		await expect(operation()).rejects.toMatchObject({ body: { code: "ADMIN_SECURITY_PENDING" } });
+		await expect(operation()).rejects.toMatchObject({ body: { code: "ADMIN_ACTION_UNAVAILABLE" } });
 	await expect(
 		auth.api.impersonateUser({ headers: owner.headers, body: { userId: member.id } }),
 	).rejects.toMatchObject({ body: { code: "PERMISSION_DENIED" } });

@@ -18,7 +18,7 @@ export type AuditFilters = {
 
 /** Appends a platform moderation event within the same transaction as the protected change. */
 export async function recordAdminAction(
-	tx: DraftTransaction,
+	tx: DraftTransaction | typeof db,
 	context: AuditContext,
 	action: string,
 	targetType: string,

@@ -4,7 +4,7 @@ import { entityId, paginationSchema } from "../../lib/validation";
 import { requirePermission } from "../../middleware/admin";
 import type { AuthEnv } from "../../middleware/auth";
 import { adminService } from "../../services/admin/site-service";
-import { booleanQuery, reasonSchema } from "./validation";
+import { booleanQuery } from "./validation";
 
 /** Owns administrative site lookup and audited availability changes. */
 export const adminSiteRoutes = new Hono<AuthEnv>();
@@ -27,26 +27,18 @@ adminSiteRoutes.get("/sites/:id", requirePermission("site", "read"), async (c) =
 
 /** Suspends public availability and records the supplied reason in the same transaction. */
 adminSiteRoutes.post("/sites/:id/suspend", requirePermission("site", "suspend"), async (c) => {
-	const input = reasonSchema.parse(await c.req.json());
+	const input = await c.req.json();
 	return successResponse(
 		c,
-		await adminService.moderate(entityId(c.req.param("id")), true, {
-			actorId: c.get("userId"),
-			requestId: c.get("requestId"),
-			reason: input.reason,
-		}),
+		await adminService.moderate(entityId(c.req.param("id")), true, c.req.raw.headers, input),
 	);
 });
 
 /** Resumes a suspended site while retaining the required explanation in its audit history. */
 adminSiteRoutes.post("/sites/:id/resume", requirePermission("site", "resume"), async (c) => {
-	const input = reasonSchema.parse(await c.req.json());
+	const input = await c.req.json();
 	return successResponse(
 		c,
-		await adminService.moderate(entityId(c.req.param("id")), false, {
-			actorId: c.get("userId"),
-			requestId: c.get("requestId"),
-			reason: input.reason,
-		}),
+		await adminService.moderate(entityId(c.req.param("id")), false, c.req.raw.headers, input),
 	);
 });

@@ -90,10 +90,26 @@ export function AdminManagementDialogs({
 									onChange={(e) => c.setReason(e.target.value)}
 								/>
 							</label>
+							<label>
+								{t.operatorPassword}
+								<input
+									type="password"
+									autoComplete="current-password"
+									maxLength={1024}
+									value={c.password}
+									disabled={c.busy}
+									onChange={(e) => c.setPassword(e.target.value)}
+								/>
+							</label>
 							<button
 								type="button"
 								className={c.details.suspended ? styles.primary : styles.danger}
-								disabled={c.busy || c.reason.trim().length < 10}
+								disabled={
+									c.busy ||
+									!c.password ||
+									c.reason.trim().length < 10 ||
+									c.reason.trim().length > 500
+								}
 								onClick={() => c.details && void c.moderateSite(c.details)}
 							>
 								{c.details.suspended ? shared.resume : shared.suspend}

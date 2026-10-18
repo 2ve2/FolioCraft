@@ -4,8 +4,15 @@ import { assets } from "../../db/schema/asset";
 import { user } from "../../db/schema/auth";
 import { inquiries } from "../../db/schema/operations";
 import { releases, sites } from "../../db/schema/site";
+import { auth } from "../../lib/auth";
 import { ApiError } from "../../lib/response-helpers";
-import { type AuditContext, recordAdminAction } from "./audit-service";
+import { recordAdminAction } from "./audit-service";
+import {
+	appendSensitiveOutcome,
+	markSensitiveDenial,
+	prepareSensitiveAction,
+	requireOrdinaryTarget,
+} from "./sensitive-action";
 
 // Select only administrative metadata; drafts and private contact messages remain excluded.
 const siteOverview = {
@@ -81,33 +88,54 @@ export const adminService = {
 	},
 
 	/** Locks the site and commits its moderation change together with a required reason audit. */
-	async moderate(id: string, suspended: boolean, context: AuditContext & { reason: string }) {
-		return db.transaction(async (tx) => {
-			const [site] = await tx
-				.select(siteOverview)
-				.from(sites)
-				.where(eq(sites.id, id))
-				.for("update");
-			if (!site) throw new ApiError(404, "NOT_FOUND");
-			if (site.suspended === suspended) throw new ApiError(409, "MODERATION_CONFLICT");
-			const [updated] = await tx
-				.update(sites)
-				.set({
-					suspended,
-					suspensionReason: suspended ? context.reason : null,
-					updatedAt: new Date(),
-				})
-				.where(eq(sites.id, id))
-				.returning(siteOverview);
-			await recordAdminAction(
-				tx,
-				{ ...context, status: "succeeded" },
-				suspended ? "site.suspend" : "site.resume",
-				"site",
-				id,
-				{ previousSuspended: site.suspended, suspended },
-			);
-			return updated;
-		});
+	async moderate(id: string, suspended: boolean, headers: Headers, input: unknown) {
+		const actor = await auth.api.getSession({ headers });
+		if (!actor) throw new ApiError(401, "UNAUTHORIZED");
+		const { audit } = await prepareSensitiveAction(
+			actor,
+			headers,
+			suspended ? "site.suspend" : "site.resume",
+			id,
+			input,
+		);
+		try {
+			return await db.transaction(async (tx) => {
+				const [site] = await tx
+					.select(siteOverview)
+					.from(sites)
+					.where(eq(sites.id, id))
+					.for("update");
+				if (!site) throw new ApiError(404, "NOT_FOUND");
+				await requireOrdinaryTarget(site.ownerId, tx);
+				if (site.suspended === suspended) throw new ApiError(409, "MODERATION_CONFLICT");
+				const [updated] = await tx
+					.update(sites)
+					.set({
+						suspended,
+						suspensionReason: suspended ? audit.reason : null,
+						updatedAt: new Date(),
+					})
+					.where(eq(sites.id, id))
+					.returning(siteOverview);
+				await recordAdminAction(
+					tx,
+					{
+						actorId: audit.actorId,
+						requestId: audit.requestId,
+						reason: audit.reason,
+						status: "succeeded",
+					},
+					suspended ? "site.suspend" : "site.resume",
+					"site",
+					id,
+					{ previousSuspended: site.suspended, suspended },
+				);
+				return updated;
+			});
+		} catch (error) {
+			await appendSensitiveOutcome(audit, "failed");
+			if (error && typeof error === "object") markSensitiveDenial(error);
+			throw error;
+		}
 	},
 };

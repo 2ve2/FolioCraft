@@ -2,8 +2,8 @@ export type AdminView = "overview" | "sites" | "users" | "audit";
 
 export const adminCopy = {
 	en: {
-		securityPending:
-			"Sensitive account actions are unavailable until the security controls are completed.",
+		operatorPassword: "Your password",
+		securityPending: "Sensitive account controls are not yet available in this console.",
 		label: "CONTROL CENTER",
 		overview: "Overview",
 		sites: "Sites",
@@ -88,7 +88,8 @@ export const adminCopy = {
 			"Attempted records may require investigation; they do not confirm that an operation completed.",
 	},
 	ar: {
-		securityPending: "إجراءات الحساب الحساسة غير متاحة حتى اكتمال ضوابط الأمان.",
+		operatorPassword: "كلمة مرورك",
+		securityPending: "عناصر التحكم الحساسة بالحساب غير متاحة في هذه الواجهة بعد.",
 		label: "مركز الإدارة",
 		overview: "نظرة عامة",
 		sites: "المواقع",

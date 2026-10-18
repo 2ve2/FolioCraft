@@ -1,6 +1,7 @@
 import { isAPIError } from "better-auth/api";
 import { auth } from "../../lib/auth";
 import { ApiError } from "../../lib/response-helpers";
+import { banSchema, sensitiveSchema, translateSensitiveError } from "./sensitive-action";
 
 /** Projects only approved identity fields; native rows never reach the administration client. */
 function accountView(user: {
@@ -40,6 +41,31 @@ async function nativeRead<T>(operation: () => Promise<T>): Promise<T> {
 }
 
 export const adminUserService = {
+	/** Sends only server-built expanded native bodies; hooks own credentials, target checks and audits. */
+	async mutate(
+		headers: Headers,
+		id: string,
+		operation: "ban" | "unban" | "revoke-sessions" | "revoke-session",
+		input: unknown,
+		sessionId?: string,
+	) {
+		const data = (operation === "ban" ? banSchema : sensitiveSchema).parse(input);
+		const body = { ...data, userId: id };
+		try {
+			if (operation === "ban") await auth.api.banUser({ headers, body });
+			else if (operation === "unban") await auth.api.unbanUser({ headers, body });
+			else if (operation === "revoke-sessions")
+				await auth.api.revokeUserSessions({ headers, body });
+			else
+				await auth.api.revokeUserSession({
+					headers,
+					body: { ...body, sessionId } as unknown as { sessionToken: string },
+				});
+			return { success: true };
+		} catch (error) {
+			translateSensitiveError(error);
+		}
+	},
 	/** Calls native read hooks internally and masks every email before serializing the bounded page. */
 	async list(headers: Headers, limit: number, offset: number) {
 		const result = await nativeRead(() =>

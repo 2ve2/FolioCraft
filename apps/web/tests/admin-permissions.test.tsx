@@ -84,7 +84,7 @@ test("read-only roles cannot render moderation actions and sensitive account con
 		);
 		expect(html.includes("textarea")).toBe(role === "owner" || role === "moderator");
 		expect(html).toContain(adminCopy.en.securityPending);
-		expect(html).not.toContain("<input");
+		expect(html.includes('type="password"')).toBe(role === "owner" || role === "moderator");
 		expect(html).not.toContain('role="combobox"');
 	}
 });
@@ -97,4 +97,36 @@ test("MFA enrollment and challenge copy is complete in both interface locales", 
 		for (const value of Object.values(adminSecurityCopy[locale]))
 			expect(value.trim().length).toBeGreaterThan(0);
 	expect(adminSecurityCopy.ar.title).not.toBe(adminSecurityCopy.en.title);
+});
+
+test("site moderation asks for the operator password in both locales and disables incomplete submissions", () => {
+	for (const locale of ["en", "ar"] as const) {
+		const controller = {
+			details: { id: "site", slug: "fixture", ownerId: "member", suspended: false },
+			reason: "Reviewed site",
+			password: "",
+			busy: false,
+			error: "",
+			selected: null,
+			closeSiteDetails: () => {},
+		} as unknown as Parameters<typeof AdminManagementDialogs>[0]["controller"];
+		const html = renderToStaticMarkup(
+			<AdminContext.Provider
+				value={{
+					locale,
+					setLocale: () => {},
+					user: { id: "actor", name: "Actor", email: "a***@example.com" },
+					permissions: permissionsFor("moderator"),
+				}}
+			>
+				<AdminManagementDialogs controller={controller} locale={locale} currentUserId="actor" />
+			</AdminContext.Provider>,
+		);
+		expect(html).toContain(adminCopy[locale].operatorPassword);
+		expect(html).toContain('type="password"');
+		expect(html).toContain('autoComplete="current-password"');
+		expect(html).toContain('maxLength="1024"');
+		expect(html).toContain('disabled=""');
+		expect(html).toContain('minLength="10"');
+	}
 });

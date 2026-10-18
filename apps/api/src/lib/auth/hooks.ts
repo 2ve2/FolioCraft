@@ -7,9 +7,21 @@ import {
 } from "better-auth/api";
 import { expireCookie } from "better-auth/cookies";
 import { and, eq } from "drizzle-orm";
+import { z } from "zod";
 import { env, mailConfigured, requireEmailVerification } from "../../config/env";
 import { db } from "../../db";
 import { session as sessionTable } from "../../db/schema/auth";
+import {
+	appendSensitiveOutcome,
+	banSchema,
+	markSensitiveDenial,
+	nativeSensitiveActions,
+	prepareSensitiveAction,
+	recordSensitiveDenial,
+	type SensitiveAudit,
+	sensitiveSchema,
+} from "../../services/admin/sensitive-action";
+import { ApiError } from "../response-helpers";
 import { enrolledFactor, hasTotpSession, totpFingerprint } from "./mfa";
 
 const nativePermissions: Record<string, Permission> = {
@@ -27,10 +39,10 @@ const nativePermissions: Record<string, Permission> = {
 };
 const nativeReads = new Set(["/admin/list-users", "/admin/get-user", "/admin/list-user-sessions"]);
 
-type TotpHookContext = { totpSignInAttempt?: boolean };
+type TotpHookContext = { totpSignInAttempt?: boolean; sensitiveAudit?: SensitiveAudit };
 
 export const authHooks = {
-	/** Enforces the shared policy even on in-process native calls; P2 mutations remain unavailable. */
+	/** Enforces declared internal reads and the complete security pipeline for allowed sensitive mutations. */
 	before: createAuthMiddleware(async (ctx) => {
 		const needsMail =
 			["/request-password-reset", "/send-verification-email"].includes(ctx.path) ||
@@ -90,41 +102,122 @@ export const authHooks = {
 				});
 		}
 		if (!ctx.path.startsWith("/admin/")) return;
-		const session = await getAuthoritativeSessionFromCtx(ctx);
-		if (!session) throw new APIError("UNAUTHORIZED");
-		if (session.session.impersonatedBy)
-			throw new APIError("FORBIDDEN", {
-				code: "IMPERSONATION_RESTRICTED",
-				message: "Impersonated administration is disabled",
-			});
-		if (!isStaff(session.user.role))
-			throw new APIError("FORBIDDEN", {
-				code: "ADMIN_REQUIRED",
-				message: "An active staff account is required",
-			});
-		if (
-			session.user.banned &&
-			(!session.user.banExpires || new Date(session.user.banExpires).getTime() > Date.now())
-		)
-			throw new APIError("FORBIDDEN", { code: "ACCOUNT_BANNED", message: "Account is banned" });
-		if (requireEmailVerification && !session.user.emailVerified)
-			throw new APIError("FORBIDDEN", { code: "EMAIL_NOT_VERIFIED", message: "Verify your email" });
-		if (env.ADMIN_REQUIRE_MFA && !(await hasTotpSession(session)))
-			throw new APIError("FORBIDDEN", {
-				code: "ADMIN_MFA_REQUIRED",
-				message: "Complete authenticator sign-in first",
-			});
-		const permission = nativePermissions[ctx.path];
-		if (!permission || !permissionsFor(session.user.role).includes(permission))
-			throw new APIError("FORBIDDEN", { code: "PERMISSION_DENIED", message: "Permission denied" });
-		if (!nativeReads.has(ctx.path))
-			throw new APIError("SERVICE_UNAVAILABLE", {
-				code: "ADMIN_SECURITY_PENDING",
-				message: "Sensitive account operations require the P2 security controls",
-			});
+		let denialActorId: string | undefined;
+		try {
+			const session = await getAuthoritativeSessionFromCtx(ctx);
+			denialActorId = session?.user.id;
+			if (!session) throw new APIError("UNAUTHORIZED");
+			if (session.session.impersonatedBy)
+				throw new APIError("FORBIDDEN", {
+					code: "IMPERSONATION_RESTRICTED",
+					message: "Impersonated administration is disabled",
+				});
+			if (!isStaff(session.user.role))
+				throw new APIError("FORBIDDEN", {
+					code: "ADMIN_REQUIRED",
+					message: "An active staff account is required",
+				});
+			if (
+				session.user.banned &&
+				(!session.user.banExpires || new Date(session.user.banExpires).getTime() > Date.now())
+			)
+				throw new APIError("FORBIDDEN", { code: "ACCOUNT_BANNED", message: "Account is banned" });
+			if (requireEmailVerification && !session.user.emailVerified)
+				throw new APIError("FORBIDDEN", {
+					code: "EMAIL_NOT_VERIFIED",
+					message: "Verify your email",
+				});
+			if (env.ADMIN_REQUIRE_MFA && !(await hasTotpSession(session)))
+				throw new APIError("FORBIDDEN", {
+					code: "ADMIN_MFA_REQUIRED",
+					message: "Complete authenticator sign-in first",
+				});
+			const permission = nativePermissions[ctx.path];
+			if (!permission || !permissionsFor(session.user.role).includes(permission))
+				throw new APIError("FORBIDDEN", {
+					code: "PERMISSION_DENIED",
+					message: "Permission denied",
+				});
+			const action = nativeSensitiveActions[ctx.path as keyof typeof nativeSensitiveActions];
+			if (action) {
+				try {
+					const targetSchema = (action === "user.ban" ? banSchema : sensitiveSchema).extend({
+						userId: z.string().trim().min(1).max(128),
+						...(action === "user.revoke_session"
+							? { sessionId: z.string().trim().min(1).max(128) }
+							: {}),
+					});
+					const input = targetSchema.parse(ctx.body);
+					const { userId, sessionId, ...credentials } = input as typeof input & {
+						sessionId?: string;
+					};
+					const prepared = await prepareSensitiveAction(
+						session,
+						new Headers(ctx.headers),
+						action,
+						sessionId ?? userId,
+						credentials,
+						userId,
+					);
+					const body =
+						action === "user.revoke_session"
+							? { sessionToken: prepared.token }
+							: action === "user.ban"
+								? {
+										userId,
+										banReason: prepared.data.reason,
+										banExpiresIn: (prepared.data as { banExpiresIn?: number }).banExpiresIn,
+									}
+								: { userId };
+					// Dispatch deep-merges returned bodies: erase extensions from the original as well.
+					for (const key of Object.keys(ctx.body)) delete ctx.body[key];
+					return { context: { body, context: { sensitiveAudit: prepared.audit } } };
+				} catch (error) {
+					await recordSensitiveDenial(session.user.id, action, error as object);
+					if (error instanceof ApiError || error instanceof z.ZodError) {
+						const rejection = new APIError(
+							error instanceof ApiError ? (error.status as 400) : "BAD_REQUEST",
+							{
+								code: error instanceof ApiError ? error.code : "VALIDATION_ERROR",
+								message: "Action rejected",
+							},
+						);
+						markSensitiveDenial(rejection);
+						throw rejection;
+					}
+					throw error;
+				}
+			}
+			if (!nativeReads.has(ctx.path))
+				throw new APIError("SERVICE_UNAVAILABLE", {
+					code: "ADMIN_ACTION_UNAVAILABLE",
+					message: "This administrative operation is unavailable",
+				});
+		} catch (error) {
+			const action = nativeSensitiveActions[ctx.path as keyof typeof nativeSensitiveActions];
+			if (action && denialActorId)
+				await recordSensitiveDenial(denialActorId, action, error as object);
+			throw error;
+		}
 	}),
-	/** Marks only a newly issued native TOTP challenge session; enrollment and recovery never grant proof. */
+	/** Appends sensitive outcomes and marks only native TOTP challenge sign-ins as proven sessions. */
 	after: createAuthMiddleware(async (ctx) => {
+		const audit = (ctx.context as typeof ctx.context & TotpHookContext).sensitiveAudit;
+		if (audit && Object.hasOwn(nativeSensitiveActions, ctx.path)) {
+			try {
+				await appendSensitiveOutcome(
+					audit,
+					isAPIError(ctx.context.returned) ? "failed" : "succeeded",
+				);
+				if (isAPIError(ctx.context.returned)) markSensitiveDenial(ctx.context.returned);
+			} catch {
+				throw new APIError("SERVICE_UNAVAILABLE", {
+					code: "ADMIN_ACTION_INDETERMINATE",
+					message: "Check the audit before retrying",
+				});
+			}
+			return;
+		}
 		if (
 			ctx.path !== "/two-factor/verify-totp" ||
 			!(ctx.context as typeof ctx.context & TotpHookContext).totpSignInAttempt ||

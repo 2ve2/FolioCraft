@@ -38,3 +38,37 @@ adminUserRoutes.get("/users/:id", requirePermission("user", "read"), async (c) =
 adminUserRoutes.get("/users/:id/sessions", requirePermission("user", "read"), async (c) =>
 	successResponse(c, await adminUserService.sessions(c.req.raw.headers, userId(c.req.param("id")))),
 );
+
+for (const operation of ["ban", "unban", "revoke-sessions"] as const) {
+	adminUserRoutes.post(
+		`/users/:id/${operation}`,
+		requirePermission("user", operation === "revoke-sessions" ? "revoke_session" : operation),
+		async (c) =>
+			successResponse(
+				c,
+				await adminUserService.mutate(
+					c.req.raw.headers,
+					userId(c.req.param("id")),
+					operation,
+					await c.req.json(),
+				),
+			),
+	);
+}
+
+/** Accepts a metadata session ID scoped to the selected account, never a browser-supplied token. */
+adminUserRoutes.post(
+	"/users/:id/sessions/:sessionId/revoke",
+	requirePermission("user", "revoke_session"),
+	async (c) =>
+		successResponse(
+			c,
+			await adminUserService.mutate(
+				c.req.raw.headers,
+				userId(c.req.param("id")),
+				"revoke-session",
+				await c.req.json(),
+				userId(c.req.param("sessionId")),
+			),
+		),
+);

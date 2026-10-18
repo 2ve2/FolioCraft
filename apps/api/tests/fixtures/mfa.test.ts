@@ -5,6 +5,7 @@ import { betterAuth } from "better-auth";
 import { and, eq, inArray } from "drizzle-orm";
 import { env, envSchema } from "../../src/config/env";
 import { db } from "../../src/db";
+import { adminAudit } from "../../src/db/schema/admin";
 import { session, twoFactor, user, verification } from "../../src/db/schema/auth";
 import { auth } from "../../src/lib/auth";
 import { request } from "../helpers";
@@ -116,8 +117,21 @@ async function challenge(
 
 afterAll(async () => {
 	if (ids.length) {
+		await db.delete(adminAudit).where(inArray(adminAudit.actorId, ids));
 		await db.delete(verification).where(inArray(verification.value, ids));
 		await db.delete(user).where(inArray(user.id, ids));
+		expect(await db.select({ id: user.id }).from(user).where(inArray(user.id, ids))).toHaveLength(
+			0,
+		);
+		expect(
+			await db
+				.select({ id: adminAudit.id })
+				.from(adminAudit)
+				.where(inArray(adminAudit.actorId, ids)),
+		).toHaveLength(0);
+		console.info(
+			JSON.stringify({ event: "mfa_fixture_cleanup", usersRemaining: 0, actorAuditRemaining: 0 }),
+		);
 	}
 });
 
@@ -577,5 +591,86 @@ test.skipIf(!enabled)(
 		const [reset] = await db.select().from(twoFactor).where(eq(twoFactor.id, locked.id));
 		expect(reset.failedVerificationCount).toBe(0);
 		expect(reset.lockedUntil).toBeNull();
+	},
+);
+
+test.skipIf(!enabled)(
+	"sensitive actions require this session's native TOTP proof and per-action operator password",
+	async () => {
+		const actor = await fixture("owner");
+		const member = await fixture();
+		const [targetSession] = await db.select().from(session).where(eq(session.userId, member.id));
+		const siteResponse = await request(
+			"/api/sites",
+			"POST",
+			{ slug: `mfa-${crypto.randomUUID()}`, locale: "en" },
+			member.cookie,
+		);
+		expect(siteResponse.status).toBe(200);
+		const site = (await siteResponse.json()).result as { id: string };
+		const paths = [
+			`/api/admin/users/${member.id}/ban`,
+			`/api/admin/users/${member.id}/unban`,
+			`/api/admin/users/${member.id}/revoke-sessions`,
+			`/api/admin/users/${member.id}/sessions/${targetSession.id}/revoke`,
+			`/api/admin/sites/${site.id}/suspend`,
+			`/api/admin/sites/${site.id}/resume`,
+		];
+		const data = { password, reason: "TOTP pipeline fixture" };
+		for (const path of paths)
+			expect((await request(path, "POST", data, actor.cookie)).status).toBe(403);
+		const setup = await enroll(actor);
+		for (const path of paths)
+			expect((await request(path, "POST", data, actor.cookie)).status).toBe(403);
+		await expect(
+			auth.api.banUser({
+				headers: new Headers({ Cookie: actor.cookie }),
+				body: { ...data, userId: member.id },
+			}),
+		).rejects.toMatchObject({ body: { code: "ADMIN_MFA_REQUIRED" } });
+		const pending = await challenge(actor);
+		const verified = await native(
+			auth,
+			"/two-factor/verify-totp",
+			{ code: await code(setup.secret) },
+			pending,
+		);
+		expect(verified.status).toBe(200);
+		const authenticated = cookies(verified, pending);
+		const active = await auth.api.getSession({ headers: new Headers({ Cookie: authenticated }) });
+		expect(active).toBeDefined();
+		// Old creation time must not introduce an undocumented freshness gate.
+		await db
+			.update(session)
+			.set({ createdAt: new Date(Date.now() - 86_400_000) })
+			.where(eq(session.id, active?.session.id ?? "missing"));
+		for (const path of paths) {
+			const rejected = await request(
+				path,
+				"POST",
+				{ ...data, password: "Wrong-operator-password" },
+				authenticated,
+			);
+			expect(rejected.status).toBe(400);
+		}
+		for (const path of [paths[3], paths[2], paths[0], paths[1], paths[4], paths[5]]) {
+			const completed = await request(path, "POST", data, authenticated);
+			expect(completed.status).toBe(200);
+		}
+		const events = await db.select().from(adminAudit).where(eq(adminAudit.actorId, actor.id));
+		const attempts = events.filter((row) => row.status === "attempted");
+		expect(attempts).toHaveLength(6);
+		for (const attempt of attempts) {
+			const correlated = events.filter((row) => row.requestId === attempt.requestId);
+			expect(correlated.map((row) => row.status).sort()).toEqual(["attempted", "succeeded"]);
+		}
+		await db.delete(session).where(eq(session.id, active?.session.id ?? "missing"));
+		expect((await request(paths[0], "POST", data, authenticated)).status).toBe(401);
+		await expect(
+			auth.api.unbanUser({
+				headers: new Headers({ Cookie: authenticated }),
+				body: { ...data, userId: member.id },
+			}),
+		).rejects.toMatchObject({ statusCode: 401 });
 	},
 );

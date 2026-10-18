@@ -7,9 +7,26 @@ import {
 	errorResponse,
 	validationErrorResponse,
 } from "../lib/response-helpers";
+import { recordSensitiveDenial, sensitiveRoute } from "../services/admin/sensitive-action";
 
 /** Converts route, validation and database failures into safe domain responses. */
-export const errorHandler: ErrorHandler = (error, c) => {
+export const errorHandler: ErrorHandler = async (error, c) => {
+	const action = c.req.method === "POST" ? sensitiveRoute(c.req.path) : undefined;
+	const actor = c.get("authSession");
+	if (
+		action &&
+		actor?.user &&
+		((error instanceof ApiError && error.status < 500) ||
+			(error instanceof ApiError && error.code === "ADMIN_ACTION_UNAVAILABLE") ||
+			error instanceof ZodError ||
+			error instanceof SyntaxError)
+	) {
+		try {
+			await recordSensitiveDenial(actor.user.id, action, error);
+		} catch {
+			return errorResponse(c, "Audit unavailable", 503, "ADMIN_AUDIT_UNAVAILABLE");
+		}
+	}
 	if (error instanceof ApiError) return errorResponse(c, error.code, error.status, error.code);
 	if (error instanceof ZodError) return validationErrorResponse(c, error.flatten());
 	if (error instanceof SyntaxError)

@@ -1,5 +1,10 @@
 export const text = {
 	ar: {
+		invalidPassword: "كلمة مرورك غير صحيحة.",
+		actionUnavailable: "هذا الإجراء غير متاح لهذا الحساب أو الموقع.",
+		auditUnavailable: "تعذر تسجيل المحاولة؛ لم تُنفّذ العملية.",
+		indeterminate:
+			"تعذر تأكيد النتيجة. راجع سجل الإجراءات وحالة الحساب أو الموقع قبل تكرار العملية.",
 		inbox: "الاستفسارات",
 		history: "سجل النشر",
 		all: "الكل",
@@ -31,7 +36,7 @@ export const text = {
 		users: "الحسابات",
 		suspend: "تعليق الموقع",
 		resume: "استئناف الموقع",
-		reason: "السبب (٣–٥٠٠ حرف)",
+		reason: "السبب (١٠–٥٠٠ حرف)",
 		suspended: "معلّق",
 		enabled: "متاح",
 		details: "تفاصيل الموارد",
@@ -64,6 +69,11 @@ export const text = {
 		},
 	},
 	en: {
+		invalidPassword: "Your password is incorrect.",
+		actionUnavailable: "This action is unavailable for this account or site.",
+		auditUnavailable: "The attempt could not be recorded; the operation did not run.",
+		indeterminate:
+			"The result could not be confirmed. Check the activity log and account or site state before repeating the operation.",
 		inbox: "Inquiries",
 		history: "Release history",
 		all: "All",
@@ -95,7 +105,7 @@ export const text = {
 		users: "Accounts",
 		suspend: "Suspend site",
 		resume: "Resume site",
-		reason: "Reason (3–500 characters)",
+		reason: "Reason (10–500 characters)",
 		suspended: "Suspended",
 		enabled: "Accessible",
 		details: "Resource details",

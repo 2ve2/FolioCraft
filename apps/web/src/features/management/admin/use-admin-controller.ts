@@ -37,6 +37,7 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 	const [error, setError] = useState("");
 	const [notice, setNotice] = useState("");
 	const [reason, setReason] = useState("");
+	const [password, setPassword] = useState("");
 	const [selected, setSelected] = useState<AdminUser | null>(null);
 	const [details, setDetails] = useState<AdminSite | null>(null);
 
@@ -116,6 +117,7 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 		} catch (e) {
 			if (current()) setError(errorText(e, locale));
 		} finally {
+			setPassword("");
 			actionPending.current = false;
 			if (mounted.current) setBusy(false);
 		}
@@ -129,6 +131,7 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 		setOffset(0);
 		setDetails(null);
 		setReason("");
+		setPassword("");
 		setError("");
 		setNotice("");
 	}
@@ -150,6 +153,7 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 
 		setBusy(true);
 		setReason("");
+		setPassword("");
 		setError("");
 		api<AdminSite>(`/api/admin/sites/${row.id}`)
 			.then((value) => {
@@ -169,9 +173,11 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 		return act(async (isCurrent) => {
 			await api(`/api/admin/sites/${row.id}/${row.suspended ? "resume" : "suspend"}`, "POST", {
 				reason: reason.trim(),
+				password,
 			});
 			if (!isCurrent()) return;
 			setReason("");
+			setPassword("");
 			setDetails(null);
 		});
 	}
@@ -180,6 +186,8 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 	function closeSiteDetails() {
 		viewVersion.current += 1;
 		setDetails(null);
+		setReason("");
+		setPassword("");
 	}
 
 	/** Selects a native account and resets its identity-confirmation fields. */
@@ -187,6 +195,7 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 		viewVersion.current += 1;
 		setSelected(user);
 		setReason("");
+		setPassword("");
 	}
 
 	/** Closes account management and invalidates stale selection work. */
@@ -194,6 +203,7 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 		viewVersion.current += 1;
 		setSelected(null);
 		setReason("");
+		setPassword("");
 	}
 
 	/** Changes the administrative page and clears stale user or site selections. */
@@ -201,6 +211,8 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 		viewVersion.current += 1;
 		setSelected(null);
 		setDetails(null);
+		setReason("");
+		setPassword("");
 		setOffset(next);
 	}
 
@@ -219,6 +231,8 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 		notice,
 		reason,
 		setReason,
+		password,
+		setPassword,
 		selected,
 		details,
 		selectedHeading,

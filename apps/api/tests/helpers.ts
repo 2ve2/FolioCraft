@@ -36,13 +36,14 @@ export async function error(response: Response, status: number, code?: string) {
 export async function account(label: string, ids: string[]) {
 	const unique = crypto.randomUUID();
 	const email = `folio-${label}-${unique}@example.com`;
+	const password = `Portfolio-${unique}`;
 	const response = await request(
 		"/api/auth/sign-up/email",
 		"POST",
 		{
 			name: `Integration ${label}`,
 			email,
-			password: `Portfolio-${unique}`,
+			password,
 		},
 		undefined,
 		`127.${Math.floor(Math.random() * 254) + 1}.${Math.floor(Math.random() * 254) + 1}.${Math.floor(Math.random() * 254) + 1}`,
@@ -55,5 +56,5 @@ export async function account(label: string, ids: string[]) {
 		.map((value) => value.split(";")[0])
 		.join("; ");
 	expect(cookie).toContain("session_token=");
-	return { id: body.user.id, email, cookie };
+	return { id: body.user.id, email, cookie, password };
 }

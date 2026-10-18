@@ -6,6 +6,10 @@ import { text } from "./copy";
 export function errorText(error: unknown, locale: Locale) {
 	const t = text[locale];
 	if (error instanceof ApiError) {
+		if (error.code === "INVALID_PASSWORD") return t.invalidPassword;
+		if (error.code === "ADMIN_ACTION_UNAVAILABLE") return t.actionUnavailable;
+		if (error.code === "ADMIN_AUDIT_UNAVAILABLE") return t.auditUnavailable;
+		if (error.code === "ADMIN_ACTION_INDETERMINATE") return t.indeterminate;
 		if (error.status === 429) return t.rateLimited;
 		if (error.code === "YOU_CANNOT_BAN_YOURSELF" || error.code === "YOU_CANNOT_REMOVE_YOURSELF")
 			return t.protectedAccount;
