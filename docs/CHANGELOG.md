@@ -699,6 +699,10 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Before implementation, default bun run build on runtime HEAD succeeded outside sandbox (18 outputs, exit 0). No repeated CI failure established and no build setting was changed. Final build marks /admin pages dynamic. Actual production-build HTTP checks: four admin pages return 200/no-store/noindex, evidence admin-http.json; temporary loopback server stopped. No browser/device/MFA/P2 atomicity or hosted-security acceptance claimed.
 - Updated ADMIN_CONSOLE appendices, API/OPERATIONS and architecture/source notes, DECISIONS and STATUS with actual state, accepted/superseded decisions, future transaction-executor/savepoint design and limits. Source/doc synchronization, English-only authored-doc scan and staged-path review precede the separate P1 commit. Keep generated next-env.d.ts unstaged. No push/deployment/provider/production role action. P1 ends here; wait for the human before P2.
 
+## 2026-10-18 — authorized Admin Console GitHub upload scope
+- Human explicitly requests uploading the completed local commits. Fetch the existing origin, verify remote ancestry, disclose the pending commits and push main normally without rewriting history. P0/P1 commits form one linear history; no P2, deployment, provider or account operation is authorized.
+- Preserve generated apps/web/next-env.d.ts unstaged and use work/github-upload exclusively. Record actual push results and synchronize this documentation checkpoint under the same upload authorization; no new runtime validation is required for upload-only work.
+
 
 ### Authorized P0/P1 upload result
 - Fetch exit 0; comparison 0 remote-only/3 local-only. Disclosed 14e9882 (P0), 758ace2 (approved amendment), 49e5701 (P1). Ordinary git push origin main exit 0; remote main advanced ce32242 to 49e5701. No force push or deployment.
