@@ -737,3 +737,8 @@ Human requests their own website from an attached CV and explicitly selects Engl
 ## 2026-10-19 — authorized P2a/P2b-1 upload
 - Human authorized uploading the local commits. Fetch showed0 remote-only/3 local-only; ordinary push succeeded, origin/main063d73a to f273584, including96cf08a,8c902a6 and f273584. Tracking comparison then0/0. No force push/history rewrite. STATUS updated with actual upload evidence; this documentation checkpoint is included in the same authorization.
 - No implementation, runtime test, deployment, production connection, role/key change or new remote CI acceptance. P2b-2 remains stopped. Generated next-env.d.ts stays unstaged; all Git operations use the independent checkout.
+
+## 2026-10-19 — P2b-2a authorized scope
+- Human accepts P2b-1 and authorizes only ordinary-target ban/unban, one/all session revocation and site suspend/resume: per-action operator password, existing TOTP-session gate, trimmed 10–500 reason, durable attempt followed by separate outcome and bounded authenticated actor/action permission_denied writes (10/60 seconds).
+- Compare expanded native before-hook bodies versus a direct shared complete pipeline before application edits. Preserve native HTTP interception, closed undeclared/staff/set-role/impersonation/password-setting paths, MFA isolation and unchanged freshAge. No new tables/migration, advisory/last-owner work, reveal-email, remove-user or general denial limits.
+- Use guarded local folio_test only through root runner; no production connection, real role/key change, push or deployment. Record actual checks, synchronize to work/github-upload and commit completed steps separately; preserve its generated next-env.d.ts unstaged. Stop for human review after local evidence.
