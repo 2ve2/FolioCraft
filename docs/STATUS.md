@@ -2,6 +2,12 @@
 
 Updated: 2026-10-19, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: authorized P2b-2a GitHub upload completed
+
+- Human explicitly requested uploading the completed commits. Fetch exited0 and showed0 remote-only/2 local-only commits; origin/main was an ancestor of local main. Disclosed c1d7963 (pipeline comparison) and0c922cc (sensitive-action implementation), then ordinary push exited0, advancing origin/main52db4a7 to0c922cc. No force push or history rewrite.
+- This documentation checkpoint is included in the same upload authorization. Runtime evidence remains the P2b-2a checks below; no new runtime test, remote CI acceptance, deployment, production connection or real role/key change is claimed. Generated apps/web/next-env.d.ts remains unstaged in the independent checkout.
+- Active work: none. Next action: wait for human review/instruction. P2b-2b and additional account-console UI remain unimplemented and need separate authorization; uploading does not authorize starting them.
+
 ## Latest: P2b-2a sensitive pipelines complete locally; stopped for review
 
 - Human accepts P2b-1 and authorizes P2b-2a only. Completed ordinary-target ban/unban, one/all session revocation and site suspend/resume pipelines: strict trimmed 10–500 reason, per-action operator password through auth.api.verifyPassword, authoritative existing TOTP-session gates, repeated actor/target ownership checks, durable attempted row before execution and separate succeeded/failed outcome inserts. No admin_audit UPDATE, freshAge change or freshness requirement.
