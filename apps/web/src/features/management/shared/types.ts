@@ -31,7 +31,7 @@ export type AdminSite = {
 };
 export type Audit = {
 	id: string;
-	actorId: string;
+	actorId: string | null;
 	action: string;
 	targetType: string;
 	targetId: string;

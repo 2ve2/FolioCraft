@@ -51,6 +51,13 @@ export const envSchema = z
 		ADMIN_PASSWORD_MAX_FAILURES: z.coerce.number().int().min(1).max(100).default(5),
 		ADMIN_PASSWORD_WINDOW_SECONDS: z.coerce.number().int().min(1).max(86400).default(900),
 		ADMIN_PASSWORD_BLOCK_SECONDS: z.coerce.number().int().min(1).max(86400).default(900),
+		ADMIN_AUDIT_EXPORT_MAX_ROWS: z.coerce.number().int().min(1).max(10000).default(1000),
+		BUILD_VERSION: z
+			.string()
+			.min(1)
+			.max(64)
+			.regex(/^[A-Za-z0-9._-]+$/)
+			.default("unknown"),
 		REPORT_IP_SALT: optional(z.string().min(32).max(1024)),
 		API_URL: origin,
 		WEB_URL: origin,

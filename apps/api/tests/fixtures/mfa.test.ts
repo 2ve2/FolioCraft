@@ -756,3 +756,47 @@ test.skipIf(!enabled)(
 		expect((await request(paths[2], "POST", { status: "reviewing" }, cookie)).status).toBe(401);
 	},
 );
+
+test.skipIf(!enabled)(
+	"operations endpoints require native TOTP proof and password-checked exports",
+	async () => {
+		const actor = await fixture("owner");
+		const paths = [
+			["GET", "/api/admin/system"],
+			["GET", "/api/admin/overview"],
+			["GET", "/api/admin/notices"],
+			["POST", "/api/admin/notices"],
+			["PATCH", `/api/admin/notices/${crypto.randomUUID()}`],
+			["POST", `/api/admin/notices/${crypto.randomUUID()}/disable`],
+			["POST", "/api/admin/audit/export"],
+		] as const;
+		for (const [method, path] of paths)
+			expect(
+				(await request(path, method, method === "GET" ? undefined : {}, actor.cookie)).status,
+			).toBe(403);
+		const setup = await enroll(actor),
+			pending = await challenge(actor),
+			verified = await native(
+				auth,
+				"/two-factor/verify-totp",
+				{ code: await code(setup.secret) },
+				pending,
+			);
+		expect(verified.status).toBe(200);
+		const cookie = cookies(verified, pending);
+		for (const [method, path] of paths.slice(0, 3))
+			expect((await request(path, method, undefined, cookie)).status).toBe(200);
+		expect(
+			(
+				await request(
+					"/api/admin/audit/export",
+					"POST",
+					{ filters: {}, maxRows: 1, reason: "TOTP export verification", password },
+					cookie,
+				)
+			).status,
+		).toBe(200);
+		await db.delete(session).where(eq(session.userId, actor.id));
+		expect((await request("/api/admin/system", "GET", undefined, cookie)).status).toBe(401);
+	},
+);

@@ -1,0 +1,14 @@
+.banner {
+	flex-shrink: 0;
+	max-height: 30dvh;
+	overflow: auto;
+	background: #f1edff;
+	border-block: 1px solid #d6cdf7;
+	padding: 0.75rem 1.5rem;
+	color: #34285c;
+	overflow-wrap: anywhere;
+}
+.banner p {
+	margin: 0;
+	white-space: pre-wrap;
+}

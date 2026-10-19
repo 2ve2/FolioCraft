@@ -11,7 +11,7 @@ import { recordSensitiveDenial, sensitiveRoute } from "../services/admin/sensiti
 
 /** Converts route, validation and database failures into safe domain responses. */
 export const errorHandler: ErrorHandler = async (error, c) => {
-	const action = c.req.method === "POST" ? sensitiveRoute(c.req.path) : undefined;
+	const action = ["POST", "PATCH"].includes(c.req.method) ? sensitiveRoute(c.req.path) : undefined;
 	const actor = c.get("authSession");
 	if (
 		action &&

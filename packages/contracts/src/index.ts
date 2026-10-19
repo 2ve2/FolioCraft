@@ -326,4 +326,5 @@ export const emptyDraft = (locale: Locale): Draft => ({
 	},
 });
 
+export * from "./notices";
 export * from "./reports";

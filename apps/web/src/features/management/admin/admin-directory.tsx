@@ -9,6 +9,7 @@ import type { AdminSite, AdminUser } from "../shared/types";
 import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { AdminDialog } from "./admin-dialog";
+import { AdminPagination } from "./admin-lists";
 import { AdminManagementDialogs } from "./admin-management-dialogs";
 import { directoryCopy } from "./directory-copy";
 import fields from "./operations.module.css";
@@ -234,10 +235,10 @@ function Related({ type, filter }: { type: "sites" | "reports" | "audit"; filter
 			status: string;
 			createdAt: string;
 			reason?: string;
-		}>
+		}> & { hasMore?: boolean }
 	>(
 		allowed
-			? `/api/admin/${type}?limit=20&${filter}${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`
+			? `/api/admin/${type}?limit=20&${filter}${cursor ? (type === "audit" ? `&offset=${cursor}` : `&cursor=${encodeURIComponent(cursor)}`) : ""}`
 			: null,
 		locale,
 	);
@@ -264,7 +265,18 @@ function Related({ type, filter }: { type: "sites" | "reports" | "audit"; filter
 					))}
 			</ul>
 			{!state.data?.items.length && <p>{t.empty}</p>}
-			<CursorControls cursor={cursor} next={state.data?.nextCursor} change={setCursor} />
+			{type === "audit" ? (
+				<AdminPagination
+					locale={locale}
+					count={state.data?.items.length ?? 0}
+					offset={Number(cursor) || 0}
+					more={Boolean((state.data as { hasMore?: boolean })?.hasMore)}
+					disabled={!state.data}
+					change={(v) => setCursor(String(v))}
+				/>
+			) : (
+				<CursorControls cursor={cursor} next={state.data?.nextCursor} change={setCursor} />
+			)}
 		</ReadState>
 	);
 }

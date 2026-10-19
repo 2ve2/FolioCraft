@@ -7,7 +7,17 @@ export const reasonSchema = z.object({ reason: z.string().trim().min(10).max(500
 export const auditQuery = paginationSchema.extend({
 	actorId: z.string().trim().min(1).max(128).optional(),
 	action: z.string().trim().min(1).max(100).optional(),
-	targetType: z.enum(["site", "user", "session"]).optional(),
+	targetType: z.enum(["site", "user", "session", "report", "notice", "audit"]).optional(),
 	targetId: z.string().trim().min(1).max(128).optional(),
 	status: z.enum(["attempted", "succeeded", "failed"]).optional(),
+	requestId: z.string().min(1).max(128).optional(),
+	from: z.iso.datetime().optional(),
+	to: z.iso.datetime().optional(),
 });
+
+export const auditFiltersSchema = auditQuery
+	.omit({ limit: true, offset: true })
+	.strict()
+	.refine((q) => !q.from || !q.to || new Date(q.from).getTime() <= new Date(q.to).getTime(), {
+		message: "Invalid time range",
+	});

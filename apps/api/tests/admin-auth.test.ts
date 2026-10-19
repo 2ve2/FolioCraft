@@ -52,7 +52,7 @@ function endpointDeclarations() {
 
 test("actual mounted admin endpoints declare permissions and unregistered routes fail closed", async () => {
 	const endpoints = endpointDeclarations();
-	expect(endpoints.size).toBe(19);
+	expect(endpoints.size).toBe(26);
 	for (const permissions of endpoints.values()) expect(permissions.length).toBeGreaterThan(0);
 	const owner = await fixture("owner");
 	const wildcardProbe = new Hono<AuthEnv>();
@@ -141,7 +141,7 @@ test("every role against every live admin endpoint follows independent expected 
 		admin: [],
 		unknown: [],
 	};
-	expect(endpointDeclarations().size).toBe(endpoint.length + 6);
+	expect(endpointDeclarations().size).toBe(endpoint.length + 13);
 	for (const [role, permissions] of Object.entries(expected)) {
 		const actor = await fixture(role);
 		for (const [method, path, permission] of endpoint) {

@@ -668,3 +668,13 @@
 		padding: 20px;
 	}
 }
+
+.drawer {
+	margin-block: 0;
+	margin-inline-start: auto;
+	margin-inline-end: 0;
+	height: 100dvh;
+	max-height: 100dvh;
+	width: min(40rem, 100%);
+	border-radius: 0;
+}

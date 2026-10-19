@@ -36,3 +36,22 @@
 	white-space: pre-wrap;
 	overflow-wrap: anywhere;
 }
+
+.page input[type="checkbox"] {
+	width: 20px;
+	min-height: 20px;
+	height: 20px;
+}
+
+.page > section {
+	padding: 1rem;
+}
+.page li {
+	padding: 1rem;
+}
+.page li > a {
+	padding: 0;
+}
+.page bdi {
+	overflow-wrap: anywhere;
+}

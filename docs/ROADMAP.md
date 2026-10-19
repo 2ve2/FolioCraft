@@ -86,3 +86,9 @@ Custom domains; actual aggregate analytics; subscriptions; imports; AI assistanc
 - [x] P3: generated reports migration applied only through guarded local folio_test; public strict/size/rate/dedup/privacy proof; oldest cursor/filters/role/MFA/status/audit proof; bilingual shared public and administrative UI with real local browser/keyboard/moderation acceptance.
 
 These checkboxes record the scoped local acceptance in ADMIN_CONSOLE16–17, not production rollout or a broader launch gate. Stop for human review; P4–P7 remain unauthorized in this round.
+
+## Authorized round3 local acceptance — 2026-10-19
+- [x] P4: masked account directory with real keysets/search/filters, account/session/site/report details and existing secured actions; publication-only site metadata, filters and moderation history. Internal notes explicitly deferred.
+- [x] P5: filtered/grouped activity and audited identifier-only CSV; permission-scoped system/overview with truthful state counters; generated-only bilingual notices schema and secured administration/minimized public banners. API/MFA/web/type/lint/build and real local browser checks recorded in STATUS.
+
+These checkboxes concern local acceptance only. Production notices migration/provider configuration and later P6/P7 remain outside this authorization. The human separately requested GitHub upload of the completed round3 commits; no deployment follows.

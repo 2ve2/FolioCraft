@@ -789,3 +789,11 @@ Human requested uploading the completed commits. Fresh fetch confirmed0 remote-o
 - Changed admin account/site services/routes, report relation filters and web directories/detail routes; added directory copy/styles and API/web regression suites. Existing sensitive pipelines and native hooks unchanged. Notes deferred.
 - Checks: root guarded tests45 pass (enforced child9 pass), typecheck/check318 files, web22 pass and default QA build exit0. Fixed initial correlated SQL qualifier failure; no invented acceptance from that run. Evidence work/round3-p4-*.
 - Next: P5 under the same human authorization. No push/deployment/production/real role/key changes.
+
+### Round3 P5 implemented and verified locally
+- Added generated system_notices schema/migration/meta, strict shared notice contract, secured admin CRUD and minimized public time-window API; product-only bilingual banners preserve portfolio output and Studio scrolling. Added notice form labels and narrow English phone onboarding wrap from actual browser evidence.
+- Added audit time/target/request filters and finite metadata projection, grouped detail drawer, bounded audited identifier-only formula-safe CSV; system state/configuration projection and permission-scoped overview. Existing sensitive pipeline extended by two finite actions without new authorization mechanisms. Notes remain deferred.
+- Changed API/web tests and browser-fixture cleanup. Actual guarded API51 pass/enforced MFA child10 pass; typecheck/check335 files/web25 pass/default QA build23/23 plus dynamic routes exit0. Generated consistency: no schema changes. Initial test fixture/expectation failures and browser label/overflow failures were repaired before final evidence.
+- Human later explicitly authorized GitHub upload; perform ordinary ancestry-checked push after the separate P5 commit, then stop. No deployment/production connection/real role or key changes.
+
+- Final connected Chromium run:47 checks/zero page errors; actual account reveal/revoke and notice create/edit/disable/CSV, bilingual320/1280/public-banner isolation/keyboard/no-store/no-overflow. Cleanup:2 temporary identities deleted,zero remaining, created notices cleaned;12 browser audit rows observed. Local API/web/PostgreSQL stopped. Evidence work/round3-browser.

@@ -57,3 +57,25 @@
 		max-height: none;
 	}
 }
+
+@media (min-width: 971px) {
+	.studio-notice-shell:has(> .studio-shell--split-scroll) {
+		display: flex;
+		flex-direction: column;
+		height: 100dvh;
+		overflow: hidden;
+	}
+	.studio-notice-shell > .studio-shell--split-scroll {
+		flex: 1;
+		min-height: 0;
+		height: auto;
+	}
+}
+
+@media (max-width: 480px) {
+	.studio-notice-shell .welcome-header .header-actions {
+		flex-wrap: wrap;
+		max-width: 100%;
+		justify-content: center;
+	}
+}

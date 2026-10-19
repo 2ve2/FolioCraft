@@ -3,6 +3,8 @@ export type AdminView = "overview" | "sites" | "users" | "audit";
 
 export const adminCopy = {
 	en: {
+		system: "System",
+		notices: "Notices",
 		reports: "Reports",
 		report: adminReportCopy.en,
 		operatorPassword: "Your password",
@@ -91,6 +93,8 @@ export const adminCopy = {
 			"Attempted records may require investigation; they do not confirm that an operation completed.",
 	},
 	ar: {
+		system: "النظام",
+		notices: "التنبيهات",
 		reports: "البلاغات",
 		report: adminReportCopy.ar,
 		operatorPassword: "كلمة مرورك",

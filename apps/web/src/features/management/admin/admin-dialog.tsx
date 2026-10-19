@@ -11,8 +11,10 @@ export function AdminDialog({
 	onClose,
 	busy,
 	headingRef,
+	drawer = false,
 	children,
 }: {
+	drawer?: boolean;
 	title: string;
 	locale: Locale;
 	onClose: () => void;
@@ -37,7 +39,7 @@ export function AdminDialog({
 	return (
 		<dialog
 			ref={dialog}
-			className={styles.dialog}
+			className={`${styles.dialog} ${drawer ? styles.drawer : ""}`}
 			dir={locale === "ar" ? "rtl" : "ltr"}
 			aria-labelledby={titleId}
 			onKeyDown={(event) => {

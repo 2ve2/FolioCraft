@@ -6,6 +6,7 @@ import app from "../../src/app";
 import { db, pool } from "../../src/db";
 import { adminAudit } from "../../src/db/schema/admin";
 import { user } from "../../src/db/schema/auth";
+import { systemNotices } from "../../src/db/schema/notices";
 
 const ids: string[] = [];
 const nonce = crypto.randomUUID();
@@ -73,6 +74,7 @@ async function cleanup() {
 			new URL("../../../../work/admin-browser-qa/database-evidence.json", import.meta.url),
 			JSON.stringify({ events }),
 		);
+		await db.delete(systemNotices).where(inArray(systemNotices.createdBy, ids));
 		await db.delete(adminAudit).where(inArray(adminAudit.actorId, ids));
 		await db.delete(user).where(inArray(user.id, ids));
 	}

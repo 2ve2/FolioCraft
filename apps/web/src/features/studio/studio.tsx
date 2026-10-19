@@ -2,6 +2,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { LanguageSwitch } from "../../components/ui/language-switch";
+import { PublicNotices } from "../../components/ui/public-notices";
+import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import { SiteOperations } from "../management/site/site-operations";
 import { LoadingScreen } from "./loading-screen";
 import { OnboardingScreen } from "./onboarding-screen";
@@ -14,7 +16,7 @@ import { WorkspacePreview } from "./workspace-preview";
 import { WorkspaceSidebar } from "./workspace-sidebar";
 
 /** Selects the authenticated workspace screen and composes its editing sections. */
-export function Studio() {
+function StudioWorkspace() {
 	const {
 		locale,
 		localeReady,
@@ -267,6 +269,17 @@ export function Studio() {
 					/>
 				</div>
 			</div>
+		</div>
+	);
+}
+
+/** Notices are product chrome across the Studio's loading, onboarding and editing screens. */
+export function Studio() {
+	const [locale] = useInterfaceLocale();
+	return (
+		<div className="studio-notice-shell">
+			<PublicNotices locale={locale} />
+			<StudioWorkspace />
 		</div>
 	);
 }
