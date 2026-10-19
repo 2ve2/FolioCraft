@@ -6,8 +6,10 @@ compatibility_date = "2026-10-14"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 workers_dev = true
 
+# Prepared custom-domain values only; no routes/domains have been provisioned.
+# Worker names/bindings remain unchanged. See docs/CLOUDFLARE.md before deployment.
 [vars]
-API_URL = "https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev"
+API_URL = "https://api.lord2ve.tech"
 
 [assets]
 directory = ".open-next/assets"

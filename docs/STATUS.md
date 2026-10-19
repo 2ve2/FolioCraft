@@ -1,6 +1,14 @@
 # Current status
 
-Updated: 2026-10-19, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
+Updated: 2026-10-20, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
+
+## Latest: custom domain preparation completed locally
+
+- Completed: non-secret API/web Wrangler vars prepare API https://api.lord2ve.tech and canonical web https://lord2ve.tech; .env.example files retain localhost and explain overrides/build-time public values. No runtime TS behavior change, no domain routes or bindings added. Worker names/workers_dev remain unchanged.
+- Evidence: CUSTOM_DOMAIN_REVIEW lists every pre-edit hostname hit (11 matching lines/7 files), scanned1807 UTF-8 files and explicit excluded counts. Three executable origin lines replaced; eight historical/context lines retained. Per-claim code/inference labels cover environment validation, single-origin HTTP/native auth, client credentials, host-only Secure/HttpOnly/Lax defaults and public metadata. Same-site hosted cookie success remains an inference, not browser acceptance.
+- Actual checks: root guarded bun run test exit0 on local folio_test:57 pass/12 skips/2999 assertions across22 files, including one temporary preparation proof (8 assertions) for canonical acceptance and www/untrusted CORS/write rejection. Native MFA child11 pass/308 assertions. Eleven outer skips execute in that child; one historical opt-in round4 cleanup proof remains skipped. Permanent suite source is unchanged (baseline56 pass/2991 assertions); temporary proof moved to ignored work/custom-domains after verification. Typecheck exit0, web27 pass/0 fail/600 assertions; Biome352 files with temporary proof and351 after removal, both exit0. No build/browser/hosted/remote-CI acceptance claimed.
+- CLOUDFLARE contains a short human checklist for both Worker custom domains, per-worker runtime/build vars, exact canonical-only R2 PUT CORS JSON, www redirect and later cookie/upload/public/canonical/robots/sitemap retests. Every operational action is explicitly NOT PERFORMED. Historical deployment evidence is preserved; actual env files/secrets/provider resources were not inspected or modified.
+- Active work: synchronize this preparation to independent work/github-upload, separate commit and ordinary push to main under explicit human authorization, then STOP. Fresh fetch confirmed origin/main and HEAD at df9805c (0/0) before changes. Preserve generated next-env.d.ts unstaged and ADMIN_CONSOLE_TASK.md untracked; never stage the home-level repository. No blockers to local preparation. External dependencies: later human Cloudflare domain/redirect/R2 configuration and separately authorized build/deployment/hosted acceptance. PostgreSQL is stopped after checks; no standalone web/API service was started. Git/final response records the actual commit/push result without a second upload-checkpoint commit.
 
 ## Latest: Round5 name-only search security correction
 

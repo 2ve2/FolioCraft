@@ -6,7 +6,7 @@ Last reconciled: 2026-10-15, Asia/Riyadh. Deployment and browser initial evidenc
 
 ## Deployed trial
 
-- Actual API and web Worker names/origins remain in apps/api/wrangler.toml and apps/web/wrangler.toml. They were not renamed or redeployed by the2026-10-18 cleanup.
+- Historical trial Worker names are foliocraft-api-trial and foliocraft-trial. Their recorded origins were https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev and https://foliocraft-trial.bdalrhmnmtwq53.workers.dev. They were not renamed or redeployed by the2026-10-18 cleanup. The2026-10-20 local preparation changes only future origin vars in the manifests; it does not establish live domain configuration.
 - Any trial-api.example.com/trial-web.example.com URLs in documentation are reserved illustrative placeholders; replace them with the existing reviewed origins before an authorized build.
 - Last verified web version: `fee5d122-d173-4dc9-8ea1-f4538807e8c8`.
 - Last verified API version: `970d67cc-4caa-4ab8-aac7-b73c034989a2`.
@@ -78,3 +78,31 @@ Frontend rebuilt and redeployed after five focused parser tests, typechecks/Biom
 - Initial bounded disposable fixture before that decision: authenticated intent200, generated PNG PUT200, completion502 STORAGE_PROVIDER_ERROR. Local workerd subsequently read the same staging bytes with HEAD200/GET200;174 bytes matched. Local Images decoded48x48. Exact hosted phase remains unknown; no claim that Images billing, CORS or any particular S3 operation caused it.
 - Source adds safe storage phase/code diagnostics without signed URLs/keys/provider messages. These remain undeployed. Local UI/guarded lifecycle proof covers removal, deletion cleanup and retained releases with simulated storage transport; it is not live hosted upload/delete acceptance.
 - Future authorized rollout must update API before web for the additive optional visual fields; old API parsing may discard new appearance preferences. No DDL migration or secret transfer is needed for these source changes. Complete live decoding/copy/render and bounded deletion/fixture cleanup before marking hosted media accepted.
+
+## Custom domain checklist
+
+Prepared 2026-10-20 for the human-owned test domain. **Every operational action below is NOT YET PERFORMED.** The edited non-secret Wrangler vars are preparation, not evidence that the deployed workers changed. Historical trial evidence above remains historical. Worker names, bindings, secrets and live resources were not changed.
+
+- [ ] **NOT PERFORMED:** add Workers Custom Domain `lord2ve.tech` to web Worker `foliocraft-trial`, and `api.lord2ve.tech` to API Worker `foliocraft-api-trial`. No domain routes have been added to the local manifests. Human performs domain/DNS/TLS configuration later.
+- [ ] **NOT PERFORMED:** configure API worker runtime `API_URL=https://api.lord2ve.tech`, `WEB_URL=https://lord2ve.tech`, retaining `NODE_ENV=production` and existing separately reviewed non-origin settings. Exactly one web origin; no www, wildcard, comma-separated list or trailing slash. Do not transfer or rotate secrets as part of this checklist.
+- [ ] **NOT PERFORMED:** configure web worker runtime `API_URL=https://api.lord2ve.tech`; rebuild web with `NEXT_PUBLIC_API_URL=https://api.lord2ve.tech` and `NEXT_PUBLIC_WEB_URL=https://lord2ve.tech` in the build environment. Public values are compiled; editing runtime vars alone is insufficient. Any build/deployment needs separate authorization.
+- [ ] **NOT PERFORMED:** replace the private R2 bucket CORS policy with this exact dashboard JSON for direct presigned uploads. This grants browser PUT from the canonical origin only; it does not make the bucket public. No R2 operation was executed here.
+
+```json
+[
+  {
+    "AllowedOrigins": ["https://lord2ve.tech"],
+    "AllowedMethods": ["PUT"],
+    "AllowedHeaders": ["Content-Type"],
+    "ExposeHeaders": ["ETag"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+- [ ] **NOT PERFORMED:** human configures a Cloudflare redirect matching hostname `www.lord2ve.tech` to `https://lord2ve.tech` with the original path/query and permanent301 status. Configure the redirect hostname/DNS/TLS there; do not add www to application CORS/trusted origins. No application alias is introduced. Existing workers_dev flags remain unchanged by this preparation; any later retirement of trial hostnames is a separate human operation.
+- [ ] **NOT PERFORMED:** after separately authorized rollout, test actual browser sign-in/session cookie persistence/reload/sign-out, native MFA and forbidden-origin requests (including www); confirm Secure/HttpOnly/SameSite=Lax and absence of Domain on API cookies. No hosted-cookie acceptance is inferred from source review.
+- [ ] **NOT PERFORMED:** test authenticated upload intent, actual browser R2 PUT, completion, published image rendering and disposable-fixture cleanup; verify ownership failures and private draft isolation. Test a published site and ensure unpublished/suspended content remains unavailable.
+- [ ] **NOT PERFORMED:** inspect canonical/OpenGraph links, `/robots.txt`, `/sitemap.xml` and published per-site sitemap URLs; all web URLs must derive from `NEXT_PUBLIC_WEB_URL=https://lord2ve.tech`, with public assets using the configured API origin. Confirm runtime SSR reaches the API subdomain.
+
+Code evidence, cookie inference, full legacy-hostname inventory and search exclusions are in [CUSTOM_DOMAIN_REVIEW.md](CUSTOM_DOMAIN_REVIEW.md). JSON shape follows [Cloudflare R2 CORS documentation](https://developers.cloudflare.com/r2/buckets/cors/).

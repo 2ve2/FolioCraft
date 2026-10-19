@@ -12,11 +12,13 @@ workers_dev = true
 [images]
 binding = "IMAGES"
 
+# Prepared custom-domain values only; no routes/domains have been provisioned.
+# Worker names/bindings remain unchanged. See docs/CLOUDFLARE.md before deployment.
 [vars]
 NODE_ENV = "production"
 TRIAL_SKIP_EMAIL_VERIFICATION = "true"
-API_URL = "https://foliocraft-api-trial.bdalrhmnmtwq53.workers.dev"
-WEB_URL = "https://foliocraft-trial.bdalrhmnmtwq53.workers.dev"
+API_URL = "https://api.lord2ve.tech"
+WEB_URL = "https://lord2ve.tech"
 DB_CONNECT_TIMEOUT_MS = "20000"
 # Supply reviewed HTTPS API_URL and WEB_URL before runtime verification.
 # DATABASE_URL, BETTER_AUTH_SECRET and provider credentials are Workers secrets.
