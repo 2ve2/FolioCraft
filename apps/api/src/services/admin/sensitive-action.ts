@@ -101,7 +101,15 @@ export async function recordSensitiveDenial(
 		db,
 		{ actorId, requestId: crypto.randomUUID(), status: "failed" },
 		"permission_denied",
-		action.startsWith("site.") ? "site" : "user",
+		action.startsWith("request.")
+			? "request"
+			: action.startsWith("notice.")
+				? "notice"
+				: action.startsWith("audit.")
+					? "audit"
+					: action.startsWith("site.")
+						? "site"
+						: "user",
 		"",
 		{
 			action,

@@ -38,13 +38,19 @@ async function create(actor: Awaited<ReturnType<typeof account>>, type = "export
 	return row.id;
 }
 test("P6 endpoint role matrix, strict filters and read-only staff projection", async () => {
+	const subject = await account("rights-role-matrix-subject", ids);
 	for (const role of ["owner", "support", "moderator", "analyst", "user"]) {
 		const actor = await account(`rights-${role}`, ids);
 		await db.update(user).set({ role }).where(eq(user.id, actor.id));
+		const [matrix] = await db
+			.insert(dataRequests)
+			.values({ email: "matrix-contact@example.com", type: "export", dueAt: new Date() })
+			.returning();
+		requestIds.push(matrix.id);
 		const read = role === "owner" || role === "support";
-		for (const path of ["/requests", `/requests/${crypto.randomUUID()}`]) {
+		for (const path of ["/requests", `/requests/${matrix.id}`]) {
 			expect((await request(`/api/admin${path}`, "GET", undefined, actor.cookie)).status).toBe(
-				read ? (path === "/requests" ? 200 : 404) : 403,
+				read ? 200 : 403,
 			);
 		}
 		const staff = await request("/api/admin/staff", "GET", undefined, actor.cookie);
@@ -62,26 +68,22 @@ test("P6 endpoint role matrix, strict filters and read-only staff projection", a
 				"POST",
 				{ ...credentials(actor), request: { email: actor.email, type: "correction" } },
 			],
+			[`/requests/${matrix.id}/status`, "PATCH", { ...credentials(actor), status: "in_progress" }],
 			[
-				`/requests/${crypto.randomUUID()}/status`,
-				"PATCH",
-				{ ...credentials(actor), status: "in_progress" },
-			],
-			[
-				`/requests/${crypto.randomUUID()}/subject`,
+				`/requests/${matrix.id}/subject`,
 				"POST",
 				{
 					...credentials(actor),
-					userId: "none",
-					confirmation: "none",
+					userId: subject.id,
+					confirmation: subject.id,
 					evidence: "Independent verification evidence",
 				},
 			],
-			[`/requests/${crypto.randomUUID()}/export`, "POST", credentials(actor)],
+			[`/requests/${matrix.id}/export`, "POST", credentials(actor)],
 		] as const) {
 			const response = await request(`/api/admin${path}`, method, body, actor.cookie);
 			const allowed = path.endsWith("/export") ? role === "owner" : read;
-			expect(response.status).toBe(allowed ? (path === "/requests" ? 201 : 404) : 403);
+			expect(response.status).toBe(allowed ? (path === "/requests" ? 201 : 200) : 403);
 			if (response.status === 201)
 				requestIds.push((await result<{ id: string }>(response, 201)).id);
 		}
@@ -92,6 +94,11 @@ test("P6 endpoint role matrix, strict filters and read-only staff projection", a
 					400,
 				);
 	}
+	const denials = await db.select().from(adminAudit).where(inArray(adminAudit.actorId, ids));
+	for (const event of denials.filter(
+		(r) => r.action === "permission_denied" && String(r.metadata.action).startsWith("request."),
+	))
+		expect(event.targetType).toBe("request");
 	for (const path of ["/requests", "/staff"])
 		expect((await request(`/api/admin${path}`)).status).toBe(401);
 });
@@ -100,6 +107,7 @@ test("request state machine, verified subject, bounded export privacy, durable a
 		subject = await account("rights-subject", ids),
 		other = await account("rights-other", ids);
 	await db.update(user).set({ role: "owner" }).where(eq(user.id, owner.id));
+	await db.update(user).set({ name: "صاحب الطلب المتحقق منه" }).where(eq(user.id, subject.id));
 	const id = await create(owner),
 		cred = credentials(owner);
 	const change = (status: string, notes?: string) =>
@@ -180,6 +188,7 @@ test("request state machine, verified subject, bounded export privacy, durable a
 		env.DATA_REQUEST_EXPORT_MAX_BYTES = 32;
 		await error(await exportData(), 413);
 		env.DATA_REQUEST_EXPORT_MAX_BYTES = beforeBytes;
+		env.DATA_REQUEST_EXPORT_MAX_ROWS = 3;
 		const output = await withRequestDatabase(exportData);
 		expect(output.status).toBe(200);
 		expect(output.headers.get("cache-control")).toContain("no-store");
@@ -204,6 +213,10 @@ test("request state machine, verified subject, bounded export privacy, durable a
 			'"adminTotpFactor"',
 		])
 			expect(text).not.toContain(secret);
+		expect(new TextEncoder().encode(text).byteLength).toBeGreaterThan(text.length);
+		env.DATA_REQUEST_EXPORT_MAX_BYTES = text.length;
+		await error(await exportData(), 413, "REQUEST_EXPORT_TOO_LARGE");
+		env.DATA_REQUEST_EXPORT_MAX_BYTES = beforeBytes;
 		const originalWriter = auditWriter.recordAdminAction;
 		const write = spyOn(auditWriter, "recordAdminAction").mockImplementation(
 			async (...args: Parameters<typeof recordAdminAction>) => {
@@ -348,4 +361,48 @@ test("all request transitions are enforced and transactional audit failure rolls
 	const events = await db.select().from(adminAudit).where(eq(adminAudit.targetId, id));
 	expect(events.filter((r) => r.status === "failed").length).toBe(1);
 	expect(events.filter((r) => r.status === "attempted").length).toBe(2);
+});
+
+test("due period configuration is bounded and deleted verified subjects cannot export", async () => {
+	const { envSchema } = await import("../src/config/env");
+	for (const [key, value] of [
+		["DATA_REQUEST_DUE_DAYS", "0"],
+		["DATA_REQUEST_DUE_DAYS", "366"],
+		["DATA_REQUEST_EXPORT_MAX_ROWS", "0"],
+		["DATA_REQUEST_EXPORT_MAX_ROWS", "10001"],
+		["DATA_REQUEST_EXPORT_MAX_BYTES", "1023"],
+		["DATA_REQUEST_EXPORT_MAX_BYTES", "10485761"],
+	])
+		expect(envSchema.safeParse({ ...process.env, [key]: value }).success).toBe(false);
+	const actor = await account("rights-deleted-owner", ids),
+		subject = await account("rights-deleted-subject", ids);
+	await db.update(user).set({ role: "owner" }).where(eq(user.id, actor.id));
+	const id = await create(actor),
+		[created] = await db.select().from(dataRequests).where(eq(dataRequests.id, id));
+	expect(
+		Math.abs(
+			created.dueAt.getTime() - created.createdAt.getTime() - env.DATA_REQUEST_DUE_DAYS * 86400000,
+		),
+	).toBeLessThan(1000);
+	expect(created.userId).toBeNull();
+	expect(created.subjectVerifiedAt).toBeNull();
+	await db
+		.update(dataRequests)
+		.set({
+			status: "in_progress",
+			userId: subject.id,
+			subjectVerifiedAt: new Date(),
+			subjectVerifiedBy: actor.id,
+			notes: "Independent identity verification fixture evidence",
+		})
+		.where(eq(dataRequests.id, id));
+	await db.delete(user).where(eq(user.id, subject.id));
+	const [after] = await db.select().from(dataRequests).where(eq(dataRequests.id, id));
+	expect(after.userId).toBeNull();
+	expect(after.subjectVerifiedAt).not.toBeNull();
+	await error(
+		await request(`/api/admin/requests/${id}/export`, "POST", credentials(actor), actor.cookie),
+		409,
+		"REQUEST_SUBJECT_REQUIRED",
+	);
 });

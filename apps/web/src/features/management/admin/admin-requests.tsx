@@ -130,30 +130,36 @@ export function AdminRequests({ id }: { id?: string }) {
 			) : (
 				<>
 					<div className={layout.filters}>
-						<SelectControl
-							label={t.status}
-							value={status}
-							onChange={(v) => {
-								setStatus(v);
-								setCursor(null);
-							}}
-							options={[
-								{ value: "", label: t.all },
-								...dataRequestStatuses.map((v) => ({ value: v, label: t[v] })),
-							]}
-						/>
-						<SelectControl
-							label={t.type}
-							value={type}
-							onChange={(v) => {
-								setType(v);
-								setCursor(null);
-							}}
-							options={[
-								{ value: "", label: t.all },
-								...dataRequestTypes.map((v) => ({ value: v, label: t[v] })),
-							]}
-						/>
+						<div>
+							<span>{t.status}</span>
+							<SelectControl
+								label={t.status}
+								value={status}
+								onChange={(v) => {
+									setStatus(v);
+									setCursor(null);
+								}}
+								options={[
+									{ value: "", label: t.all },
+									...dataRequestStatuses.map((v) => ({ value: v, label: t[v] })),
+								]}
+							/>
+						</div>
+						<div>
+							<span>{t.type}</span>
+							<SelectControl
+								label={t.type}
+								value={type}
+								onChange={(v) => {
+									setType(v);
+									setCursor(null);
+								}}
+								options={[
+									{ value: "", label: t.all },
+									...dataRequestTypes.map((v) => ({ value: v, label: t[v] })),
+								]}
+							/>
+						</div>
 						<label>
 							<input
 								type="checkbox"
@@ -283,12 +289,15 @@ export function AdminRequests({ id }: { id?: string }) {
 									<input name="email" type="email" required maxLength={254} dir="ltr" />
 								</label>
 								<input type="hidden" name="type" value={formType} />
-								<SelectControl
-									label={t.type}
-									value={formType}
-									onChange={setFormType}
-									options={dataRequestTypes.map((v) => ({ value: v, label: t[v] }))}
-								/>
+								<div>
+									<span>{t.type}</span>
+									<SelectControl
+										label={t.type}
+										value={formType}
+										onChange={setFormType}
+										options={dataRequestTypes.map((v) => ({ value: v, label: t[v] }))}
+									/>
+								</div>
 							</>
 						)}
 						{operation === "subject" && (
@@ -312,15 +321,18 @@ export function AdminRequests({ id }: { id?: string }) {
 							<>
 								<p>{t.closureWarning}</p>
 								<input type="hidden" name="status" value={formStatus} />
-								<SelectControl
-									label={t.status}
-									value={formStatus}
-									onChange={setFormStatus}
-									options={dataRequestTransitions[detail.status].map((v) => ({
-										value: v,
-										label: t[v],
-									}))}
-								/>
+								<div>
+									<span>{t.status}</span>
+									<SelectControl
+										label={t.status}
+										value={formStatus}
+										onChange={setFormStatus}
+										options={dataRequestTransitions[detail.status].map((v) => ({
+											value: v,
+											label: t[v],
+										}))}
+									/>
+								</div>
 								<label className="field">
 									{t.notes}
 									<textarea name="notes" required minLength={10} maxLength={500} dir="auto" />

@@ -6,6 +6,7 @@ import app from "../../src/app";
 import { db, pool } from "../../src/db";
 import { adminAudit } from "../../src/db/schema/admin";
 import { user } from "../../src/db/schema/auth";
+import { dataRequests } from "../../src/db/schema/data-requests";
 import { systemNotices } from "../../src/db/schema/notices";
 
 const ids: string[] = [];
@@ -26,7 +27,11 @@ async function account(label: string, name: string) {
 	const email = `browser-${label}-${nonce}@example.com`;
 	const response = await app.request("http://127.0.0.1:4400/api/auth/sign-up/email", {
 		method: "POST",
-		headers: { Origin: "http://127.0.0.1:4300", "Content-Type": "application/json" },
+		headers: {
+			Origin: "http://127.0.0.1:4300",
+			"Content-Type": "application/json",
+			"x-folio-client-ip": `127.91.${Math.floor(Math.random() * 254)}.${Math.floor(Math.random() * 254)}`,
+		},
 		body: JSON.stringify({ name, email, password }),
 	});
 	if (response.status !== 200) throw new Error(`Fixture signup failed: ${response.status}`);
@@ -44,7 +49,7 @@ async function account(label: string, name: string) {
 
 /** Dispatches seed operations through the real application protocol. */
 async function domain(path: string, method: string, body: unknown, cookie: string) {
-	const response = await app.request(`http://127.0.0.1:4400${path}`, {
+	const response = await fetch(`http://127.0.0.1:4400${path}`, {
 		method,
 		headers: {
 			Origin: "http://127.0.0.1:4300",
@@ -74,6 +79,7 @@ async function cleanup() {
 			new URL("../../../../work/admin-browser-qa/database-evidence.json", import.meta.url),
 			JSON.stringify({ events }),
 		);
+		await db.delete(dataRequests).where(inArray(dataRequests.handledBy, ids));
 		await db.delete(systemNotices).where(inArray(systemNotices.createdBy, ids));
 		await db.delete(adminAudit).where(inArray(adminAudit.actorId, ids));
 		await db.delete(user).where(inArray(user.id, ids));
@@ -98,6 +104,14 @@ try {
 	if (sourceDraft && collectAssetIds(sourceDraft).length)
 		throw new Error("Browser fixture must not reuse another site's assets");
 	const admin = await account("admin", "مسؤول تجربة الواجهة — QA administrator");
+	const staff: Record<string, { id: string; email: string }> = {};
+	if (process.env.FOLIO_ROUND4_BROWSER === "true") {
+		for (const role of ["moderator", "support", "analyst"]) {
+			const actor = await account(role, `Disposable ${role} browser fixture`);
+			await db.update(user).set({ role }).where(eq(user.id, actor.id));
+			staff[role] = { id: actor.id, email: actor.email };
+		}
+	}
 	const owner = await account(
 		"owner",
 		"اسم طويل لاختبار المحاذاة والتفاف النص العربي مع English mixed content",
@@ -127,6 +141,25 @@ try {
 		owner.cookie,
 	);
 	await domain(`/api/sites/${site.id}/releases`, "POST", { revision: site.revision }, owner.cookie);
+	let reportId: string | undefined;
+	if (process.env.FOLIO_ROUND4_BROWSER === "true") {
+		await domain(
+			`/api/public/sites/${site.slug}/report`,
+			"POST",
+			{
+				category: "other",
+				message: "Disposable round4 browser report",
+				reporterEmail: "masked-reporter@example.com",
+			},
+			owner.cookie,
+		);
+		const { contentReports } = await import("../../src/db/schema/reports");
+		const [report] = await db
+			.select({ id: contentReports.id })
+			.from(contentReports)
+			.where(eq(contentReports.siteId, site.id));
+		reportId = report?.id;
+	}
 	let englishSite: { id: string; slug: string } | undefined;
 	if (process.env.FOLIO_REPORT_BROWSER === "true") {
 		const englishOwner = await account("report-en", "Temporary English report fixture");
@@ -168,6 +201,8 @@ try {
 			password,
 			site: { id: site.id, slug: site.slug },
 			englishSite,
+			staff,
+			reportId,
 		}),
 	);
 	await chmod(credentials, 0o600);

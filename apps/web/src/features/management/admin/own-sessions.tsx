@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { authClient } from "../../../lib/auth-client";
 import { adminSecurityCopy } from "./admin-security-copy";
+import fields from "./operations.module.css";
 
 type OwnSession = { id: string; token: string; createdAt: Date; expiresAt: Date };
 /** Uses Better Auth's native own-session protocol; no management API or other-account ID. */
@@ -50,7 +51,7 @@ export function OwnSessions({ locale, currentId }: { locale: Locale; currentId: 
 		}
 	}
 	return (
-		<section aria-busy={busy}>
+		<section className={fields.page} aria-busy={busy}>
 			<h2>{t.sessions}</h2>
 			<p>{t.sessionsIntro}</p>
 			{failed ? (

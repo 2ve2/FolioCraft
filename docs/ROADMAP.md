@@ -92,3 +92,10 @@ These checkboxes record the scoped local acceptance in ADMIN_CONSOLE16–17, not
 - [x] P5: filtered/grouped activity and audited identifier-only CSV; permission-scoped system/overview with truthful state counters; generated-only bilingual notices schema and secured administration/minimized public banners. API/MFA/web/type/lint/build and real local browser checks recorded in STATUS.
 
 These checkboxes concern local acceptance only. Production notices migration/provider configuration and later P6/P7 remain outside this authorization. The human separately requested GitHub upload of the completed round3 commits; no deployment follows.
+
+## Authorized round4 local scope — 2026-10-19
+- [x] Mandatory masked-email search oracle fix with authoritative read_email and role regression (94fefd9).
+- [x] P6 scoped local requests/one-time independently attested subject/bounded owner JSON/read-only staff/native own-session UI, generated-only local0007 and full API/MFA/web/type/style/build checks (a02eca6).
+- [x] P7 final four-role/all-page browser matrix, operations/incident/open-retention/original-plan gap mapping, final regression and verified cleanup. Stop after the later human-authorized upload.
+
+These are scoped acceptance checks, not a claim that every original console feature is implemented. ADMIN_CONSOLE22 explicitly lists remaining original-plan gaps. The human later authorized uploading the completed commits; no production migration or deployment follows.
