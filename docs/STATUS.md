@@ -2,6 +2,13 @@
 
 Updated: 2026-10-19, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: authorized round3 GitHub upload completed
+
+- Human explicitly requested uploading the commits. Fresh fetch succeeded, origin/main was an ancestor, and the pre-push comparison showed0 remote-only/2 local-only. Ordinary push exited0, advancing origin/main from9ff4e46 to e107e41:18ed073 (P4) and e107e41 (P5). No force push or history rewrite.
+- This documentation checkpoint records that upload under the same authorization and is included in the final ordinary synchronization. Runtime evidence remains the completed round3 checks below; no remote CI, deployment, production connection or real role/key change is claimed.
+- Canonical docs/source synchronized to work/github-upload before each commit. Preexisting generated apps/web/next-env.d.ts remains unstaged; untracked docs/ADMIN_CONSOLE_TASK.md remains excluded. Local API/web/PostgreSQL stopped and disposable fixtures/session files cleaned.
+- Active work: none. Blockers: none. Next action: stop for human review. P6/P7, production notices migration/configuration and deployment remain outside this authorization.
+
 ## Latest: round3 P4/P5 complete locally; authorized upload next
 
 - P4 commit18ed073 adds searchable/filterable masked account keysets, focused account/session/site/report detail and existing secured actions, plus publication-only site metadata/moderation history. P5 adds grouped filtered activity/detail/identifier CSV, system/permission-scoped overview, generated bilingual notices and product-only banners. Notes and P6/P7 remain deferred.

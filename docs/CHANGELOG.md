@@ -797,3 +797,7 @@ Human requested uploading the completed commits. Fresh fetch confirmed0 remote-o
 - Human later explicitly authorized GitHub upload; perform ordinary ancestry-checked push after the separate P5 commit, then stop. No deployment/production connection/real role or key changes.
 
 - Final connected Chromium run:47 checks/zero page errors; actual account reveal/revoke and notice create/edit/disable/CSV, bilingual320/1280/public-banner isolation/keyboard/no-store/no-overflow. Cleanup:2 temporary identities deleted,zero remaining, created notices cleaned;12 browser audit rows observed. Local API/web/PostgreSQL stopped. Evidence work/round3-browser.
+
+## 2026-10-19 — Authorized round3 upload completed
+- Explicit later human instruction authorized upload. Fetch/ancestry checks passed, with0 remote-only/2 local-only before ordinary push. Push exited0, advancing origin/main9ff4e46 to e107e41 (P4:18ed073; P5:e107e41). No force push/history rewrite.
+- This documentation checkpoint is synchronized and uploaded under the same authorization. Existing local API/MFA/web/build/47-check browser evidence remains unchanged; remote CI/production/deployment not claimed. Stop for review; P6/P7 not started.
