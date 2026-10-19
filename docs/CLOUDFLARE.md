@@ -2,6 +2,8 @@
 
 > **Testing only:** The Cloudflare-hosted instance is a trial for friends to test and report issues. It is not a final launch or an accepted production release. Deployment to Cloudflare makes the test instance reachable; it does not establish production readiness.
 
+> Latest test-domain rollout: 2026-10-20, API https://api.lord2ve.tech and web https://lord2ve.tech. Current active versions and precise HTTP-only acceptance are in the Phase B checkpoint below and STATUS. The original2026-10-14/15 versions below are historical rollback evidence.
+
 Last reconciled: 2026-10-15, Asia/Riyadh. Deployment and browser initial evidence below was collected on 2026-10-14. The JSON restore frontend update and its HTTP checks were completed on 2026-10-15 as noted below.
 
 ## Deployed trial
@@ -121,3 +123,14 @@ printf '%s\n' '{"REPORT_IP_SALT":"synthetic-dry-run-only-not-a-real-secret"}' |
 ```
 
 For a Bun-controlled producer, spawn `bash -o pipefail -c 'cat | bunx "$@"' wrangler-stdin ...arguments` and write only to that child's input. The intermediate cat feeds a regular OS pipe to Wrangler. Any separately authorized real-secret deployment must generate its value in memory, keep it out of command arguments/files/output, disable Wrangler disk logs/metrics/error reports and verify the active binding by name. Do not directly attach Bun's stdin socket to Wrangler when using --secrets-file /dev/stdin. This repair used a synthetic value only; no actual secret was generated/reset and no Worker was deployed. Neither successful dry run establishes remote secret inheritance or hosted runtime/cookie/upload acceptance.
+
+## Phase B custom-domain rollout — 2026-10-20
+
+Human explicitly authorized this test-domain deployment. Fresh read-only preflight confirmed both custom domains were already attached and the supplied rollback versions existed. Reused the repaired self-contained build with both public URL values; API deployed first with a fresh REPORT_IP_SALT atomically streamed in memory through the OS pipe, then web after API readiness passed. No migration, R2/DNS/account/role operation was performed.
+
+- Active API: `3dfccf47-81fa-4e3c-9325-f6a8cf488152`,100%, at https://api.lord2ve.tech. Active version metadata confirms REPORT_IP_SALT by name and the two exact origins. /health and /ready200; storage reports configured, mail disabled. No upload/provider-health inference.
+- Active web: `763b124e-9a6d-4649-b20c-c58243c69a1e`,100%, at https://lord2ve.tech. Home/login/robots.txt/sitemap.xml200; canonical metadata and per-site sitemap for published lordhhh use the new origin.
+- Additional21/21 acceptance checks passed:10 anonymous domain-admin401/no-store, canonical-only CORS across3 origins and2 methods, valid empty public notices, published API/web/sitemap and2 correct domain mappings. No www/old-origin CORS permission; public HTTP GET itself remains public. Final active-version/secret-name inspection passed. No rollback was needed; old API970d67cc-4caa-4ab8-aac7-b73c034989a2/web fee5d122-d173-4dc9-8ea1-f4538807e8c8 remain the verified rollback references.
+- **Not performed:** human browser sign-in/session-cookie persistence/MFA/upload acceptance, mail delivery, R2 CORS verification/change, www redirect verification/change, role/account changes or phase C. Earlier NOT PERFORMED checklist entries describe preparation-time status; this checkpoint supersedes only the explicitly verified rollout/HTTP items. Keep all remaining external acceptance boundaries open.
+
+Sanitized actual evidence is in ignored work/phase-b-deployment (preflight.json, api-result.json, web-result.json, http-results.json, final-versions.json); STATUS records exact scope and counts. No secret value was printed, written to a regular file or included in arguments. The ready flag and HTTP probes do not establish comprehensive production readiness.
