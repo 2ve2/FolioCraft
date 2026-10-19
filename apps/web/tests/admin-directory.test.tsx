@@ -11,6 +11,8 @@ import { directoryCopy } from "../src/features/management/admin/directory-copy";
 
 test("directory copy has exact bilingual parity and accessible filters", () => {
 	expect(Object.keys(directoryCopy.ar).sort()).toEqual(Object.keys(directoryCopy.en).sort());
+	expect(directoryCopy.en.search).toBe("Search by name only");
+	expect(directoryCopy.ar.search).toBe("البحث بالاسم فقط");
 	for (const locale of ["ar", "en"] as const) {
 		const wrap = (children: React.ReactNode) =>
 			renderToStaticMarkup(
@@ -29,6 +31,7 @@ test("directory copy has exact bilingual parity and accessible filters", () => {
 			const html = wrap(<AdminDirectory kind={kind} />);
 			expect(html).toContain(directoryCopy[locale][kind]);
 			expect(html).toContain('role="status"');
+			if (kind === "accounts") expect(html).toContain(directoryCopy[locale].search);
 		}
 		expect(wrap(<AdminAccountDetail id="member" />)).not.toContain('type="password"');
 		expect(wrap(<AdminSiteDetail id="site" />)).not.toContain('type="password"');

@@ -1,6 +1,6 @@
 export const directoryCopy = {
 	en: {
-		search: "Search name or email",
+		search: "Search by name only",
 		all: "All",
 		role: "Role",
 		banned: "Banned",
@@ -50,7 +50,7 @@ export const directoryCopy = {
 		noHistory: "No recorded history.",
 	},
 	ar: {
-		search: "البحث بالاسم أو البريد",
+		search: "البحث بالاسم فقط",
 		all: "الكل",
 		role: "الدور",
 		banned: "محظور",

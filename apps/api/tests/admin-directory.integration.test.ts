@@ -2,13 +2,17 @@ import "./test-guard";
 import { afterAll, expect, test } from "bun:test";
 import { eq, inArray } from "drizzle-orm";
 import { db } from "../src/db";
+import { adminAudit } from "../src/db/schema/admin";
 import { user } from "../src/db/schema/auth";
 import { account, error, request, result } from "./helpers";
 
 const ids: string[] = [];
 
 afterAll(async () => {
-	if (ids.length) await db.delete(user).where(inArray(user.id, ids));
+	if (ids.length) {
+		await db.delete(adminAudit).where(inArray(adminAudit.actorId, ids));
+		await db.delete(user).where(inArray(user.id, ids));
+	}
 });
 test("directory keysets traverse equal creation dates without gaps and apply identity filters", async () => {
 	const owner = await account("directory-owner", ids);
@@ -97,7 +101,7 @@ test("all staff directory detail reads exclude draft bodies and published locale
 	}
 });
 
-test("masked email search cannot be used as a prefix oracle without authoritative read_email", async () => {
+test("all four roles search names only and email reveal remains separately audited", async () => {
 	const target = await account(`private-${crypto.randomUUID()}`, ids);
 	await db.update(user).set({ name: "Unrelated visible name" }).where(eq(user.id, target.id));
 	const [stored] = await db.select({ email: user.email }).from(user).where(eq(user.id, target.id));
@@ -114,14 +118,36 @@ test("masked email search cannot be used as a prefix oracle without authoritativ
 					actor.cookie,
 				),
 			);
-			expect(page.items.some((row) => row.id === target.id)).toBe(
-				role === "owner" || role === "support",
-			);
+			expect(page.items.some((row) => row.id === target.id)).toBe(false);
 		}
 		const names = await result<{ items: { id: string }[] }>(
 			await request("/api/admin/users?search=Unrelated%20visible", "GET", undefined, actor.cookie),
 		);
 		expect(names.items.some((row) => row.id === target.id)).toBe(true);
+		const searchAudits = await db.select().from(adminAudit).where(eq(adminAudit.actorId, actor.id));
+		expect(searchAudits.length).toBe(0);
+		const reveal = await request(
+			`/api/admin/users/${target.id}/reveal-email`,
+			"POST",
+			{
+				reason: "Verify isolated directory email disclosure",
+				password: actor.password,
+			},
+			actor.cookie,
+		);
+		if (role === "owner" || role === "support") {
+			const body = await result<{ email: string }>(reveal);
+			expect(body.email).toBe(stored.email);
+			const events = await db.select().from(adminAudit).where(eq(adminAudit.actorId, actor.id));
+			expect(events.map((event) => event.status).sort()).toEqual(["attempted", "succeeded"]);
+			expect(new Set(events.map((event) => event.requestId)).size).toBe(1);
+			for (const event of events) {
+				expect(event.action).toBe("user.read_email");
+				expect(event.targetId).toBe(target.id);
+				expect(event.reason).toBe("Verify isolated directory email disclosure");
+				expect(JSON.stringify(event)).not.toContain(stored.email);
+			}
+		} else await error(reveal, 403, "PERMISSION_DENIED");
 		await error(
 			await request(
 				"/api/admin/users?search=private&canSearchEmail=true",

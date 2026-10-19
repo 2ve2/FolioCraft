@@ -287,3 +287,6 @@ Human authorizes P6/P7, generated-only local migrations, separate commits and a 
 
 ## 2026-10-19 — Round4 GitHub upload authorization
 The human explicitly requested uploading the commits during P7. This supersedes this round's earlier no-push boundary only: finish P7 verification/cleanup and separate commits, preserve remote history, then ordinary GitHub synchronization. It does not authorize deployment, production connections, migrations, real role/key changes or later scope.
+
+## 2026-10-19 — Round5 audited email boundary (human-confirmed)
+Supersedes the earlier Masked-field search authorization decision: account directory search must match names only for every role, including owner/support. user.read_email authorizes the existing reason/password/TOTP/audit-protected reveal, never an unaudited email text predicate. Remove the search-only permission/session lookup; preserve the authoritative route gate and existing secured reveal/export operations. No alternative administrative email lookup/filter/sort is authorized. One fix commit and ordinary push to main are explicitly authorized, followed by a stop; no deployment/production access. Prior round4 protection was incomplete because it narrowed inference without preserving audited disclosure for owner/support.
