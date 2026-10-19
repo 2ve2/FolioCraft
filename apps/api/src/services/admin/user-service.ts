@@ -1,7 +1,8 @@
 import { isAPIError } from "better-auth/api";
-import { eq } from "drizzle-orm";
+import { and, asc, eq, gt, ilike, or, sql } from "drizzle-orm";
 import { db } from "../../db";
 import { user } from "../../db/schema/auth";
+import { sites } from "../../db/schema/site";
 import { auth } from "../../lib/auth";
 import { ApiError } from "../../lib/response-helpers";
 import {
@@ -96,20 +97,54 @@ export const adminUserService = {
 			translateSensitiveError(error);
 		}
 	},
-	/** Calls native read hooks internally and masks every email before serializing the bounded page. */
-	async list(headers: Headers, limit: number, offset: number) {
-		const result = await nativeRead(() =>
-			auth.api.listUsers({
-				headers,
-				query: { limit, offset, sortBy: "createdAt", sortDirection: "desc" },
-			}),
-		);
-		return {
-			items: result.users.map(accountView),
-			hasMore: offset + result.users.length < result.total,
-			limit,
-			offset,
-		};
+	/** Uses the declared domain read permission and an ID keyset; never fetches private auth fields. */
+	async list(
+		_headers: Headers,
+		query: {
+			limit: number;
+			cursor?: string;
+			search?: string;
+			role?: string;
+			banned?: boolean;
+			verified?: boolean;
+		},
+	) {
+		const rows = await db
+			.select({
+				id: user.id,
+				name: user.name,
+				email: user.email,
+				role: user.role,
+				banned: user.banned,
+				emailVerified: user.emailVerified,
+				createdAt: user.createdAt,
+				siteCount: sql<number>`(select count(*)::int from ${sites} where ${sites.ownerId} = ${sql.raw('"user"."id"')})`,
+			})
+			.from(user)
+			.where(
+				and(
+					query.cursor ? gt(user.id, query.cursor) : undefined,
+					query.search
+						? or(
+								ilike(user.name, `%${query.search.replace(/[\\%_]/g, "\\$&")}%`),
+								ilike(user.email, `%${query.search.replace(/[\\%_]/g, "\\$&")}%`),
+							)
+						: undefined,
+					query.role
+						? sql`${query.role} = any(string_to_array(coalesce(${user.role}, 'user'), ','))`
+						: undefined,
+					query.banned === undefined
+						? undefined
+						: sql`coalesce(${user.banned}, false) = ${query.banned}`,
+					query.verified === undefined ? undefined : eq(user.emailVerified, query.verified),
+				),
+			)
+			.orderBy(asc(user.id))
+			.limit(query.limit + 1);
+		const items = rows
+			.slice(0, query.limit)
+			.map((row) => ({ ...accountView(row), siteCount: row.siteCount }));
+		return { items, nextCursor: rows.length > query.limit ? items.at(-1)?.id : null };
 	},
 	/** Reads a single native identity without leaking contact credentials or native adapter fields. */
 	async get(headers: Headers, id: string) {

@@ -2,6 +2,12 @@
 
 Updated: 2026-10-19, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: round3 P4 complete locally; P5 authorized next
+
+- P4 implements masked searchable/filterable ID-keyset account directory, account detail/session actions through existing sensitive pipelines, account sites/reports, site filters/detail/publication-only metadata and moderation history. Notes deferred; no draft access or role/password/impersonation controls.
+- Actual checks: guarded root bun run test exit0,45 pass/9 child-only skips/2,469 assertions; enforced native MFA child9 pass/263 assertions. Typecheck/check318 files/web22 pass484 assertions/default QA build exit0. Initial correlated count query failure fixed before passing. Logs work/round3-p4-*. No browser/hosted/production acceptance newly claimed.
+- Active work: P5 activity/system/notices/overview. Blockers: none for authorized local scope. Next action: implement P5, generated-only notices migration applied only by guarded folio_test runner, verify/document/sync/commit, then stop. No push/deploy/production/real role-key changes. Preserve generated next-env.d.ts and untracked ADMIN_CONSOLE_TASK.md outside commits.
+
 ## Latest: authorized round2 GitHub upload completed
 
 - Human explicitly authorized uploading the completed round2 commits. Fresh fetch exited0 and confirmed0 remote-only/2 local-only commits with origin/main an ancestor of main. Ordinary push exited0, advancing origin/main9420382 to509032e:44b9c70 (P2b-2b) and509032e (P3). No force push or history rewrite.

@@ -13,6 +13,11 @@ export type Inquiry = {
 export type Release = { id: string; revision: number; createdAt: string; active: boolean };
 export type Snapshot = { id: string; revision: number; createdAt: string; snapshot: Draft };
 export type AdminSite = {
+	createdAt: string;
+	locale?: string | null;
+	publishedAt?: string | null;
+	readyImages?: number;
+	pendingImages?: number;
 	id: string;
 	ownerId: string;
 	slug: string;
@@ -35,6 +40,9 @@ export type Audit = {
 	createdAt: string;
 };
 export type AdminUser = {
+	createdAt: string;
+	emailVerified?: boolean;
+	siteCount?: number;
 	id: string;
 	name: string;
 	email: string;

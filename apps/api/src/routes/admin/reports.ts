@@ -19,6 +19,8 @@ const querySchema = z
 			.optional(),
 		status: z.enum(reportStatuses).optional(),
 		category: z.enum(reportCategories).optional(),
+		siteId: z.uuid().optional(),
+		ownerId: z.string().min(1).max(128).optional(),
 	})
 	.strict();
 /** Exposes only filtered, oldest-first cursor pages to report readers. */

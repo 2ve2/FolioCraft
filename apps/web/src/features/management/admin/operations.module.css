@@ -1,0 +1,38 @@
+.page {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.page label,
+.page form {
+	display: grid;
+	gap: 0.75rem;
+}
+.page form {
+	gap: 1rem;
+}
+.page input,
+.page textarea {
+	width: 100%;
+	min-width: 0;
+	min-height: 44px;
+	border: 1px solid #d7d3e3;
+	border-radius: 8px;
+	background: white;
+	color: #242037;
+	padding: 0.65rem;
+	font: inherit;
+}
+.page textarea {
+	min-height: 110px;
+	resize: vertical;
+}
+.page button {
+	min-height: 44px;
+}
+.page dl {
+	overflow-wrap: anywhere;
+}
+.page pre {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}

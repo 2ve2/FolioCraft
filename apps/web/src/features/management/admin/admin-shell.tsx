@@ -75,9 +75,9 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 	const activeView =
 		pathname === "/admin"
 			? "overview"
-			: pathname === "/admin/sites"
+			: pathname === "/admin/sites" || pathname.startsWith("/admin/sites/")
 				? "sites"
-				: pathname === "/admin/accounts"
+				: pathname === "/admin/accounts" || pathname.startsWith("/admin/accounts/")
 					? "users"
 					: pathname === "/admin/reports" || pathname.startsWith("/admin/reports/")
 						? "reports"

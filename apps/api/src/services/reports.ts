@@ -121,6 +121,8 @@ export const reportService = {
 	/** Uses a stable ascending timestamp/ID cursor; filters never silently reuse offset pagination. */
 	async list(query: {
 		limit: number;
+		siteId?: string;
+		ownerId?: string;
 		cursor?: string;
 		status?: (typeof reports.$inferSelect)["status"];
 		category?: (typeof reports.$inferSelect)["category"];
@@ -139,6 +141,8 @@ export const reportService = {
 			.innerJoin(sites, eq(reports.siteId, sites.id))
 			.where(
 				and(
+					query.siteId ? eq(reports.siteId, query.siteId) : undefined,
+					query.ownerId ? eq(sites.ownerId, query.ownerId) : undefined,
 					query.status ? eq(reports.status, query.status) : undefined,
 					query.category ? eq(reports.category, query.category) : undefined,
 					after

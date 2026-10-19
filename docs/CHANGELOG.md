@@ -778,3 +778,14 @@ Actual checks: generated migration and no-change generation check exit0; guarded
 ## 2026-10-19 — authorized round2 GitHub upload
 
 Human requested uploading the completed commits. Fresh fetch confirmed0 remote-only/2 local-only and ancestor compatibility. Ordinary push succeeded, advancing9420382 to509032e with44b9c70 and509032e. This STATUS/CHANGELOG checkpoint records the actual upload under the same authorization; no runtime verification, deployment or later-phase work was performed. Preserve generated next-env.d.ts unstaged and untracked reference task outside staging. Initial approval review timed out before executing; permitted separate fetch/push retry succeeded. Stop for review after synchronizing this checkpoint.
+
+## 2026-10-19 — Round3 authorized scope (before implementation)
+- Human accepted round2 and authorized P4 then P5, separate local commits, then stop for review. No push, deployment, production connection, real role/key change or delegation.
+- P4: searchable/filterable cursor account directory, account/session/site/report detail and existing sensitive actions; site directory/detail with publication metadata, report links and moderation history. Notes remain deferred.
+- P5: filtered activity/details and bounded audited identifier-only CSV; safe system counters/configuration flags; generated additive bilingual notices migration and guarded local application, administration and minimized public banners; permission-scoped overview. Preserve all existing auth/MFA/audit/ownership/public protections.
+- Verify through root guarded local folio_test runner plus type/lint/web/build checks. Preserve preexisting generated next-env.d.ts and untracked ADMIN_CONSOLE_TASK.md outside commits. Synchronize canonical source/docs to independent work/github-upload before each commit.
+
+### Round3 P4 completed locally
+- Changed admin account/site services/routes, report relation filters and web directories/detail routes; added directory copy/styles and API/web regression suites. Existing sensitive pipelines and native hooks unchanged. Notes deferred.
+- Checks: root guarded tests45 pass (enforced child9 pass), typecheck/check318 files, web22 pass and default QA build exit0. Fixed initial correlated SQL qualifier failure; no invented acceptance from that run. Evidence work/round3-p4-*.
+- Next: P5 under the same human authorization. No push/deployment/production/real role/key changes.

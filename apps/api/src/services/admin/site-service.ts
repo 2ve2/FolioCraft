@@ -1,8 +1,9 @@
-import { and, desc, eq, isNotNull, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, gt, isNotNull, isNull, sql } from "drizzle-orm";
 import { db } from "../../db";
 import { assets } from "../../db/schema/asset";
 import { user } from "../../db/schema/auth";
 import { inquiries } from "../../db/schema/operations";
+import { contentReports } from "../../db/schema/reports";
 import { releases, sites } from "../../db/schema/site";
 import { auth } from "../../lib/auth";
 import { ApiError } from "../../lib/response-helpers";
@@ -29,24 +30,44 @@ const siteOverview = {
 
 export const adminService = {
 	/** Lists a bounded page of site metadata without loading any draft or release content. */
-	async listSites(limit: number, offset: number, suspended?: boolean, published?: boolean) {
+	async listSites(query: {
+		limit: number;
+		offset?: number;
+		cursor?: string;
+		ownerId?: string;
+		suspended?: boolean;
+		published?: boolean;
+		reported?: boolean;
+	}) {
 		const rows = await db
 			.select(siteOverview)
 			.from(sites)
 			.where(
 				and(
-					suspended === undefined ? undefined : eq(sites.suspended, suspended),
-					published === undefined
+					query.cursor ? gt(sites.id, query.cursor) : undefined,
+					query.ownerId ? eq(sites.ownerId, query.ownerId) : undefined,
+					query.suspended === undefined ? undefined : eq(sites.suspended, query.suspended),
+					query.published === undefined
 						? undefined
-						: published
+						: query.published
 							? isNotNull(sites.publishedReleaseId)
 							: isNull(sites.publishedReleaseId),
+					query.reported === undefined
+						? undefined
+						: sql`exists(select 1 from ${contentReports} where ${contentReports.siteId} = ${sites.id}) = ${query.reported}`,
 				),
 			)
-			.orderBy(desc(sites.createdAt), desc(sites.id))
-			.limit(limit + 1)
-			.offset(offset);
-		return { items: rows.slice(0, limit), hasMore: rows.length > limit, limit, offset };
+			.orderBy(asc(sites.id))
+			.limit(query.limit + 1)
+			.offset(query.offset ?? 0);
+		const items = rows.slice(0, query.limit);
+		return {
+			items,
+			hasMore: rows.length > query.limit,
+			nextCursor: rows.length > query.limit ? items.at(-1)?.id : null,
+			limit: query.limit,
+			offset: query.offset ?? 0,
+		};
 	},
 
 	/** Returns metadata and resource counts for one site without exposing private resource bodies. */
@@ -55,6 +76,14 @@ export const adminService = {
 		const [site] = await db
 			.select({
 				...siteOverview,
+				locale: sql<
+					string | null
+				>`(select ${releases.snapshot}->>'locale' from ${releases} where ${releases.id} = ${sites.publishedReleaseId} and ${releases.siteId} = ${sql.raw('"sites"."id"')})`,
+				publishedAt: sql<
+					string | null
+				>`(select ${releases.createdAt} from ${releases} where ${releases.id} = ${sites.publishedReleaseId} and ${releases.siteId} = ${sql.raw('"sites"."id"')})`,
+				readyImages: sql<number>`(select count(*)::int from ${assets} where ${assets.siteId} = ${id} and ${assets.status} = 'ready')`,
+				pendingImages: sql<number>`(select count(*)::int from ${assets} where ${assets.siteId} = ${id} and ${assets.status} = 'pending')`,
 				releaseCount: sql<number>`(select count(*)::int from ${releases} where ${releases.siteId} = ${id})`,
 				assetCount: sql<number>`(select count(*)::int from ${assets} where ${assets.siteId} = ${id})`,
 				inquiryCount: sql<number>`(select count(*)::int from ${inquiries} where ${inquiries.siteId} = ${id})`,

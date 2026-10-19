@@ -2,10 +2,10 @@ import { parseRoles, permissionsFor } from "@ichnara/contracts/admin-policy";
 import { Hono } from "hono";
 import { z } from "zod";
 import { successResponse } from "../../lib/response-helpers";
-import { paginationSchema } from "../../lib/validation";
 import { requirePermission } from "../../middleware/admin";
 import type { AuthEnv } from "../../middleware/auth";
 import { adminUserService } from "../../services/admin/user-service";
+import { booleanQuery } from "./validation";
 
 export const adminUserRoutes = new Hono<AuthEnv>();
 
@@ -17,11 +17,18 @@ adminUserRoutes.get("/me/permissions", requirePermission("user", "read"), (c) =>
 
 /** Preserves existing bounded pagination while replacing raw native user responses with masked DTOs. */
 adminUserRoutes.get("/users", requirePermission("user", "read"), async (c) => {
-	const query = paginationSchema.parse(c.req.query());
-	return successResponse(
-		c,
-		await adminUserService.list(c.req.raw.headers, query.limit, query.offset),
-	);
+	const query = z
+		.object({
+			limit: z.coerce.number().int().min(1).max(100).default(20),
+			cursor: z.string().min(1).max(128).optional(),
+			search: z.string().trim().max(100).optional(),
+			role: z.enum(["user", "owner", "moderator", "support", "analyst"]).optional(),
+			banned: booleanQuery.optional(),
+			verified: booleanQuery.optional(),
+		})
+		.strict()
+		.parse(c.req.query());
+	return successResponse(c, await adminUserService.list(c.req.raw.headers, query));
 });
 
 /** Validates native text IDs without assuming the site's UUID identifier format. */

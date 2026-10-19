@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { z } from "zod";
 import { successResponse } from "../../lib/response-helpers";
 import { entityId, paginationSchema } from "../../lib/validation";
 import { requirePermission } from "../../middleware/admin";
@@ -12,12 +13,15 @@ export const adminSiteRoutes = new Hono<AuthEnv>();
 /** Returns a validated bounded page of administrative site metadata. */
 adminSiteRoutes.get("/sites", requirePermission("site", "read"), async (c) => {
 	const query = paginationSchema
-		.extend({ suspended: booleanQuery.optional(), published: booleanQuery.optional() })
+		.extend({
+			suspended: booleanQuery.optional(),
+			published: booleanQuery.optional(),
+			reported: booleanQuery.optional(),
+			cursor: z.uuid().optional(),
+			ownerId: z.string().min(1).max(128).optional(),
+		})
 		.parse(c.req.query());
-	return successResponse(
-		c,
-		await adminService.listSites(query.limit, query.offset, query.suspended, query.published),
-	);
+	return successResponse(c, await adminService.listSites(query));
 });
 
 /** Returns site metadata and resource counts after the administrator gate. */
