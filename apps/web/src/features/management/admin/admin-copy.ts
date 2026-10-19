@@ -3,6 +3,9 @@ export type AdminView = "overview" | "sites" | "users" | "audit";
 
 export const adminCopy = {
 	en: {
+		requests: "Data requests",
+		staff: "Staff",
+		security: "My security",
 		system: "System",
 		notices: "Notices",
 		reports: "Reports",
@@ -93,6 +96,9 @@ export const adminCopy = {
 			"Attempted records may require investigation; they do not confirm that an operation completed.",
 	},
 	ar: {
+		requests: "طلبات البيانات",
+		staff: "الطاقم",
+		security: "أمان حسابي",
 		system: "النظام",
 		notices: "التنبيهات",
 		reports: "البلاغات",

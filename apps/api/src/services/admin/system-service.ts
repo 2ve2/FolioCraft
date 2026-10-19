@@ -5,6 +5,7 @@ import { db } from "../../db";
 import { adminAudit } from "../../db/schema/admin";
 import { assets } from "../../db/schema/asset";
 import { user } from "../../db/schema/auth";
+import { dataRequests } from "../../db/schema/data-requests";
 import { systemNotices } from "../../db/schema/notices";
 import { contentReports } from "../../db/schema/reports";
 import { sites } from "../../db/schema/site";
@@ -69,6 +70,12 @@ export async function readOverview(role: string | null | undefined) {
 		output.auditAttention = result.rows[0];
 	}
 	if (hasPermission(role, "system", "read")) output.system = await readSystem();
-	output.laterResources = { requests: null, notes: null, staffManagement: null };
+	if (hasPermission(role, "request", "read")) {
+		const result = await db.execute(
+			sql`select count(*) filter(where ${dataRequests.status} in ('received','in_progress'))::int as open,count(*) filter(where ${dataRequests.status} in ('received','in_progress') and ${dataRequests.dueAt}<current_timestamp)::int as overdue from ${dataRequests}`,
+		);
+		output.requests = result.rows[0];
+	}
+	output.laterResources = { notes: null, staffManagement: null };
 	return output;
 }

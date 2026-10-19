@@ -14,7 +14,7 @@ export type AuditFilters = {
 	requestId?: string;
 	from?: string;
 	to?: string;
-	targetType?: "site" | "user" | "session" | "report" | "notice" | "audit";
+	targetType?: "site" | "user" | "session" | "report" | "notice" | "audit" | "request";
 	targetId?: string;
 	status?: "attempted" | "succeeded" | "failed";
 };
@@ -86,7 +86,7 @@ export function sanitizeAuditMetadata(metadata: Record<string, unknown>) {
 		if (
 			key === "operation" &&
 			typeof value === "string" &&
-			["create", "edit", "disable"].includes(value)
+			["create", "edit", "disable", "subject", "status"].includes(value)
 		)
 			out[key] = value;
 		if (

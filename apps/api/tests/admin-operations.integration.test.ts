@@ -371,7 +371,7 @@ test("system flags disclose no settings and upload counters are observed schema 
 	expect(state.expiredPendingUploads).toBe(baseline.expiredPendingUploads + 1);
 	expect(state.stuckDeletingUploads).toBe(baseline.stuckDeletingUploads + 1);
 	expect(state.failedUploadEvents).toBeNull();
-	expect(state.migrationCount).toBe(7);
+	expect(state.migrationCount).toBe(8);
 	for (const value of Object.values(state.configuration as Record<string, unknown>))
 		expect(typeof value).toBe("boolean");
 	const serialized = JSON.stringify(state);

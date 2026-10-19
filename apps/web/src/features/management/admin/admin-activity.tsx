@@ -131,10 +131,12 @@ export function AdminActivityPage() {
 						label={t.targetType}
 						value={filters.targetType ?? ""}
 						change={(v) => change("targetType", v)}
-						choices={["user", "site", "session", "report", "notice", "audit"].map((value) => ({
-							value,
-							label: value,
-						}))}
+						choices={["user", "site", "session", "report", "notice", "audit", "request"].map(
+							(value) => ({
+								value,
+								label: value,
+							}),
+						)}
 					/>
 					<DirectoryFilter
 						label={t.status}

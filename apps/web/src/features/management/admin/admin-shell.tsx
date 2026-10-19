@@ -26,6 +26,8 @@ import { adminCopy } from "./admin-copy";
 import styles from "./admin-shell.module.css";
 
 const navigation = [
+	{ key: "requests", path: "/admin/requests", icon: ScrollText },
+	{ key: "staff", path: "/admin/staff", icon: UsersRound },
 	{ key: "system", path: "/admin/system", icon: ShieldCheck },
 	{ key: "notices", path: "/admin/notices", icon: ScrollText },
 	{ key: "overview", path: "/admin", icon: LayoutDashboard },
@@ -75,21 +77,25 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 	const permissions =
 		authorization?.sessionId === sessionId ? (authorization?.permissions ?? []) : [];
 	const activeView =
-		pathname === "/admin/system"
-			? "system"
-			: pathname === "/admin/notices"
-				? "notices"
-				: pathname === "/admin"
-					? "overview"
-					: pathname === "/admin/sites" || pathname.startsWith("/admin/sites/")
-						? "sites"
-						: pathname === "/admin/accounts" || pathname.startsWith("/admin/accounts/")
-							? "users"
-							: pathname === "/admin/reports" || pathname.startsWith("/admin/reports/")
-								? "reports"
-								: pathname === "/admin/activity"
-									? "audit"
-									: null;
+		pathname === "/admin/staff"
+			? "staff"
+			: pathname === "/admin/requests" || pathname.startsWith("/admin/requests/")
+				? "requests"
+				: pathname === "/admin/system"
+					? "system"
+					: pathname === "/admin/notices"
+						? "notices"
+						: pathname === "/admin"
+							? "overview"
+							: pathname === "/admin/sites" || pathname.startsWith("/admin/sites/")
+								? "sites"
+								: pathname === "/admin/accounts" || pathname.startsWith("/admin/accounts/")
+									? "users"
+									: pathname === "/admin/reports" || pathname.startsWith("/admin/reports/")
+										? "reports"
+										: pathname === "/admin/activity"
+											? "audit"
+											: null;
 	const routeAllowed = activeView !== null && canViewAdmin(permissions, activeView);
 
 	/** Uses the native sign-out operation before returning to the public website. */
@@ -191,6 +197,9 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 							))}
 					</nav>
 					<div className={styles.sidebarBottom}>
+						<Link className={styles.studioLink} href={`/admin/security?lang=${locale}`}>
+							{t.security}
+						</Link>
 						<Link className={styles.studioLink} href={`/studio?lang=${locale}`}>
 							<span>{t.studio}</span>
 							<ArrowUpRight size={17} aria-hidden="true" />

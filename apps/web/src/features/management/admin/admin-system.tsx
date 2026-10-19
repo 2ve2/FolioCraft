@@ -69,6 +69,7 @@ export function AdminSystem() {
 	);
 }
 type Overview = {
+	requests?: { open: number; overdue: number };
 	accounts?: { total: number; banned: number };
 	sites?: { total: number; published: number; suspended: number };
 	reports?: { open: number; reviewing: number };
@@ -108,6 +109,13 @@ export function AdminDashboard() {
 						<p>
 							<Link href={`/admin/reports?lang=${locale}`}>
 								{t.open}: {data.reports.open} · {t.reviewing}: {data.reports.reviewing}
+							</Link>
+						</p>
+					)}
+					{data?.requests && (
+						<p>
+							<Link href={`/admin/requests?lang=${locale}`}>
+								{t.requests}: {data.requests.open} · {t.overdue}: {data.requests.overdue}
 							</Link>
 						</p>
 					)}

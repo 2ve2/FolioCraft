@@ -51,6 +51,9 @@ export const envSchema = z
 		ADMIN_PASSWORD_MAX_FAILURES: z.coerce.number().int().min(1).max(100).default(5),
 		ADMIN_PASSWORD_WINDOW_SECONDS: z.coerce.number().int().min(1).max(86400).default(900),
 		ADMIN_PASSWORD_BLOCK_SECONDS: z.coerce.number().int().min(1).max(86400).default(900),
+		DATA_REQUEST_DUE_DAYS: z.coerce.number().int().min(1).max(365).default(30),
+		DATA_REQUEST_EXPORT_MAX_ROWS: z.coerce.number().int().min(1).max(10000).default(1000),
+		DATA_REQUEST_EXPORT_MAX_BYTES: z.coerce.number().int().min(1024).max(10485760).default(1048576),
 		ADMIN_AUDIT_EXPORT_MAX_ROWS: z.coerce.number().int().min(1).max(10000).default(1000),
 		BUILD_VERSION: z
 			.string()

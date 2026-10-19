@@ -50,6 +50,13 @@
       "when": 1792425116466,
       "tag": "0006_ambiguous_thunderbolt_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792431112792,
+      "tag": "0007_sour_earthquake",
+      "breakpoints": true
     }
   ]
 }

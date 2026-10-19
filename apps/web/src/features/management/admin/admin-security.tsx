@@ -10,6 +10,7 @@ import { useInterfaceLocale } from "../../../lib/use-interface-locale";
 import styles from "../../auth/auth.module.css";
 import { LoadingScreen } from "../../studio/loading-screen";
 import { adminSecurityCopy } from "./admin-security-copy";
+import { OwnSessions } from "./own-sessions";
 
 /** Provides only native own-account enrollment/challenge actions; never requests management data. */
 export function AdminSecurity() {
@@ -203,6 +204,9 @@ export function AdminSecurity() {
 					{!sessionError && session?.user && !staff && <p>{t.denied}</p>}
 					{!session?.user && !challenge && (
 						<Link href={`/login?lang=${locale}&from=admin`}>{t.login}</Link>
+					)}
+					{staff && session.user.twoFactorEnabled && !complete && !setup && (
+						<OwnSessions locale={locale} currentId={session.session.id} />
 					)}
 					<p>{t.recovery}</p>
 					<Link href={`/?lang=${locale}`}>{t.home}</Link>

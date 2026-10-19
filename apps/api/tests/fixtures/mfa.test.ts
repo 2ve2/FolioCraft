@@ -800,3 +800,90 @@ test.skipIf(!enabled)(
 		expect((await request("/api/admin/system", "GET", undefined, cookie)).status).toBe(401);
 	},
 );
+
+test.skipIf(!enabled)(
+	"P6 requests and staff require native TOTP; own sessions remain native and account scoped",
+	async () => {
+		const actor = await fixture("owner");
+		const paths = [
+			["GET", "/api/admin/requests"],
+			["GET", `/api/admin/requests/${crypto.randomUUID()}`],
+			["POST", "/api/admin/requests"],
+			["PATCH", `/api/admin/requests/${crypto.randomUUID()}/status`],
+			["POST", `/api/admin/requests/${crypto.randomUUID()}/subject`],
+			["POST", `/api/admin/requests/${crypto.randomUUID()}/export`],
+			["GET", "/api/admin/staff"],
+		] as const;
+		for (const [method, path] of paths)
+			expect(
+				(await request(path, method, method === "GET" ? undefined : {}, actor.cookie)).status,
+			).toBe(403);
+		const setup = await enroll(actor),
+			pending = await challenge(actor);
+		const verified = await native(
+			auth,
+			"/two-factor/verify-totp",
+			{ code: await code(setup.secret) },
+			pending,
+		);
+		expect(verified.status).toBe(200);
+		const cookie = cookies(verified, pending);
+		for (const path of ["/api/admin/requests", "/api/admin/staff"])
+			expect((await request(path, "GET", undefined, cookie)).status).toBe(200);
+		const created = await request(
+			"/api/admin/requests",
+			"POST",
+			{
+				reason: "P6 native TOTP verification",
+				password,
+				request: { email: "unlinked@example.com", type: "export" },
+			},
+			cookie,
+		);
+		expect(created.status).toBe(201);
+		const id = (await created.json()).result.id;
+		try {
+			expect(
+				(
+					await request(
+						`/api/admin/requests/${id}/export`,
+						"POST",
+						{ reason: "P6 native TOTP verification", password: "wrong-password" },
+						cookie,
+					)
+				).status,
+			).toBe(400);
+			expect(
+				(
+					await request(
+						`/api/admin/requests/${id}/export`,
+						"POST",
+						{ reason: "P6 native TOTP verification", password },
+						cookie,
+					)
+				).status,
+			).toBe(409);
+			const own = await request("/api/auth/list-sessions", "GET", undefined, cookie);
+			expect(own.status).toBe(200);
+			const rows = await own.json();
+			expect(rows.length).toBeGreaterThan(0);
+			const other = await fixture();
+			const [foreign] = await db.select().from(session).where(eq(session.userId, other.id));
+			const denied = await native(auth, "/revoke-session", { token: foreign.token }, cookie);
+			// Native protocol may acknowledge idempotently; it must never revoke the other account.
+			expect([200, 400, 404]).toContain(denied.status);
+			expect((await db.select().from(session).where(eq(session.id, foreign.id))).length).toBe(1);
+			const current = await auth.api.getSession({ headers: new Headers({ Cookie: cookie }) });
+			const old = rows.find((r: { id: string }) => r.id !== current?.session.id);
+			if (old) {
+				expect((await native(auth, "/revoke-session", { token: old.token }, cookie)).status).toBe(
+					200,
+				);
+				expect((await db.select().from(session).where(eq(session.id, old.id))).length).toBe(0);
+			}
+		} finally {
+			const { dataRequests } = await import("../../src/db/schema/data-requests");
+			await db.delete(dataRequests).where(eq(dataRequests.id, id));
+		}
+	},
+);

@@ -7,7 +7,9 @@ export const reasonSchema = z.object({ reason: z.string().trim().min(10).max(500
 export const auditQuery = paginationSchema.extend({
 	actorId: z.string().trim().min(1).max(128).optional(),
 	action: z.string().trim().min(1).max(100).optional(),
-	targetType: z.enum(["site", "user", "session", "report", "notice", "audit"]).optional(),
+	targetType: z
+		.enum(["site", "user", "session", "report", "notice", "audit", "request"])
+		.optional(),
 	targetId: z.string().trim().min(1).max(128).optional(),
 	status: z.enum(["attempted", "succeeded", "failed"]).optional(),
 	requestId: z.string().min(1).max(128).optional(),

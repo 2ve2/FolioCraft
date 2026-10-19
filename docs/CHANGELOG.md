@@ -807,3 +807,7 @@ Accept round3 subject to repairing the account-email search oracle first in its 
 
 ### Required privacy fix completed
 Affected user-service, admin-directory regression and ADMIN_CONSOLE20/DECISIONS/STATUS. Guarded bun run test exit0:52 pass/10 outer child-only skips/2729 assertions; native MFA child10 pass/282 assertions. Typecheck exit0; focused Biome check2 files exit0. No schema change. Existing generated next-env and task reference excluded. P6/P7 next; no upload authorized.
+
+### P6 implementation checkpoint
+Generated0007/data_requests with explicit verification timestamps; request API/state machine/attestation/owner-only bounded JSON; read-only staff/matrix; native own active-session list/revoke; bilingual requests/detail/staff/navigation and permission-scoped request overview. ADMIN_CONSOLE21 documents exact inclusions/exclusions, manual verification/closure and limits; env example/config and source map updated. No new dependency, user/sites alteration, production connection or push. Final checks pending below. Initial old route/migration count expectations and a web substring assertion were corrected; those runs are not acceptance.
+P6 final evidence: guarded root test55 pass/11 outer skips/2916 assertions, enforced child11 pass308; typecheck/check349 files/web27 pass596/default QA build25/25 plus dynamic routes all exit0. Generated migration applied only by root guard on folio_test; consistency no changes. P6 implementation complete locally; P7 browser/operational review next.

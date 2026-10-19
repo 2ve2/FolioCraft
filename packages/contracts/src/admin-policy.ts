@@ -93,20 +93,33 @@ export function hasPermission<R extends AdminResource>(
 /** Keeps page/navigation visibility derived from server-delivered permissions. */
 export function canViewAdmin(
 	permissions: readonly Permission[],
-	view: "overview" | "sites" | "users" | "audit" | "reports" | "system" | "notices",
+	view:
+		| "overview"
+		| "sites"
+		| "users"
+		| "audit"
+		| "reports"
+		| "system"
+		| "notices"
+		| "requests"
+		| "staff",
 ): boolean {
 	return permissions.includes(
-		view === "system"
-			? "system.read"
-			: view === "notices"
-				? "notice.read"
-				: view === "reports"
-					? "report.read"
-					: view === "sites"
-						? "site.read"
-						: view === "audit"
-							? "audit.read"
-							: "user.read",
+		view === "staff"
+			? "staff.read"
+			: view === "requests"
+				? "request.read"
+				: view === "system"
+					? "system.read"
+					: view === "notices"
+						? "notice.read"
+						: view === "reports"
+							? "report.read"
+							: view === "sites"
+								? "site.read"
+								: view === "audit"
+									? "audit.read"
+									: "user.read",
 	);
 }
 

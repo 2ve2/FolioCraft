@@ -1,5 +1,13 @@
 export const adminSecurityCopy = {
 	en: {
+		sessions: "My active sessions",
+		sessionsIntro: "Revoke other sessions belonging to your account. This session stays active.",
+		sessionCreated: "Created",
+		sessionExpires: "Expires",
+		currentSession: "Current session",
+		revokeOther: "Revoke this other session",
+		retry: "Retry",
+		console: "Open administration",
 		title: "Authenticator security",
 		intro: "Set up an authenticator app to access administration.",
 		password: "Your password",
@@ -28,6 +36,14 @@ export const adminSecurityCopy = {
 			"Recovery codes alone do not unlock administration. Keep access to your authenticator.",
 	},
 	ar: {
+		sessions: "جلساتي النشطة",
+		sessionsIntro: "ألغِ الجلسات الأخرى التابعة لحسابك. تبقى هذه الجلسة نشطة.",
+		sessionCreated: "بدأت",
+		sessionExpires: "تنتهي",
+		currentSession: "الجلسة الحالية",
+		revokeOther: "إلغاء هذه الجلسة الأخرى",
+		retry: "إعادة المحاولة",
+		console: "فتح الإدارة",
 		title: "أمان تطبيق المصادقة",
 		intro: "فعّل تطبيق المصادقة للوصول إلى الإدارة.",
 		password: "كلمة سرك",

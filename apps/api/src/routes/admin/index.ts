@@ -4,8 +4,10 @@ import type { AuthEnv } from "../../middleware/auth";
 import { adminAuditRoutes } from "./audit";
 import { adminNoticeRoutes } from "./notices";
 import { adminReportRoutes } from "./reports";
+import { adminRequestRoutes } from "./requests";
 import { adminResourceRoutes } from "./resources";
 import { adminSiteRoutes } from "./sites";
+import { adminStaffRoutes } from "./staff";
 import { adminUserRoutes } from "./users";
 
 // Apply the administrator gate before registering any child route.
@@ -22,3 +24,6 @@ adminRoutes.route("/", adminUserRoutes);
 adminRoutes.route("/", adminReportRoutes);
 
 adminRoutes.route("/", adminNoticeRoutes);
+
+adminRoutes.route("/", adminRequestRoutes);
+adminRoutes.route("/", adminStaffRoutes);

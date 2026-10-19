@@ -36,7 +36,9 @@ export type SensitiveAction =
 	| "site.suspend"
 	| "site.resume"
 	| "notice.manage"
-	| "audit.export";
+	| "audit.export"
+	| "request.handle"
+	| "request.export";
 export type SensitiveActor = {
 	user: {
 		id: string;
@@ -51,7 +53,7 @@ export type SensitiveActor = {
 export type SensitiveAudit = AuditContext & {
 	reason: string;
 	action: SensitiveAction;
-	targetType: "site" | "user" | "session" | "notice" | "audit";
+	targetType: "site" | "user" | "session" | "notice" | "audit" | "request";
 	targetId: string;
 };
 const recordedDenials = new WeakSet<object>();
@@ -59,6 +61,8 @@ const recordedDenials = new WeakSet<object>();
 /** Maps only this batch's finite live routes to denial budgets; arbitrary paths never create keys. */
 export function sensitiveRoute(path: string): SensitiveAction | undefined {
 	if (/^\/api\/admin\/notices(?:\/[^/]+(?:\/disable)?)?$/.test(path)) return "notice.manage";
+	if (/^\/api\/admin\/requests(?:\/[^/]+(?:\/(?:status|subject|export))?)?$/.test(path))
+		return path.endsWith("/export") ? "request.export" : "request.handle";
 	if (path === "/api/admin/audit/export") return "audit.export";
 	const match =
 		/^\/api\/admin\/(users|sites)\/[^/]+\/(ban|unban|revoke-sessions|reveal-email|remove|suspend|resume)$/.exec(
@@ -139,7 +143,8 @@ export async function resolveSensitiveTarget(
 	id: string,
 	expectedUserId?: string,
 ) {
-	if (action === "notice.manage" || action === "audit.export") return;
+	if (action === "notice.manage" || action === "audit.export" || action.startsWith("request."))
+		return;
 	if (action.startsWith("site.")) {
 		const [site] = await db
 			.select({ ownerId: sites.ownerId })
@@ -215,8 +220,9 @@ export async function prepareSensitiveAction(
 		requestId: crypto.randomUUID(),
 		reason: data.reason,
 		action,
-		targetType:
-			action === "notice.manage"
+		targetType: action.startsWith("request.")
+			? "request"
+			: action === "notice.manage"
 				? "notice"
 				: action === "audit.export"
 					? "audit"

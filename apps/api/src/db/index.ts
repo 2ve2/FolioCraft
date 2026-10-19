@@ -5,6 +5,7 @@ import { env } from "../config/env";
 import * as adminSchema from "./schema/admin";
 import * as assetSchema from "./schema/asset";
 import * as authSchema from "./schema/auth";
+import * as requestSchema from "./schema/data-requests";
 import * as noticeSchema from "./schema/notices";
 import * as operationsSchema from "./schema/operations";
 import * as reportSchema from "./schema/reports";
@@ -20,6 +21,7 @@ const poolConfig = {
 };
 const schema = {
 	...adminSchema,
+	...requestSchema,
 	...noticeSchema,
 	...reportSchema,
 	...authSchema,

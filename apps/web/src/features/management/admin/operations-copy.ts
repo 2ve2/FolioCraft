@@ -1,5 +1,7 @@
 export const operationsCopy = {
 	en: {
+		requests: "Data requests",
+		overdue: "Overdue",
 		activity: "Activity log",
 		actorId: "Actor ID",
 		action: "Action",
@@ -60,7 +62,7 @@ export const operationsCopy = {
 		current: "Current notices",
 		attention: "Needs attention",
 		unresolved: "Attempts without an outcome after 15 minutes",
-		later: "Requests, internal notes and staff management are not implemented.",
+		later: "Internal notes and staff role changes are not implemented.",
 		events: "Last 10 events",
 		metadata: "Sanitized metadata",
 		reason: "Reason",
@@ -69,6 +71,8 @@ export const operationsCopy = {
 		failed: "Failed",
 	},
 	ar: {
+		requests: "طلبات البيانات",
+		overdue: "متأخرة",
 		activity: "سجل النشاط",
 		actorId: "معرّف المنفّذ",
 		action: "الإجراء",
@@ -128,7 +132,7 @@ export const operationsCopy = {
 		current: "تنبيهات حالية",
 		attention: "يحتاج متابعة",
 		unresolved: "محاولات بلا نتيجة بعد 15 دقيقة",
-		later: "طلبات البيانات والملاحظات الداخلية وإدارة الموظفين غير منفّذة.",
+		later: "الملاحظات الداخلية وتغيير أدوار الطاقم غير منفّذين.",
 		events: "آخر 10 أحداث",
 		metadata: "بيانات وصفية منقّاة",
 		reason: "السبب",
