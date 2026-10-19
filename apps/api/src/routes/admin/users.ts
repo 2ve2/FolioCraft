@@ -39,7 +39,7 @@ adminUserRoutes.get("/users/:id/sessions", requirePermission("user", "read"), as
 	successResponse(c, await adminUserService.sessions(c.req.raw.headers, userId(c.req.param("id")))),
 );
 
-for (const operation of ["ban", "unban", "revoke-sessions"] as const) {
+for (const operation of ["ban", "unban", "revoke-sessions", "remove"] as const) {
 	adminUserRoutes.post(
 		`/users/:id/${operation}`,
 		requirePermission("user", operation === "revoke-sessions" ? "revoke_session" : operation),
@@ -69,6 +69,21 @@ adminUserRoutes.post(
 				"revoke-session",
 				await c.req.json(),
 				userId(c.req.param("sessionId")),
+			),
+		),
+);
+
+/** A POST intentionally reveals one email through the full sensitive pipeline. */
+adminUserRoutes.post(
+	"/users/:id/reveal-email",
+	requirePermission("user", "read_email"),
+	async (c) =>
+		successResponse(
+			c,
+			await adminUserService.revealEmail(
+				c.req.raw.headers,
+				userId(c.req.param("id")),
+				await c.req.json(),
 			),
 		),
 );

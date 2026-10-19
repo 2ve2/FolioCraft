@@ -1,7 +1,17 @@
 import { isAPIError } from "better-auth/api";
+import { eq } from "drizzle-orm";
+import { db } from "../../db";
+import { user } from "../../db/schema/auth";
 import { auth } from "../../lib/auth";
 import { ApiError } from "../../lib/response-helpers";
-import { banSchema, sensitiveSchema, translateSensitiveError } from "./sensitive-action";
+import {
+	appendSensitiveOutcome,
+	banSchema,
+	prepareSensitiveAction,
+	removeSchema,
+	sensitiveSchema,
+	translateSensitiveError,
+} from "./sensitive-action";
 
 /** Projects only approved identity fields; native rows never reach the administration client. */
 function accountView(user: {
@@ -41,18 +51,38 @@ async function nativeRead<T>(operation: () => Promise<T>): Promise<T> {
 }
 
 export const adminUserService = {
+	/** Releases the email only after durable success auditing, never through ordinary read DTOs. */
+	async revealEmail(headers: Headers, id: string, input: unknown) {
+		const actor = await auth.api.getSession({ headers });
+		if (!actor) throw new ApiError(401, "UNAUTHORIZED");
+		const { audit } = await prepareSensitiveAction(actor, headers, "user.read_email", id, input);
+		let email: string;
+		try {
+			const [target] = await db.select({ email: user.email }).from(user).where(eq(user.id, id));
+			if (!target) throw new ApiError(404, "NOT_FOUND");
+			email = target.email;
+		} catch (error) {
+			await appendSensitiveOutcome(audit, "failed");
+			throw error;
+		}
+		await appendSensitiveOutcome(audit, "succeeded");
+		return { email };
+	},
 	/** Sends only server-built expanded native bodies; hooks own credentials, target checks and audits. */
 	async mutate(
 		headers: Headers,
 		id: string,
-		operation: "ban" | "unban" | "revoke-sessions" | "revoke-session",
+		operation: "ban" | "unban" | "revoke-sessions" | "revoke-session" | "remove",
 		input: unknown,
 		sessionId?: string,
 	) {
-		const data = (operation === "ban" ? banSchema : sensitiveSchema).parse(input);
+		const data = (
+			operation === "ban" ? banSchema : operation === "remove" ? removeSchema : sensitiveSchema
+		).parse(input);
 		const body = { ...data, userId: id };
 		try {
-			if (operation === "ban") await auth.api.banUser({ headers, body });
+			if (operation === "remove") await auth.api.removeUser({ headers, body });
+			else if (operation === "ban") await auth.api.banUser({ headers, body });
 			else if (operation === "unban") await auth.api.unbanUser({ headers, body });
 			else if (operation === "revoke-sessions")
 				await auth.api.revokeUserSessions({ headers, body });

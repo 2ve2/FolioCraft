@@ -1,5 +1,6 @@
 export const text = {
 	ar: {
+		passwordBlocked: "تم إيقاف العمليات الحساسة مؤقتًا بسبب تكرار إخفاق كلمة المرور. حاول لاحقًا.",
 		invalidPassword: "كلمة مرورك غير صحيحة.",
 		actionUnavailable: "هذا الإجراء غير متاح لهذا الحساب أو الموقع.",
 		auditUnavailable: "تعذر تسجيل المحاولة؛ لم تُنفّذ العملية.",
@@ -69,6 +70,8 @@ export const text = {
 		},
 	},
 	en: {
+		passwordBlocked:
+			"Sensitive actions are temporarily blocked after repeated password failures. Try again later.",
 		invalidPassword: "Your password is incorrect.",
 		actionUnavailable: "This action is unavailable for this account or site.",
 		auditUnavailable: "The attempt could not be recorded; the operation did not run.",

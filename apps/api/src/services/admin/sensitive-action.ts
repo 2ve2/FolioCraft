@@ -11,6 +11,7 @@ import { ApiError } from "../../lib/response-helpers";
 import { rateLimitService } from "../rate-limit";
 import type { DraftTransaction } from "../sites/draft-service";
 import { type AuditContext, recordAdminAction } from "./audit-service";
+import { passwordFailures } from "./password-failures";
 
 export const sensitiveSchema = z
 	.object({
@@ -18,17 +19,20 @@ export const sensitiveSchema = z
 		password: z.string().min(1).max(1024),
 	})
 	.strict();
+export const removeSchema = sensitiveSchema.extend({ confirmation: z.string().min(1).max(128) });
 export const banSchema = sensitiveSchema.extend({
 	banExpiresIn: z.number().int().min(1).max(31_536_000).optional(),
 });
 export const nativeSensitiveActions = {
 	"/admin/ban-user": "user.ban",
+	"/admin/remove-user": "user.remove",
 	"/admin/unban-user": "user.unban",
 	"/admin/revoke-user-session": "user.revoke_session",
 	"/admin/revoke-user-sessions": "user.revoke_sessions",
 } as const;
 export type SensitiveAction =
 	| (typeof nativeSensitiveActions)[keyof typeof nativeSensitiveActions]
+	| "user.read_email"
 	| "site.suspend"
 	| "site.resume";
 export type SensitiveActor = {
@@ -53,8 +57,12 @@ const recordedDenials = new WeakSet<object>();
 /** Maps only this batch's finite live routes to denial budgets; arbitrary paths never create keys. */
 export function sensitiveRoute(path: string): SensitiveAction | undefined {
 	const match =
-		/^\/api\/admin\/(users|sites)\/[^/]+\/(ban|unban|revoke-sessions|suspend|resume)$/.exec(path);
+		/^\/api\/admin\/(users|sites)\/[^/]+\/(ban|unban|revoke-sessions|reveal-email|remove|suspend|resume)$/.exec(
+			path,
+		);
 	if (match?.[1] === "users") {
+		if (match[2] === "reveal-email") return "user.read_email";
+		if (match[2] === "remove") return "user.remove";
 		if (match[2] === "ban") return "user.ban";
 		if (match[2] === "unban") return "user.unban";
 		if (match[2] === "revoke-sessions") return "user.revoke_sessions";
@@ -171,18 +179,27 @@ export async function prepareSensitiveAction(
 	expectedUserId?: string,
 ) {
 	await requireSensitiveActor(actor, action);
-	const data = (action === "user.ban" ? banSchema : sensitiveSchema).parse(input);
+	const data = (
+		action === "user.ban" ? banSchema : action === "user.remove" ? removeSchema : sensitiveSchema
+	).parse(input);
 	await resolveSensitiveTarget(action, id, expectedUserId);
-	const budget = await rateLimitService.consume(`private-write:${actor.user.id}`, 120, 60);
-	if (!budget.allowed) throw new ApiError(429, "RATE_LIMITED");
+	if (action === "user.remove" && (data as unknown as { confirmation: string }).confirmation !== id)
+		throw new ApiError(400, "CONFIRMATION_MISMATCH");
+	await passwordFailures.check(actor.user.id);
 	const { auth } = await import("../../lib/auth");
 	try {
 		const verified = await auth.api.verifyPassword({ headers, body: { password: data.password } });
 		if (!verified.status) throw new ApiError(400, "INVALID_PASSWORD");
 	} catch (error) {
+		if (
+			(error instanceof ApiError && error.code === "INVALID_PASSWORD") ||
+			(isAPIError(error) && error.body?.code === "INVALID_PASSWORD")
+		)
+			await passwordFailures.fail(actor.user.id);
 		if (isAPIError(error)) translateSensitiveError(error);
 		throw error;
 	}
+	await passwordFailures.check(actor.user.id);
 	const current = await auth.api.getSession({ headers });
 	if (!current || current.user.id !== actor.user.id || current.session.id !== actor.session.id)
 		throw new ApiError(401, "UNAUTHORIZED");

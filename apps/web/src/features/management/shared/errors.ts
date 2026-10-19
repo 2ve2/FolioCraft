@@ -6,6 +6,7 @@ import { text } from "./copy";
 export function errorText(error: unknown, locale: Locale) {
 	const t = text[locale];
 	if (error instanceof ApiError) {
+		if (error.code === "ADMIN_PASSWORD_BLOCKED") return t.passwordBlocked;
 		if (error.code === "INVALID_PASSWORD") return t.invalidPassword;
 		if (error.code === "ADMIN_ACTION_UNAVAILABLE") return t.actionUnavailable;
 		if (error.code === "ADMIN_AUDIT_UNAVAILABLE") return t.auditUnavailable;

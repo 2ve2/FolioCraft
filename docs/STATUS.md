@@ -2,6 +2,14 @@
 
 Updated: 2026-10-19, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: P2b-2b complete; P3 authorized next
+
+- Implemented dedicated configurable operator-password failures, audited ordinary-target POST email reveal and owner-only exact typed-ID native removal. Existing general private-write120/60 remains unchanged; password checks no longer consume it. Account mutation UI remains read-only. General anonymous denial logging explicitly deferred with rationale in ADMIN_CONSOLE16.
+- Actual native removal cascades delete sites/releases/inquiries/asset database records and auth records, but do not delete R2 objects. Full email is withheld on success-audit failure and absent from ordinary reads/audits.
+- Verification: guarded root bun run test exit0,37 pass/8 child-only skips/1,894 assertions; enforced native TOTP child8 pass/233 assertions. Typecheck/check (296 files)/web tests (18 pass/301 assertions)/default QA build (20/20 static plus dynamic routes) exit0. Logs work/admin-p2b2b; earlier fixture/expectation failures corrected. No new browser or hosted acceptance claimed.
+- No schema/dependency change, production connection, real role/key change, push or deployment. Source synchronized to independent work/github-upload before commit; preexisting generated next-env.d.ts remains unstaged.
+- Active work: authorized P3 reports. Blockers: none. Next action: generate additive reports schema, implement public/admin flow and verify only guarded folio_test. Local test PostgreSQL remains running for P3. Stop after P3 commit for human review.
+
 ## Latest: authorized P2b-2a GitHub upload completed
 
 - Human explicitly requested uploading the completed commits. Fetch exited0 and showed0 remote-only/2 local-only commits; origin/main was an ancestor of local main. Disclosed c1d7963 (pipeline comparison) and0c922cc (sensitive-action implementation), then ordinary push exited0, advancing origin/main52db4a7 to0c922cc. No force push or history rewrite.

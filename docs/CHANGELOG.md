@@ -760,3 +760,11 @@ Human requests their own website from an attached CV and explicitly selects Engl
 ### Authorized P2b-2a upload result
 - Fetch exit0; comparison0 remote-only/2 local-only; origin/main ancestor check passed. Disclosed c1d7963 and0c922cc. Ordinary push exit0 advanced main52db4a7 to0c922cc. No force push/history rewrite.
 - Updated STATUS with the actual upload result and unchanged implementation stop boundary. Synchronize/commit these English documentation changes separately in work/github-upload and upload under the same human authorization. No new runtime check, remote CI success, deployment, production connection or real role/key change. Generated next-env.d.ts remains unstaged.
+
+## 2026-10-19 — authorized round 2 scope (in progress)
+
+Human accepts P2b-2a and authorizes P2b-2b followed by P3, with one separate implementation commit per phase and then stop for review. P2b-2b adds a dedicated configurable operator-password failure limiter, audited ordinary-target email reveal and owner-only typed-ID account removal; general anonymous denial logging is evaluated conservatively. P3 adds generated-only content_reports migration (local guarded folio_test application authorized), salted public intake, permission-controlled cursor queues/status handling and bilingual public/admin UI. Preserve MFA/native hooks, target protections, published-only rendering, existing write limits and request-pool transaction semantics. No subagents, push, deployment, production connections or real role/key changes. Account mutation console stays read-only; later phases remain excluded. Evidence will be stored under work/admin-p2b2b and work/admin-p3.
+
+### P2b-2b completed
+
+Affected API: config/env.ts and .env.example; services/admin/password-failures.ts, sensitive-action.ts, user-service.ts; lib/auth/hooks.ts; routes/admin/users.ts. Web: localized blocked-password feedback only. Tests: new sensitive-round2 integration suite, updated native MFA and live-endpoint expectations. Documentation: ADMIN_CONSOLE16, DECISIONS and STATUS. Actual checks and results are recorded there (37 API passes, enforced8 MFA passes,18 web passes, typecheck/check/build exit0). No migration/dependency change. Native deletion relational cascade and absent R2 cleanup documented; anonymous denial logs deferred explicitly. P3 is the only next authorized work.

@@ -18,6 +18,7 @@ import {
 	nativeSensitiveActions,
 	prepareSensitiveAction,
 	recordSensitiveDenial,
+	removeSchema,
 	type SensitiveAudit,
 	sensitiveSchema,
 } from "../../services/admin/sensitive-action";
@@ -141,7 +142,13 @@ export const authHooks = {
 			const action = nativeSensitiveActions[ctx.path as keyof typeof nativeSensitiveActions];
 			if (action) {
 				try {
-					const targetSchema = (action === "user.ban" ? banSchema : sensitiveSchema).extend({
+					const targetSchema = (
+						action === "user.ban"
+							? banSchema
+							: action === "user.remove"
+								? removeSchema
+								: sensitiveSchema
+					).extend({
 						userId: z.string().trim().min(1).max(128),
 						...(action === "user.revoke_session"
 							? { sessionId: z.string().trim().min(1).max(128) }

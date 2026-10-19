@@ -52,7 +52,7 @@ function endpointDeclarations() {
 
 test("actual mounted admin endpoints declare permissions and unregistered routes fail closed", async () => {
 	const endpoints = endpointDeclarations();
-	expect(endpoints.size).toBe(14);
+	expect(endpoints.size).toBe(16);
 	for (const permissions of endpoints.values()) expect(permissions.length).toBeGreaterThan(0);
 	const owner = await fixture("owner");
 	const wildcardProbe = new Hono<AuthEnv>();
@@ -141,7 +141,7 @@ test("every role against every live admin endpoint follows independent expected 
 		admin: [],
 		unknown: [],
 	};
-	expect(endpointDeclarations().size).toBe(endpoint.length + 1);
+	expect(endpointDeclarations().size).toBe(endpoint.length + 3);
 	for (const [role, permissions] of Object.entries(expected)) {
 		const actor = await fixture(role);
 		for (const [method, path, permission] of endpoint) {
@@ -335,7 +335,6 @@ test("shared policy matches native grants and keeps deferred operations unavaila
 	const member = await fixture("user");
 	for (const operation of [
 		() => auth.api.setRole({ headers: owner.headers, body: { userId: member.id, role: "owner" } }),
-		() => auth.api.removeUser({ headers: owner.headers, body: { userId: member.id } }),
 	])
 		await expect(operation()).rejects.toMatchObject({ body: { code: "ADMIN_ACTION_UNAVAILABLE" } });
 	await expect(

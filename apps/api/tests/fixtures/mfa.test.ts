@@ -7,7 +7,9 @@ import { env, envSchema } from "../../src/config/env";
 import { db } from "../../src/db";
 import { adminAudit } from "../../src/db/schema/admin";
 import { session, twoFactor, user, verification } from "../../src/db/schema/auth";
+import { rateBuckets } from "../../src/db/schema/operations";
 import { auth } from "../../src/lib/auth";
+import { passwordFailures } from "../../src/services/admin/password-failures";
 import { request } from "../helpers";
 
 const enabled = env.ADMIN_REQUIRE_MFA;
@@ -609,6 +611,7 @@ test.skipIf(!enabled)(
 		expect(siteResponse.status).toBe(200);
 		const site = (await siteResponse.json()).result as { id: string };
 		const paths = [
+			`/api/admin/users/${member.id}/reveal-email`,
 			`/api/admin/users/${member.id}/ban`,
 			`/api/admin/users/${member.id}/unban`,
 			`/api/admin/users/${member.id}/revoke-sessions`,
@@ -645,6 +648,7 @@ test.skipIf(!enabled)(
 			.set({ createdAt: new Date(Date.now() - 86_400_000) })
 			.where(eq(session.id, active?.session.id ?? "missing"));
 		for (const path of paths) {
+			await db.delete(rateBuckets).where(eq(rateBuckets.key, passwordFailures.key(actor.id)));
 			const rejected = await request(
 				path,
 				"POST",
@@ -653,17 +657,24 @@ test.skipIf(!enabled)(
 			);
 			expect(rejected.status).toBe(400);
 		}
-		for (const path of [paths[3], paths[2], paths[0], paths[1], paths[4], paths[5]]) {
+		for (const path of [paths[0], paths[4], paths[3], paths[1], paths[2], paths[5], paths[6]]) {
 			const completed = await request(path, "POST", data, authenticated);
 			expect(completed.status).toBe(200);
 		}
 		const events = await db.select().from(adminAudit).where(eq(adminAudit.actorId, actor.id));
 		const attempts = events.filter((row) => row.status === "attempted");
-		expect(attempts).toHaveLength(6);
+		expect(attempts).toHaveLength(7);
 		for (const attempt of attempts) {
 			const correlated = events.filter((row) => row.requestId === attempt.requestId);
 			expect(correlated.map((row) => row.status).sort()).toEqual(["attempted", "succeeded"]);
 		}
+		const removed = await request(
+			`/api/admin/users/${member.id}/remove`,
+			"POST",
+			{ ...data, confirmation: member.id },
+			authenticated,
+		);
+		expect(removed.status).toBe(200);
 		await db.delete(session).where(eq(session.id, active?.session.id ?? "missing"));
 		expect((await request(paths[0], "POST", data, authenticated)).status).toBe(401);
 		await expect(

@@ -48,6 +48,9 @@ export const envSchema = z
 			.enum(["true", "false"])
 			.default("true")
 			.transform((value) => value === "true"),
+		ADMIN_PASSWORD_MAX_FAILURES: z.coerce.number().int().min(1).max(100).default(5),
+		ADMIN_PASSWORD_WINDOW_SECONDS: z.coerce.number().int().min(1).max(86400).default(900),
+		ADMIN_PASSWORD_BLOCK_SECONDS: z.coerce.number().int().min(1).max(86400).default(900),
 		API_URL: origin,
 		WEB_URL: origin,
 		PORT: z.coerce.number().int().min(1).max(65535).default(4000),
