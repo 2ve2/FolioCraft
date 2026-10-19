@@ -106,3 +106,18 @@ Prepared 2026-10-20 for the human-owned test domain. **Every operational action 
 - [ ] **NOT PERFORMED:** inspect canonical/OpenGraph links, `/robots.txt`, `/sitemap.xml` and published per-site sitemap URLs; all web URLs must derive from `NEXT_PUBLIC_WEB_URL=https://lord2ve.tech`, with public assets using the configured API origin. Confirm runtime SSR reaches the API subdomain.
 
 Code evidence, cookie inference, full legacy-hostname inventory and search exclusions are in [CUSTOM_DOMAIN_REVIEW.md](CUSTOM_DOMAIN_REVIEW.md). JSON shape follows [Cloudflare R2 CORS documentation](https://developers.cloudflare.com/r2/buckets/cors/).
+
+## Local build harness repair — 2026-10-20
+
+The stopped deployment attempt was a local preparation failure. A controlled rebuild with unchanged application/configuration/dependency source succeeded after replacing external dependency-directory symlinks with self-contained dependencies. The failed layout copied tracked source into work but linked root/workspace node_modules back to another checkout. Next skipped27 traced files outside outputFileTracingRoot, and OpenNext then reached real Sharp native modules instead of its expected traced/rewritten package layout. With physically local dependency directories and1466 internal links all resolving inside the build root, the same build completed25/25 static pages plus dynamic routes and generated `.open-next/worker.js`, without the tracing warnings/Sharp errors. Do not fix this by adding native .node loaders or changing image/auth/API behavior.
+
+For a clean build directory, copy only reviewed source and install the frozen Bun lockfile **in that directory**, or copy the already-installed, lockfile-matching root and workspace node_modules directories physically while preserving their internal relative links. Never link whole dependency directories to a different checkout. The verified repair used a physical reflink-capable copy, not a dependency upgrade. Keep actual environment/secret files out of the build copy; provide the two public URL values explicitly. Keep stdout and stderr in separate logs so diagnostics remain available.
+
+The API failure had an independent proven cause: Bun.spawn stdin:pipe is a socket on this host (fstat isSocket=true/isFIFO=false); Wrangler's secrets-file parser reopens /dev/stdin with readFileSync, which fails with ENXIO on that descriptor. The same API bundle dry-ran successfully without a secrets-file input. A normal OS pipe bridges the descriptor and fixes synthetic secret transport. For example, from the self-contained checkout (local dry run only):
+
+```sh
+printf '%s\n' '{"REPORT_IP_SALT":"synthetic-dry-run-only-not-a-real-secret"}' |
+  bunx --no-install wrangler deploy --config apps/api/wrangler.toml --dry-run --secrets-file /dev/stdin
+```
+
+For a Bun-controlled producer, spawn `bash -o pipefail -c 'cat | bunx "$@"' wrangler-stdin ...arguments` and write only to that child's input. The intermediate cat feeds a regular OS pipe to Wrangler. Any separately authorized real-secret deployment must generate its value in memory, keep it out of command arguments/files/output, disable Wrangler disk logs/metrics/error reports and verify the active binding by name. Do not directly attach Bun's stdin socket to Wrangler when using --secrets-file /dev/stdin. This repair used a synthetic value only; no actual secret was generated/reset and no Worker was deployed. Neither successful dry run establishes remote secret inheritance or hosted runtime/cookie/upload acceptance.
