@@ -51,6 +51,7 @@ export const envSchema = z
 		ADMIN_PASSWORD_MAX_FAILURES: z.coerce.number().int().min(1).max(100).default(5),
 		ADMIN_PASSWORD_WINDOW_SECONDS: z.coerce.number().int().min(1).max(86400).default(900),
 		ADMIN_PASSWORD_BLOCK_SECONDS: z.coerce.number().int().min(1).max(86400).default(900),
+		REPORT_IP_SALT: optional(z.string().min(32).max(1024)),
 		API_URL: origin,
 		WEB_URL: origin,
 		PORT: z.coerce.number().int().min(1).max(65535).default(4000),
@@ -113,6 +114,12 @@ export const envSchema = z
 				});
 		}
 		if (v.NODE_ENV === "production") {
+			if (!v.REPORT_IP_SALT)
+				ctx.addIssue({
+					code: "custom",
+					path: ["REPORT_IP_SALT"],
+					message: "Production reports require REPORT_IP_SALT",
+				});
 			if (!v.ADMIN_REQUIRE_MFA)
 				ctx.addIssue({
 					code: "custom",

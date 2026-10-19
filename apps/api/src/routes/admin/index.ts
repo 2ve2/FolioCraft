@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { requireAdmin } from "../../middleware/admin";
 import type { AuthEnv } from "../../middleware/auth";
 import { adminAuditRoutes } from "./audit";
+import { adminReportRoutes } from "./reports";
 import { adminResourceRoutes } from "./resources";
 import { adminSiteRoutes } from "./sites";
 import { adminUserRoutes } from "./users";
@@ -16,3 +17,5 @@ adminRoutes.route("/", adminResourceRoutes);
 adminRoutes.route("/", adminAuditRoutes);
 
 adminRoutes.route("/", adminUserRoutes);
+
+adminRoutes.route("/", adminReportRoutes);

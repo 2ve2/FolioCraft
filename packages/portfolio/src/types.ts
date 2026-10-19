@@ -8,6 +8,7 @@ export type PortfolioProps = {
 	assetUrls?: Record<string, string>;
 	publicBasePath?: string;
 	contactForm?: ReactNode;
+	reportAction?: ReactNode;
 	detail?: ReactNode;
 	anchorPrefix?: string;
 };

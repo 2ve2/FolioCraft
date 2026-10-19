@@ -1,7 +1,10 @@
+import { adminReportCopy } from "./report-copy";
 export type AdminView = "overview" | "sites" | "users" | "audit";
 
 export const adminCopy = {
 	en: {
+		reports: "Reports",
+		report: adminReportCopy.en,
 		operatorPassword: "Your password",
 		securityPending: "Sensitive account controls are not yet available in this console.",
 		label: "CONTROL CENTER",
@@ -88,6 +91,8 @@ export const adminCopy = {
 			"Attempted records may require investigation; they do not confirm that an operation completed.",
 	},
 	ar: {
+		reports: "البلاغات",
+		report: adminReportCopy.ar,
 		operatorPassword: "كلمة مرورك",
 		securityPending: "عناصر التحكم الحساسة بالحساب غير متاحة في هذه الواجهة بعد.",
 		label: "مركز الإدارة",

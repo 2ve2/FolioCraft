@@ -29,6 +29,7 @@ const navigation = [
 	{ key: "overview", path: "/admin", icon: LayoutDashboard },
 	{ key: "sites", path: "/admin/sites", icon: Globe2 },
 	{ key: "users", path: "/admin/accounts", icon: UsersRound },
+	{ key: "reports", path: "/admin/reports", icon: ScrollText },
 	{ key: "audit", path: "/admin/activity", icon: ScrollText },
 ] as const;
 
@@ -78,9 +79,11 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 				? "sites"
 				: pathname === "/admin/accounts"
 					? "users"
-					: pathname === "/admin/activity"
-						? "audit"
-						: null;
+					: pathname === "/admin/reports" || pathname.startsWith("/admin/reports/")
+						? "reports"
+						: pathname === "/admin/activity"
+							? "audit"
+							: null;
 	const routeAllowed = activeView !== null && canViewAdmin(permissions, activeView);
 
 	/** Uses the native sign-out operation before returning to the public website. */
@@ -153,7 +156,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 			</div>
 		);
 
-	const active = navigation.find((item) => item.path === pathname) || navigation[0];
+	const active = navigation.find((item) => item.key === activeView) || navigation[0];
 	return (
 		<AdminContext.Provider value={{ locale, setLocale, user: session.user, permissions }}>
 			<div className={styles.shell} lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>

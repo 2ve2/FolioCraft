@@ -14,7 +14,11 @@ export function PortfolioDetail({
 	assetUrls = {},
 	publicBasePath,
 	anchorPrefix,
-}: Pick<PortfolioProps, "draft" | "assetUrls" | "publicBasePath" | "anchorPrefix"> & {
+	reportAction,
+}: Pick<
+	PortfolioProps,
+	"draft" | "assetUrls" | "publicBasePath" | "anchorPrefix" | "reportAction"
+> & {
 	project?: Project;
 	article?: Article;
 }) {
@@ -28,6 +32,7 @@ export function PortfolioDetail({
 			assetUrls={assetUrls}
 			publicBasePath={publicBasePath}
 			anchorPrefix={anchorPrefix}
+			reportAction={reportAction}
 			detail={
 				<section className="folio__detail-page">
 					{publicBasePath && (

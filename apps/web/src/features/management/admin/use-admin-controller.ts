@@ -8,16 +8,22 @@ import type { AdminSite, AdminUser, Audit, Counts } from "../shared/types";
 import { useAdminSession } from "./admin-context";
 
 /** Coordinates guarded administrator requests, selection epochs and native account actions. */
-export function useAdminController(locale: Locale, tab: "sites" | "audit" | "users") {
+export function useAdminController(
+	locale: Locale,
+	tab: "sites" | "audit" | "users",
+	dialogOnly = false,
+) {
 	const t = text[locale];
 	const { permissions } = useAdminSession();
-	const canReadSystem = permissions.includes("system.read");
+	const canReadSystem = !dialogOnly && permissions.includes("system.read");
 
 	// Active resource tab, page and platform totals.
 	const [siteFilter, setSiteFilter] = useState<"all" | "accessible" | "suspended">("all");
 	const [offset, setOffset] = useState(0);
 	const page = usePage<AdminSite | Audit | AdminUser>(
-		`/api/admin/${tab}?limit=20&offset=${offset}${tab === "sites" && siteFilter !== "all" ? `&suspended=${siteFilter === "suspended"}` : ""}`,
+		dialogOnly
+			? null
+			: `/api/admin/${tab}?limit=20&offset=${offset}${tab === "sites" && siteFilter !== "all" ? `&suspended=${siteFilter === "suspended"}` : ""}`,
 		locale,
 	);
 	const [counts, setCounts] = useState<Counts | null>(null);
@@ -143,7 +149,7 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 	}
 
 	/** Loads one site overview only for the still-current administrator view. */
-	function openSiteDetails(row: AdminSite) {
+	function openSiteDetails(row: Pick<AdminSite, "id">, initialReason = "") {
 		if (actionPending.current) return;
 		actionPending.current = true;
 		const version = ++viewVersion.current;
@@ -157,7 +163,10 @@ export function useAdminController(locale: Locale, tab: "sites" | "audit" | "use
 		setError("");
 		api<AdminSite>(`/api/admin/sites/${row.id}`)
 			.then((value) => {
-				if (current()) setDetails(value);
+				if (current()) {
+					setDetails(value);
+					setReason(initialReason.slice(0, 500));
+				}
 			})
 			.catch((e) => {
 				if (current()) setError(errorText(e, locale));

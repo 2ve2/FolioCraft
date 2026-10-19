@@ -80,3 +80,9 @@ Custom domains; actual aggregate analytics; subscriptions; imports; AI assistanc
 - [x] Replace raw embedded administration with responsive navigation, real resource overview, bounded account/site/audit views, server filters and focused management dialogs.
 - [x] Verify native confirmations, self-account protections, site moderation, session revocation/audit, RTL/mobile menu focus and save-before-administration behavior on isolated accounts.
 - [x] Existing API/web tests, typechecks, Biome and final independent build pass; clean temporary accounts and leave normal localhost development ready for human review.
+
+## Authorized round2 local acceptance — 2026-10-19
+- [x] P2b-2b: independent configurable password failures, audited email reveal and owner-only typed native ordinary-account removal; relational/R2 deletion boundary documented. General anonymous denial logging explicitly deferred.
+- [x] P3: generated reports migration applied only through guarded local folio_test; public strict/size/rate/dedup/privacy proof; oldest cursor/filters/role/MFA/status/audit proof; bilingual shared public and administrative UI with real local browser/keyboard/moderation acceptance.
+
+These checkboxes record the scoped local acceptance in ADMIN_CONSOLE16–17, not production rollout or a broader launch gate. Stop for human review; P4–P7 remain unauthorized in this round.

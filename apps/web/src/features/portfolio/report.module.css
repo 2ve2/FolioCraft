@@ -1,0 +1,49 @@
+.root {
+	font-family: var(--font-ui), sans-serif;
+}
+.trigger {
+	border: 0;
+	background: transparent;
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+	padding: 0.6rem;
+	cursor: pointer;
+	font: inherit;
+}
+.form {
+	display: grid;
+	gap: 1rem;
+}
+.form label {
+	display: grid;
+	gap: 0.5rem;
+}
+.form input,
+.form textarea {
+	width: 100%;
+	border: 1px solid var(--line, #ddd);
+	border-radius: 0.65rem;
+	padding: 0.75rem;
+	font: inherit;
+	background: var(--surface, white);
+	color: var(--ink, #17172b);
+}
+.submit {
+	border: 0;
+	border-radius: 0.65rem;
+	padding: 0.75rem 1rem;
+	background: #3f46c8;
+	color: white;
+	cursor: pointer;
+	font: inherit;
+}
+.submit:disabled {
+	opacity: 0.6;
+	cursor: wait;
+}
+.trigger:focus-visible,
+.submit:focus-visible {
+	outline: 3px solid #8589ff;
+	outline-offset: 3px;
+}

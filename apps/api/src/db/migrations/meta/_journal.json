@@ -36,6 +36,13 @@
       "when": 1792359101723,
       "tag": "0004_magenta_catseye",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792411756271,
+      "tag": "0005_parallel_ultimates",
+      "breakpoints": true
     }
   ]
 }

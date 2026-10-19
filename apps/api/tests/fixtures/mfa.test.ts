@@ -146,6 +146,7 @@ test.skipIf(!enabled)(
 			API_URL: "https://api.example.com",
 			WEB_URL: "https://app.example.com",
 			NODE_ENV: "production",
+			REPORT_IP_SALT: "synthetic-report-salt-at-least-32-characters",
 			TRIAL_SKIP_EMAIL_VERIFICATION: "true",
 		};
 		expect(envSchema.parse(base).ADMIN_REQUIRE_MFA).toBe(true);
@@ -683,5 +684,75 @@ test.skipIf(!enabled)(
 				body: { ...data, userId: member.id },
 			}),
 		).rejects.toMatchObject({ statusCode: 401 });
+	},
+);
+
+test.skipIf(!enabled)(
+	"reports require session-bound TOTP for reads and handling while public intake stays anonymous",
+	async () => {
+		const member = await fixture();
+		const created = await request(
+			"/api/sites",
+			"POST",
+			{ slug: `mfa-report-${crypto.randomUUID()}`, locale: "en" },
+			member.cookie,
+		);
+		expect(created.status).toBe(200);
+		const site = (await created.json()).result as { id: string };
+		const { contentReports } = await import("../../src/db/schema/reports");
+		const [report] = await db
+			.insert(contentReports)
+			.values({
+				siteId: site.id,
+				category: "other",
+				message: "MFA report fixture",
+				reporterIpHash: "f".repeat(64),
+			})
+			.returning();
+		const paths = [
+			"/api/admin/reports",
+			`/api/admin/reports/${report.id}`,
+			`/api/admin/reports/${report.id}/status`,
+		];
+		for (const role of ["owner", "moderator", "support", "analyst"]) {
+			const actor = await fixture(role);
+			for (const path of paths)
+				expect(
+					(
+						await request(
+							path,
+							path.endsWith("status") ? "POST" : "GET",
+							path.endsWith("status") ? { status: "reviewing" } : undefined,
+							actor.cookie,
+						)
+					).status,
+				).toBe(403);
+		}
+		const actor = await fixture("moderator"),
+			setup = await enroll(actor);
+		const pending = await challenge(actor),
+			verified = await native(
+				auth,
+				"/two-factor/verify-totp",
+				{ code: await code(setup.secret) },
+				pending,
+			);
+		expect(verified.status).toBe(200);
+		const cookie = cookies(verified, pending);
+		for (const path of paths.slice(0, 2))
+			expect((await request(path, "GET", undefined, cookie)).status).toBe(200);
+		expect((await request(paths[2], "POST", { status: "reviewing" }, cookie)).status).toBe(200);
+		expect(
+			(
+				await request(
+					paths[2],
+					"POST",
+					{ status: "dismissed", resolutionNote: "Reviewed native TOTP report" },
+					cookie,
+				)
+			).status,
+		).toBe(200);
+		await db.delete(session).where(eq(session.userId, actor.id));
+		expect((await request(paths[2], "POST", { status: "reviewing" }, cookie)).status).toBe(401);
 	},
 );

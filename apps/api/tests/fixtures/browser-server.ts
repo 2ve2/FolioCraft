@@ -13,7 +13,11 @@ const password = `Browser-fixture-${nonce}`;
 const server = Bun.serve({
 	hostname: "127.0.0.1",
 	port: 4400,
-	fetch: (request) => app.fetch(request),
+	fetch: (request, instance) => {
+		const headers = new Headers(request.headers);
+		headers.set("x-folio-client-ip", instance.requestIP(request)?.address ?? "unknown");
+		return app.fetch(new Request(request, { headers }));
+	},
 });
 
 /** Creates only uniquely named disposable identities on guarded local folio_test. */
@@ -121,6 +125,35 @@ try {
 		owner.cookie,
 	);
 	await domain(`/api/sites/${site.id}/releases`, "POST", { revision: site.revision }, owner.cookie);
+	let englishSite: { id: string; slug: string } | undefined;
+	if (process.env.FOLIO_REPORT_BROWSER === "true") {
+		const englishOwner = await account("report-en", "Temporary English report fixture");
+		let english = await domain(
+			"/api/sites",
+			"POST",
+			{ slug: `report-en-${nonce}`, locale: "en" },
+			englishOwner.cookie,
+		);
+		english = await domain(
+			`/api/sites/${english.id}/draft`,
+			"PUT",
+			{
+				revision: english.revision,
+				draft: {
+					...english.draft,
+					profile: { ...english.draft.profile, name: "Report browser fixture", role: "Designer" },
+				},
+			},
+			englishOwner.cookie,
+		);
+		await domain(
+			`/api/sites/${english.id}/releases`,
+			"POST",
+			{ revision: english.revision },
+			englishOwner.cookie,
+		);
+		englishSite = { id: english.id, slug: english.slug };
+	}
 	const credentials = new URL(
 		"../../../../work/admin-browser-qa/credentials.json",
 		import.meta.url,
@@ -132,6 +165,7 @@ try {
 			owner: { id: owner.id, email: owner.email },
 			password,
 			site: { id: site.id, slug: site.slug },
+			englishSite,
 		}),
 	);
 	await chmod(credentials, 0o600);

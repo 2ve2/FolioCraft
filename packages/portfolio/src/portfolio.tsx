@@ -20,6 +20,7 @@ export function Portfolio({
 	assetUrls = {},
 	publicBasePath,
 	contactForm,
+	reportAction,
 	detail,
 	anchorPrefix = "",
 }: PortfolioProps) {
@@ -140,6 +141,7 @@ export function Portfolio({
 				<footer className="folio__footer">
 					<span>{profile.name || t.portfolio}</span>
 					<span>{t.end}</span>
+					{reportAction}
 				</footer>
 			</div>
 		</article>

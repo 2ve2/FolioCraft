@@ -217,3 +217,11 @@ The web AdminShell resolves /me/permissions before mounting allowed child pages.
 ## P2b-2a sensitive action ownership — 2026-10-19
 
 services/admin/sensitive-action.ts owns shared strict credentials/reasons, ordinary-target/session ownership checks, per-action operator password verification, audit preparation/outcomes and six-action denial budgets. services/admin/user-service.ts constructs native calls and sanitizes their domain responses; lib/auth/hooks.ts independently enforces/strips native extensions and appends outcomes. services/admin/site-service.ts retains site locking and state/outcome atomicity after a durable attempt. middleware/error-handler.ts records bounded domain pre-execution failures and avoids duplicating native-recorded events. Tests include sensitive-actions.integration.test.ts and the enforced MFA child. Existing site UI/controller own the password field/clearing and translated outcomes; account controls remain read-only in this pipeline-only scope.
+
+## Reports and sensitive round2 additions — 2026-10-19
+
+- API services/admin/password-failures.ts owns the dedicated operator failure budget; existing sensitive-action/hooks/user routes own audited email reveal and typed-ID native removal.
+- API db/schema/reports.ts and generated migration0005/meta own the additive report table. routes/public/reports.ts and routes/admin/reports.ts own endpoint validation/permissions; services/reports.ts owns privacy, rates/dedup/cursor/transitions.
+- contracts/src/reports.ts owns shared Zod inputs and report DTOs. portfolio/src/types.ts and portfolio.tsx provide a reportAction slot, forwarded by portfolio-detail.tsx.
+- Web features/portfolio/report-form.tsx, report-copy.ts and report.module.css own the shared public form. features/management/admin/admin-reports.tsx, report-copy.ts (included through adminCopy) and reports.module.css own queue/detail, mounted by app/admin/reports routes. Existing controller supports dialog-only site moderation; AdminDialog owns explicit keyboard wrapping.
+- Integration tests sensitive-round2/reports plus native MFA fixtures and web reports tests capture actual acceptance. Browser fixture updates remain local test infrastructure; scripts/test-api.ts enforces the same guarded database and supplies only synthetic salts.

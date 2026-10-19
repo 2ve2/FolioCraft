@@ -1,6 +1,7 @@
 import type { Article, PublicSite } from "@ichnara/contracts";
 import { PortfolioDetail } from "@ichnara/portfolio";
 import { PublishedShell } from "../../../../../features/portfolio/published-shell";
+import { ReportForm } from "../../../../../features/portfolio/report-form";
 import { publishedMetadata } from "../../../../../lib/public-metadata";
 import { PublicUnavailable, publicAssets, readPublished } from "../../_public";
 
@@ -45,6 +46,7 @@ export default async function PublicArticle({
 		<PublishedShell locale={site.draft.locale}>
 			<PortfolioDetail
 				draft={site.draft}
+				reportAction={<ReportForm slug={site.slug} locale={site.draft.locale} />}
 				article={detail.article}
 				assetUrls={publicAssets(site)}
 				publicBasePath={`/p/${encodeURIComponent(site.slug)}`}

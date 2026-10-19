@@ -6,7 +6,7 @@ import { errorText } from "./errors";
 import type { Page } from "./types";
 
 /** Loads a bounded resource page and discards superseded responses. */
-export function usePage<T>(path: string, locale: Locale) {
+export function usePage<T>(path: string | null, locale: Locale) {
 	const [data, setData] = useState<Page<T> | null>(null);
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(true);
@@ -17,6 +17,10 @@ export function usePage<T>(path: string, locale: Locale) {
 		setData(null);
 		setLoading(true);
 		setError("");
+		if (!path) {
+			setLoading(false);
+			return;
+		}
 		api<Page<T>>(path)
 			.then((value) => {
 				if (current) setData(value);

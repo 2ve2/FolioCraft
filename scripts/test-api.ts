@@ -17,6 +17,9 @@ const environment = {
 	NODE_ENV: "test",
 	ADMIN_REQUIRE_MFA: mfaBrowser ? "true" : "false",
 	BETTER_AUTH_SECRETS: "",
+	REPORT_IP_SALT: adminBrowser
+		? `browser-report-salt-${crypto.randomUUID()}`
+		: "isolated-report-ip-salt-test-only-at-least-32-characters",
 	BETTER_AUTH_SECRET: "isolated-test-secret-at-least-32-characters-only",
 	API_URL: adminBrowser ? "http://127.0.0.1:4400" : "http://localhost:4000",
 	WEB_URL: adminBrowser ? "http://127.0.0.1:4300" : "http://localhost:3000",
