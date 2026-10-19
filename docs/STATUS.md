@@ -175,3 +175,7 @@ Updated: 2026-10-19, Asia/Riyadh. Detailed previous checkpoints are preserved in
 - New remote CI, final hosted acceptance, backups/restore/monitoring/capacity and operating information remain launch gates in LAUNCH.md.
 - No trademark registry clearance, exclusivity finding or independent readability/aesthetic study. See brand/VERIFICATION.md. Human visual choice is not legal clearance or external-user evidence.
 - No Cloudflare deployment, Neon/production write, purchase or external message authorized/performed. GitHub upload succeeded through3c4b637; final documentation checkpoint is part of the same authorized upload.
+
+## Round4 active — privacy correction
+Round3 accepted subject to the email inference fix. The account search predicate now uses authoritative user.read_email; regression covers analyst/moderator name-only versus owner/support email/full-prefix matching and rejected client flags. Other administrative masked-field predicates inspected with no equivalent found; see ADMIN_CONSOLE20. Typecheck passed. Guarded local API verification is running; no P6 acceptance yet. PostgreSQL required a permitted sandbox retry to bind loopback. No production connection/push/deployment. Next: finish privacy evidence/commit, then authorized P6 and P7.
+Privacy verification completed: guarded bun run test exit0,52 pass/10 child-only skips/2729 assertions; enforced native MFA child10 pass/282 assertions. Typecheck/focused Biome passed. Privacy fix ready for separate commit; active next phase P6. Existing local-only exclusions retained; no push.

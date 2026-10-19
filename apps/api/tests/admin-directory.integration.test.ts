@@ -96,3 +96,40 @@ test("all staff directory detail reads exclude draft bodies and published locale
 		}
 	}
 });
+
+test("masked email search cannot be used as a prefix oracle without authoritative read_email", async () => {
+	const target = await account(`private-${crypto.randomUUID()}`, ids);
+	await db.update(user).set({ name: "Unrelated visible name" }).where(eq(user.id, target.id));
+	const [stored] = await db.select({ email: user.email }).from(user).where(eq(user.id, target.id));
+	if (!stored) throw new Error("Missing fixture");
+	for (const role of ["analyst", "moderator", "owner", "support"]) {
+		const actor = await account(`oracle-${role}`, ids);
+		await db.update(user).set({ role }).where(eq(user.id, actor.id));
+		for (const search of [stored.email, stored.email.slice(0, 12), stored.email.split("@")[0]]) {
+			const page = await result<{ items: { id: string }[] }>(
+				await request(
+					`/api/admin/users?search=${encodeURIComponent(search)}`,
+					"GET",
+					undefined,
+					actor.cookie,
+				),
+			);
+			expect(page.items.some((row) => row.id === target.id)).toBe(
+				role === "owner" || role === "support",
+			);
+		}
+		const names = await result<{ items: { id: string }[] }>(
+			await request("/api/admin/users?search=Unrelated%20visible", "GET", undefined, actor.cookie),
+		);
+		expect(names.items.some((row) => row.id === target.id)).toBe(true);
+		await error(
+			await request(
+				"/api/admin/users?search=private&canSearchEmail=true",
+				"GET",
+				undefined,
+				actor.cookie,
+			),
+			400,
+		);
+	}
+});

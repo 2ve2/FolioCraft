@@ -801,3 +801,9 @@ Human requested uploading the completed commits. Fresh fetch confirmed0 remote-o
 ## 2026-10-19 — Authorized round3 upload completed
 - Explicit later human instruction authorized upload. Fetch/ancestry checks passed, with0 remote-only/2 local-only before ordinary push. Push exited0, advancing origin/main9ff4e46 to e107e41 (P4:18ed073; P5:e107e41). No force push/history rewrite.
 - This documentation checkpoint is synchronized and uploaded under the same authorization. Existing local API/MFA/web/build/47-check browser evidence remains unchanged; remote CI/production/deployment not claimed. Stop for review; P6/P7 not started.
+
+## 2026-10-19 — Round4 authorized scope (started)
+Accept round3 subject to repairing the account-email search oracle first in its own commit. Then implement P6 data-rights requests, verified-subject bounded JSON export, read-only staff matrix and own-session security; finally P7 operational documentation and full local role/browser evidence in a separate commit. No push, deployment, production connection, existing real account role/key change or delegation. Generate migrations only with Drizzle and apply only through the root folio_test guard. Preserve generated next-env.d.ts and untracked ADMIN_CONSOLE_TASK.md outside commits. All evidence stays under work/round4; stop after review delivery.
+
+### Required privacy fix completed
+Affected user-service, admin-directory regression and ADMIN_CONSOLE20/DECISIONS/STATUS. Guarded bun run test exit0:52 pass/10 outer child-only skips/2729 assertions; native MFA child10 pass/282 assertions. Typecheck exit0; focused Biome check2 files exit0. No schema change. Existing generated next-env and task reference excluded. P6/P7 next; no upload authorized.

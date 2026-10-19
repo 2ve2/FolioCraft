@@ -1,3 +1,4 @@
+import { hasPermission } from "@ichnara/contracts/admin-policy";
 import { isAPIError } from "better-auth/api";
 import { and, asc, eq, gt, ilike, or, sql } from "drizzle-orm";
 import { db } from "../../db";
@@ -99,7 +100,7 @@ export const adminUserService = {
 	},
 	/** Uses the declared domain read permission and an ID keyset; never fetches private auth fields. */
 	async list(
-		_headers: Headers,
+		headers: Headers,
 		query: {
 			limit: number;
 			cursor?: string;
@@ -109,6 +110,9 @@ export const adminUserService = {
 			verified?: boolean;
 		},
 	) {
+		const actor = await auth.api.getSession({ headers });
+		if (!actor) throw new ApiError(401, "UNAUTHORIZED");
+		const canSearchEmail = hasPermission(actor.user.role, "user", "read_email");
 		const rows = await db
 			.select({
 				id: user.id,
@@ -127,7 +131,9 @@ export const adminUserService = {
 					query.search
 						? or(
 								ilike(user.name, `%${query.search.replace(/[\\%_]/g, "\\$&")}%`),
-								ilike(user.email, `%${query.search.replace(/[\\%_]/g, "\\$&")}%`),
+								canSearchEmail
+									? ilike(user.email, `%${query.search.replace(/[\\%_]/g, "\\$&")}%`)
+									: undefined,
 							)
 						: undefined,
 					query.role
