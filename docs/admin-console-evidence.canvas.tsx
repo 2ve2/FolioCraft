@@ -412,8 +412,8 @@ const rows: string[][] = [
 	[
 		"P7",
 		"Production migrations/configuration/deployment; authorized upload",
-		"External / upload authorized",
-		"Production/deployment remain unauthorized and unperformed; hosted ledger/provider health uninspected. Human later authorized ordinary GitHub upload after P7 checks. Actual upload result recorded separately in STATUS.",
+		"External / upload completed",
+		"Production/deployment remain unauthorized and unperformed; hosted ledger/provider health uninspected. Later human-authorized ordinary GitHub push exited0, advancing e14ff76 to3fd12a8; documentation checkpoint included in final sync. Remote CI unverified.",
 	],
 	[
 		"P7",
@@ -436,9 +436,7 @@ export default function AdminConsoleEvidence() {
 			}}
 		>
 			<H1>مراجعة لوحة الإدارة: P0–P7</H1>
-			<Text>
-				2026-10-19 · Local evidence only · Upload authorized after verification · No deployment
-			</Text>
+			<Text>2026-10-19 · Local evidence only · Authorized upload completed · No deployment</Text>
 			<H2>حالة كل بند في الخطة الأصلية</H2>
 			<Text>
 				Source: docs/ADMIN_CONSOLE.md sections20–22, original P0/API/page/test plan and overriding
