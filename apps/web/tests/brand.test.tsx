@@ -16,9 +16,7 @@ test("accepted bilingual Brand matches delivered masters and retains inherited c
 		const master = readFileSync(file, "utf8");
 		expect(markup).toContain(`viewBox="${brandArtwork[locale].viewBox}"`);
 		expect(markup).toContain('fill="currentColor"');
-		expect(markup).toContain(
-			locale === "ar" ? 'aria-label="إيكنارا — Ichnara"' : 'aria-label="Ichnara"',
-		);
+		expect(markup).toContain(locale === "ar" ? 'aria-label="إيكنارا"' : 'aria-label="Ichnara"');
 		expect(markup).not.toMatch(/<title|title=/);
 		for (const group of brandArtwork[locale].groups) {
 			expect(master).toContain(`transform="${group.transform}"`);

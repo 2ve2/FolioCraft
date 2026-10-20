@@ -12,7 +12,7 @@ export function Brand({ locale = "en" }: { locale?: Locale }) {
 				viewBox={artwork.viewBox}
 				fill="currentColor"
 				role="img"
-				aria-label={locale === "ar" ? "إيكنارا — Ichnara" : "Ichnara"}
+				aria-label={locale === "ar" ? "إيكنارا" : "Ichnara"}
 			>
 				{artwork.groups.map((group) => (
 					<g key={group.transform} transform={group.transform}>

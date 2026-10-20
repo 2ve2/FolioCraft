@@ -1,5 +1,9 @@
 import { AdminStaff } from "../../../../../features/management/admin/admin-staff";
-export const metadata = { title: "Staff — Ichnara Admin" };
+import { localizedMetadata } from "../../../../../lib/locale-metadata";
+export const generateMetadata = localizedMetadata({
+	ar: "الطاقم — إدارة إيكنارا",
+	en: "Staff — Ichnara Admin",
+});
 export default function Page() {
 	return <AdminStaff />;
 }
