@@ -1,5 +1,13 @@
 # Decision ledger
 
+## 2026-10-20 — Language path prefixes for the platform interface
+- Human direction: page changes felt like crashes or refreshes; the human rejected an interim patch and asked for a root fix "like other platforms", then asked that no page show Arabic and English together. The concrete design below is an engineering choice within that direction, not separately human-confirmed. Evidence: `docs/evidence/2026-10-20-locale-routing.md`.
+- Platform pages live under `/ar/...` and `/en/...` (`app/(platform)/[locale]`), prerendered once per language with final text, `lang` and `dir`. This supersedes the 2026-10-20 choice to keep the language in `?lang=` behind a language-neutral loading screen, which caused a loading flash on every page change.
+- Un-prefixed URLs redirect (307) with static `next.config` rules, first match wins: legacy `?lang=`, the `ichnara-locale` cookie, a browser whose first language is Arabic, then English. No Node proxy/middleware, because OpenNext marks it experimental on Cloudflare. Query strings are kept so old reset/verification links keep working.
+- English is the default language for visitors without a preference. Published portfolios keep their own release language and never write the visitor's language cookie; pages without a prefix (portfolio, unmatched URLs) switch language in place.
+- Every visible string, label and browser-tab title on a page is in that page's language. Accepted exceptions: user content, proper names and formats (JSON, PNG), the language-switch option names, and portfolio previews, which render in the portfolio's own language.
+- Authentication emails take their language from the callback path prefix (legacy `?lang` fallback).
+
 ## 2026-10-20 — Audit-fix engineering choices (not separately human-confirmed)
 - Context: the human authorized implementing the audit fixes with "freedom to do what is excellent"; individual choices below are engineering decisions, not human confirmations. Evidence for each is in `docs/evidence/2026-10-20-audit-fixes.md`.
 - Web CSP without nonces (Next 16 documented pattern): keeps static pages static; scripts/styles allow `'unsafe-inline'`, every other source is restricted and framing is forbidden. Revisit with nonces or SRI if inline-script risk becomes material.
@@ -10,7 +18,7 @@
 - Data-request export schemaVersion 2 adds each site's draft and active release (closes part of P6.54); older releases and image bytes stay excluded.
 - Draft legal pages describe current behaviour only and carry a visible draft notice; wording, contact, retention periods and governing law need owner/legal approval.
 - Removed Tailwind and class-name helpers; their preflight reset is kept verbatim in a layered `reset.css` (pixel-identical screenshots).
-- Authentication emails are single-language (from the callback `lang`, English fallback) with the `Ichnara` display name.
+- Authentication emails are single-language (from the callback `lang`, English fallback) with the `Ichnara` display name. (Language source updated by the language-prefix entry above.)
 
 ## 2026-10-20 — cuid2 identifiers for all new records (human-confirmed)
 - Human-confirmed: use `@paralleldrive/cuid2` to generate ids. Supersedes the 2026-10-13 compatibility choice (I05) to keep UUID domain ids, which required a deliberate migration with preserved-data proof; that proof is recorded in `docs/evidence/2026-10-20-audit-fixes.md`.
@@ -31,7 +39,7 @@
 
 ## 2026-10-20 — Local upload/authentication UX corrections
 - Human-confirmed scope: diagnose broken image upload, resize its feedback, remove redundant platform naming inside authentication forms, put recovery links in their relevant states, show only spinners during loading and prevent onboarding during logout. No deployment or GitHub push is implied.
-- Engineering choice: keep URL-based interface locale and static routes; show the existing language-neutral loading artwork until locale restoration instead of briefly rendering English copy. Synchronize simultaneously mounted locale hooks through a local event; do not change portfolio content language or persist private data.
+- Superseded on 2026-10-20 by language path prefixes. Engineering choice: keep URL-based interface locale and static routes; show the existing language-neutral loading artwork until locale restoration instead of briefly rendering English copy. Synchronize simultaneously mounted locale hooks through a local event; do not change portfolio content language or persist private data.
 - Engineering choice: reserve action-label dimensions with visually transparent accessible content and overlay one decorative spinner. Keep disabled-state logic and accessible action names; narrow the small-screen publish-label selector so it cannot hide the shared wrapper or spinner.
 - Engineering choice: an explicit sign-out transition blocks workspace/onboarding rendering, invalidates old site requests and navigates to the localized login page only after native sign-out succeeds. Failed sign-out retains the current workspace and exposes retryable feedback. Onboarding remains available for authenticated accounts without a site, not anonymous or signing-out users.
 - Recovery placement: password recovery on login only; verification resend after successful verification-required signup or an actual EMAIL_NOT_VERIFIED response. Dedicated recovery routes and truthful provider-unavailable behavior remain.

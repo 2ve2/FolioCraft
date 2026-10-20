@@ -1,5 +1,14 @@
 # Action log
 
+## 2026-10-20 — Language path prefixes and single-language pages completed locally
+- Done on branch claude/modest-davinci-osg31w (restarted from main after PR 2ve2/FolioCraft#1 merged): platform pages under `/ar` and `/en`, config redirects for old URLs, provider-based interface language, removal of the loading-screen language gate, path-based email language, and fixes for every page that mixed Arabic and English (portfolio error page, tab titles, prefixed 404s, logo label, preview bar).
+- Affected: apps/web (app/(platform)/[locale], app/(portfolio), global-not-found, next.config.ts, lib/locale*, lib/request-locale.ts, lib/use-interface-locale.tsx, 65 links across features, tests), apps/api mail templates and test, docs.
+- Checks: typecheck 0; Biome 392 files 0; web 37/0; guarded API 66 pass/12 skip/0 fail; Workers storage 8/8 and mail 15/15; next build and OpenNext build exit 0; browser and local-workerd evidence in docs/evidence/2026-10-20-locale-routing.md.
+- Not done: no deployment. No database migration is needed for this change.
+
+## 2026-10-20 — Language path prefixes (scope)
+- Human report: page changes look like crashes/refreshes; human asked for a root fix rather than a patch, and later for pages that never mix Arabic and English. Scope: move the interface language from `?lang=` into the path, keep old links working, remove client-side language restoration, and audit every platform page in both languages. No deployment, migration or provider access.
+
 ## 2026-10-20 — Audit fixes completed locally; push blocked
 - Completed on branch claude/modest-davinci-osg31w: every scoped item recorded in the entry below, one commit each, with evidence in docs/evidence/2026-10-20-audit-fixes.md (sections 1–15). Final local gates are listed in STATUS.md.
 - Affected areas: packages/contracts (ids), apps/api (schema, migrations 0008–0009, services, worker scheduled handler, mail templates, tests), apps/web (route groups, security headers, legal pages, styles, tests), CI workflow, docs.
