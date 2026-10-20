@@ -35,7 +35,7 @@
 	background: #f9f6ff;
 }
 .select-trigger:focus-visible {
-	outline: 3px solid #a890e8;
+	outline: 3px solid var(--focus-ring);
 	outline-offset: 3px;
 }
 .select-value {
@@ -95,6 +95,9 @@
 	background: #f7f3fc;
 	outline: 2px solid #b9a3e3;
 	outline-offset: -2px;
+}
+.select-popup .select-option:focus-visible {
+	outline-color: var(--focus-ring);
 }
 .select-popup .select-option[aria-selected="true"] {
 	background: #f0e9fb;

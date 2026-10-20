@@ -35,3 +35,9 @@ Verification environment for every step: Bun 1.4.2; local PostgreSQL 16 cluster 
 - Deployed-runtime evidence: `bun run --cwd apps/web build:cloudflare` (OpenNext) succeeded and `wrangler dev` (local workerd) served `/`, `/login`, `/studio` 200, `/nope` 404, the Arabic portfolio with `lang="ar" dir="rtl"`, the missing portfolio 404, and the CSP/X-Frame-Options headers.
 - Checks: typecheck 0; Biome 369 files 0; web 33 pass.
 - Note: moving between `/p/*` and platform routes is a full page load (different root layouts); the only such link is the "Visit Ichnara" badge, already a plain anchor.
+
+## 5. Visible keyboard focus
+
+- Problem: form fields removed the outline and showed only an ~8%-opacity shadow; the shared button/link/select focus colour `#a890e8` measured 2.69:1 on white, below the WCAG 2.2 3:1 non-text contrast minimum.
+- Change: `--focus-ring: #7c5cd6` in `styles/tokens.css` (4.82:1 on white, 4.45:1 on `#f7f5fb`); fields get a 2px `:focus-visible` outline, buttons/links/select trigger and focused options use the token. Mouse focus styling is unchanged.
+- Evidence (Chromium, local production build, `/login`): tabbing reports `outline: solid 2px rgb(124, 92, 214)` on the password field and `3px` on the submit button and links; screenshot reviewed.

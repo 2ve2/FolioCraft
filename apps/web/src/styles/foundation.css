@@ -49,7 +49,7 @@ button {
 }
 button:focus-visible,
 a:focus-visible {
-	outline: 3px solid #a890e8;
+	outline: 3px solid var(--focus-ring);
 	outline-offset: 3px;
 }
 input,
@@ -72,6 +72,12 @@ select:focus {
 	outline: none;
 	border-color: #9a7ae4;
 	box-shadow: 0 0 0 3px #3f46c815;
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+	outline: 2px solid var(--focus-ring);
+	outline-offset: 2px;
 }
 textarea {
 	resize: vertical;

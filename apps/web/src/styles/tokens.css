@@ -21,6 +21,8 @@
 	--control-min: 44px;
 	--radius-control: 8px;
 	--radius-card: 12px;
+	/* Keyboard focus indicator: 4.8:1 on white, above the 3:1 non-text contrast minimum. */
+	--focus-ring: #7c5cd6;
 }
 
 @media (max-width: 720px) {
