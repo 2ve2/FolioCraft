@@ -3,7 +3,7 @@ import { PortfolioDetail } from "@ichnara/portfolio";
 import { PublishedShell } from "../../../../../../features/portfolio/published-shell";
 import { ReportForm } from "../../../../../../features/portfolio/report-form";
 import { publishedMetadata } from "../../../../../../lib/public-metadata";
-import { PublicUnavailable, publicAssets, readPublished } from "../../_public";
+import { publicAssets, readPublished, releaseUnavailable } from "../../_public";
 
 export const dynamic = "force-dynamic";
 
@@ -37,12 +37,13 @@ export default async function PublicProject({
 }) {
 	const { slug, projectId } = await params;
 	const site = await readPublished<PublicSite>(slug);
-	if (!site) return <PublicUnavailable />;
+	if (!site) releaseUnavailable();
 	const detail = await readPublished<{ releaseId: string; project: Project }>(
 		slug,
 		`/projects/${encodeURIComponent(projectId)}`,
 	);
-	if (!detail || detail.releaseId !== site.releaseId) return <PublicUnavailable />;
+	// A release switch between the two reads is transient: report it as unavailable.
+	if (!detail || detail.releaseId !== site.releaseId) releaseUnavailable();
 	return (
 		<PublishedShell locale={site.draft.locale}>
 			<PortfolioDetail

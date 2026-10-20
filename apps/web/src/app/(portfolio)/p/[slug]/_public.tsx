@@ -52,16 +52,10 @@ export function publicAssets(site: PublicSite): Record<string, string> {
 	);
 }
 
-/** Shows recoverable public-read failure feedback without fabricating content. */
-export function PublicUnavailable() {
-	return (
-		<main className="public-error">
-			<h1>تعذر تحميل الموقع · Portfolio unavailable</h1>
-			<p>
-				تعذر تحميل النسخة المنشورة. حاول مجددًا لاحقًا.
-				<br />
-				The published portfolio is unavailable. Please try again later.
-			</p>
-		</main>
-	);
+/**
+ * Fails the render when the public release cannot be read, so the response carries a
+ * server-error status (never a 200 "soft" page) and the route error boundary explains it.
+ */
+export function releaseUnavailable(): never {
+	throw new Error("PUBLIC_RELEASE_UNAVAILABLE");
 }

@@ -47,3 +47,10 @@ Verification environment for every step: Bun 1.4.2; local PostgreSQL 16 cluster 
 - Problem: public portfolio links to owner-supplied URLs carried `noopener noreferrer` but not `ugc nofollow`, inviting link-spam signups on the platform domain. Audit correction: the audit also flagged `website` as bypassing `safeHttpUrl`; `portfolio.tsx` already sanitizes it before passing it down, so that part was defence-in-depth only.
 - Change: `packages/portfolio/src/external-link.tsx` renders every owner link (website, social links, project links, education verification) with HTTP(S)-only `href`, `target="_blank"` and `rel="ugc nofollow noopener noreferrer"`, returning nothing for unsafe targets. Five hand-written anchors replaced.
 - Tests: `apps/web/tests/portfolio-links.test.tsx` (all new-tab anchors carry the rel; `javascript:`/`data:` targets never render). Web 34 pass; guarded API 59 pass / 0 fail.
+
+## 7. Server-error status when a published release cannot be read
+
+- Problem: when the API was unreachable, public portfolio pages rendered "Portfolio unavailable" with HTTP 200, invisible to uptime checks and indexable as content.
+- Change: pages call `releaseUnavailable()`, which throws during render; `(portfolio)/p/[slug]/error.tsx` shows the same bilingual message plus a retry button. A release switch between the site and detail reads is treated the same way.
+- Evidence (local production build, API stopped): `/p/<slug>` and `/p/<slug>/projects/<id>` return **500** with `<meta name="robots" content="noindex">`, and Chromium renders the bilingual message; with the API running the same URL returns 200.
+- Limit: Next.js page rendering cannot choose 503 specifically; 500 is the achievable server-error status without an extra proxy layer. The audit's "503" recommendation is therefore met as "5xx + noindex".

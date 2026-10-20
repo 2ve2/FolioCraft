@@ -4,7 +4,7 @@ import { InquiryForm } from "../../../../features/portfolio/inquiry-form";
 import { PublishedShell } from "../../../../features/portfolio/published-shell";
 import { ReportForm } from "../../../../features/portfolio/report-form";
 import { publishedMetadata } from "../../../../lib/public-metadata";
-import { PublicUnavailable, publicAssets, readPublished } from "./_public";
+import { publicAssets, readPublished, releaseUnavailable } from "./_public";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function PublicPortfolio({ params }: { params: Promise<{ slug: string }> }) {
 	const { slug } = await params;
 	const site = await readPublished<PublicSite>(slug);
-	if (!site) return <PublicUnavailable />;
+	if (!site) releaseUnavailable();
 	return (
 		<PublishedShell locale={site.draft.locale}>
 			<Portfolio
