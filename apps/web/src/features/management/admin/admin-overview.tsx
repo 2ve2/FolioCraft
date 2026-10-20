@@ -10,6 +10,7 @@ import {
 	UsersRound,
 } from "lucide-react";
 import Link from "next/link";
+import { localeHref } from "../../../lib/locale";
 import { usePage } from "../shared";
 import { text } from "../shared/copy";
 import type { AdminSite, Audit, Counts } from "../shared/types";
@@ -67,7 +68,7 @@ export function AdminRecentActivity({ locale }: { locale: Locale }) {
 		<section className={styles.card}>
 			<header className={styles.cardHeader}>
 				<h2>{t.recentActivity}</h2>
-				<Link className={styles.subtleLink} href={`/admin/activity?lang=${locale}`}>
+				<Link className={styles.subtleLink} href={localeHref(locale, "/admin/activity")}>
 					{t.viewAll}
 					<ArrowUpRight size={14} aria-hidden="true" />
 				</Link>
@@ -116,7 +117,7 @@ export function AdminOverview({
 				<section className={styles.card}>
 					<header className={styles.cardHeader}>
 						<h2>{t.recentSites}</h2>
-						<Link className={styles.subtleLink} href={`/admin/sites?lang=${locale}`}>
+						<Link className={styles.subtleLink} href={localeHref(locale, "/admin/sites")}>
 							{t.viewAll}
 							<ArrowUpRight size={14} aria-hidden="true" />
 						</Link>

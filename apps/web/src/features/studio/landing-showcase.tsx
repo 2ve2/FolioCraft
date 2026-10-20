@@ -1,6 +1,7 @@
 import { type Draft, emptyDraft, type Locale } from "@ichnara/contracts";
 import Link from "next/link";
 import { useState } from "react";
+import { localeHref } from "../../lib/locale";
 import { ExpandedPortfolioPreview, PortfolioPreview } from "../portfolio/portfolio-preview";
 
 /** Demonstrates real shared rendering with explicitly fictional, browser-local content. */
@@ -209,7 +210,10 @@ export function LandingDetails({
 							: "Your draft is yours. So is the decision to publish."}
 					</p>
 				</div>
-				<Link className="primary" href={`/${authenticated ? "studio" : "signup"}?lang=${locale}`}>
+				<Link
+					className="primary"
+					href={localeHref(locale, `/${authenticated ? "studio" : "signup"}`)}
+				>
 					{authenticated
 						? ar
 							? "فتح الاستوديو"

@@ -5,31 +5,19 @@ import { ButtonContent } from "../../components/ui/button-content";
 import { Field } from "../../components/ui/field";
 import { LanguageSwitch } from "../../components/ui/language-switch";
 import { ProductFooter } from "../../components/ui/product-footer";
-import { LoadingScreen } from "../studio/loading-screen";
+import { localeHref } from "../../lib/locale";
 import styles from "./auth.module.css";
 import type { RecoveryMode } from "./recovery-request";
 import { useRecoveryController } from "./use-recovery-controller";
 
 /** Presents bilingual native recovery/resend forms independently of the signed-in workspace. */
 export function RecoveryScreen({ mode }: { mode: RecoveryMode }) {
-	const {
-		locale,
-		setLocale,
-		ready,
-		t,
-		token,
-		error,
-		success,
-		returned,
-		callbackError,
-		busy,
-		submit,
-	} = useRecoveryController(mode);
-	if (!ready) return <LoadingScreen locale={locale} localeReady={ready} message={t.loading} />;
+	const { locale, setLocale, t, token, error, success, returned, callbackError, busy, submit } =
+		useRecoveryController(mode);
 	return (
 		<div className={`welcome-page ${styles.page}`}>
 			<header className="welcome-header">
-				<Link href={`/?lang=${locale}`} aria-label={locale === "ar" ? "الرئيسية" : "Home"}>
+				<Link href={localeHref(locale, "/")} aria-label={locale === "ar" ? "الرئيسية" : "Home"}>
 					<Brand locale={locale} />
 				</Link>
 				<LanguageSwitch locale={locale} onChange={setLocale} />
@@ -99,11 +87,11 @@ export function RecoveryScreen({ mode }: { mode: RecoveryMode }) {
 					)}
 					{success && <p role="status">{mode === "reset" ? t.resetDone : t.accepted}</p>}
 					{mode === "reset" && (
-						<Link className="text-button auth-switch" href={`/forgot-password?lang=${locale}`}>
+						<Link className="text-button auth-switch" href={localeHref(locale, "/forgot-password")}>
 							{t.forgotLink}
 						</Link>
 					)}
-					<Link className="text-button auth-switch" href={`/login?lang=${locale}`}>
+					<Link className="text-button auth-switch" href={localeHref(locale, "/login")}>
 						{t.login}
 					</Link>
 				</section>

@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { authClient } from "../../lib/auth-client";
+import { localeHref } from "../../lib/locale";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import { copy } from "../studio/copy";
 import { recoveryCopy } from "./recovery-copy";
@@ -11,7 +12,7 @@ export type AuthMode = "login" | "signup";
 
 /** Owns native authentication requests and routes authenticated users into their workspace. */
 export function useAuthController(mode: AuthMode) {
-	const [locale, setLocale, localeReady] = useInterfaceLocale();
+	const [locale, setLocale] = useInterfaceLocale();
 	const t = copy[locale];
 	const router = useRouter();
 	const { data: session, isPending, error: sessionError, refetch } = authClient.useSession();
@@ -32,9 +33,8 @@ export function useAuthController(mode: AuthMode) {
 	}, []);
 
 	useEffect(() => {
-		if (localeReady && session?.user)
-			router.replace(`/${returnToAdmin ? "admin" : "studio"}?lang=${locale}`);
-	}, [session?.user, locale, localeReady, router, returnToAdmin]);
+		if (session?.user) router.replace(localeHref(locale, `/${returnToAdmin ? "admin" : "studio"}`));
+	}, [session?.user, locale, router, returnToAdmin]);
 
 	/** Submits the existing Better Auth protocol and keeps failures beside the current form. */
 	async function authenticate(event: FormEvent<HTMLFormElement>) {
@@ -53,7 +53,7 @@ export function useAuthController(mode: AuthMode) {
 					? await authClient.signUp.email({
 							...input,
 							name: String(data.get("name")),
-							callbackURL: `${window.location.origin}/verify-email?lang=${locale}&verified=1`,
+							callbackURL: `${window.location.origin}${localeHref(locale, "/verify-email?verified=1")}`,
 						})
 					: await authClient.signIn.email(input);
 			if (!mounted.current) return;
@@ -80,7 +80,7 @@ export function useAuthController(mode: AuthMode) {
 				return;
 			}
 			if (result.data && "twoFactorRedirect" in result.data && result.data.twoFactorRedirect) {
-				router.replace(`/admin/mfa-required?lang=${locale}&challenge=1`);
+				router.replace(localeHref(locale, "/admin/mfa-required?challenge=1"));
 				return;
 			}
 			await refetch();
@@ -96,11 +96,10 @@ export function useAuthController(mode: AuthMode) {
 
 	return {
 		locale,
-		localeReady,
 		setLocale,
 		t,
 		session,
-		isPending: isPending || !localeReady,
+		isPending,
 		sessionError,
 		refetch,
 		busy,

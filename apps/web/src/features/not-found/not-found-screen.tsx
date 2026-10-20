@@ -5,21 +5,20 @@ import Link from "next/link";
 import { Brand } from "../../components/ui/brand";
 import { LanguageSwitch } from "../../components/ui/language-switch";
 import { ProductFooter } from "../../components/ui/product-footer";
+import { localeHref } from "../../lib/locale";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
-import { LoadingScreen } from "../studio/loading-screen";
 import styles from "./not-found.module.css";
 
 /** Offers localized recovery links for unmatched routes and missing public resources. */
 export function NotFoundScreen() {
-	const [locale, setLocale, ready] = useInterfaceLocale();
+	const [locale, setLocale] = useInterfaceLocale();
 	const ar = locale === "ar";
 	const Arrow = ar ? ArrowLeft : ArrowRight;
-	if (!ready) return <LoadingScreen locale={locale} localeReady={false} message="" />;
 
 	return (
 		<div className={styles.page} lang={locale} dir={ar ? "rtl" : "ltr"}>
 			<header className={styles.header}>
-				<Link href={`/?lang=${locale}`} aria-label={ar ? "الصفحة الرئيسية" : "Home"}>
+				<Link href={localeHref(locale, "/")} aria-label={ar ? "الصفحة الرئيسية" : "Home"}>
 					<Brand locale={locale} />
 				</Link>
 				<LanguageSwitch
@@ -47,11 +46,11 @@ export function NotFoundScreen() {
 							: "The link may be incorrect, or the content may no longer be available. Check the address, or find your way from here."}
 					</p>
 					<nav className={styles.actions} aria-label={ar ? "متابعة التصفح" : "Continue browsing"}>
-						<Link className={styles.primary} href={`/?lang=${locale}`}>
+						<Link className={styles.primary} href={localeHref(locale, "/")}>
 							<House size={18} aria-hidden="true" />
 							{ar ? "العودة للرئيسية" : "Back to home"}
 						</Link>
-						<Link className={styles.secondary} href={`/studio?lang=${locale}`}>
+						<Link className={styles.secondary} href={localeHref(locale, "/studio")}>
 							{ar ? "فتح المحرر" : "Open Studio"}
 							<Arrow size={18} aria-hidden="true" />
 						</Link>

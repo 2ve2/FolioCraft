@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SelectControl } from "../../../components/ui/select-control";
 import { ApiError, api } from "../../../lib/api";
+import { localeHref } from "../../../lib/locale";
 import { errorText } from "../shared";
 import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
@@ -104,7 +105,7 @@ export function AdminReports() {
 				<ul className={reportStyles.queue}>
 					{page.items.map((report) => (
 						<li key={report.id}>
-							<Link href={`/admin/reports/${report.id}?lang=${locale}`}>
+							<Link href={localeHref(locale, `/admin/reports/${report.id}`)}>
 								<strong dir="auto">{report.slug}</strong>
 								<span>
 									{t[report.category]} · {t[report.status]}
@@ -207,7 +208,7 @@ export function AdminReportDetail({ id }: { id: string }) {
 		validNote = note.trim().length >= 10 && note.trim().length <= 500;
 	return (
 		<section className={reportStyles.page}>
-			<Link href={`/admin/reports?lang=${locale}`}>{t.back}</Link>
+			<Link href={localeHref(locale, "/admin/reports")}>{t.back}</Link>
 			<h1>{t.details}</h1>
 			{error && (
 				<div role="alert">

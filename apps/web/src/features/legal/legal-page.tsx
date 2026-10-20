@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Brand } from "../../components/ui/brand";
 import { LanguageSwitch } from "../../components/ui/language-switch";
 import { ProductFooter } from "../../components/ui/product-footer";
+import { localeHref } from "../../lib/locale";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
-import { LoadingScreen } from "../studio/loading-screen";
 import styles from "./legal.module.css";
 import { type LegalDocument, legalCopy, legalDraftDate } from "./legal-copy";
 
@@ -13,8 +13,7 @@ const documents: LegalDocument[] = ["privacy", "terms", "content-policy"];
 
 /** Renders one bilingual legal document with links to its sibling documents. */
 export function LegalPage({ document }: { document: LegalDocument }) {
-	const [locale, setLocale, ready] = useInterfaceLocale();
-	if (!ready) return <LoadingScreen locale={locale} localeReady={false} message="" />;
+	const [locale, setLocale] = useInterfaceLocale();
 	const ar = locale === "ar";
 	const copy = legalCopy[locale];
 	const text = copy.documents[document];
@@ -22,7 +21,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
 	return (
 		<div className={styles.page} lang={locale} dir={ar ? "rtl" : "ltr"}>
 			<header className={styles.header}>
-				<Link href={`/?lang=${locale}`} aria-label={ar ? "الصفحة الرئيسية" : "Home"}>
+				<Link href={localeHref(locale, "/")} aria-label={ar ? "الصفحة الرئيسية" : "Home"}>
 					<Brand locale={locale} />
 				</Link>
 				<LanguageSwitch
@@ -36,7 +35,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
 					{documents.map((item) => (
 						<Link
 							key={item}
-							href={`/${item}?lang=${locale}`}
+							href={localeHref(locale, `/${item}`)}
 							aria-current={item === document ? "page" : undefined}
 						>
 							{copy.nav[item]}

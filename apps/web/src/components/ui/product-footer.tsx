@@ -1,13 +1,14 @@
 import type { Locale } from "@ichnara/contracts";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { localeHref } from "../../lib/locale";
 import { Brand } from "./brand";
 import styles from "./product-footer.module.css";
 
 /** Shares real product destinations across public platform pages, independently of user portfolios. */
 export function ProductFooter({ locale }: { locale: Locale }) {
 	const ar = locale === "ar";
-	const home = `/?lang=${locale}`;
+	const home = localeHref(locale, "/");
 
 	return (
 		<footer className={styles.footer} lang={locale} dir={ar ? "rtl" : "ltr"}>
@@ -34,18 +35,22 @@ export function ProductFooter({ locale }: { locale: Locale }) {
 					</nav>
 					<nav className={styles.group} aria-label={ar ? "مساحتك" : "Your workspace"}>
 						<h2>{ar ? "مساحتك" : "Your workspace"}</h2>
-						<Link href={`/login?lang=${locale}`}>{ar ? "تسجيل الدخول" : "Sign in"}</Link>
-						<Link href={`/signup?lang=${locale}`}>{ar ? "إنشاء حساب" : "Create an account"}</Link>
-						<Link className={styles.studio} href={`/studio?lang=${locale}`}>
+						<Link href={localeHref(locale, "/login")}>{ar ? "تسجيل الدخول" : "Sign in"}</Link>
+						<Link href={localeHref(locale, "/signup")}>
+							{ar ? "إنشاء حساب" : "Create an account"}
+						</Link>
+						<Link className={styles.studio} href={localeHref(locale, "/studio")}>
 							{ar ? "افتح المحرر" : "Open Studio"}
 							<ArrowUpRight size={16} aria-hidden="true" />
 						</Link>
 					</nav>
 					<nav className={styles.group} aria-label={ar ? "الوثائق القانونية" : "Legal"}>
 						<h2>{ar ? "قانوني" : "Legal"}</h2>
-						<Link href={`/privacy?lang=${locale}`}>{ar ? "الخصوصية" : "Privacy"}</Link>
-						<Link href={`/terms?lang=${locale}`}>{ar ? "شروط الاستخدام" : "Terms of use"}</Link>
-						<Link href={`/content-policy?lang=${locale}`}>
+						<Link href={localeHref(locale, "/privacy")}>{ar ? "الخصوصية" : "Privacy"}</Link>
+						<Link href={localeHref(locale, "/terms")}>
+							{ar ? "شروط الاستخدام" : "Terms of use"}
+						</Link>
+						<Link href={localeHref(locale, "/content-policy")}>
 							{ar ? "سياسة المحتوى" : "Content policy"}
 						</Link>
 					</nav>

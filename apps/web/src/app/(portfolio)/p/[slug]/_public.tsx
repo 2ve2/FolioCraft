@@ -35,10 +35,10 @@ export async function readPublished<T>(slug: string, suffix = ""): Promise<T | n
 	return (read?.result as T | null) ?? null;
 }
 
-/** Resolves the document language of a published portfolio, defaulting to English when unavailable. */
-export async function publishedLocale(slug: string): Promise<Locale> {
+/** Resolves the published portfolio's language, or null when its release cannot be read. */
+export async function publishedLocale(slug: string): Promise<Locale | null> {
 	const read = await requestPublished(slug, "");
-	return (read?.result as PublicSite | null)?.draft.locale === "ar" ? "ar" : "en";
+	return (read?.result as PublicSite | null)?.draft.locale ?? null;
 }
 
 /** Maps release image references to the guarded public asset gateway. */

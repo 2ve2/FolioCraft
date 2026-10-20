@@ -1,6 +1,7 @@
 import type { Locale } from "@ichnara/contracts";
 import type { ReactNode } from "react";
 import { brandArtwork } from "../../components/ui/brand-artwork";
+import { localeHref } from "../../lib/locale";
 import { webOrigin } from "../../lib/public-metadata";
 import styles from "./published-shell.module.css";
 
@@ -9,7 +10,7 @@ export function PublishedShell({ locale, children }: { locale: Locale; children:
 	return (
 		<div className={styles.shell} dir={locale === "ar" ? "rtl" : "ltr"}>
 			{children}
-			<a className={styles.badge} href={`${webOrigin}/?lang=${locale}`}>
+			<a className={styles.badge} href={`${webOrigin}${localeHref(locale, "/")}`}>
 				<span className={styles.label}>
 					{locale === "ar" ? "زيارة منصة إيكنارا" : "Visit Ichnara"}
 				</span>

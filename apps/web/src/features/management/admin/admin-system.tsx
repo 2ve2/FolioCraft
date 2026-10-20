@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { localeHref } from "../../../lib/locale";
 import styles from "./admin.module.css";
 import { type AuditEvent, AuditEvents } from "./admin-activity";
 import { useAdminSession } from "./admin-context";
@@ -107,21 +108,21 @@ export function AdminDashboard() {
 					<h2>{t.attention}</h2>
 					{data?.reports && (
 						<p>
-							<Link href={`/admin/reports?lang=${locale}`}>
+							<Link href={localeHref(locale, "/admin/reports")}>
 								{t.open}: {data.reports.open} · {t.reviewing}: {data.reports.reviewing}
 							</Link>
 						</p>
 					)}
 					{data?.requests && (
 						<p>
-							<Link href={`/admin/requests?lang=${locale}`}>
+							<Link href={localeHref(locale, "/admin/requests")}>
 								{t.requests}: {data.requests.open} · {t.overdue}: {data.requests.overdue}
 							</Link>
 						</p>
 					)}
 					{data?.sites && (
 						<p>
-							<Link href={`/admin/sites?lang=${locale}`}>
+							<Link href={localeHref(locale, "/admin/sites")}>
 								{t.suspended}: {data.sites.suspended}
 							</Link>
 						</p>
@@ -146,7 +147,7 @@ export function AdminDashboard() {
 					<section>
 						<h2>{t.events}</h2>
 						<AuditEvents items={data.recentEvents} />
-						<Link href={`/admin/activity?lang=${locale}`}>{t.activity}</Link>
+						<Link href={localeHref(locale, "/admin/activity")}>{t.activity}</Link>
 					</section>
 				)}
 				<p>{t.later}</p>
