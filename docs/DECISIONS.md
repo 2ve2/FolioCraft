@@ -1,5 +1,17 @@
 # Decision ledger
 
+## 2026-10-20 — Audit-fix engineering choices (not separately human-confirmed)
+- Context: the human authorized implementing the audit fixes with "freedom to do what is excellent"; individual choices below are engineering decisions, not human confirmations. Evidence for each is in `docs/evidence/2026-10-20-audit-fixes.md`.
+- Web CSP without nonces (Next 16 documented pattern): keeps static pages static; scripts/styles allow `'unsafe-inline'`, every other source is restricted and framing is forbidden. Revisit with nonces or SRI if inline-script risk becomes material.
+- Two root layouts (`(platform)`, `(portfolio)/p/[slug]`) plus `experimental.globalNotFound`, so published portfolios own `<html lang dir>`. Cost: navigating between the two trees is a full page load.
+- Unavailable public releases return 5xx (500 from the render) with noindex; Next cannot emit 503 from a page without a proxy layer.
+- Release retention: newest 50 per site, pruned on publish in the same transaction; the active release is always kept.
+- Scheduled maintenance via a daily Workers Cron Trigger with bounded batches and an R2 prefix deletion queue; account removal queues the removed sites' prefixes after the native removal succeeds.
+- Data-request export schemaVersion 2 adds each site's draft and active release (closes part of P6.54); older releases and image bytes stay excluded.
+- Draft legal pages describe current behaviour only and carry a visible draft notice; wording, contact, retention periods and governing law need owner/legal approval.
+- Removed Tailwind and class-name helpers; their preflight reset is kept verbatim in a layered `reset.css` (pixel-identical screenshots).
+- Authentication emails are single-language (from the callback `lang`, English fallback) with the `Ichnara` display name.
+
 ## 2026-10-20 — cuid2 identifiers for all new records (human-confirmed)
 - Human-confirmed: use `@paralleldrive/cuid2` to generate ids. Supersedes the 2026-10-13 compatibility choice (I05) to keep UUID domain ids, which required a deliberate migration with preserved-data proof; that proof is recorded in `docs/evidence/2026-10-20-audit-fixes.md`.
 - Implemented: `packages/contracts/src/ids.ts` exports `newId()` (cuid2 3.3.0, 24 lowercase base-36 characters, lazily initialized so Workers never draws randomness at global scope) and `idSchema`. Better Auth record ids use `advanced.database.generateId`; session and verification tokens keep Better Auth's own generator. Domain rows, draft content items, assets and request/audit correlation ids use `newId()`.
