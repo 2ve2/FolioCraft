@@ -1,5 +1,6 @@
 import "./test-guard";
 import { afterAll, expect, spyOn, test } from "bun:test";
+import { newId } from "@ichnara/contracts";
 import { eq, inArray } from "drizzle-orm";
 import { env } from "../src/config/env";
 import { db, withRequestDatabase } from "../src/db";
@@ -7,6 +8,7 @@ import { adminAudit } from "../src/db/schema/admin";
 import { user } from "../src/db/schema/auth";
 import { dataRequests } from "../src/db/schema/data-requests";
 import { inquiries } from "../src/db/schema/operations";
+import { releases, sites } from "../src/db/schema/site";
 import type { recordAdminAction } from "../src/services/admin/audit-service";
 import * as auditWriter from "../src/services/admin/audit-service";
 import { account, error, request, result } from "./helpers";
@@ -179,6 +181,38 @@ test("request state machine, verified subject, bounded export privacy, durable a
 			message: "PRIVATE-FOREIGN-MESSAGE",
 		},
 	]);
+	// Mark the subject's draft and publish a release; the foreign draft must never appear.
+	const [ownedRow] = await db.select().from(sites).where(eq(sites.id, owned.id));
+	const subjectDraft = {
+		...ownedRow.draft,
+		profile: { ...ownedRow.draft.profile, name: "SUBJECT-DRAFT-MARKER" },
+	};
+	const releaseId = newId();
+	await db.transaction(async (tx) => {
+		await tx
+			.update(sites)
+			.set({ draft: subjectDraft, publishedReleaseId: releaseId })
+			.where(eq(sites.id, owned.id));
+		await tx.insert(releases).values({
+			id: releaseId,
+			siteId: owned.id,
+			revision: 0,
+			snapshot: {
+				...subjectDraft,
+				profile: { ...subjectDraft.profile, name: "SUBJECT-RELEASE-MARKER" },
+			},
+		});
+	});
+	const [foreignRow] = await db.select().from(sites).where(eq(sites.id, foreign.id));
+	await db
+		.update(sites)
+		.set({
+			draft: {
+				...foreignRow.draft,
+				profile: { ...foreignRow.draft.profile, name: "FOREIGN-DRAFT-MARKER" },
+			},
+		})
+		.where(eq(sites.id, foreign.id));
 	const beforeRows = env.DATA_REQUEST_EXPORT_MAX_ROWS,
 		beforeBytes = env.DATA_REQUEST_EXPORT_MAX_BYTES;
 	try {
@@ -198,6 +232,10 @@ test("request state machine, verified subject, bounded export privacy, durable a
 		expect(json.account.email).toBe(subject.email);
 		expect(json.sites.map((s: { id: string }) => s.id)).toEqual([owned.id]);
 		expect(json.inquiries.length).toBe(1);
+		expect(json.schemaVersion).toBe(2);
+		expect(json.sites[0].draft.profile.name).toBe("SUBJECT-DRAFT-MARKER");
+		expect(json.sites[0].publishedRelease.id).toBe(releaseId);
+		expect(json.sites[0].publishedRelease.snapshot.profile.name).toBe("SUBJECT-RELEASE-MARKER");
 		for (const secret of [
 			other.id,
 			other.email,
@@ -205,8 +243,7 @@ test("request state machine, verified subject, bounded export privacy, durable a
 			subject.password,
 			"PRIVATE-FOREIGN-MESSAGE",
 			"FOREIGN-INQUIRY",
-			'"draft"',
-			'"snapshot"',
+			"FOREIGN-DRAFT-MARKER",
 			'"token"',
 			'"password"',
 			'"secret"',

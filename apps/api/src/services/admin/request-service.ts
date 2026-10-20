@@ -6,7 +6,7 @@ import { afterText, binaryText } from "../../db/keyset";
 import { user } from "../../db/schema/auth";
 import { dataRequests as requests } from "../../db/schema/data-requests";
 import { inquiries } from "../../db/schema/operations";
-import { sites } from "../../db/schema/site";
+import { releases, sites } from "../../db/schema/site";
 import { auth } from "../../lib/auth";
 import { ApiError } from "../../lib/response-helpers";
 import { recordAdminAction } from "./audit-service";
@@ -207,6 +207,7 @@ export const requestService = {
 					.where(eq(user.id, request.userId))
 					.for("share");
 				if (!subject) throw new ApiError(409, "REQUEST_SUBJECT_REQUIRED");
+				// The subject's own content: each site's current draft and its active published release.
 				const owned = await tx
 					.select({
 						id: sites.id,
@@ -215,8 +216,19 @@ export const requestService = {
 						publishedReleaseId: sites.publishedReleaseId,
 						createdAt: sites.createdAt,
 						updatedAt: sites.updatedAt,
+						draft: sites.draft,
+						publishedRelease: {
+							id: releases.id,
+							revision: releases.revision,
+							createdAt: releases.createdAt,
+							snapshot: releases.snapshot,
+						},
 					})
 					.from(sites)
+					.leftJoin(
+						releases,
+						and(eq(releases.id, sites.publishedReleaseId), eq(releases.siteId, sites.id)),
+					)
 					.where(eq(sites.ownerId, subject.id))
 					.orderBy(asc(sites.id))
 					.limit(env.DATA_REQUEST_EXPORT_MAX_ROWS + 1);
@@ -239,22 +251,24 @@ export const requestService = {
 				if (1 + owned.length + messages.length > env.DATA_REQUEST_EXPORT_MAX_ROWS)
 					throw new ApiError(413, "REQUEST_EXPORT_TOO_LARGE");
 				const output = JSON.stringify({
-					schemaVersion: 1,
+					schemaVersion: 2,
 					requestId: id,
 					generatedAt: new Date().toISOString(),
 					account: subject,
-					sites: owned,
+					sites: owned.map((site) => ({
+						...site,
+						publishedRelease: site.publishedRelease?.id ? site.publishedRelease : null,
+					})),
 					inquiries: messages,
 					exclusions: [
 						"credentials",
 						"sessions",
 						"tokens",
 						"MFA",
-						"drafts",
-						"release snapshots",
+						"inactive historical release snapshots",
 						"audit",
 						"reports",
-						"R2 objects and keys",
+						"uploaded image files (R2 objects and keys)",
 						"backups",
 					],
 				});

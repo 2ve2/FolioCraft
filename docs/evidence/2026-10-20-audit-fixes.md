@@ -90,3 +90,9 @@ Verification environment for every step: Bun 1.4.2; local PostgreSQL 16 cluster 
 - Workers runtime evidence: `wrangler dev --test-scheduled` against local `folio_test`; `GET /__scheduled` logged `{"event":"maintenance_completed",…,"storage":"disabled"}` from workerd.
 - Full suite: 65 pass / 12 skip / 0 fail / 5137 assertions; MFA child 11/308.
 - Separate observation (pre-existing, not changed here): in local `wrangler dev`, a `/ready` request logs `{"event":"database_pool_error","name":"TypeError"}` while still returning 200; the original commit `5fee8f1` logs the same line. Worth investigating with Workers logs after deployment.
+
+## 13. Data export includes the subject's portfolio content
+
+- Problem: the owner-only data-request export (recorded as open item P6.54) excluded drafts and release snapshots, so it omitted the user's main content.
+- Change: export `schemaVersion: 2` adds each owned site's current `draft` and its active `publishedRelease` (`id`, `revision`, `createdAt`, `snapshot`). Older releases (up to 50, potentially large), uploaded image bytes/R2 keys, credentials, sessions, audit, reports and backups stay excluded and are listed in `exclusions`. Existing row/byte caps still apply (`413 REQUEST_EXPORT_TOO_LARGE`). Admin UI description updated in both languages.
+- Test: `data-requests.integration.test.ts` now publishes a marked release for the subject and asserts the draft and active snapshot are exported while another user's draft, messages and credentials never appear. Full suite 65 pass / 0 fail.
