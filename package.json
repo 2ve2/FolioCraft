@@ -15,6 +15,7 @@
 		"test": "bun scripts/test-api.ts",
 		"test:web": "bun test --cwd apps/web tests",
 		"test:worker-storage": "bun scripts/test-worker-storage.ts",
+		"test:worker-mail": "bun scripts/test-worker-mail.ts",
 		"build": "bun run --cwd apps/web build",
 		"check": "biome check .",
 		"format": "biome check --write .",

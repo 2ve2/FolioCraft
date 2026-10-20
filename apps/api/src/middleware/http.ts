@@ -5,6 +5,7 @@ import { createMiddleware } from "hono/factory";
 import { requestId } from "hono/request-id";
 import { secureHeaders } from "hono/secure-headers";
 import { env } from "../config/env";
+import { withMailRequestId } from "../lib/auth/mail-context";
 import { ApiError, errorResponse } from "../lib/response-helpers";
 import { blockNativeAdminHttp } from "./admin";
 import type { AuthEnv } from "./auth";
@@ -35,7 +36,11 @@ const logRequests = createMiddleware<AuthEnv>(async (c, next) => {
 
 /** Installs shared HTTP protections in the same order for every mounted domain route. */
 export function registerHttpMiddleware(app: Hono<AuthEnv>) {
-	app.use("*", requestId({ generator: () => crypto.randomUUID() }));
+	app.use("*", requestId({ headerName: "", generator: () => crypto.randomUUID() }));
+	app.use("*", (c, next) => {
+		c.header("X-Request-Id", c.get("requestId"));
+		return withMailRequestId(c.get("requestId"), next);
+	});
 	const securityHeaders = secureHeaders();
 	app.use("*", async (c, next) => {
 		await securityHeaders(c, next);

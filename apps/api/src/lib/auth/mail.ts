@@ -1,21 +1,24 @@
 import { APIError } from "better-auth/api";
 import nodemailer from "nodemailer";
 import { env, mailConfigured } from "../../config/env";
+import { mailRequestId } from "./mail-context";
+import { MailTransportError, sendResendMail } from "./resend";
 
-const transport = mailConfigured
-	? nodemailer.createTransport({
-			host: env.SMTP_HOST,
-			port: env.SMTP_PORT,
-			secure: env.SMTP_SECURE,
-			requireTLS: !env.SMTP_SECURE,
-			auth: { user: env.SMTP_USER, pass: env.SMTP_PASSWORD },
-			connectionTimeout: 10000,
-			greetingTimeout: 10000,
-			socketTimeout: 15000,
-			disableFileAccess: true,
-			disableUrlAccess: true,
-		})
-	: undefined;
+const transport =
+	mailConfigured && env.MAIL_TRANSPORT === "smtp"
+		? nodemailer.createTransport({
+				host: env.SMTP_HOST,
+				port: env.SMTP_PORT,
+				secure: env.SMTP_SECURE,
+				requireTLS: !env.SMTP_SECURE,
+				auth: { user: env.SMTP_USER, pass: env.SMTP_PASSWORD },
+				connectionTimeout: 10000,
+				greetingTimeout: 10000,
+				socketTimeout: 15000,
+				disableFileAccess: true,
+				disableUrlAccess: true,
+			})
+		: undefined;
 
 /** Escapes user-facing labels before embedding them in an authentication email. */
 const escapeHtml = (s: string) =>
@@ -31,29 +34,83 @@ export async function sendAuthMail(
 	url: string,
 	kind: "verify" | "reset",
 ) {
-	if (!transport)
+	if (!mailConfigured)
 		throw new APIError("SERVICE_UNAVAILABLE", {
 			code: "MAIL_UNAVAILABLE",
 			message: "Email delivery is not configured",
 		});
-	const link = new URL(url);
-	if (link.origin !== new URL(env.API_URL).origin || !["http:", "https:"].includes(link.protocol))
-		throw new Error("Invalid authentication mail URL");
+	const requestId = mailRequestId();
 	const action =
 		kind === "verify"
 			? "Verify your email / تأكيد البريد الإلكتروني"
 			: "Reset your password / إعادة تعيين كلمة المرور";
 	try {
-		const delivery = await transport.sendMail({
-			from: env.MAIL_FROM,
+		let link: URL;
+		try {
+			link = new URL(url);
+		} catch {
+			throw new MailTransportError("INVALID_LINK");
+		}
+		if (link.origin !== new URL(env.API_URL).origin || !["http:", "https:"].includes(link.protocol))
+			throw new MailTransportError("INVALID_LINK");
+		const payload = {
+			from: env.MAIL_FROM as string,
 			to,
 			subject: `Ichnara — ${action}`,
 			text: `${name}\n\n${action}\n${url}\n\nIf you did not request this, ignore this message.\nإذا لم تطلب ذلك، تجاهل هذه الرسالة.`,
 			html: `<p>${escapeHtml(name)}</p><p>${escapeHtml(action)}</p><p><a href="${escapeHtml(url)}">${escapeHtml(action)}</a></p><p>If you did not request this, ignore this message.<br>إذا لم تطلب ذلك، تجاهل هذه الرسالة.</p>`,
-		});
-		if (!delivery.accepted?.length || delivery.rejected?.length)
-			throw new Error("SMTP rejected delivery");
-	} catch {
+		};
+		console.info(
+			JSON.stringify({
+				event: "auth_mail_attempt",
+				requestId,
+				kind,
+				transport: env.MAIL_TRANSPORT,
+			}),
+		);
+		if (env.MAIL_TRANSPORT === "resend_http") {
+			await sendResendMail(payload, env.SMTP_PASSWORD as string);
+		} else {
+			const delivery = await transport?.sendMail(payload);
+			if (!delivery?.accepted?.length || delivery.rejected?.length)
+				throw new MailTransportError("SMTP_REJECTED");
+		}
+		console.info(
+			JSON.stringify({
+				event: "auth_mail_accepted",
+				requestId,
+				kind,
+				transport: env.MAIL_TRANSPORT,
+			}),
+		);
+	} catch (error) {
+		const smtpCode = error && typeof error === "object" && "code" in error ? error.code : undefined;
+		const code =
+			error instanceof MailTransportError
+				? error.code
+				: typeof smtpCode === "string" &&
+						[
+							"ESOCKET",
+							"ETIMEDOUT",
+							"ECONNRESET",
+							"ECONNREFUSED",
+							"EAUTH",
+							"EENVELOPE",
+							"EMESSAGE",
+							"ETLS",
+						].includes(smtpCode)
+					? smtpCode
+					: "TRANSPORT_ERROR";
+		console.warn(
+			JSON.stringify({
+				event: "auth_mail_failed",
+				requestId,
+				kind,
+				transport: env.MAIL_TRANSPORT,
+				errorClass: "MailTransportError",
+				code,
+			}),
+		);
 		throw new APIError("SERVICE_UNAVAILABLE", {
 			code: "MAIL_DELIVERY_FAILED",
 			message: "Email could not be sent. Please try again later.",

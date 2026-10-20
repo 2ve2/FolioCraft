@@ -1,9 +1,34 @@
 import "./test-guard";
 import { expect, test } from "bun:test";
 import { Hono } from "hono";
+import { mailRequestId } from "../src/lib/auth/mail-context";
 import type { AuthEnv } from "../src/middleware/auth";
 import { errorHandler } from "../src/middleware/error-handler";
 import { registerHttpMiddleware } from "../src/middleware/http";
+
+test("mail diagnostics correlate isolated server-generated IDs instead of caller headers", async () => {
+	const app = new Hono<AuthEnv>();
+	registerHttpMiddleware(app);
+	app.get("/correlation", async (c) => {
+		await new Promise((resolve) => setTimeout(resolve, 5));
+		return c.json({ id: mailRequestId() });
+	});
+	const responses = await Promise.all(
+		Array.from({ length: 4 }, () =>
+			app.request("/correlation", {
+				headers: { "X-Request-Id": "untrusted-private-header" },
+			}),
+		),
+	);
+	const ids = new Set<string>();
+	for (const response of responses) {
+		const { id } = (await response.json()) as { id: string };
+		expect(id).toMatch(/^[0-9a-f-]{36}$/);
+		expect(response.headers.get("X-Request-Id")).toBe(id);
+		ids.add(id);
+	}
+	expect(ids.size).toBe(4);
+});
 
 test("only successful published asset redirects allow cross-origin image embedding", async () => {
 	const app = new Hono<AuthEnv>();

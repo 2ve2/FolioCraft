@@ -1,5 +1,10 @@
 # Decision ledger
 
+## 2026-10-20 — Explicit Resend HTTP transport with native awaited mail
+- Engineering choice within the human-authorized API repair: select MAIL_TRANSPORT=resend_http for the trial, retain default SMTP compatibility and reuse the existing server-only Resend key binding SMTP_PASSWORD. No SDK, extra key copy, automatic failover or retry. Fixed endpoint, bounded timeout and manual redirect rejection are proven in local workerd with a mock.
+- Installed Better Auth already awaits the reset callback without backgroundTasks.handler and suppresses callback failures; preserve its native anti-enumeration protocol. Missing waitUntil is not proven to explain the hosted symptom. Do not globally defer native work whose request database pool closes at response completion.
+- Human authorizes code/docs/tests/push and a private-address email test. Deployment remains subject to an explicit post-report confirmation. Real provider acceptance/delivery and the prior exact SMTP cause remain unknown; local proof is not hosted acceptance. See SMTP_FALLBACK.md.
+
 ## 2026-10-20 — Workers XML response compatibility and bounded probe authorization
 - Human explicitly authorized only generated small-image R2 PUT/copy/exact-key cleanup diagnostics after the failing user upload identified verify-copy/status200. This does not authorize deployment, user-object cleanup, CORS/account changes, database mutations or push.
 - Evidence-led engineering decision: retain AWS SDK protocol handling and conditional immutable copy, but select the SDK's own non-DOM XML implementation through the API-only Wrangler package alias. The package's browser parser requires DOMParser, which local workerd lacks; real R2 copying already succeeded before the parser threw. Avoid a DOM polyfill, a custom XML parser, blind success after an SDK error, header/security relaxation or replacing conditional copy with unguarded upload.

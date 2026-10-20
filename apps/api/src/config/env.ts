@@ -81,6 +81,7 @@ export const envSchema = z
 		R2_SECRET_ACCESS_KEY: optional(z.string().min(1)),
 		R2_ENDPOINT: optional(z.url()),
 		SMTP_HOST: optional(z.string().min(1)),
+		MAIL_TRANSPORT: z.enum(["smtp", "resend_http"]).default("smtp"),
 		SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(587),
 		SMTP_SECURE: z
 			.enum(["true", "false"])
