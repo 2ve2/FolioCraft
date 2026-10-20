@@ -19,6 +19,7 @@ export function useAuthController(mode: AuthMode) {
 	const [error, setError] = useState("");
 	const [returnToAdmin, setReturnToAdmin] = useState(false);
 	const [verificationRequired, setVerificationRequired] = useState(false);
+	const [emailNotVerified, setEmailNotVerified] = useState(false);
 	const pending = useRef(false);
 	const mounted = useRef(true);
 
@@ -43,6 +44,7 @@ export function useAuthController(mode: AuthMode) {
 		setBusy(true);
 		setError("");
 		setVerificationRequired(false);
+		setEmailNotVerified(false);
 		const data = new FormData(event.currentTarget);
 		try {
 			const input = { email: String(data.get("email")), password: String(data.get("password")) };
@@ -57,6 +59,7 @@ export function useAuthController(mode: AuthMode) {
 			if (!mounted.current) return;
 			if (result.error) {
 				const code = result.error.code || "";
+				setEmailNotVerified(code === "EMAIL_NOT_VERIFIED");
 				setError(
 					code === "MAIL_UNAVAILABLE" ||
 						code === "MAIL_DELIVERY_FAILED" ||
@@ -93,6 +96,7 @@ export function useAuthController(mode: AuthMode) {
 
 	return {
 		locale,
+		localeReady,
 		setLocale,
 		t,
 		session,
@@ -102,6 +106,7 @@ export function useAuthController(mode: AuthMode) {
 		busy,
 		error,
 		verificationRequired,
+		emailNotVerified,
 		returnToAdmin,
 		authenticate,
 	};

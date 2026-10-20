@@ -32,6 +32,7 @@ export function useStudioController() {
 	const siteLoadVersion = useRef(0);
 	const workspaceOwner = useRef("");
 	const intentionalLogout = useRef(false);
+	const [signingOut, setSigningOut] = useState(false);
 	const recoveries = useRef(new Map<string, { site: Site; draft: Draft; savedJson: string }>());
 	const [site, setSite] = useState<Site | null>(null);
 	const [draft, setDraft] = useState<Draft | null>(null);
@@ -398,6 +399,7 @@ export function useStudioController() {
 
 	/** Signs out through Better Auth after handling unsaved work safely. */
 	async function logout() {
+		if (operation.current || intentionalLogout.current) return;
 		if (saveJob.current) {
 			setError(t.savingWait);
 			return;
@@ -408,16 +410,20 @@ export function useStudioController() {
 		setError("");
 		try {
 			intentionalLogout.current = true;
+			operation.current = true;
+			setSigningOut(true);
+			++siteLoadVersion.current;
 			const result = await authClient.signOut();
 			if (result.error) throw new Error("Signout failed");
 			recoveries.current.delete(workspaceOwner.current);
-			acceptSite(null);
-			await refetchSession();
+			// Do not expose an empty workspace while the session store still contains the old user.
+			window.location.replace(`/login?lang=${locale}`);
 		} catch {
-			setError(t.unavailable);
-		} finally {
 			intentionalLogout.current = false;
+			operation.current = false;
+			setSigningOut(false);
 			setBusy(false);
+			setError(t.unavailable);
 		}
 	}
 
@@ -561,6 +567,7 @@ export function useStudioController() {
 		setLocale,
 		t,
 		session,
+		signingOut,
 		isPending,
 		sessionError,
 		refetchSession,

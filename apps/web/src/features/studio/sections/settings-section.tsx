@@ -1,6 +1,7 @@
 import type { Locale } from "@ichnara/contracts";
 import { LinkArrow } from "@ichnara/portfolio";
 import { useEffect, useRef, useState } from "react";
+import { ButtonContent } from "../../../components/ui/button-content";
 import { Field } from "../../../components/ui/field";
 import { SelectControl } from "../../../components/ui/select-control";
 import { copy } from "../copy";
@@ -89,7 +90,7 @@ export function SettingsSection({
 					disabled={busy || reading}
 					onClick={() => fileInput.current?.click()}
 				>
-					{reading ? t.draftImportReading : t.draftImportChoose}
+					<ButtonContent loading={reading}>{t.draftImportChoose}</ButtonContent>
 				</button>
 				<input
 					type="file"

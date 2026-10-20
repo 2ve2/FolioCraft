@@ -1,19 +1,22 @@
 "use client";
-import { ChevronLeft, ChevronRight, LoaderCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { Brand } from "../../components/ui/brand";
+import { ButtonContent } from "../../components/ui/button-content";
 import { Field } from "../../components/ui/field";
 import { LanguageSwitch } from "../../components/ui/language-switch";
 import { ProductFooter } from "../../components/ui/product-footer";
 import { LoadingScreen } from "../studio/loading-screen";
 import styles from "./auth.module.css";
+import { AuthRecoveryLinks } from "./auth-recovery-links";
 import { type AuthMode, useAuthController } from "./use-auth-controller";
 
 /** Renders a dedicated authentication page without landing-page content or examples. */
 export function AuthScreen({ mode }: { mode: AuthMode }) {
 	const {
 		locale,
+		localeReady,
 		setLocale,
 		t,
 		session,
@@ -23,6 +26,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 		busy,
 		error,
 		verificationRequired,
+		emailNotVerified,
 		returnToAdmin,
 		authenticate,
 	} = useAuthController(mode);
@@ -34,7 +38,8 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 		if (!isPending && !session && !sessionError) firstInput.current?.focus();
 	}, [isPending, session, sessionError]);
 
-	if (isPending || session?.user) return <LoadingScreen locale={locale} message={t.authLoading} />;
+	if (isPending || session?.user)
+		return <LoadingScreen locale={locale} localeReady={localeReady} message={t.authLoading} />;
 	if (sessionError)
 		return (
 			<LoadingScreen locale={locale} message={t.startupError} error>
@@ -61,9 +66,6 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 						{ar ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
 						{t.back}
 					</Link>
-					<span className={`eyebrow ${styles.eyebrow}`}>
-						{locale === "ar" ? "إيكنارا" : "Ichnara"}
-					</span>
 					<h1 id="auth-title" className={styles.title}>
 						{title}
 					</h1>
@@ -122,8 +124,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 								</p>
 							)}
 							<button type="submit" className="primary wide" disabled={busy}>
-								{busy && <LoaderCircle className="spin" size={18} aria-hidden="true" />}
-								{title}
+								<ButtonContent loading={busy}>{title}</ButtonContent>
 							</button>
 						</fieldset>
 					</form>
@@ -133,12 +134,11 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 					>
 						{mode === "signup" ? t.switchLogin : t.switchSignup}
 					</Link>
-					<Link className="text-button auth-switch" href={`/forgot-password?lang=${locale}`}>
-						{ar ? "نسيت كلمة المرور؟" : "Forgot password?"}
-					</Link>
-					<Link className="text-button auth-switch" href={`/verify-email?lang=${locale}`}>
-						{ar ? "إعادة إرسال رسالة التحقق" : "Resend verification email"}
-					</Link>
+					<AuthRecoveryLinks
+						locale={locale}
+						mode={mode}
+						verificationRequired={verificationRequired || emailNotVerified}
+					/>
 					<span className="auth-privacy">{t.privacy}</span>
 				</section>
 			</main>

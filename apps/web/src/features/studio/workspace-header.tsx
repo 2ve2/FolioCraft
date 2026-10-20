@@ -1,6 +1,7 @@
 import type { Locale } from "@ichnara/contracts";
 import { Check, ChevronLeft, Circle, Globe2, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
+import { ButtonContent } from "../../components/ui/button-content";
 import { copy } from "./copy";
 import type { SaveState, Section } from "./types";
 
@@ -47,8 +48,10 @@ export function WorkspaceHeader({
 					disabled={busy}
 					onClick={() => void publish()}
 				>
-					{busy ? <LoaderCircle size={16} className="spin" /> : <Globe2 size={16} />}
-					<span>{busy ? t.working : t.publish}</span>
+					<ButtonContent loading={busy}>
+						<Globe2 size={16} />
+						<span className="publish-label">{t.publish}</span>
+					</ButtonContent>
 				</button>
 			</div>
 		</header>

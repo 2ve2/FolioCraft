@@ -6,13 +6,15 @@ import { Brand } from "../../components/ui/brand";
 import { LanguageSwitch } from "../../components/ui/language-switch";
 import { ProductFooter } from "../../components/ui/product-footer";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
+import { LoadingScreen } from "../studio/loading-screen";
 import styles from "./not-found.module.css";
 
 /** Offers localized recovery links for unmatched routes and missing public resources. */
 export function NotFoundScreen() {
-	const [locale, setLocale] = useInterfaceLocale();
+	const [locale, setLocale, ready] = useInterfaceLocale();
 	const ar = locale === "ar";
 	const Arrow = ar ? ArrowLeft : ArrowRight;
+	if (!ready) return <LoadingScreen locale={locale} localeReady={false} message="" />;
 
 	return (
 		<div className={styles.page} lang={locale} dir={ar ? "rtl" : "ltr"}>

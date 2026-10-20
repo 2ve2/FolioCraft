@@ -2,6 +2,7 @@
 
 import type { Locale } from "@ichnara/contracts";
 import { type FormEvent, useRef, useState } from "react";
+import { ButtonContent } from "../../components/ui/button-content";
 
 const copy = {
 	ar: {
@@ -147,7 +148,7 @@ export function InquiryForm({
 				</label>
 			</div>
 			<button type="submit" className="folio__button" disabled={preview || pending}>
-				{pending ? t.sending : t.send}
+				<ButtonContent loading={pending}>{t.send}</ButtonContent>
 			</button>
 			{status && (
 				<p className="folio__form-status" role={status.error ? "alert" : "status"}>

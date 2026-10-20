@@ -1,7 +1,7 @@
 "use client";
-import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { Brand } from "../../components/ui/brand";
+import { ButtonContent } from "../../components/ui/button-content";
 import { Field } from "../../components/ui/field";
 import { LanguageSwitch } from "../../components/ui/language-switch";
 import { ProductFooter } from "../../components/ui/product-footer";
@@ -25,7 +25,7 @@ export function RecoveryScreen({ mode }: { mode: RecoveryMode }) {
 		busy,
 		submit,
 	} = useRecoveryController(mode);
-	if (!ready) return <LoadingScreen locale={locale} message={t.loading} />;
+	if (!ready) return <LoadingScreen locale={locale} localeReady={ready} message={t.loading} />;
 	return (
 		<div className={`welcome-page ${styles.page}`}>
 			<header className="welcome-header">
@@ -85,8 +85,9 @@ export function RecoveryScreen({ mode }: { mode: RecoveryMode }) {
 									</Field>
 								)}
 								<button type="submit" className="primary wide" disabled={busy}>
-									{busy && <LoaderCircle className="spin" size={18} aria-hidden="true" />}
-									{mode === "reset" ? t.reset : t.send}
+									<ButtonContent loading={busy}>
+										{mode === "reset" ? t.reset : t.send}
+									</ButtonContent>
 								</button>
 							</fieldset>
 						</form>

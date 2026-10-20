@@ -40,6 +40,7 @@ function StudioWorkspace() {
 		setError,
 		notice,
 		busy,
+		signingOut,
 		mobileTab,
 		setMobileTab,
 		device,
@@ -67,7 +68,8 @@ function StudioWorkspace() {
 			router.replace(`/login?lang=${locale}`);
 	}, [localeReady, isPending, sessionError, session?.user, locale, router]);
 	const localeControl = <LanguageSwitch locale={locale} onChange={setLocale} />;
-	if (isPending || !localeReady) return <LoadingScreen locale={locale} message={t.authLoading} />;
+	if (isPending || !localeReady || signingOut)
+		return <LoadingScreen locale={locale} localeReady={localeReady} message={t.authLoading} />;
 	if (sessionError)
 		return (
 			<LoadingScreen locale={locale} message={t.startupError} error>
@@ -275,10 +277,10 @@ function StudioWorkspace() {
 
 /** Notices are product chrome across the Studio's loading, onboarding and editing screens. */
 export function Studio() {
-	const [locale] = useInterfaceLocale();
+	const [locale, , ready] = useInterfaceLocale();
 	return (
 		<div className="studio-notice-shell">
-			<PublicNotices locale={locale} />
+			{ready && <PublicNotices locale={locale} />}
 			<StudioWorkspace />
 		</div>
 	);

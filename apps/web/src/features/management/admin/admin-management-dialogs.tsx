@@ -1,3 +1,4 @@
+import { ButtonContent } from "../../../components/ui/button-content";
 import { text } from "../shared/copy";
 import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
@@ -112,7 +113,9 @@ export function AdminManagementDialogs({
 								}
 								onClick={() => c.details && void c.moderateSite(c.details)}
 							>
-								{c.details.suspended ? shared.resume : shared.suspend}
+								<ButtonContent loading={c.busy}>
+									{c.details.suspended ? shared.resume : shared.suspend}
+								</ButtonContent>
 							</button>
 						</section>
 					)}

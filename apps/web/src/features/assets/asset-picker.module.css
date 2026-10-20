@@ -52,6 +52,8 @@
 	cursor: pointer;
 	overflow: hidden;
 	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 }
 .upload input {
 	position: absolute;
@@ -114,7 +116,12 @@
 .error {
 	color: #a62937;
 }
-.error {
+.picker .error {
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	margin-block: 8px 0;
+	text-align: start;
 	font-size: var(--text-caption, 12px);
 	line-height: 1.7;
 	background: #fff0f1;

@@ -117,6 +117,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 		return (
 			<LoadingScreen
 				locale={locale}
+				localeReady={localeReady}
 				message={
 					locale === "ar" ? "جارٍ التحقق من صلاحيات الإدارة…" : "Checking administrator access…"
 				}

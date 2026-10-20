@@ -1,6 +1,7 @@
 "use client";
 import { type Locale, reportCategories, reportInput } from "@ichnara/contracts";
 import { type FormEvent, useEffect, useRef, useState } from "react";
+import { ButtonContent } from "../../components/ui/button-content";
 import { SelectControl } from "../../components/ui/select-control";
 import { AdminDialog } from "../management/admin/admin-dialog";
 import styles from "./report.module.css";
@@ -130,7 +131,7 @@ export function ReportForm({ slug, locale }: { slug: string; locale: Locale }) {
 							/>
 						</label>
 						<button type="submit" className={styles.submit} disabled={pending}>
-							{pending ? t.sending : t.send}
+							<ButtonContent loading={pending}>{t.send}</ButtonContent>
 						</button>
 						{feedback && <p role={feedback.error ? "alert" : "status"}>{feedback.text}</p>}
 					</form>

@@ -1,5 +1,13 @@
 # Decision ledger
 
+## 2026-10-20 — Local upload/authentication UX corrections
+- Human-confirmed scope: diagnose broken image upload, resize its feedback, remove redundant platform naming inside authentication forms, put recovery links in their relevant states, show only spinners during loading and prevent onboarding during logout. No deployment or GitHub push is implied.
+- Engineering choice: keep URL-based interface locale and static routes; show the existing language-neutral loading artwork until locale restoration instead of briefly rendering English copy. Synchronize simultaneously mounted locale hooks through a local event; do not change portfolio content language or persist private data.
+- Engineering choice: reserve action-label dimensions with visually transparent accessible content and overlay one decorative spinner. Keep disabled-state logic and accessible action names; narrow the small-screen publish-label selector so it cannot hide the shared wrapper or spinner.
+- Engineering choice: an explicit sign-out transition blocks workspace/onboarding rendering, invalidates old site requests and navigates to the localized login page only after native sign-out succeeds. Failed sign-out retains the current workspace and exposes retryable feedback. Onboarding remains available for authenticated accounts without a site, not anonymous or signing-out users.
+- Recovery placement: password recovery on login only; verification resend after successful verification-required signup or an actual EMAIL_NOT_VERIFIED response. Dedicated recovery routes and truthful provider-unavailable behavior remain.
+- Read-only R2 configuration inspection confirmed canonical-origin PUT and Content-Type permission. This rules out an absent permission in the inspected policy, not every browser CORS/network/storage failure. Do not select an adapter/provider fix without a captured failing stage; live upload acceptance remains pending.
+
 ## 2026-10-18 — Admin Console P0 boundary and proposed security design
 - Human-confirmed scope: P0 documentation only, entirely in English; no code or migrations, and stop for human review before P1. ADMIN_CONSOLE_TASK.md was read in full, including its corrective appendix. No GitHub push, deployment, account promotion or provider/database operation is authorized.
 - Task-fixed future architecture: /admin and /api/admin, shared Better Auth access-control policy, owner/moderator/support/analyst roles, explicit deny-by-default permissions, staff TOTP, sensitive-action reason/password freshness, last-owner protection, limited impersonation and published-only default inspection. These requirements are not yet implemented.

@@ -1,0 +1,21 @@
+.content {
+	position: relative;
+	display: inline-grid;
+	place-items: center;
+	min-width: 18px;
+	min-height: 18px;
+}
+.content > span {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+.pendingLabel {
+	opacity: 0;
+}
+.spinner {
+	position: absolute;
+	inset: 0;
+	margin: auto;
+}

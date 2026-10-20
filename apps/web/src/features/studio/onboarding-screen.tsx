@@ -1,9 +1,10 @@
 import { type Locale, slugSchema } from "@ichnara/contracts";
 import { isStaff } from "@ichnara/contracts/admin-policy";
 import { LinkArrow } from "@ichnara/portfolio";
-import { Globe2, LoaderCircle } from "lucide-react";
+import { Globe2 } from "lucide-react";
 import { type FormEvent, type ReactNode, useRef, useState } from "react";
 import { Brand } from "../../components/ui/brand";
+import { ButtonContent } from "../../components/ui/button-content";
 import { Field } from "../../components/ui/field";
 import { SelectControl } from "../../components/ui/select-control";
 import { copy } from "./copy";
@@ -118,8 +119,10 @@ export function OnboardingScreen({
 						</p>
 					)}
 					<button type="submit" className="primary wide" disabled={busy}>
-						{busy ? <LoaderCircle className="spin" size={18} /> : t.create}
-						<LinkArrow locale={locale} />
+						<ButtonContent loading={busy}>
+							{t.create}
+							<LinkArrow locale={locale} />
+						</ButtonContent>
 					</button>
 					<small className="auth-privacy">{t.privacy}</small>
 				</form>

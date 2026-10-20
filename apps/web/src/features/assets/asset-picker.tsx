@@ -2,6 +2,7 @@
 
 import type { Locale } from "@ichnara/contracts";
 import { type ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { ButtonContent } from "../../components/ui/button-content";
 import { ApiError, api, authClient } from "../../lib/api";
 import styles from "./asset-picker.module.css";
 import { AssetPreview } from "./asset-preview";
@@ -39,6 +40,7 @@ export function AssetPicker({
 	});
 	const [loading, setLoading] = useState(false);
 	const [busy, setBusy] = useState(false);
+	const [busyAction, setBusyAction] = useState("");
 	const [error, setError] = useState<keyof typeof copy.en | "">("");
 	const [notice, setNotice] = useState<"success" | "deleted" | "deletionPending" | "detached" | "">(
 		"",
@@ -104,9 +106,10 @@ export function AssetPicker({
 	}, [load]);
 
 	/** Serializes mutations and commits feedback only to the current mounted owner/site. */
-	async function mutate(action: (current: () => boolean) => Promise<void>) {
+	async function mutate(name: string, action: (current: () => boolean) => Promise<void>) {
 		if (!canAct || operation.current) return;
 		operation.current = true;
+		setBusyAction(name);
 		setBusy(true);
 		setError("");
 		setNotice("");
@@ -155,7 +158,7 @@ export function AssetPicker({
 			setError("invalid");
 			return;
 		}
-		await mutate(async (current) => {
+		await mutate("upload", async (current) => {
 			const intent = await api<UploadIntent>(`/api/sites/${siteId}/assets/upload-intent`, "POST", {
 				mime: file.type,
 				size: file.size,
@@ -198,7 +201,7 @@ export function AssetPicker({
 
 	/** Retries server verification when a browser upload succeeded but completion was interrupted. */
 	async function complete(id: string) {
-		await mutate(async (current) => {
+		await mutate(`complete:${id}`, async (current) => {
 			const asset = await api<Asset>(`/api/sites/${siteId}/assets/${id}/complete`, "POST");
 			if (!current()) return;
 			replaceAsset(asset);
@@ -215,7 +218,7 @@ export function AssetPicker({
 			setError("protectedHint");
 			return;
 		}
-		await mutate(async (current) => {
+		await mutate(`delete:${id}`, async (current) => {
 			const result = await api<{ id: string; status: Asset["status"] }>(
 				`/api/sites/${siteId}/assets/${id}`,
 				"DELETE",
@@ -238,7 +241,7 @@ export function AssetPicker({
 			<p className={styles.hint}>{t.hint}</p>
 			<div className={styles.actions}>
 				<label className={styles.upload} aria-disabled={!canAct}>
-					{busy ? t.uploading : t.upload}
+					<ButtonContent loading={busy && busyAction === "upload"}>{t.upload}</ButtonContent>
 					<input
 						type="file"
 						accept="image/png,image/jpeg,image/webp"
@@ -257,7 +260,7 @@ export function AssetPicker({
 						void load();
 					}}
 				>
-					{t.refresh}
+					<ButtonContent loading={loading}>{t.refresh}</ButtonContent>
 				</button>
 				{value && (
 					<button type="button" disabled={!canAct} onClick={detach}>
@@ -331,7 +334,9 @@ export function AssetPicker({
 							)}
 							{asset.status === "pending" && (
 								<button type="button" disabled={!canAct} onClick={() => void complete(asset.id)}>
-									{t.complete}
+									<ButtonContent loading={busy && busyAction === `complete:${asset.id}`}>
+										{t.complete}
+									</ButtonContent>
 								</button>
 							)}
 							{confirm === asset.id ? (
@@ -343,7 +348,9 @@ export function AssetPicker({
 										className={styles.danger}
 										onClick={() => void remove(asset.id)}
 									>
-										{t.confirmDelete}
+										<ButtonContent loading={busy && busyAction === `delete:${asset.id}`}>
+											{t.confirmDelete}
+										</ButtonContent>
 									</button>
 									<button type="button" disabled={!canAct} onClick={() => setConfirm(null)}>
 										{t.cancel}

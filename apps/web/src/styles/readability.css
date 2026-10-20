@@ -104,7 +104,7 @@
 	}
 }
 @media (max-width: 360px) {
-	.studio-header .primary span {
+	.studio-header .primary .publish-label {
 		display: none;
 	}
 	.studio-header .primary {

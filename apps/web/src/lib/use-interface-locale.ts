@@ -15,13 +15,18 @@ export function useInterfaceLocale() {
 		readLocale();
 		setReady(true);
 		window.addEventListener("popstate", readLocale);
-		return () => window.removeEventListener("popstate", readLocale);
+		window.addEventListener("interface-locale-change", readLocale);
+		return () => {
+			window.removeEventListener("popstate", readLocale);
+			window.removeEventListener("interface-locale-change", readLocale);
+		};
 	}, []);
 
 	useEffect(() => {
+		if (!ready) return;
 		document.documentElement.lang = locale;
 		document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
-	}, [locale]);
+	}, [locale, ready]);
 
 	/** Updates only the current route's interface-language parameter and document direction. */
 	function changeLocale(value: Locale) {
@@ -29,6 +34,7 @@ export function useInterfaceLocale() {
 		const url = new URL(window.location.href);
 		url.searchParams.set("lang", value);
 		window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+		window.dispatchEvent(new Event("interface-locale-change"));
 	}
 
 	return [locale, changeLocale, ready] as const;

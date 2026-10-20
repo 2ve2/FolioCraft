@@ -9,11 +9,13 @@ export function LoadingScreen({
 	locale,
 	message,
 	error = false,
+	localeReady = true,
 	children,
 }: {
 	locale: Locale;
 	message: string;
 	error?: boolean;
+	localeReady?: boolean;
 	children?: ReactNode;
 }) {
 	const ar = locale === "ar";
@@ -35,7 +37,8 @@ export function LoadingScreen({
 			<section
 				className="loading-content"
 				data-state={error ? "error" : "pending"}
-				aria-labelledby={titleId}
+				aria-labelledby={localeReady ? titleId : undefined}
+				aria-busy={!localeReady || undefined}
 			>
 				<div className="loading-visual" aria-hidden="true">
 					<div className="loading-sheet loading-sheet--back" />
@@ -66,43 +69,47 @@ export function LoadingScreen({
 						))}
 					</svg>
 				</div>
-				<svg
-					className="loading-signature"
-					width="170"
-					height="44"
-					viewBox={ar ? "199.25 65 641.5 310" : "-66 -34 2577 681"}
-					fill="currentColor"
-					role="img"
-					aria-label={ar ? "إيكنارا — Ichnara" : "Ichnara"}
-				>
-					<g transform={ar ? wordmark.transform : undefined}>
-						{wordmark.paths.map((path) => (
-							<path key={`${path.d}-${"transform" in path ? path.transform : ""}`} {...path} />
-						))}
-					</g>
-				</svg>
-				<h1 id={titleId}>
-					{error && <CircleAlert size={20} strokeWidth={1.75} aria-hidden="true" />}
-					{error
-						? ar
-							? "تعذر إكمال الطلب"
-							: "We couldn’t complete the request"
-						: ar
-							? "جارٍ فتح صفحتك…"
-							: "Opening your page…"}
-				</h1>
-				<p className="loading-message" role={error ? "alert" : "status"} aria-atomic="true">
-					{message}
-				</p>
-				{children && <div className="loading-actions">{children}</div>}
-				{!error && (
-					<p className="loading-help" role="status" aria-atomic="true">
-						{takingLonger
-							? ar
-								? "يستغرق الطلب وقتاً أطول من المعتاد. تحقق من اتصالك بالإنترنت."
-								: "This is taking longer than usual. Check your internet connection."
-							: ""}
-					</p>
+				{localeReady && (
+					<>
+						<svg
+							className="loading-signature"
+							width="170"
+							height="44"
+							viewBox={ar ? "199.25 65 641.5 310" : "-66 -34 2577 681"}
+							fill="currentColor"
+							role="img"
+							aria-label={ar ? "إيكنارا — Ichnara" : "Ichnara"}
+						>
+							<g transform={ar ? wordmark.transform : undefined}>
+								{wordmark.paths.map((path) => (
+									<path key={`${path.d}-${"transform" in path ? path.transform : ""}`} {...path} />
+								))}
+							</g>
+						</svg>
+						<h1 id={titleId}>
+							{error && <CircleAlert size={20} strokeWidth={1.75} aria-hidden="true" />}
+							{error
+								? ar
+									? "تعذر إكمال الطلب"
+									: "We couldn’t complete the request"
+								: ar
+									? "جارٍ فتح صفحتك…"
+									: "Opening your page…"}
+						</h1>
+						<p className="loading-message" role={error ? "alert" : "status"} aria-atomic="true">
+							{message}
+						</p>
+						{children && <div className="loading-actions">{children}</div>}
+						{!error && (
+							<p className="loading-help" role="status" aria-atomic="true">
+								{takingLonger
+									? ar
+										? "يستغرق الطلب وقتاً أطول من المعتاد. تحقق من اتصالك بالإنترنت."
+										: "This is taking longer than usual. Check your internet connection."
+									: ""}
+							</p>
+						)}
+					</>
 				)}
 			</section>
 		</main>

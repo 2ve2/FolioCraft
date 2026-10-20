@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Brand } from "../../../components/ui/brand";
+import { ButtonContent } from "../../../components/ui/button-content";
 import { LanguageSwitch } from "../../../components/ui/language-switch";
 import { authClient } from "../../../lib/auth-client";
 import { useInterfaceLocale } from "../../../lib/use-interface-locale";
@@ -108,7 +109,8 @@ export function AdminSecurity() {
 			setBusy(false);
 		}
 	}
-	if (!ready || isPending) return <LoadingScreen locale={locale} message={t.loading} />;
+	if (!ready || isPending)
+		return <LoadingScreen locale={locale} localeReady={ready} message={t.loading} />;
 	const staff = session?.user && isStaff(session.user.role) && !session.session.impersonatedBy;
 	const canEnroll = staff && !session.user.twoFactorEnabled && !complete;
 	const showVerify =
@@ -144,7 +146,7 @@ export function AdminSecurity() {
 								/>
 							</label>
 							<button className="primary" type="submit" disabled={busy}>
-								{busy ? t.pending : t.enable}
+								<ButtonContent loading={busy}>{t.enable}</ButtonContent>
 							</button>
 						</form>
 					)}
@@ -184,7 +186,7 @@ export function AdminSecurity() {
 								/>
 							</label>
 							<button className="primary" type="submit" disabled={busy}>
-								{busy ? t.pending : t.verify}
+								<ButtonContent loading={busy}>{t.verify}</ButtonContent>
 							</button>
 						</form>
 					)}
@@ -197,7 +199,7 @@ export function AdminSecurity() {
 								onClick={() => void restart()}
 								disabled={busy}
 							>
-								{t.restart}
+								<ButtonContent loading={busy}>{t.restart}</ButtonContent>
 							</button>
 						</>
 					)}

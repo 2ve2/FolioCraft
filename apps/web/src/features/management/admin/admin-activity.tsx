@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
+import { ButtonContent } from "../../../components/ui/button-content";
 import { ApiError, apiOrigin } from "../../../lib/api";
 import { date, errorText } from "../shared";
 import type { Audit, Page } from "../shared/types";
@@ -286,7 +287,7 @@ export function AdminActivityPage() {
 							type="submit"
 							disabled={busy || reason.trim().length < 10 || !password}
 						>
-							{t.export}
+							<ButtonContent loading={busy}>{t.export}</ButtonContent>
 						</button>
 					</form>
 				</AdminDialog>

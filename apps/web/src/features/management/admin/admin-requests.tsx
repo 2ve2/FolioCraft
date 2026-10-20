@@ -7,6 +7,7 @@ import {
 } from "@ichnara/contracts";
 import Link from "next/link";
 import { type FormEvent, useRef, useState } from "react";
+import { ButtonContent } from "../../../components/ui/button-content";
 import { SelectControl } from "../../../components/ui/select-control";
 import { ApiError, api, apiOrigin } from "../../../lib/api";
 import { date, errorText } from "../shared";
@@ -356,7 +357,9 @@ export function AdminRequests({ id }: { id?: string }) {
 						</label>
 						{failure && <p role="alert">{failure}</p>}
 						<button className="primary" type="submit" disabled={busy}>
-							{busy ? t.busy : operation === "export" ? t.download : t.save}
+							<ButtonContent loading={busy}>
+								{operation === "export" ? t.download : t.save}
+							</ButtonContent>
 						</button>
 					</form>
 				</AdminDialog>
