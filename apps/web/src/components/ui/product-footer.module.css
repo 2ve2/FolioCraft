@@ -10,7 +10,7 @@
 }
 .top {
 	display: grid;
-	grid-template-columns: 1.8fr 1fr 1fr;
+	grid-template-columns: 1.8fr repeat(3, 1fr);
 	gap: clamp(32px, 5vw, 80px);
 	padding-bottom: 40px;
 }

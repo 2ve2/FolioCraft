@@ -123,6 +123,19 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 										: "Account created. Verify your email address before signing in."}
 								</p>
 							)}
+							{mode === "signup" && (
+								<p className="auth-privacy auth-consent">
+									{ar ? "بإنشاء حسابك فإنك توافق على " : "By creating an account you agree to the "}
+									<Link href={`/terms?lang=${locale}`}>
+										{ar ? "شروط الاستخدام" : "Terms of use"}
+									</Link>
+									{ar ? " وتقرّ بأنك اطلعت على " : " and acknowledge the "}
+									<Link href={`/privacy?lang=${locale}`}>
+										{ar ? "إشعار الخصوصية" : "Privacy notice"}
+									</Link>
+									.
+								</p>
+							)}
 							<button type="submit" className="primary wide" disabled={busy}>
 								<ButtonContent loading={busy}>{title}</ButtonContent>
 							</button>
