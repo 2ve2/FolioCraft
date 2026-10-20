@@ -320,3 +320,7 @@ Supersedes the earlier Masked-field search authorization decision: account direc
 
 ## 2026-10-20 — API-only Resend SMTP configuration (human-confirmed)
 Human authorizes SMTP_HOST=smtp.resend.com,SMTP_PORT=465,SMTP_SECURE=true,SMTP_USER=resend and atomic SMTP_PASSWORD deployment for the trial API only. Domain verification is human-reported. After seeing that the existing validator rejects display-name syntax, the human explicitly selected MAIL_FROM=no-reply@lord2ve.tech without code changes. Keep TRIAL_SKIP_EMAIL_VERIFICATION=true. No web/R2/Neon/account/role changes or production migrations; no delivery test by the agent. The human will trigger a real reset request. HTTP fallback is preparation only, not an applied transport or automatic failover.
+
+## 2026-10-20 — HTTP mail rollout confirmation and acceptance boundary
+- After the concrete repair and passing tests were reported, the human explicitly requested testing the new solution; this confirmed the API-only one-deployment step. Trial HTTP transport is active and one native reset submission was accepted by Resend using the existing key. No key rotation/public diagnostic endpoint/account creation/password change. Native reset verification-record creation is inherent in the separately authorized email test.
+- Acceptance remains provider submission only. The human must verify mailbox receipt; no inferred delivery or completed password reset. Original SMTP failure class remains unknown. No web/R2/direct production database/role operation or further send authorized by this completion checkpoint.
