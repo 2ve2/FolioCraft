@@ -1,5 +1,11 @@
 # Action log
 
+## 2026-10-20 — Audit fixes completed locally; push blocked
+- Completed on branch claude/modest-davinci-osg31w: every scoped item recorded in the entry below, one commit each, with evidence in docs/evidence/2026-10-20-audit-fixes.md (sections 1–15). Final local gates are listed in STATUS.md.
+- Affected areas: packages/contracts (ids), apps/api (schema, migrations 0008–0009, services, worker scheduled handler, mail templates, tests), apps/web (route groups, security headers, legal pages, styles, tests), CI workflow, docs.
+- Not done: no deployment, no Neon migration, no provider access. Push refused with HTTP 403 (GitHub App access); awaiting the human.
+- STATUS.md was shortened to a one-page continuation point; its previous content moved unchanged to STATUS-ARCHIVE.md.
+
 ## 2026-10-20 — Audit fixes on claude/modest-davinci-osg31w
 - Scope (human-authorized after the read-only audit): fix confirmed audit findings that need no external resources, adopt `@paralleldrive/cuid2` identifiers (human request), and document each step. Planned order: flaky keyset test; cuid2 ids with a reviewed, data-preserving migration; web security headers; server-rendered Arabic `lang/dir`; focus visibility; user-link `rel`; 503 for unavailable public pages; CI parity with the deployed build; draft legal pages; bilingual mail templates; scheduled cleanup, release retention, R2 cleanup on account removal and complete data export; unused dependency removal; stale documentation.
 - Limits: no deployment, no Neon/R2/Resend access, no secrets, no production migration. Evidence per step: `docs/evidence/2026-10-20-audit-fixes.md`.
