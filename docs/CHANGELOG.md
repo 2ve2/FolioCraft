@@ -1,5 +1,9 @@
 # Action log
 
+## 2026-10-20 — Audit fixes on claude/modest-davinci-osg31w
+- Scope (human-authorized after the read-only audit): fix confirmed audit findings that need no external resources, adopt `@paralleldrive/cuid2` identifiers (human request), and document each step. Planned order: flaky keyset test; cuid2 ids with a reviewed, data-preserving migration; web security headers; server-rendered Arabic `lang/dir`; focus visibility; user-link `rel`; 503 for unavailable public pages; CI parity with the deployed build; draft legal pages; bilingual mail templates; scheduled cleanup, release retention, R2 cleanup on account removal and complete data export; unused dependency removal; stale documentation.
+- Limits: no deployment, no Neon/R2/Resend access, no secrets, no production migration. Evidence per step: `docs/evidence/2026-10-20-audit-fixes.md`.
+
 ## 2026-10-20 — Human confirms trying the repaired mail path
 - After the concrete HTTP change and passing test results were reported, the human explicitly requested sending from the new solution. Treat this as confirmation to deploy the API once and perform one further native reset-email test to the already privately supplied address. No web deployment, password/account/role change, R2 operation or direct production database access. A native reset may create its own temporary verification record; no credential change is attempted.
 - Next: fresh remote API version/binding preflight, preserve existing secrets, deploy reviewed HTTP code with its explicit transport variable, verify startup/active binding names, then correlate one browser request with sanitized mail events. No delivery claim without human mailbox confirmation.
