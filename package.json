@@ -14,6 +14,7 @@
 		"typecheck": "bun run --cwd apps/api typecheck && bun run --cwd apps/web typecheck",
 		"test": "bun scripts/test-api.ts",
 		"test:web": "bun test --cwd apps/web tests",
+		"test:worker-storage": "bun scripts/test-worker-storage.ts",
 		"build": "bun run --cwd apps/web build",
 		"check": "biome check .",
 		"format": "biome check --write .",

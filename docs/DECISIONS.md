@@ -1,5 +1,10 @@
 # Decision ledger
 
+## 2026-10-20 — Workers XML response compatibility and bounded probe authorization
+- Human explicitly authorized only generated small-image R2 PUT/copy/exact-key cleanup diagnostics after the failing user upload identified verify-copy/status200. This does not authorize deployment, user-object cleanup, CORS/account changes, database mutations or push.
+- Evidence-led engineering decision: retain AWS SDK protocol handling and conditional immutable copy, but select the SDK's own non-DOM XML implementation through the API-only Wrangler package alias. The package's browser parser requires DOMParser, which local workerd lacks; real R2 copying already succeeded before the parser threw. Avoid a DOM polyfill, a custom XML parser, blind success after an SDK error, header/security relaxation or replacing conditional copy with unguarded upload.
+- Pin @aws-sdk/xml-builder3.972.41 directly in the API because the build alias now depends on that entry. Installed source and bun info established compatibility/current version. Other runtimes retain default package selection. Credential-free local Workers regressions execute the actual alias and preserve permission/precondition/embedded/malformed/empty error rejection. The internal entry path is intentionally pinned and covered by this build/runtime gate; future package upgrades must rerun it.
+
 ## 2026-10-20 — Local upload/authentication UX corrections
 - Human-confirmed scope: diagnose broken image upload, resize its feedback, remove redundant platform naming inside authentication forms, put recovery links in their relevant states, show only spinners during loading and prevent onboarding during logout. No deployment or GitHub push is implied.
 - Engineering choice: keep URL-based interface locale and static routes; show the existing language-neutral loading artwork until locale restoration instead of briefly rendering English copy. Synchronize simultaneously mounted locale hooks through a local event; do not change portfolio content language or persist private data.

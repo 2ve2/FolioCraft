@@ -8,6 +8,8 @@ workers_dev = true
 
 [alias]
 "#image-validation" = "./src/lib/storage/image-validation.worker.ts"
+# Workers has no DOMParser; use the SDK's own non-DOM XML parser without changing Bun/browser defaults.
+"@aws-sdk/xml-builder" = "@aws-sdk/xml-builder/dist-cjs/index.js"
 
 [images]
 binding = "IMAGES"
