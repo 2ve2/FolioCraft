@@ -1,10 +1,11 @@
 import { createHash, createHmac } from "node:crypto";
 import { isIP } from "node:net";
-import type { ContentReport, reportInput } from "@ichnara/contracts";
+import { type ContentReport, idSchema, newId, type reportInput } from "@ichnara/contracts";
 import { and, asc, eq, gt, isNull, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import { env } from "../config/env";
 import { db } from "../db";
+import { afterText, binaryText } from "../db/keyset";
 import { user } from "../db/schema/auth";
 import { contentReports as reports } from "../db/schema/reports";
 import { releases, sites } from "../db/schema/site";
@@ -20,7 +21,7 @@ export const reportLimits = {
 	duplicateSeconds: 300,
 	bodyBytes: 8192,
 } as const;
-const cursorSchema = z.object({ createdAt: z.iso.datetime(), id: z.uuid() }).strict();
+const cursorSchema = z.object({ createdAt: z.iso.datetime(), id: idSchema }).strict();
 
 /** Hashes only the runtime-derived address with a domain-separated server-only salt. */
 export function reportIpHash(address: string) {
@@ -148,12 +149,15 @@ export const reportService = {
 					after
 						? or(
 								gt(reports.createdAt, new Date(after.createdAt)),
-								and(eq(reports.createdAt, new Date(after.createdAt)), gt(reports.id, after.id)),
+								and(
+									eq(reports.createdAt, new Date(after.createdAt)),
+									afterText(reports.id, after.id),
+								),
 							)
 						: undefined,
 				),
 			)
-			.orderBy(asc(reports.createdAt), asc(reports.id))
+			.orderBy(asc(reports.createdAt), binaryText(reports.id))
 			.limit(query.limit + 1);
 		const items = rows.slice(0, query.limit).map((row) => reportView(row.report, row.slug)),
 			last = items.at(-1);
@@ -187,7 +191,7 @@ export const reportService = {
 		await this.get(id);
 		const correlation = {
 			...context,
-			requestId: crypto.randomUUID(),
+			requestId: newId(),
 			reason: input.resolutionNote,
 		};
 		try {

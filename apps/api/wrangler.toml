@@ -14,8 +14,12 @@ workers_dev = true
 [images]
 binding = "IMAGES"
 
-# Prepared custom-domain values only; no routes/domains have been provisioned.
-# Worker names/bindings remain unchanged. See docs/CLOUDFLARE.md before deployment.
+# Daily housekeeping (services/maintenance.ts): expired auth/rate rows, abandoned uploads, queued R2 deletions.
+[triggers]
+crons = ["17 3 * * *"]
+
+# Trial values for the custom domains attached in the Cloudflare dashboard (lord2ve.tech, a temporary
+# domain). Worker names keep their compatibility identifiers. See docs/CLOUDFLARE.md before deployment.
 [vars]
 NODE_ENV = "production"
 TRIAL_SKIP_EMAIL_VERIFICATION = "true"

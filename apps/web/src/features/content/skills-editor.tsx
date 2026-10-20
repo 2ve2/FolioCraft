@@ -1,5 +1,5 @@
 "use client";
-import type { Skill } from "@ichnara/contracts";
+import { newId, type Skill } from "@ichnara/contracts";
 import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";
 import { Input } from "./input";
@@ -49,7 +49,7 @@ export function SkillsEditor({ draft, locale, update }: Omit<ContentEditorProps,
 				onClick={() =>
 					update((d) => ({
 						...d,
-						skills: [...(d.skills ?? []), { id: crypto.randomUUID(), category: "", items: [""] }],
+						skills: [...(d.skills ?? []), { id: newId(), category: "", items: [""] }],
 					}))
 				}
 			>

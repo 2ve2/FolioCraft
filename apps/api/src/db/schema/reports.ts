@@ -1,14 +1,14 @@
-import { reportCategories, reportStatuses } from "@ichnara/contracts";
+import { newId, reportCategories, reportStatuses } from "@ichnara/contracts";
 import { sql } from "drizzle-orm";
-import { check, index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { check, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { sites } from "./site";
 
 export const contentReports = pgTable(
 	"content_reports",
 	{
-		id: uuid("id").primaryKey().defaultRandom(),
-		siteId: uuid("site_id")
+		id: text("id").primaryKey().$defaultFn(newId),
+		siteId: text("site_id")
 			.notNull()
 			.references(() => sites.id, { onDelete: "cascade" }),
 		category: text("category", { enum: reportCategories }).notNull(),

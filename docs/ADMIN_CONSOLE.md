@@ -656,7 +656,7 @@ Source: original ADMIN_CONSOLE_TASK phase/API/page/test requirements, P0 section
 
 - P6.53 — **Owner-only bounded JSON account/site/inquiry export**: Implemented locally. request.export strict stored subject/ownership;1000 combined rows/1MiB defaults; explicit columns/exclusions; secrets/foreign account/byte/row/audit failure tests.
 
-- P6.54 — **Complete data-access/erasure/R2/backups handling**: Partial / open. Export is documented subset; no drafts/snapshots/assets/R2/backups retrieval. Delete/correction manual; status completion cannot establish legal completeness or delivery.
+- P6.54 — **Complete data-access/erasure/R2/backups handling**: Partial / open. Export is a documented subset; since 2026-10-20 (schemaVersion 2) it includes each site's current draft and active published release, but not older releases, image files, R2 keys or backups. Account removal now queues R2 deletion (see OPERATIONS "Scheduled maintenance"). Delete/correction manual; status completion cannot establish legal completeness or delivery.
 
 - P6.55 — **Link to audited account removal from request detail**: Partial / open. Verified account ID displayed; direct removal action/link not embedded in request detail. Existing /accounts/:id audited removal remains available separately.
 

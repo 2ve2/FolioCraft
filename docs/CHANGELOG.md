@@ -1,5 +1,15 @@
 # Action log
 
+## 2026-10-20 — Audit fixes completed locally; push blocked
+- Completed on branch claude/modest-davinci-osg31w: every scoped item recorded in the entry below, one commit each, with evidence in docs/evidence/2026-10-20-audit-fixes.md (sections 1–15). Final local gates are listed in STATUS.md.
+- Affected areas: packages/contracts (ids), apps/api (schema, migrations 0008–0009, services, worker scheduled handler, mail templates, tests), apps/web (route groups, security headers, legal pages, styles, tests), CI workflow, docs.
+- Not done: no deployment, no Neon migration, no provider access. Push refused with HTTP 403 (GitHub App access); awaiting the human.
+- STATUS.md was shortened to a one-page continuation point; its previous content moved unchanged to STATUS-ARCHIVE.md.
+
+## 2026-10-20 — Audit fixes on claude/modest-davinci-osg31w
+- Scope (human-authorized after the read-only audit): fix confirmed audit findings that need no external resources, adopt `@paralleldrive/cuid2` identifiers (human request), and document each step. Planned order: flaky keyset test; cuid2 ids with a reviewed, data-preserving migration; web security headers; server-rendered Arabic `lang/dir`; focus visibility; user-link `rel`; 503 for unavailable public pages; CI parity with the deployed build; draft legal pages; bilingual mail templates; scheduled cleanup, release retention, R2 cleanup on account removal and complete data export; unused dependency removal; stale documentation.
+- Limits: no deployment, no Neon/R2/Resend access, no secrets, no production migration. Evidence per step: `docs/evidence/2026-10-20-audit-fixes.md`.
+
 ## 2026-10-20 — Human confirms trying the repaired mail path
 - After the concrete HTTP change and passing test results were reported, the human explicitly requested sending from the new solution. Treat this as confirmation to deploy the API once and perform one further native reset-email test to the already privately supplied address. No web deployment, password/account/role change, R2 operation or direct production database access. A native reset may create its own temporary verification record; no credential change is attempted.
 - Next: fresh remote API version/binding preflight, preserve existing secrets, deploy reviewed HTTP code with its explicit transport variable, verify startup/active binding names, then correlate one browser request with sanitized mail events. No delivery claim without human mailbox confirmation.

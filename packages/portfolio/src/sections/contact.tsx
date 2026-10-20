@@ -1,6 +1,7 @@
 import type { Draft, Locale } from "@ichnara/contracts";
 import { copy } from "../copy";
-import { keyed, safeHttpUrl } from "../format";
+import { ExternalLink } from "../external-link";
+import { keyed } from "../format";
 import { LinkArrow } from "../link-arrow";
 import type { PortfolioProps } from "../types";
 
@@ -36,23 +37,14 @@ export function PortfolioContact({
 						{email} <LinkArrow locale={locale} />
 					</a>
 				)}
-				{website && (
-					<a className="folio__arrow-link" href={website} target="_blank" rel="noopener noreferrer">
-						{t.website} <LinkArrow locale={locale} />
-					</a>
-				)}
+				<ExternalLink className="folio__arrow-link" href={website}>
+					{t.website} <LinkArrow locale={locale} />
+				</ExternalLink>
 
 				{keyed(socialLinks).map(({ value: item, key }) => (
-					<a
-						className="folio__arrow-link"
-						key={key}
-						href={safeHttpUrl(item.url)}
-						dir="auto"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
+					<ExternalLink className="folio__arrow-link" key={key} href={item.url} dir="auto">
 						{item.label} <LinkArrow locale={locale} />
-					</a>
+					</ExternalLink>
 				))}
 			</div>
 			{contactForm}

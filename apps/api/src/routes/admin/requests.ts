@@ -1,4 +1,10 @@
-import { dataRequestInput, dataRequestStatuses, dataRequestTypes } from "@ichnara/contracts";
+import {
+	dataRequestInput,
+	dataRequestStatuses,
+	dataRequestTypes,
+	idSchema,
+	newId,
+} from "@ichnara/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { successResponse } from "../../lib/response-helpers";
@@ -14,7 +20,7 @@ adminRequestRoutes.get("/requests", requirePermission("request", "read"), async 
 	const q = z
 		.object({
 			limit: z.coerce.number().int().min(1).max(100).default(20),
-			cursor: z.uuid().optional(),
+			cursor: idSchema.optional(),
 			status: z.enum(dataRequestStatuses).optional(),
 			type: z.enum(dataRequestTypes).optional(),
 			overdue: booleanQuery.optional(),
@@ -32,7 +38,7 @@ adminRequestRoutes.post("/requests", requirePermission("request", "handle"), asy
 		.parse(await c.req.json());
 	return successResponse(
 		c,
-		await requestService.change(c.req.raw.headers, crypto.randomUUID(), credentials, {
+		await requestService.change(c.req.raw.headers, newId(), credentials, {
 			kind: "create",
 			...request,
 		}),

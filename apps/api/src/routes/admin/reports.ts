@@ -1,4 +1,4 @@
-import { reportCategories, reportStatuses, reportStatusInput } from "@ichnara/contracts";
+import { idSchema, reportCategories, reportStatuses, reportStatusInput } from "@ichnara/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { successResponse } from "../../lib/response-helpers";
@@ -19,7 +19,7 @@ const querySchema = z
 			.optional(),
 		status: z.enum(reportStatuses).optional(),
 		category: z.enum(reportCategories).optional(),
-		siteId: z.uuid().optional(),
+		siteId: idSchema.optional(),
 		ownerId: z.string().min(1).max(128).optional(),
 	})
 	.strict();

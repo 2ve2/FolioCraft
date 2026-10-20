@@ -1,5 +1,6 @@
-import { and, asc, eq, gt, isNotNull, isNull, sql } from "drizzle-orm";
+import { and, eq, isNotNull, isNull, sql } from "drizzle-orm";
 import { db } from "../../db";
+import { afterText, binaryText } from "../../db/keyset";
 import { assets } from "../../db/schema/asset";
 import { user } from "../../db/schema/auth";
 import { inquiries } from "../../db/schema/operations";
@@ -44,7 +45,7 @@ export const adminService = {
 			.from(sites)
 			.where(
 				and(
-					query.cursor ? gt(sites.id, query.cursor) : undefined,
+					query.cursor ? afterText(sites.id, query.cursor) : undefined,
 					query.ownerId ? eq(sites.ownerId, query.ownerId) : undefined,
 					query.suspended === undefined ? undefined : eq(sites.suspended, query.suspended),
 					query.published === undefined
@@ -57,7 +58,7 @@ export const adminService = {
 						: sql`exists(select 1 from ${contentReports} where ${contentReports.siteId} = ${sites.id}) = ${query.reported}`,
 				),
 			)
-			.orderBy(asc(sites.id))
+			.orderBy(binaryText(sites.id))
 			.limit(query.limit + 1)
 			.offset(query.offset ?? 0);
 		const items = rows.slice(0, query.limit);

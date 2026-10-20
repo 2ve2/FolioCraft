@@ -92,7 +92,13 @@ Guarded database tests live in `apps/api/tests`; `tests/fixtures/browser-server.
 
 ```text
 apps/web/src/
-  app/                           Thin routes, metadata and layout
+  app/                           Thin routes, metadata and layouts
+    (platform)/layout.tsx        Root layout for landing, auth, studio and admin (lang="en", client locale)
+    (portfolio)/p/[slug]/        Published portfolio routes with their own root layout:
+      layout.tsx                 <html lang/dir> from the published release locale (server-rendered)
+      _public.tsx                Request-memoized public release reads shared by layout/metadata/page
+    global-not-found.tsx         Branded 404 for unmatched URLs across both root layouts
+    root-styles.ts               Shared font and globals.css imports for both root layouts
   components/ui/                 Shared controls, TooltipButton and local styles
   features/
     auth/
@@ -175,7 +181,7 @@ packages/portfolio/src/
   styles.ts                     Portfolio styles only
 ```
 
-`app/globals.css` is an ordered import entry point: Tailwind, tokens, foundation, welcome, landing, workspace, responsive, editor-groups, loading, select-control, readability, workspace-preview, workspace-scroll, scrollbars. `landing.css` follows `welcome.css` to preserve the extracted rules' cascade. Do not alphabetize imports.
+`app/globals.css` is an ordered import entry point: reset (layered base reset, formerly Tailwind preflight), tokens, foundation, welcome, landing, workspace, responsive, editor-groups, loading, select-control, readability, workspace-preview, workspace-scroll, scrollbars. `landing.css` follows `welcome.css` to preserve the extracted rules' cascade. Do not alphabetize imports.
 
 TooltipButton owns covered action hints; avoid adding a second native title popup. Optional avatar/initials and decorative project-cover visibility belong in shared appearance contracts/rendering. Hiding a visual retains its asset references and lifecycle protections. Restored legacy backups normalize the earlier visual defaults.
 

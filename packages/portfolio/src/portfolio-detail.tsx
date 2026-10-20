@@ -1,5 +1,6 @@
 import type { Article, Project } from "@ichnara/contracts";
 import { copy } from "./copy";
+import { ExternalLink } from "./external-link";
 import { readingTime, safeHttpUrl } from "./format";
 import { LinkArrow } from "./link-arrow";
 import { Portfolio } from "./portfolio";
@@ -83,16 +84,9 @@ export function PortfolioDetail({
 						</div>
 					)}
 					{project && <Gallery project={project} assetUrls={assetUrls} />}
-					{url && (
-						<a
-							className="folio__arrow-link folio__project-link"
-							href={url}
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{t.visit} <LinkArrow locale={draft.locale} />
-						</a>
-					)}
+					<ExternalLink className="folio__arrow-link folio__project-link" href={url}>
+						{t.visit} <LinkArrow locale={draft.locale} />
+					</ExternalLink>
 				</section>
 			}
 		/>

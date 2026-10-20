@@ -30,7 +30,7 @@ export const requestsCopy = {
 		save: "Apply transition",
 		download: "Download subject JSON",
 		exportWarning:
-			"Owner only. Includes account, site metadata and received inquiries. Excludes drafts, snapshots, credentials, R2 files and backups. Generation does not prove delivery or complete deletion.",
+			"Owner only. Includes the account, each site's metadata, current draft and active published version, and received inquiries. Excludes older versions, credentials, uploaded image files and backups. Generation does not prove delivery or complete deletion.",
 		closureWarning:
 			"Completion records your evidence of actual work. Deletion and correction are manual procedures; this page does not erase R2 files or establish legal completeness.",
 		back: "Back to requests",
@@ -96,7 +96,7 @@ export const requestsCopy = {
 		save: "تطبيق الانتقال",
 		download: "تنزيل بيانات صاحب الطلب بصيغة JSON",
 		exportWarning:
-			"للمالك فقط. يشمل الحساب وبيانات المواقع الوصفية والاستفسارات الواردة. يستبعد المسودات واللقطات وبيانات الدخول وملفات R2 والنسخ الاحتياطية. إنشاء الملف لا يثبت تسليمه أو اكتمال الحذف.",
+			"للمالك فقط. يشمل الحساب، وبيانات كل موقع ومسودته الحالية ونسخته المنشورة النشطة، والاستفسارات الواردة. يستبعد النسخ الأقدم وبيانات الدخول وملفات الصور المرفوعة والنسخ الاحتياطية. إنشاء الملف لا يثبت تسليمه أو اكتمال الحذف.",
 		closureWarning:
 			"تسجيل الاكتمال هو إفادة منك بدليل العمل الفعلي. الحذف والتصحيح إجراءان يدويان؛ هذه الصفحة لا تمحو ملفات R2 ولا تثبت الاكتمال القانوني.",
 		back: "العودة للطلبات",

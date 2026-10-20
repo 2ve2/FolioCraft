@@ -4,7 +4,32 @@ import { db } from "../../db";
 import { releases, sites } from "../../db/schema/site";
 import { ApiError } from "../../lib/response-helpers";
 import { validateAssets } from "../assets";
-import { lockOwnedSite, ownedSite, siteDraftService, siteDto } from "./draft-service";
+import {
+	type DraftTransaction,
+	lockOwnedSite,
+	ownedSite,
+	siteDraftService,
+	siteDto,
+} from "./draft-service";
+
+/** Number of most recent releases kept per site; older ones are deleted when a new one is published. */
+export const RELEASE_RETENTION = 50;
+
+/**
+ * Deletes releases beyond the retention window. Runs after the public pointer moved to the
+ * newest release in the same transaction, so the active release is always retained.
+ */
+async function pruneReleases(tx: DraftTransaction, siteId: string) {
+	await tx.execute(sql`
+		delete from ${releases}
+		where ${releases.siteId} = ${siteId}
+			and ${releases.id} not in (
+				select ${releases.id} from ${releases}
+				where ${releases.siteId} = ${siteId}
+				order by ${releases.createdAt} desc, ${releases.id} desc
+				limit ${RELEASE_RETENTION}
+			)`);
+}
 
 export const releaseService = {
 	/** Creates or reuses an immutable release while preventing suspended publication. */
@@ -28,6 +53,7 @@ export const releaseService = {
 				.update(sites)
 				.set({ publishedReleaseId: release.id, updatedAt: new Date() })
 				.where(ownedSite(id, userId));
+			if (!existing) await pruneReleases(tx, id);
 			return { id: release.id, revision: release.revision };
 		});
 	},

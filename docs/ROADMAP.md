@@ -40,7 +40,9 @@ Gate: representative Arabic/English portfolios work at desktop/mobile widths, in
 - [x] Inbox frontend with persisted intake/read/archive browser proof.
 - [ ] Optional real mail notification delivery (SMTP unconfigured).
 - [x] Structured errors/retry semantics, CI workflow, private backup and real local restore proof.
-- [ ] Remote CI execution, scheduled retention/backups and cache policy (currently no-store).
+- [x] Remote CI execution: GitHub Actions "Checks" runs on every push (49 runs through 2026-10-20; latest main green). The workers job added on 2026-10-20 still awaits its first remote run.
+- [ ] Scheduled retention/backups: daily maintenance Cron Trigger and 50-release retention implemented and locally proven (2026-10-20) but not yet deployed; scheduled database backups and retention periods remain undecided.
+- [ ] Public cache policy (currently no-store).
 - [x] Deploy authorized Cloudflare trial API/web; hosted signup/sign-in, owner draft save/reload, publication and separate public page observed. Full provider/device/launch acceptance remains pending; see CLOUDFLARE.md.
 Gate: recorded end-to-end acceptance and real deployment evidence; no invented provider checks.
 

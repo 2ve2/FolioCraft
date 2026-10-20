@@ -1,4 +1,5 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
+import { newId } from "@ichnara/contracts";
 import { betterAuth } from "better-auth";
 import { admin } from "better-auth/plugins/admin";
 import { twoFactor } from "better-auth/plugins/two-factor";
@@ -62,6 +63,8 @@ export const auth = betterAuth({
 		},
 	},
 	advanced: {
+		// Record ids only; Better Auth generates session and verification tokens separately.
+		database: { generateId: () => newId() },
 		useSecureCookies: env.NODE_ENV === "production",
 		ipAddress: { ipAddressHeaders: ["x-folio-client-ip"] },
 	},

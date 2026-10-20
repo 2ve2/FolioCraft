@@ -1,4 +1,4 @@
-import { CopyObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { CopyObjectCommand, ListObjectsV2Command, S3Client } from "@aws-sdk/client-s3";
 
 const sourceEtag = '"fixture-source"';
 const cases = [
@@ -29,6 +29,45 @@ const cases = [
 	{ name: "malformed", status: 200, xml: "<CopyObjectResult><ETag>unfinished", error: true },
 	{ name: "empty", status: 200, xml: "", error: true },
 ];
+
+const listCases = [
+	{
+		name: "list-success",
+		status: 200,
+		xml: "<ListBucketResult><Name>fixture-bucket</Name><Prefix>verified/site/</Prefix><KeyCount>2</KeyCount><MaxKeys>100</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>verified/site/a</Key><Size>1</Size></Contents><Contents><Key>verified/site/b</Key><Size>2</Size></Contents></ListBucketResult>",
+		keys: ["verified/site/a", "verified/site/b"],
+	},
+	{
+		name: "list-permission",
+		status: 403,
+		xml: "<Error><Code>AccessDenied</Code><Message>Fixture denial</Message></Error>",
+		keys: null,
+	},
+];
+
+/** Builds an SDK client whose transport returns one synthetic XML response. */
+function syntheticClient(status: number, xml: string) {
+	return new S3Client({
+		region: "auto",
+		endpoint: "https://storage.invalid",
+		credentials: { accessKeyId: "synthetic", secretAccessKey: "synthetic-test-only" },
+		maxAttempts: 1,
+		forcePathStyle: true,
+		requestChecksumCalculation: "WHEN_REQUIRED",
+		responseChecksumValidation: "WHEN_REQUIRED",
+		requestHandler: {
+			async handle() {
+				return {
+					response: {
+						statusCode: status,
+						headers: { "content-type": "application/xml" },
+						body: new Blob([xml]).stream(),
+					},
+				};
+			},
+		},
+	});
+}
 
 /** Exercises the actual Workers bundle with synthetic SDK responses, never a provider or database. */
 export default {
@@ -83,6 +122,29 @@ export default {
 			results.push({
 				name: fixture.name,
 				pass: conditional && failed === fixture.error && (failed || correctResult),
+			});
+		}
+		// Scheduled R2 cleanup lists keys under a prefix; its XML must parse without DOMParser too.
+		for (const listing of listCases) {
+			const client = syntheticClient(listing.status, listing.xml);
+			let keys: string[] | null = null;
+			try {
+				const page = await client.send(
+					new ListObjectsV2Command({
+						Bucket: "fixture-bucket",
+						Prefix: "verified/site/",
+						MaxKeys: 100,
+					}),
+				);
+				keys = (page.Contents ?? []).flatMap((object) => (object.Key ? [object.Key] : []));
+			} catch {
+				keys = null;
+			} finally {
+				client.destroy();
+			}
+			results.push({
+				name: listing.name,
+				pass: JSON.stringify(keys) === JSON.stringify(listing.keys),
 			});
 		}
 		return Response.json({ domParserAbsent: !("DOMParser" in globalThis), results });

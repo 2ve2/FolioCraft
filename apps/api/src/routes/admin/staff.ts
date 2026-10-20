@@ -1,7 +1,8 @@
 import { isStaff, parseRoles, rolePermissions } from "@ichnara/contracts/admin-policy";
-import { asc, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { db } from "../../db";
+import { binaryText } from "../../db/keyset";
 import { adminAudit } from "../../db/schema/admin";
 import { user } from "../../db/schema/auth";
 import { successResponse } from "../../lib/response-helpers";
@@ -23,7 +24,7 @@ adminStaffRoutes.get("/staff", requirePermission("staff", "read"), async (c) => 
 		.where(
 			sql`exists(select 1 from unnest(string_to_array(coalesce(${user.role}, ''), ',')) r where trim(r) in ('owner','moderator','support','analyst'))`,
 		)
-		.orderBy(asc(user.id))
+		.orderBy(binaryText(user.id))
 		.limit(1001);
 	return successResponse(c, {
 		items: rows

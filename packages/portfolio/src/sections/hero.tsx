@@ -1,4 +1,5 @@
 import { copy } from "../copy";
+import { ExternalLink } from "../external-link";
 import { LinkArrow } from "../link-arrow";
 import type { PortfolioProps } from "../types";
 
@@ -71,17 +72,10 @@ export function PortfolioHero({
 								<LinkArrow locale={locale} />
 							</a>
 						)}
-						{website && (
-							<a
-								className="folio__arrow-link folio__text-link"
-								href={website}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								{t.website}
-								<LinkArrow locale={locale} />
-							</a>
-						)}
+						<ExternalLink className="folio__arrow-link folio__text-link" href={website}>
+							{t.website}
+							<LinkArrow locale={locale} />
+						</ExternalLink>
 					</div>
 				)}
 			</div>

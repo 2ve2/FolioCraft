@@ -1,4 +1,4 @@
-import { collectAssetIds, type Draft, publishedDraft } from "@ichnara/contracts";
+import { collectAssetIds, type Draft, newId, publishedDraft } from "@ichnara/contracts";
 import { and, asc, desc, eq, inArray, lt, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import { assets } from "../db/schema/asset";
@@ -83,7 +83,7 @@ export const assetService = {
 				.where(and(eq(assets.siteId, siteId), ne(assets.status, "deleted")))
 				.limit(100);
 			if (active.length >= 100) throw new ApiError(429, "ASSET_LIMIT_REACHED");
-			const id = crypto.randomUUID();
+			const id = newId();
 			const stagingKey = `staging/${siteId}/${id}`;
 			const key = `verified/${siteId}/${id}`;
 			const uploadUrl = await storage.uploadUrl(stagingKey, mime, size);

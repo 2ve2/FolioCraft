@@ -9,9 +9,11 @@ import { assets } from "../src/db/schema/asset";
 import { user } from "../src/db/schema/auth";
 import { inquiries, rateBuckets } from "../src/db/schema/operations";
 import { releases, sites } from "../src/db/schema/site";
+import { storageDeletions } from "../src/db/schema/storage";
 import { auth } from "../src/lib/auth";
 import * as auditWriter from "../src/services/admin/audit-service";
 import { passwordFailures } from "../src/services/admin/password-failures";
+import { sitePrefixes } from "../src/services/maintenance";
 import { account, error, request, result } from "./helpers";
 
 const ids: string[] = [];
@@ -237,6 +239,15 @@ test("removal uses native cascades and email is withheld when success audit fail
 	for (const table of [releases, inquiries, assets])
 		expect(await db.select().from(table).where(eq(table.siteId, site.id))).toHaveLength(0);
 	expect(await db.select().from(sites).where(eq(sites.id, site.id))).toHaveLength(0);
+	// The removed site's private objects are queued for scheduled R2 deletion.
+	const queued = await db
+		.delete(storageDeletions)
+		.where(inArray(storageDeletions.prefix, sitePrefixes([site.id])))
+		.returning();
+	expect(queued.map((row) => [row.prefix, row.reason]).sort()).toEqual([
+		[`staging/${site.id}/`, "account_removed"],
+		[`verified/${site.id}/`, "account_removed"],
+	]);
 	const events = await db.select().from(adminAudit).where(eq(adminAudit.actorId, actor.id));
 	expect(
 		events

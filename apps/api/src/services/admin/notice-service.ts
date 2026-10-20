@@ -1,4 +1,4 @@
-import type { noticeInput } from "@ichnara/contracts";
+import { newId, type noticeInput } from "@ichnara/contracts";
 import { and, asc, desc, eq, gt, lte, sql } from "drizzle-orm";
 import type { z } from "zod";
 import { db } from "../../db";
@@ -45,7 +45,7 @@ export const noticeService = {
 		headers: Headers,
 		credentials: unknown,
 		input: z.infer<typeof noticeInput> | null,
-		id: string = crypto.randomUUID(),
+		id: string = newId(),
 		create = false,
 	) {
 		const actor = await auth.api.getSession({ headers });

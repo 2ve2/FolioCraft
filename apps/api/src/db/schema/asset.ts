@@ -1,13 +1,14 @@
+import { newId } from "@ichnara/contracts";
 import { sql } from "drizzle-orm";
-import { check, index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { check, index, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { sites } from "./site";
 
 export const assets = pgTable(
 	"assets",
 	{
-		id: uuid("id").primaryKey().defaultRandom(),
-		siteId: uuid("site_id")
+		id: text("id").primaryKey().$defaultFn(newId),
+		siteId: text("site_id")
 			.notNull()
 			.references(() => sites.id, { onDelete: "cascade" }),
 		uploaderId: text("uploader_id")

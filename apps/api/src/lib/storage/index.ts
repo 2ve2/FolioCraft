@@ -3,6 +3,7 @@ import {
 	DeleteObjectCommand,
 	GetObjectCommand,
 	HeadObjectCommand,
+	ListObjectsV2Command,
 	PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -130,6 +131,18 @@ export const storage = {
 			return { width, height };
 		} catch (e) {
 			return providerError(e, stage);
+		}
+	},
+
+	/** Lists up to `limit` object keys under a private prefix (one page, no continuation). */
+	async listKeys(prefix: string, limit: number): Promise<string[]> {
+		try {
+			const page = await storageClient().send(
+				new ListObjectsV2Command({ Bucket: storageBucket(), Prefix: prefix, MaxKeys: limit }),
+			);
+			return (page.Contents ?? []).flatMap((object) => (object.Key ? [object.Key] : []));
+		} catch (e) {
+			return providerError(e, "list");
 		}
 	},
 

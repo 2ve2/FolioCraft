@@ -1,3 +1,4 @@
+import { newId } from "@ichnara/contracts";
 import type { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
@@ -36,7 +37,7 @@ const logRequests = createMiddleware<AuthEnv>(async (c, next) => {
 
 /** Installs shared HTTP protections in the same order for every mounted domain route. */
 export function registerHttpMiddleware(app: Hono<AuthEnv>) {
-	app.use("*", requestId({ headerName: "", generator: () => crypto.randomUUID() }));
+	app.use("*", requestId({ headerName: "", generator: newId }));
 	app.use("*", (c, next) => {
 		c.header("X-Request-Id", c.get("requestId"));
 		return withMailRequestId(c.get("requestId"), next);

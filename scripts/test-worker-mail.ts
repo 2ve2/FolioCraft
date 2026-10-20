@@ -102,7 +102,7 @@ const mf = new Miniflare(
 				};
 				const scenario = payload.to.split("@")[0];
 				counts.set(scenario, (counts.get(scenario) ?? 0) + 1);
-				assert.equal(payload.from, "sender@example.invalid");
+				assert.equal(payload.from, "Ichnara <sender@example.invalid>");
 				assert.match(payload.text, /private-token|reset-password/);
 				if (!scenario.startsWith("native-")) {
 					assert.ok(payload.html.includes("&lt;synthetic-name&gt;&amp;&quot;"));

@@ -1,4 +1,4 @@
-import type { Draft } from "@ichnara/contracts";
+import { type Draft, newId } from "@ichnara/contracts";
 import { sql } from "drizzle-orm";
 import {
 	boolean,
@@ -9,14 +9,13 @@ import {
 	text,
 	timestamp,
 	uniqueIndex,
-	uuid,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 
 export const sites = pgTable(
 	"sites",
 	{
-		id: uuid("id").primaryKey().defaultRandom(),
+		id: text("id").primaryKey().$defaultFn(newId),
 		ownerId: text("owner_id")
 			.notNull()
 			.references(() => user.id, { onDelete: "cascade" })
@@ -24,7 +23,7 @@ export const sites = pgTable(
 		slug: text("slug").notNull().unique(),
 		revision: integer("revision").notNull().default(0),
 		draft: jsonb("draft").$type<Draft>().notNull(),
-		publishedReleaseId: uuid("published_release_id"),
+		publishedReleaseId: text("published_release_id"),
 		suspended: boolean("suspended").notNull().default(false),
 		suspensionReason: text("suspension_reason"),
 		createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -35,8 +34,8 @@ export const sites = pgTable(
 export const releases = pgTable(
 	"releases",
 	{
-		id: uuid("id").primaryKey().defaultRandom(),
-		siteId: uuid("site_id")
+		id: text("id").primaryKey().$defaultFn(newId),
+		siteId: text("site_id")
 			.notNull()
 			.references(() => sites.id, { onDelete: "cascade" }),
 		revision: integer("revision").notNull(),

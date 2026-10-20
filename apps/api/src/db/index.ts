@@ -10,6 +10,7 @@ import * as noticeSchema from "./schema/notices";
 import * as operationsSchema from "./schema/operations";
 import * as reportSchema from "./schema/reports";
 import * as siteSchema from "./schema/site";
+import * as storageSchema from "./schema/storage";
 
 const poolConfig = {
 	connectionString: env.DATABASE_URL,
@@ -28,6 +29,7 @@ const schema = {
 	...siteSchema,
 	...assetSchema,
 	...operationsSchema,
+	...storageSchema,
 };
 export const pool = new Pool(poolConfig);
 const defaultDatabase = drizzle(pool, { schema });

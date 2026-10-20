@@ -1,11 +1,11 @@
-import { dataRequestStatuses, dataRequestTypes } from "@ichnara/contracts";
+import { dataRequestStatuses, dataRequestTypes, newId } from "@ichnara/contracts";
 import { sql } from "drizzle-orm";
-import { check, index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { check, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 export const dataRequests = pgTable(
 	"data_requests",
 	{
-		id: uuid("id").primaryKey().defaultRandom(),
+		id: text("id").primaryKey().$defaultFn(newId),
 		userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
 		email: text("email").notNull(),
 		type: text("type", { enum: dataRequestTypes }).notNull(),

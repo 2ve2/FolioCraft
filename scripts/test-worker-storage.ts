@@ -49,12 +49,12 @@ try {
 		results: { name: string; pass: boolean }[];
 	};
 	assert.equal(evidence.domParserAbsent, true, "Regression must execute without a DOM polyfill");
-	assert.equal(evidence.results.length, 6);
+	assert.equal(evidence.results.length, 8);
 	for (const result of evidence.results) {
 		assert.equal(result.pass, true, result.name);
 		console.info(`PASS Workers storage XML: ${result.name}`);
 	}
-	console.info("6 Workers storage regressions passed; no provider/database requests.");
+	console.info("8 Workers storage regressions passed; no provider/database requests.");
 } finally {
 	await mf.dispose();
 }

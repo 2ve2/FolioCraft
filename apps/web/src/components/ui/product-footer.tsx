@@ -41,6 +41,14 @@ export function ProductFooter({ locale }: { locale: Locale }) {
 							<ArrowUpRight size={16} aria-hidden="true" />
 						</Link>
 					</nav>
+					<nav className={styles.group} aria-label={ar ? "الوثائق القانونية" : "Legal"}>
+						<h2>{ar ? "قانوني" : "Legal"}</h2>
+						<Link href={`/privacy?lang=${locale}`}>{ar ? "الخصوصية" : "Privacy"}</Link>
+						<Link href={`/terms?lang=${locale}`}>{ar ? "شروط الاستخدام" : "Terms of use"}</Link>
+						<Link href={`/content-policy?lang=${locale}`}>
+							{ar ? "سياسة المحتوى" : "Content policy"}
+						</Link>
+					</nav>
 				</div>
 				<div className={styles.bottom}>
 					<span>

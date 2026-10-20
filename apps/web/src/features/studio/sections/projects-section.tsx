@@ -1,4 +1,4 @@
-import { collectAssetIds, type Project } from "@ichnara/contracts";
+import { collectAssetIds, newId, type Project } from "@ichnara/contracts";
 import { LayoutGrid, Plus, Trash2 } from "lucide-react";
 import { Field } from "../../../components/ui/field";
 import { TooltipButton } from "../../../components/ui/tooltip-button";
@@ -37,7 +37,7 @@ export function ProjectsSection({
 			projects: [
 				...draft.projects,
 				{
-					id: crypto.randomUUID(),
+					id: newId(),
 					title: "",
 					summary: "",
 					body: "",
