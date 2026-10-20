@@ -1,6 +1,6 @@
 import type { Draft, Locale } from "@ichnara/contracts";
 import { copy } from "../copy";
-import { safeHttpUrl } from "../format";
+import { ExternalLink } from "../external-link";
 import { LinkArrow } from "../link-arrow";
 import { DateRange, SectionHeading } from "../section-elements";
 
@@ -31,16 +31,12 @@ export function PortfolioEducation({
 								{item.description}
 							</p>
 						)}
-						{safeHttpUrl(item.verificationUrl) && (
-							<a
-								className="folio__arrow-link folio__project-link"
-								href={safeHttpUrl(item.verificationUrl)}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								{t.verify} <LinkArrow locale={locale} />
-							</a>
-						)}
+						<ExternalLink
+							className="folio__arrow-link folio__project-link"
+							href={item.verificationUrl}
+						>
+							{t.verify} <LinkArrow locale={locale} />
+						</ExternalLink>
 					</div>
 				))}
 			</div>

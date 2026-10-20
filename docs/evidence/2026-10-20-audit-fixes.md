@@ -41,3 +41,9 @@ Verification environment for every step: Bun 1.4.2; local PostgreSQL 16 cluster 
 - Problem: form fields removed the outline and showed only an ~8%-opacity shadow; the shared button/link/select focus colour `#a890e8` measured 2.69:1 on white, below the WCAG 2.2 3:1 non-text contrast minimum.
 - Change: `--focus-ring: #7c5cd6` in `styles/tokens.css` (4.82:1 on white, 4.45:1 on `#f7f5fb`); fields get a 2px `:focus-visible` outline, buttons/links/select trigger and focused options use the token. Mouse focus styling is unchanged.
 - Evidence (Chromium, local production build, `/login`): tabbing reports `outline: solid 2px rgb(124, 92, 214)` on the password field and `3px` on the submit button and links; screenshot reviewed.
+
+## 6. Owner-supplied outbound links
+
+- Problem: public portfolio links to owner-supplied URLs carried `noopener noreferrer` but not `ugc nofollow`, inviting link-spam signups on the platform domain. Audit correction: the audit also flagged `website` as bypassing `safeHttpUrl`; `portfolio.tsx` already sanitizes it before passing it down, so that part was defence-in-depth only.
+- Change: `packages/portfolio/src/external-link.tsx` renders every owner link (website, social links, project links, education verification) with HTTP(S)-only `href`, `target="_blank"` and `rel="ugc nofollow noopener noreferrer"`, returning nothing for unsafe targets. Five hand-written anchors replaced.
+- Tests: `apps/web/tests/portfolio-links.test.tsx` (all new-tab anchors carry the rel; `javascript:`/`data:` targets never render). Web 34 pass; guarded API 59 pass / 0 fail.
