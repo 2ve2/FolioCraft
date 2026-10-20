@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { idSchema } from "./ids";
+
+export { idSchema, newId } from "./ids";
 
 export const localeSchema = z.enum(["ar", "en"]);
 export const slugSchema = z
@@ -14,7 +17,7 @@ const link = z.union([
 		.max(2000)
 		.refine((value) => /^https?:\/\//.test(value)),
 ]);
-const assetId = z.uuid().nullable().optional();
+const assetId = idSchema.nullable().optional();
 
 /** Builds a bounded text schema without changing the supplied content. */
 const text = (max: number) => z.string().max(max);
@@ -77,7 +80,7 @@ export const profileSchema = z.object({
 		.optional(),
 });
 export const projectSchema = z.object({
-	id: z.uuid(),
+	id: idSchema,
 	title: title(120),
 	summary: text(700),
 	body: text(12000),
@@ -88,7 +91,7 @@ export const projectSchema = z.object({
 	slug: slugSchema.optional(),
 	coverAssetId: assetId,
 	galleryAssetIds: z
-		.array(z.uuid())
+		.array(idSchema)
 		.max(12)
 		.refine((ids) => new Set(ids).size === ids.length, "Duplicate gallery asset")
 		.optional(),
@@ -104,7 +107,7 @@ const range = <T extends { startDate: string; endDate: string | null }>(value: T
 
 export const experienceSchema = z
 	.object({
-		id: z.uuid(),
+		id: idSchema,
 		organization: title(160),
 		role: title(140),
 		startDate: date,
@@ -121,7 +124,7 @@ export const experienceSchema = z
 	);
 export const educationSchema = z
 	.object({
-		id: z.uuid(),
+		id: idSchema,
 		organization: title(160),
 		qualification: title(180),
 		startDate: date,
@@ -133,11 +136,11 @@ export const educationSchema = z
 	.strict()
 	.refine(range, "End date must not precede start date");
 export const skillSchema = z
-	.object({ id: z.uuid(), category: title(100), items: z.array(title(100)).min(1).max(50) })
+	.object({ id: idSchema, category: title(100), items: z.array(title(100)).min(1).max(50) })
 	.strict();
 export const articleSchema = z
 	.object({
-		id: z.uuid(),
+		id: idSchema,
 		slug: slugSchema,
 		title: title(180),
 		summary: text(700),

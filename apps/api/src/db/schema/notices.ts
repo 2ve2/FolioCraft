@@ -1,10 +1,11 @@
+import { newId } from "@ichnara/contracts";
 import { sql } from "drizzle-orm";
-import { boolean, check, index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, check, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 export const systemNotices = pgTable(
 	"system_notices",
 	{
-		id: uuid("id").primaryKey().defaultRandom(),
+		id: text("id").primaryKey().$defaultFn(newId),
 		kind: text("kind").$type<"info" | "maintenance" | "incident">().notNull(),
 		messageAr: text("message_ar").notNull(),
 		messageEn: text("message_en").notNull(),

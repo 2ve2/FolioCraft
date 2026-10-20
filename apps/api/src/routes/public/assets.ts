@@ -1,7 +1,7 @@
 import { slugSchema } from "@ichnara/contracts";
 import { Hono } from "hono";
 import { ApiError } from "../../lib/response-helpers";
-import { entityId as uuid } from "../../lib/validation";
+import { entityId } from "../../lib/validation";
 import { assetService } from "../../services/assets";
 
 export const publicAssetRoutes = new Hono();
@@ -12,5 +12,5 @@ publicAssetRoutes.get("/:slug/assets/:assetId", async (c) => {
 	if (!slug.success) throw new ApiError(404, "NOT_FOUND");
 	c.header("Cache-Control", "no-store");
 	c.header("Referrer-Policy", "no-referrer");
-	return c.redirect(await assetService.publicUrl(slug.data, uuid(c.req.param("assetId"))), 302);
+	return c.redirect(await assetService.publicUrl(slug.data, entityId(c.req.param("assetId"))), 302);
 });

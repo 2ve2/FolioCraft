@@ -1,7 +1,8 @@
 import { type DataRequest, dataRequestTransitions } from "@ichnara/contracts";
-import { and, asc, eq, gt, lte, sql } from "drizzle-orm";
+import { and, asc, eq, lte, sql } from "drizzle-orm";
 import { env } from "../../config/env";
 import { db } from "../../db";
+import { afterText, binaryText } from "../../db/keyset";
 import { user } from "../../db/schema/auth";
 import { dataRequests as requests } from "../../db/schema/data-requests";
 import { inquiries } from "../../db/schema/operations";
@@ -35,7 +36,7 @@ export const requestService = {
 			.from(requests)
 			.where(
 				and(
-					q.cursor ? gt(requests.id, q.cursor) : undefined,
+					q.cursor ? afterText(requests.id, q.cursor) : undefined,
 					q.status ? eq(requests.status, q.status) : undefined,
 					q.type ? eq(requests.type, q.type) : undefined,
 					q.overdue
@@ -46,7 +47,7 @@ export const requestService = {
 						: undefined,
 				),
 			)
-			.orderBy(asc(requests.id))
+			.orderBy(binaryText(requests.id))
 			.limit(q.limit + 1);
 		const items = rows.slice(0, q.limit).map(view);
 		return {

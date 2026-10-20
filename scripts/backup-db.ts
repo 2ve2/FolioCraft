@@ -1,6 +1,6 @@
 import { chmod, mkdir, open } from "node:fs/promises";
 import { resolve } from "node:path";
-import { emptyDraft } from "../packages/contracts/src";
+import { emptyDraft, newId } from "../packages/contracts/src";
 
 const verify = process.argv.includes("--verify-test");
 const database = verify
@@ -51,9 +51,9 @@ async function command(args: string[], override: Record<string, string> = {}) {
 		);
 	return { out, err };
 }
-const fixtureUser = crypto.randomUUID();
-const fixtureSite = crypto.randomUUID();
-const fixtureRelease = crypto.randomUUID();
+const fixtureUser = newId();
+const fixtureSite = newId();
+const fixtureRelease = newId();
 const fixture = emptyDraft("ar");
 fixture.profile.name = "اختبار الاستعادة";
 fixture.profile.role = "بيانات اختبار مؤقتة";
@@ -75,7 +75,7 @@ try {
    INSERT INTO sites(id,owner_id,slug,draft) VALUES (${literal(fixtureSite)},${literal(fixtureUser)},${literal(`restore-${fixtureSite}`)},${fixtureJson}::jsonb);
    INSERT INTO releases(id,site_id,revision,snapshot) VALUES (${literal(fixtureRelease)},${literal(fixtureSite)},0,${fixtureJson}::jsonb);
    UPDATE sites SET published_release_id=${literal(fixtureRelease)} WHERE id=${literal(fixtureSite)};
-   INSERT INTO admin_audit(actor_id,action,target_type,target_id,request_id,reason) VALUES (${literal(fixtureUser)},'site.suspend','site',${literal(fixtureSite)},'restore-fixture','Restore verification');
+   INSERT INTO admin_audit(id,actor_id,action,target_type,target_id,request_id,reason) VALUES (${literal(newId())},${literal(fixtureUser)},'site.suspend','site',${literal(fixtureSite)},'restore-fixture','Restore verification');
    UPDATE sites SET suspended=true,suspension_reason='Restore verification' WHERE id=${literal(fixtureSite)};
    COMMIT;`,
 		]);

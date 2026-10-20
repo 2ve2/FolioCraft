@@ -1,3 +1,4 @@
+import { idSchema } from "@ichnara/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { successResponse } from "../../lib/response-helpers";
@@ -17,7 +18,7 @@ adminSiteRoutes.get("/sites", requirePermission("site", "read"), async (c) => {
 			suspended: booleanQuery.optional(),
 			published: booleanQuery.optional(),
 			reported: booleanQuery.optional(),
-			cursor: z.uuid().optional(),
+			cursor: idSchema.optional(),
 			ownerId: z.string().min(1).max(128).optional(),
 		})
 		.parse(c.req.query());

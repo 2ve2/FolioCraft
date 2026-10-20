@@ -23,7 +23,8 @@ test("mail diagnostics correlate isolated server-generated IDs instead of caller
 	const ids = new Set<string>();
 	for (const response of responses) {
 		const { id } = (await response.json()) as { id: string };
-		expect(id).toMatch(/^[0-9a-f-]{36}$/);
+		// Server-generated cuid2, never the caller-supplied header.
+		expect(id).toMatch(/^[a-z][0-9a-z]{23}$/);
 		expect(response.headers.get("X-Request-Id")).toBe(id);
 		ids.add(id);
 	}

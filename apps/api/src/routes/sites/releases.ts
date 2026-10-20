@@ -1,4 +1,4 @@
-import { publishSchema } from "@ichnara/contracts";
+import { idSchema, publishSchema } from "@ichnara/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { successResponse } from "../../lib/response-helpers";
@@ -46,7 +46,7 @@ releaseRoutes.get("/:id/releases/:releaseId", async (c) =>
 /** Activates a retained release only if the expected public pointer still matches. */
 releaseRoutes.post("/:id/releases/:releaseId/activate", async (c) => {
 	const data = z
-		.object({ expectedReleaseId: z.uuid().nullable() })
+		.object({ expectedReleaseId: idSchema.nullable() })
 		.strict()
 		.parse(await c.req.json());
 	return successResponse(

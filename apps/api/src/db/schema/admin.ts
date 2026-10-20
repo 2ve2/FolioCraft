@@ -1,11 +1,12 @@
+import { newId } from "@ichnara/contracts";
 import { sql } from "drizzle-orm";
-import { check, index, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { check, index, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 
 export const adminAudit = pgTable(
 	"admin_audit",
 	{
-		id: uuid("id").primaryKey().defaultRandom(),
+		id: text("id").primaryKey().$defaultFn(newId),
 		actorId: text("actor_id").references(() => user.id, { onDelete: "set null" }),
 		action: text("action").notNull(),
 		targetType: text("target_type").notNull(),

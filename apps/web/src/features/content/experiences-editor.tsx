@@ -1,5 +1,5 @@
 "use client";
-import type { Experience } from "@ichnara/contracts";
+import { type Experience, newId } from "@ichnara/contracts";
 import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";
 import { Input } from "./input";
@@ -97,7 +97,7 @@ export function ExperiencesEditor({ draft, locale, update }: Omit<ContentEditorP
 						experiences: [
 							...(d.experiences ?? []),
 							{
-								id: crypto.randomUUID(),
+								id: newId(),
 								organization: "",
 								role: "",
 								startDate: "",

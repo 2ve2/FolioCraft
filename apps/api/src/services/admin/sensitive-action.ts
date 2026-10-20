@@ -1,3 +1,4 @@
+import { newId } from "@ichnara/contracts";
 import { isStaff, type Permission, permissionsFor } from "@ichnara/contracts/admin-policy";
 import { isAPIError } from "better-auth/api";
 import { eq } from "drizzle-orm";
@@ -99,7 +100,7 @@ export async function recordSensitiveDenial(
 				: "VALIDATION_ERROR";
 	await recordAdminAction(
 		db,
-		{ actorId, requestId: crypto.randomUUID(), status: "failed" },
+		{ actorId, requestId: newId(), status: "failed" },
 		"permission_denied",
 		action.startsWith("request.")
 			? "request"
@@ -225,7 +226,7 @@ export async function prepareSensitiveAction(
 	const token = await resolveSensitiveTarget(action, id, expectedUserId);
 	const audit: SensitiveAudit = {
 		actorId: actor.user.id,
-		requestId: crypto.randomUUID(),
+		requestId: newId(),
 		reason: data.reason,
 		action,
 		targetType: action.startsWith("request.")

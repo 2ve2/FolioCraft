@@ -1,5 +1,12 @@
 # Decision ledger
 
+## 2026-10-20 — cuid2 identifiers for all new records (human-confirmed)
+- Human-confirmed: use `@paralleldrive/cuid2` to generate ids. Supersedes the 2026-10-13 compatibility choice (I05) to keep UUID domain ids, which required a deliberate migration with preserved-data proof; that proof is recorded in `docs/evidence/2026-10-20-audit-fixes.md`.
+- Implemented: `packages/contracts/src/ids.ts` exports `newId()` (cuid2 3.3.0, 24 lowercase base-36 characters, lazily initialized so Workers never draws randomness at global scope) and `idSchema`. Better Auth record ids use `advanced.database.generateId`; session and verification tokens keep Better Auth's own generator. Domain rows, draft content items, assets and request/audit correlation ids use `newId()`.
+- Compatibility: migration `0008_cuid2_text_ids.sql` converts domain id/foreign-key columns from `uuid` to `text`, keeps every existing value verbatim, removes database UUID defaults and recreates the six spanning foreign keys with identical definitions. `idSchema` accepts both cuid2 and legacy UUIDs, so existing drafts and immutable release snapshots stay valid. Raw SQL inserts must now supply ids.
+- Keysets on text ids order byte-wise (`collate "C"`, `apps/api/src/db/keyset.ts`) so cursor order never depends on the database locale.
+- Rollback: reverting the code is safe while all stored ids are UUIDs; once cuid2 rows exist, converting columns back to `uuid` is impossible without remapping, so rollback means keeping text columns.
+
 ## 2026-10-20 — Explicit Resend HTTP transport with native awaited mail
 - Engineering choice within the human-authorized API repair: select MAIL_TRANSPORT=resend_http for the trial, retain default SMTP compatibility and reuse the existing server-only Resend key binding SMTP_PASSWORD. No SDK, extra key copy, automatic failover or retry. Fixed endpoint, bounded timeout and manual redirect rejection are proven in local workerd with a mock.
 - Installed Better Auth already awaits the reset callback without backgroundTasks.handler and suppresses callback failures; preserve its native anti-enumeration protocol. Missing waitUntil is not proven to explain the hosted symptom. Do not globally defer native work whose request database pool closes at response completion.

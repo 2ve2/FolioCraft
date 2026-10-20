@@ -1,6 +1,5 @@
 "use client";
-import type { Article } from "@ichnara/contracts";
-import { collectAssetIds } from "@ichnara/contracts";
+import { type Article, collectAssetIds, newId } from "@ichnara/contracts";
 import { AssetPicker } from "../assets/asset-picker";
 import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";
@@ -91,7 +90,7 @@ export function ArticlesEditor({ draft, locale, update, siteId }: ContentEditorP
 						articles: [
 							...(d.articles ?? []),
 							{
-								id: crypto.randomUUID(),
+								id: newId(),
 								title: "",
 								slug: "",
 								summary: "",

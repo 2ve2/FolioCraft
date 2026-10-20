@@ -1,3 +1,4 @@
+import { idSchema } from "@ichnara/contracts";
 import { Hono } from "hono";
 import { z } from "zod";
 import { successResponse } from "../../../../lib/response-helpers";
@@ -23,7 +24,7 @@ export function createCollectionRoutes(collection: ContentCollection, schema: z.
 				.refine(hasPatchFields, "Empty item patch"),
 		})
 		.strict();
-	const reorder = z.object({ revision: revisionSchema, ids: z.array(z.uuid()).max(100) }).strict();
+	const reorder = z.object({ revision: revisionSchema, ids: z.array(idSchema).max(100) }).strict();
 
 	/** Lists the caller-owned collection with its current optimistic revision. */
 	routes.get("/", async (c) =>

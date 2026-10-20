@@ -1,5 +1,5 @@
 "use client";
-import type { Education } from "@ichnara/contracts";
+import { type Education, newId } from "@ichnara/contracts";
 import { SelectControl } from "../../components/ui/select-control";
 import { CollectionActions } from "./collection-actions";
 import { labels } from "./copy";
@@ -95,7 +95,7 @@ export function EducationEditor({ draft, locale, update }: Omit<ContentEditorPro
 						education: [
 							...(d.education ?? []),
 							{
-								id: crypto.randomUUID(),
+								id: newId(),
 								organization: "",
 								qualification: "",
 								startDate: "",

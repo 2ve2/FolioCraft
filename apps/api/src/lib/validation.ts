@@ -1,9 +1,10 @@
+import { idSchema } from "@ichnara/contracts";
 import { z } from "zod";
 import { ApiError } from "./response-helpers";
 
-/** Validates a resource UUID and hides invalid identifiers behind the not-found contract. */
+/** Validates a resource identifier (cuid2 or legacy UUID) and hides invalid ones behind not-found. */
 export const entityId = (value: string) => {
-	const parsed = z.uuid().safeParse(value);
+	const parsed = idSchema.safeParse(value);
 	if (!parsed.success) throw new ApiError(404, "NOT_FOUND");
 	return parsed.data;
 };
