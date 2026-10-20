@@ -102,3 +102,9 @@ Verification environment for every step: Bun 1.4.2; local PostgreSQL 16 cluster 
 - Problem: Tailwind CSS (+ `@tailwindcss/postcss`) was imported but no utility class was used; `clsx`, `class-variance-authority` and `tailwind-merge` had zero imports. Tailwind also emitted a stray utilities layer from incidental source words (e.g. `.fixed`, `.hidden`), none used as a class name.
 - Change: the only behaviour Tailwind provided — its preflight reset — now lives in `apps/web/src/styles/reset.css`, copied from the compiled 4.3.3 output into the same `base` cascade layer (MIT attribution in the file; the `hidden`-attribute `!important` is intentional and documented). Removed the five packages and `postcss.config.mjs`.
 - Evidence: 22 full-page Chromium screenshots (11 routes incl. signed-in studio, Arabic/English portfolios, project detail, legal and 404 pages × 1280/390 px) are **pixel-identical** before and after (PIL difference bounding box empty for all). Main stylesheet chunk 61,523 → 58,445 bytes (13,077 → 12,386 gzip). Installed/audited packages 498 → 456; `bun audit` clean. Typecheck, Biome, web 34 tests and the OpenNext build pass.
+
+## 15. Generated `next-env.d.ts` no longer tracked
+
+- Problem: the tracked file was rewritten by every dev/build run (its imports switch between `.next-qa/dev/types` and `.next-qa/types`), leaving the tree dirty; earlier status notes repeatedly excluded it by hand.
+- Change (per the bundled Next 16 TypeScript docs): `next-env.d.ts` added to `.gitignore` and removed from Git; the web `typecheck` script runs `next typegen && tsc --noEmit`, which regenerates the file and route types first.
+- Evidence: with `next-env.d.ts`, `.next` and `.next-qa` removed, `bun run typecheck` regenerates the types and passes; a subsequent build leaves `git status` clean.

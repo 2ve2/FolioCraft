@@ -15,3 +15,4 @@ node_modules/
 docs/screenshots/
 work/
 *.tsbuildinfo
+next-env.d.ts
