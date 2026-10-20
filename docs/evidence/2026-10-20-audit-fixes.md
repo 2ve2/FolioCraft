@@ -75,3 +75,9 @@ Verification environment for every step: Bun 1.4.2; local PostgreSQL 16 cluster 
 - Change: `apps/api/src/lib/auth/mail-templates.ts` builds Arabic or English subject, text and HTML (`<html lang dir>`, accessible button, plain-link fallback, escaped account name). The language comes from the `lang` the web app already puts in the native link's `callbackURL`; anything else falls back to English. Sender is `Ichnara <MAIL_FROM>`. Link-origin validation, redaction, timeouts and native anti-enumeration behaviour are unchanged.
 - Tests: `apps/api/tests/mail-templates.test.ts` (locale detection incl. fallbacks; Arabic RTL/English LTR; no mixed language; HTML escaping). `test:worker-mail` 15/15 (sender assertion updated). Both templates rendered in Chromium and reviewed.
 - Not verified: real mailbox rendering in Gmail/Outlook and inbox placement (no provider access); the display name may improve recognition but deliverability still depends on the domain's SPF/DKIM/DMARC records.
+
+## 11. Release retention
+
+- Problem: every publish stored a full immutable snapshot (up to ~1 MB) with no limit, so storage grew without bound and could be exhausted deliberately.
+- Change: `RELEASE_RETENTION = 50` in `services/sites/release-service.ts`; after a new release becomes active, older releases beyond the newest 50 are deleted in the same transaction. Re-publishing an existing revision reuses its release and prunes nothing. Rollback to any of the 50 retained releases keeps working.
+- Test: `apps/api/tests/release-retention.integration.test.ts` (55 seeded + 1 published → exactly 50 kept; new release active; the six oldest removed; idempotent re-publish).

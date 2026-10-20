@@ -61,7 +61,7 @@ Private `Site`: `{id,slug,revision,publishedReleaseId,draft}`. Currently one sit
 | `GET /api/sites/:id/preview` | `Site` with the private draft |
 | `PATCH /api/sites/:id` | `{revision,slug?,locale?}`; at least one optional field required; returns `Site` |
 | `PUT /api/sites/:id/draft` | `{revision,draft}`; saves the full aggregate and returns `Site` |
-| `POST /api/sites/:id/releases` | `{revision}`; publishes and returns release `{id,revision}` |
+| `POST /api/sites/:id/releases` | `{revision}`; publishes and returns release `{id,revision}`. Each new release keeps only the newest 50 per site (`RELEASE_RETENTION`); the active release is always kept and re-publishing a revision reuses its release |
 | `GET /api/sites/:id/releases?limit=20&offset=0` | `{items,hasMore,limit,offset}`; each item `{id,revision,createdAt,active}` |
 | `GET /api/sites/:id/releases/:releaseId` | Private; `{id,revision,createdAt,snapshot}` |
 | `POST /api/sites/:id/releases/:releaseId/activate` | `{expectedReleaseId:ID|null}`; activates an owned release and returns `Site` |
