@@ -5,6 +5,8 @@ const config: NextConfig = {
 	distDir: process.env.FOLIO_QA_BUILD === "1" ? ".next-qa" : ".next",
 	transpilePackages: ["@ichnara/contracts", "@ichnara/portfolio"],
 	poweredByHeader: false,
+	// Two root layouts (platform and published portfolio) need one branded page for unmatched URLs.
+	experimental: { globalNotFound: true },
 	/** Applies the shared security policy to every route, including static and public pages. */
 	async headers() {
 		return [
