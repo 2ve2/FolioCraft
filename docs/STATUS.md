@@ -2,6 +2,18 @@
 
 Updated: 2026-10-20, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: Back below retry verified; reviewed-fix rollout in progress
+
+- Human supplied the held addition and renewed GitHub/Cloudflare deployment authorization. Shared loading/error actions now use a centered vertical flex layout: Back below Try again, with handlers and tab order preserved.
+- Fresh verification: typecheck exit0; Biome357 files; web31 pass/0 fail/636 assertions; local Workers storage6/6 without providers/database. Self-contained Cloudflare web build exit0 with configured custom-domain public URLs; both Wrangler dry runs exit0. API bundle contains AwsXmlParser and no DOMParser/browser parser. Chromium six layout cases (Arabic/English at320/732/1280) pass with no overflow or runtime exceptions. Initial helper returned a DOM object instead of a boolean and timed out; corrected boolean assertion passed all cases.
+- Active work: synchronize/commit/upload the CSS addition, then API and web test-domain rollout with active-secret/readiness/HTTP gates and previous versions available for rollback. No migrations, R2/account/role/Neon data changes or secret rotation. Human browser sign-in/cookies/MFA/upload acceptance remains pending. Evidence: work/rollout-reviewed-fixes.
+
+## Latest: reviewed fixes uploaded; deployment held for human addition
+
+- Human authorized uploading/running the reviewed fixes. Ordinary GitHub push completed3947843→b79f315, including2ee3720/e58d9e9/b79f315; ls-remote independently matched b79f315422077a2820e8da424cf7ee0f518dbb7e. Generated next-env.d.ts and ADMIN_CONSOLE_TASK.md remained excluded.
+- Fresh read-only preflight confirms correct custom domains, active API3dfccf47-81fa-4e3c-9325-f6a8cf488152 with REPORT_IP_SALT present and active web763b124e-9a6d-4649-b20c-c58243c69a1e; both rollback versions exist. Fresh typecheck/Biome/web tests passed; a self-contained current-source/dependency copy was prepared under work/rollout-reviewed-fixes. No new web build/dry run/deployment has been executed in this resumed rollout yet. No real-secret/provider/data/role/migration operation.
+- Human interrupted before either new Worker deployment and stated there is an addition. Active work: HOLD deployment pending that addition; next action: receive the human's requested change before resuming preparation. GitHub source upload is complete, but the running site has NOT received these three fixes. No new Worker version ID or hosted acceptance is claimed. This pause checkpoint is local documentation pending incorporation into the next authorized work step.
+
 ## Latest: confirmed dirty-logout review issue fixed locally
 
 - Human requested fixing the review finding and appropriate verification. Change is only in use-studio-controller: after native signOut succeeds, clear dirty.current before full navigation, without accepting an empty site or exposing onboarding. Cancellation/failed sign-out keep the flag, draft and unload protection. The previous two local commits2ee3720/e58d9e9 remain the base; no other review defect was confirmed.
