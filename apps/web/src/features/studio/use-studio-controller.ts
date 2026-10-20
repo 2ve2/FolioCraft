@@ -416,6 +416,8 @@ export function useStudioController() {
 			const result = await authClient.signOut();
 			if (result.error) throw new Error("Signout failed");
 			recoveries.current.delete(workspaceOwner.current);
+			// Commit the confirmed discard only after sign-out succeeds, before full navigation.
+			dirty.current = false;
 			// Do not expose an empty workspace while the session store still contains the old user.
 			window.location.replace(`/login?lang=${locale}`);
 		} catch {
