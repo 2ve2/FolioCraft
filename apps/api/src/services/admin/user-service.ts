@@ -1,6 +1,7 @@
 import { isAPIError } from "better-auth/api";
-import { and, asc, eq, gt, ilike, sql } from "drizzle-orm";
+import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "../../db";
+import { afterText, binaryText } from "../../db/keyset";
 import { user } from "../../db/schema/auth";
 import { sites } from "../../db/schema/site";
 import { auth } from "../../lib/auth";
@@ -123,7 +124,7 @@ export const adminUserService = {
 			.from(user)
 			.where(
 				and(
-					query.cursor ? gt(user.id, query.cursor) : undefined,
+					query.cursor ? afterText(user.id, query.cursor) : undefined,
 					query.search
 						? ilike(user.name, `%${query.search.replace(/[\\%_]/g, "\\$&")}%`)
 						: undefined,
@@ -136,7 +137,7 @@ export const adminUserService = {
 					query.verified === undefined ? undefined : eq(user.emailVerified, query.verified),
 				),
 			)
-			.orderBy(asc(user.id))
+			.orderBy(binaryText(user.id))
 			.limit(query.limit + 1);
 		const items = rows
 			.slice(0, query.limit)
