@@ -54,3 +54,9 @@ Verification environment for every step: Bun 1.4.2; local PostgreSQL 16 cluster 
 - Change: pages call `releaseUnavailable()`, which throws during render; `(portfolio)/p/[slug]/error.tsx` shows the same bilingual message plus a retry button. A release switch between the site and detail reads is treated the same way.
 - Evidence (local production build, API stopped): `/p/<slug>` and `/p/<slug>/projects/<id>` return **500** with `<meta name="robots" content="noindex">`, and Chromium renders the bilingual message; with the API running the same URL returns 200.
 - Limit: Next.js page rendering cannot choose 503 specifically; 500 is the achievable server-error status without an extra proxy layer. The audit's "503" recommendation is therefore met as "5xx + noindex".
+
+## 8. CI builds what is deployed
+
+- Problem: CI ran `next build` (Turbopack) while deployment uses OpenNext with webpack, and never ran the Workers-runtime regressions, the API Worker bundle or `bun audit`; `actions/checkout@v4` triggered the Node 20 deprecation warning.
+- Change (`.github/workflows/check.yml`): new `workers` job (`test:worker-storage`, `test:worker-mail`, API `wrangler deploy --dry-run`, `build:cloudflare`); `bun audit` in `validate`; `actions/checkout@v5`; read-only `permissions`; `concurrency` cancels superseded runs. Integration job unchanged (PostgreSQL 18 service).
+- Local evidence for every new step: audit clean (498 packages); storage 6/6; mail 15/15; API dry-run 4644 KiB / 827 KiB gzip; OpenNext build exit 0 with default (unset) public URLs. Remote GitHub Actions execution of the new job is not yet observed (push access pending).

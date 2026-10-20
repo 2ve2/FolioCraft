@@ -1,18 +1,49 @@
 name: Checks
 on: [push, pull_request]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.2
       - run: bun install --frozen-lockfile
+      - run: bun audit
       - run: bun run typecheck
       - run: bun run check
       - run: bun run test:web
       - run: bun run build
+
+  # Builds and exercises the exact Workers bundles that are deployed (OpenNext uses webpack,
+  # the API uses its Wrangler aliases), which the Bun/Next checks above do not cover.
+  workers:
+    runs-on: ubuntu-latest
+    env:
+      WRANGLER_SEND_METRICS: "false"
+      WRANGLER_WRITE_LOGS: "false"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+      - run: bun run test:worker-storage
+      - run: bun run test:worker-mail
+      - name: API Worker bundle (dry run, no deployment)
+        working-directory: apps/api
+        run: bunx wrangler deploy --dry-run --outdir ../../work/ci-api-dry-run
+      - name: Web Worker build (OpenNext)
+        run: bun run --cwd apps/web build:cloudflare
+
   integration:
     runs-on: ubuntu-latest
     services:
@@ -36,7 +67,7 @@ jobs:
       NODE_ENV: test
       TEST_DATABASE_URL: postgresql://folio:local-ci-only@localhost:5432/folio_test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.2
