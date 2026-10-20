@@ -3,6 +3,7 @@ import { afterAll, expect, spyOn, test } from "bun:test";
 import { and, eq, inArray } from "drizzle-orm";
 import { env, envSchema } from "../src/config/env";
 import { db, withRequestDatabase } from "../src/db";
+import journal from "../src/db/migrations/meta/_journal.json";
 import { adminAudit } from "../src/db/schema/admin";
 import { assets } from "../src/db/schema/asset";
 import { user } from "../src/db/schema/auth";
@@ -371,7 +372,7 @@ test("system flags disclose no settings and upload counters are observed schema 
 	expect(state.expiredPendingUploads).toBe(baseline.expiredPendingUploads + 1);
 	expect(state.stuckDeletingUploads).toBe(baseline.stuckDeletingUploads + 1);
 	expect(state.failedUploadEvents).toBeNull();
-	expect(state.migrationCount).toBe(9);
+	expect(state.migrationCount).toBe(journal.entries.length);
 	for (const value of Object.values(state.configuration as Record<string, unknown>))
 		expect(typeof value).toBe("boolean");
 	const serialized = JSON.stringify(state);

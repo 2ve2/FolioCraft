@@ -201,6 +201,14 @@ Structured request logs include request ID, method, status, and duration without
 Pending general-launch requirements: SMTP/sender domain and disabling the trial verification exception; live hosted R2 upload/decoder/rendering acceptance; comprehensive cookie, device and admin checks; multi-instance load/rate-limit measurement; monitoring/alerts and provider backup/restore; scheduled cleanup. Trial API/web HTTPS hosting and exact R2 trial CORS are configured, with the limited proof in CLOUDFLARE and STATUS. Environment or Docker configuration alone does not satisfy these conditions. This guide authorizes neither service purchases nor production deployment.
 
 
+## Scheduled maintenance — 2026-10-20
+
+`services/maintenance.ts` runs bounded, idempotent housekeeping: rate buckets and Better Auth rate-limit rows idle for over a day, sessions and verification rows expired for over a day, uploads still `pending`/`deleting` an hour after their signed URL expired (marked `deleted`, objects queued), and the `storage_deletions` queue (up to 20 prefixes, 100 keys per prefix and 500 deletions per run; a prefix leaves the queue once it lists empty, provider failures increment `attempts` and retry next run). Queue prefixes are constrained by a CHECK to `staging/<id>/…` or `verified/<id>/…`, so the whole bucket can never be targeted.
+
+- Workers: the API Worker's `scheduled` handler runs it daily from `[triggers] crons = ["17 3 * * *"]` (03:17 UTC) and logs `maintenance_completed` or `maintenance_failed`. The trigger takes effect on the next authorized API deployment.
+- Local/manual: `bun run --cwd apps/api maintenance` against the configured `DATABASE_URL`.
+- Without R2 configuration the database jobs still run and the queue is kept (`"storage":"disabled"`).
+
 ## Administrative operations and limits — P1 (2026-10-18)
 
 No seeded owner or public bootstrap endpoint exists. Legacy admin is not an alias for owner, and P1 does not alter any existing account role. A first-owner/conversion operation needs a separately authorized exact account and reviewed role-field change. Do not infer a CLI command from newer Better Auth documentation; do not perform that change merely to regain access after this rollout.
@@ -280,7 +288,7 @@ Verification uses only disposable local folio_test identities through the root t
 
 ADMIN_PASSWORD_MAX_FAILURES=5, ADMIN_PASSWORD_WINDOW_SECONDS=900 and ADMIN_PASSWORD_BLOCK_SECONDS=900 configure a dedicated operator-wide native-password failure window/block. Bounds: failures1–100; durations1–86400 seconds. The threshold starts a full block; correct-password retries remain blocked until expiry, do not extend it and do not erase earlier failures. Invalid request shapes are validation failures, not password guesses. HTTP private-write remains120/60; native password verification never consumes that separate allowance. General anonymous denial logging remains deferred as explained in ADMIN_CONSOLE16. Never automatically repeat an indeterminate destructive operation; reconcile the durable attempt and actual target state first.
 
-Account removal uses native Better Auth and database cascades, including sites/releases/inquiries/assets and (after P3) reports. It does not delete staging or verified R2 objects. Historical audit target IDs remain; actor FK deletion may set actor_id null. No complete-erasure, R2 cleanup job or retention completion claim follows.
+Account removal uses native Better Auth and database cascades, including sites/releases/inquiries/assets and (after P3) reports. Since 2026-10-20 the removal also queues the removed sites' `staging/<siteId>/` and `verified/<siteId>/` R2 prefixes in `storage_deletions`; scheduled maintenance deletes them (see "Scheduled maintenance"). Historical audit target IDs remain; actor FK deletion may set actor_id null. No complete-erasure, R2 cleanup job or retention completion claim follows.
 
 Before any separately authorized production rollout of reports, configure a random server-only REPORT_IP_SALT of at least32 characters (prefer32 random bytes encoded as hex), consistently across API instances; never add it to frontend variables or source. Production startup rejects its absence; local report intake returns REPORTING_UNAVAILABLE without it. The empty .env.example entry is intentional. The generated migration0005_parallel_ultimates.sql has been applied only on isolated local folio_test through bun run test, not to production. Review its full SQL and arrange separate production authorization before applying it elsewhere.
 

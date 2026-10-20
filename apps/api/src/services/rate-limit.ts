@@ -18,9 +18,10 @@ export const rateLimitService = {
 	},
 
 	/** Removes buckets that expired more than a day ago without affecting active windows. */
-	async cleanup() {
-		await db.execute(
+	async cleanup(): Promise<number> {
+		const result = await db.execute(
 			sql`delete from rate_buckets where expires_at < clock_timestamp() - interval '1 day'`,
 		);
+		return result.rowCount ?? 0;
 	},
 };

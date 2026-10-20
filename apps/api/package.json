@@ -11,6 +11,7 @@
 		"typecheck": "tsc --noEmit",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "bun src/db/migrate.ts",
+		"maintenance": "bun src/maintenance.ts",
 		"test": "bun test tests",
 		"db:backup": "bun ../../scripts/backup-db.ts",
 		"db:verify-restore": "bun ../../scripts/backup-db.ts --verify-test",

@@ -14,6 +14,10 @@ workers_dev = true
 [images]
 binding = "IMAGES"
 
+# Daily housekeeping (services/maintenance.ts): expired auth/rate rows, abandoned uploads, queued R2 deletions.
+[triggers]
+crons = ["17 3 * * *"]
+
 # Prepared custom-domain values only; no routes/domains have been provisioned.
 # Worker names/bindings remain unchanged. See docs/CLOUDFLARE.md before deployment.
 [vars]

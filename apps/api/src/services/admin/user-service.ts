@@ -6,6 +6,7 @@ import { user } from "../../db/schema/auth";
 import { sites } from "../../db/schema/site";
 import { auth } from "../../lib/auth";
 import { ApiError } from "../../lib/response-helpers";
+import { enqueueStorageDeletion, sitePrefixes } from "../maintenance";
 import {
 	appendSensitiveOutcome,
 	banSchema,
@@ -14,6 +15,21 @@ import {
 	sensitiveSchema,
 	translateSensitiveError,
 } from "./sensitive-action";
+
+/** Queues a removed account's objects; the account is already gone, so failure is logged, not raised. */
+async function queueRemovedAccountStorage(siteIds: string[]) {
+	try {
+		await enqueueStorageDeletion(db, sitePrefixes(siteIds), "account_removed");
+	} catch (error) {
+		console.error(
+			JSON.stringify({
+				event: "storage_cleanup_enqueue_failed",
+				sites: siteIds.length,
+				name: error instanceof Error ? error.name : "unknown",
+			}),
+		);
+	}
+}
 
 /** Projects only approved identity fields; native rows never reach the administration client. */
 function accountView(user: {
@@ -82,9 +98,16 @@ export const adminUserService = {
 			operation === "ban" ? banSchema : operation === "remove" ? removeSchema : sensitiveSchema
 		).parse(input);
 		const body = { ...data, userId: id };
+		// Database rows cascade on removal; their private R2 objects are queued afterwards.
+		const ownedSites =
+			operation === "remove"
+				? await db.select({ id: sites.id }).from(sites).where(eq(sites.ownerId, id))
+				: [];
 		try {
-			if (operation === "remove") await auth.api.removeUser({ headers, body });
-			else if (operation === "ban") await auth.api.banUser({ headers, body });
+			if (operation === "remove") {
+				await auth.api.removeUser({ headers, body });
+				await queueRemovedAccountStorage(ownedSites.map((site) => site.id));
+			} else if (operation === "ban") await auth.api.banUser({ headers, body });
 			else if (operation === "unban") await auth.api.unbanUser({ headers, body });
 			else if (operation === "revoke-sessions")
 				await auth.api.revokeUserSessions({ headers, body });
