@@ -144,3 +144,11 @@ Supersedes only the prior active-version checkpoint. Human authorized source upl
 - Web: `95c3b7d0-9590-4f8b-8cc8-78ed8c778f9d`, deployment `715ff4f1-5f55-4c83-8767-6d87a3ba730a`,100%. Home/login/robots/sitemap200 valid. Additional21/21 HTTP/domain acceptance checks pass; final active versions and secret name verified.
 - Rollback references: API `3dfccf47-81fa-4e3c-9325-f6a8cf488152`, web `763b124e-9a6d-4649-b20c-c58243c69a1e`; both existed immediately before rollout. No rollback needed. Evidence: ignored work/rollout-reviewed-fixes.
 - No migration, R2 operation, direct Neon/data/account/role change or DNS change. Human browser sign-in/session-cookie/MFA/upload acceptance remains pending. Public HTTP/configuration readiness does not prove those flows.
+
+## Recovery feedback web update — 2026-10-20
+
+Human requested using the existing login message placement/spacing without new numeric styling. Source5eef9c8 moves the recovery request alert into fieldset before submit; no CSS/config/protocol change. Fresh build/dry run/preflight passed.
+
+- Web `82572492-b169-427f-97eb-43cb96eefbcb`, deployment `4b5195ed-7191-45fc-8a9d-c993a365bd1f`,100%; previous `95c3b7d0-9590-4f8b-8cc8-78ed8c778f9d` retained for rollback, none needed. Eight startup/page checks200. Hosted Arabic recovery alert visually/computationally matches the login baseline after deployment.
+- API remains `00b403f4-6600-4b33-bd2e-71477bb1fd8c`,100%, active REPORT_IP_SALT present by name; no API deployment/rotation.
+- Evidence: work/recovery-feedback-fix. SMTP still unconfigured; presentation proof is not delivery acceptance. Earlier comprehensive audit and remaining browser/staff limits are in ROUTE_AUDIT_2026-10-20. No production migrations, real-user/role changes or R2 operations in this UI repair.

@@ -63,3 +63,6 @@ Both locale variants are listed below as HTTP status checks. Private200 response
 
 ## Evidence
 Ignored work/full-route-audit contains source inventory, raw HTTP sweep and explicit classification, initial/corrected authenticated results, live-image results, final public/CORS checks, and local gate logs. Helpers use memory-only credentials and scrubbed metadata. The report summarizes actual results; no complete or100% security/browser guarantee follows.
+
+## Subsequent repair checkpoint
+Human requested matching login feedback without invented values. Confirmed finding1 was fixed in5eef9c8 by moving the request alert into fieldset before submit. No CSS numeric additions.12/12 local bilingual comparisons at verified320/390/1280 match existing login styling; typecheck/Biome357/web31 tests636 assertions/QA and Cloudflare builds/dry run pass. Trial web now `82572492-b169-427f-97eb-43cb96eefbcb` at100%, eight startup URLs200 and actual hosted Arabic error placement/style verified. API remains unchanged. SMTP dependency and the other audit limitations/test-data footprint remain open; this checkpoint supersedes only the finding1 presentation status. Later corrected selected-tab measurements also reproduced the original0px separation at actual320/390/768/1280, without overflow.
