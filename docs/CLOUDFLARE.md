@@ -135,3 +135,12 @@ Human explicitly authorized this test-domain deployment. Fresh read-only preflig
 - **Not performed:** human browser sign-in/session-cookie persistence/MFA/upload acceptance, mail delivery, R2 CORS verification/change, www redirect verification/change, role/account changes or phase C. Earlier NOT PERFORMED checklist entries describe preparation-time status; this checkpoint supersedes only the explicitly verified rollout/HTTP items. Keep all remaining external acceptance boundaries open.
 
 Sanitized actual evidence is in ignored work/phase-b-deployment (preflight.json, api-result.json, web-result.json, http-results.json, final-versions.json); STATUS records exact scope and counts. No secret value was printed, written to a regular file or included in arguments. The ready flag and HTTP probes do not establish comprehensive production readiness.
+
+## Reviewed-fix rollout — 2026-10-20
+
+Supersedes only the prior active-version checkpoint. Human authorized source upload and test-domain rollout including Back below Try again. GitHub implementation head0ba115a. Fresh self-contained build (25/25 static pages and dynamic routes), both public origins,390-file source/config/lock equality, both dry runs and focused checks passed. API emitted non-DOM AwsXmlParser.
+
+- API: `00b403f4-6600-4b33-bd2e-71477bb1fd8c`, deployment `ca048f50-9246-45f2-a447-cf40641aac3e`,100%. Uploaded inactive with Wrangler versions upload; existing secret_text names and exact origins checked before activation. Active REPORT_IP_SALT verified by name; no rotation/value exposure. Health/ready200 true.
+- Web: `95c3b7d0-9590-4f8b-8cc8-78ed8c778f9d`, deployment `715ff4f1-5f55-4c83-8767-6d87a3ba730a`,100%. Home/login/robots/sitemap200 valid. Additional21/21 HTTP/domain acceptance checks pass; final active versions and secret name verified.
+- Rollback references: API `3dfccf47-81fa-4e3c-9325-f6a8cf488152`, web `763b124e-9a6d-4649-b20c-c58243c69a1e`; both existed immediately before rollout. No rollback needed. Evidence: ignored work/rollout-reviewed-fixes.
+- No migration, R2 operation, direct Neon/data/account/role change or DNS change. Human browser sign-in/session-cookie/MFA/upload acceptance remains pending. Public HTTP/configuration readiness does not prove those flows.
