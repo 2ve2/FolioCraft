@@ -2,6 +2,12 @@
 
 Updated: 2026-10-20, Asia/Riyadh. Detailed previous checkpoints are preserved in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md). Read this summary first; historical evidence is not a new acceptance claim.
 
+## Latest: recovery feedback matches login locally; trial web rollout pending
+
+- Human requests using existing login feedback placement/spacing with no invented values. Recovery request error now lives inside fieldset before submit exactly as AuthScreen. No new CSS/numeric/token/copy/protocol change.
+-12/12 actual-width local browser comparisons pass: login/recovery x Arabic/English x320/390/1280. Same computed type/color/line-height/padding/margin/submit gap; no overflow or console warnings/errors. Synthetic HTTP fixture only, no external accounts/providers. Fresh typecheck0/Biome357/web31 tests636 assertions; QA and custom-domain Cloudflare builds0.390 runtime/config/lock files byte-match canonical source.
+- Active work: fresh read-only preflight/dry run, independent source/docs commit and push, then previously authorized trial-web-only deploy with95c3b7d0-9590-4f8b-8cc8-78ed8c778f9d rollback and actual hosted checks. API unchanged. Mail delivery remains unavailable; spacing repair does not configure SMTP. Full-route audit and remaining acceptance limits are recorded below and in ROUTE_AUDIT_2026-10-20.
+
 ## Latest: full-route audit complete within recorded limits; recovery feedback fix in progress
 
 - Human authorized synthetic accounts and one retained synthetic R2 image. Source-defined28 web routes/99 domain pairs/53 native-auth definitions inventoried.212 deployed anonymous probes:209 initial matches,1 expected405,2 unavailable-mail503; no500/transport failure. Authenticated continuation80/80, live image24/24, final CORS/public/domain21/21. Initial API fixture51 passes then400 PROFILE_REQUIRED (missing role), correct validation; corrected continuation passes. See [route audit](ROUTE_AUDIT_2026-10-20.md) for coverage and raw-evidence boundaries.

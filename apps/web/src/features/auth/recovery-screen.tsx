@@ -84,6 +84,11 @@ export function RecoveryScreen({ mode }: { mode: RecoveryMode }) {
 										<input name="email" type="email" dir="ltr" autoComplete="email" required />
 									</Field>
 								)}
+								{error && (
+									<p className="error-box" role="alert">
+										{error}
+									</p>
+								)}
 								<button type="submit" className="primary wide" disabled={busy}>
 									<ButtonContent loading={busy}>
 										{mode === "reset" ? t.reset : t.send}
@@ -91,11 +96,6 @@ export function RecoveryScreen({ mode }: { mode: RecoveryMode }) {
 								</button>
 							</fieldset>
 						</form>
-					)}
-					{error && (
-						<p className="error-box" role="alert">
-							{error}
-						</p>
 					)}
 					{success && <p role="status">{mode === "reset" ? t.resetDone : t.accepted}</p>}
 					{mode === "reset" && (
