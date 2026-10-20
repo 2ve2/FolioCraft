@@ -2,6 +2,7 @@ import { APIError } from "better-auth/api";
 import nodemailer from "nodemailer";
 import { env, mailConfigured } from "../../config/env";
 import { mailRequestId } from "./mail-context";
+import { type AuthMailKind, authMailContent, mailLocale } from "./mail-templates";
 import { MailTransportError, sendResendMail } from "./resend";
 
 const transport =
@@ -20,30 +21,14 @@ const transport =
 			})
 		: undefined;
 
-/** Escapes user-facing labels before embedding them in an authentication email. */
-const escapeHtml = (s: string) =>
-	s.replace(
-		/[&<>"']/g,
-		(c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] ?? c,
-	);
-
 /** Sends a native authentication link through the configured transport after validating its origin. */
-export async function sendAuthMail(
-	to: string,
-	name: string,
-	url: string,
-	kind: "verify" | "reset",
-) {
+export async function sendAuthMail(to: string, name: string, url: string, kind: AuthMailKind) {
 	if (!mailConfigured)
 		throw new APIError("SERVICE_UNAVAILABLE", {
 			code: "MAIL_UNAVAILABLE",
 			message: "Email delivery is not configured",
 		});
 	const requestId = mailRequestId();
-	const action =
-		kind === "verify"
-			? "Verify your email / تأكيد البريد الإلكتروني"
-			: "Reset your password / إعادة تعيين كلمة المرور";
 	try {
 		let link: URL;
 		try {
@@ -54,11 +39,10 @@ export async function sendAuthMail(
 		if (link.origin !== new URL(env.API_URL).origin || !["http:", "https:"].includes(link.protocol))
 			throw new MailTransportError("INVALID_LINK");
 		const payload = {
-			from: env.MAIL_FROM as string,
+			// Display name keeps the sender recognisable; the address is the validated MAIL_FROM.
+			from: `Ichnara <${env.MAIL_FROM as string}>`,
 			to,
-			subject: `Ichnara — ${action}`,
-			text: `${name}\n\n${action}\n${url}\n\nIf you did not request this, ignore this message.\nإذا لم تطلب ذلك، تجاهل هذه الرسالة.`,
-			html: `<p>${escapeHtml(name)}</p><p>${escapeHtml(action)}</p><p><a href="${escapeHtml(url)}">${escapeHtml(action)}</a></p><p>If you did not request this, ignore this message.<br>إذا لم تطلب ذلك، تجاهل هذه الرسالة.</p>`,
+			...authMailContent(kind, mailLocale(url), name, url),
 		};
 		console.info(
 			JSON.stringify({
