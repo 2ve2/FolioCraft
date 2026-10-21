@@ -12,6 +12,7 @@ The runner validates local folio_test before imports/migrations, supplies only e
 
 - Root package.json/bun.lock: exact maintained @playwright/test1.64.1, test:e2e and E2E typecheck in the root typecheck gate.
 - scripts/test-e2e.ts: guarded local orchestration, isolated build and owned-service teardown.
+- apps/api/tests/fixtures/e2e-account.ts and its one-line e2e/seed.ts bridge keep Drizzle inside the API workspace.
 - e2e/playwright.config.ts, tsconfig.json, fixtures.ts, seed.ts: Chromium, unique disposable identities, scoped verified deletion, real protocol helpers, network gate, no retries and failure artifacts.
 - e2e/routing.spec.ts, journeys.spec.ts, language.spec.ts, guards.spec.ts, language.ts:43 checks and explicit notation/user-content exceptions.
 - .github/workflows/check.yml: isolated PostgreSQL18 job, Node22/Bun1.4.2, matching Chromium, ten-minute timeout and seven-day failure HTML/screenshot/trace artifacts.
@@ -77,7 +78,29 @@ The12 root conditional skips already exist on main;11 MFA cases execute in the e
 
 ## Remote acceptance
 
-Pending branch push/PR creation and actual Actions result at this checkpoint. Do not infer remote success from local passes.
+[PR#4](https://github.com/2ve2/FolioCraft/pull/4) is open, unmerged. Initial [run39622808488](https://github.com/2ve2/FolioCraft/actions/runs/39622808488) on bcff8ba exposed actual clean-install harness defects:
+
+```text
+validate: error TS2688: Cannot find type definition file for 'node'.
+e2e: Cannot find package 'drizzle-orm' from e2e/seed.ts
+```
+
+The E2E failure occurred after a successful production Next build, before browser tests. Workers succeeded and integration's test step succeeded. The artifact-upload step ran successfully but no Playwright report existed yet. These are not claimed to be pre-existing failures on main. The old local node_modules had extra hoisted packages. Correction: put the helper in apps/api/tests/fixtures/e2e-account.ts, keep a one-line root bridge, use declared Bun types (matching API type configuration), and reference the contracts type via its source entry. No new dependency or product change.
+
+A completely new source copy under work/e2e-clean, with no node_modules or environment files, installed398 packages from the frozen lockfile. Both application typechecks and E2E typecheck passed. The final clean source then passed all eleven gates, including API integration on a second fresh loopback folio_test at port55433, separate from E2E at55432. API:66 pass/12 unchanged conditional skips/0 fail/5143 assertions; enforced MFA child11/0/308. Biome403 files, web37/0/685, storage8/8, mail15/15, Next49/49, OpenNext and API dry run exit0; audit reported no vulnerabilities. Fourteen implementation/configuration files were compared by SHA256 and all match this checkout. No gate failed in this clean repetition.
+
+The final clean suite passed three consecutive complete production-build invocations:
+
+```text
+bun run --cwd work/e2e-clean test:e2e
+43 passed (26.9s)
+bun run --cwd work/e2e-clean test:e2e
+43 passed (30.6s)
+bun run --cwd work/e2e-clean test:e2e
+43 passed (28.5s)
+```
+
+The eleven gate commands above were repeated from the clean checkout (API TEST_DATABASE_URL used loopback port55433); exact raw output is in ignored work/e2e-evidence/clean-gate-*.log. Corrective remote acceptance remains pending at this checkpoint.
 
 ## Human commands and unverified limits
 

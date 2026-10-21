@@ -1,7 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
-import type { Site } from "@ichnara/contracts";
 import { type APIRequestContext, test as base, expect, type Page } from "@playwright/test";
+import type { Site } from "../packages/contracts/src";
 
 export const apiURL = "http://127.0.0.1:4400";
 export const webURL = "http://127.0.0.1:4300";

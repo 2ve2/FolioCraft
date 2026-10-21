@@ -1,5 +1,14 @@
 # Action log
 
+## 2026-10-21 — Clean-install harness correction completed locally
+- Moved the native account/budget fixture to apps/api/tests/fixtures/e2e-account.ts; e2e/seed.ts is a bridge. E2E uses declared Bun types and a source-entry type-only contracts import. No additional dependency or runtime change.
+- Clean source-only copy installed398 packages with the frozen lockfile. Typechecks and all eleven gates passed; Biome403 files, web37/0/685, API66/12 conditional skips/0/5143 with MFA11/0/308, storage8/8, mail15/15, Next49/49/OpenNext/API dry run exit0. API ran on a second isolated local folio_test:55433 to avoid touching browser tests on55432.
+- Clean E2E43/43 passed three times (26.9s,30.6s,28.5s). Fourteen tested source/config files are byte-identical to the commit checkout. Corrective push and actual green CI remain the next action; initial remote failures are retained honestly in the dated evidence.
+
+## 2026-10-21 — Clean-install CI correction (scope and diagnosis)
+- PR#4 initial run39622808488 failed: validate could not find root node type definitions; E2E built Next but could not resolve drizzle-orm from the root seed helper. Fresh checkout dependencies differ from the pre-existing local dependency directory; these are new harness defects, not labelled pre-existing product failures.
+- Move the database helper into its declaring API workspace with a one-line root bridge, use the declared Bun typings and relative type-only contracts import, and reproduce all gates on a freshly installed source-only copy. No product/security/provider change and no additional dependency. Clean frozen install and both app/E2E typechecks already pass; clean E2E first run43/43. Remaining repeatability/gates and rerun CI are active.
+
 ## 2026-10-21 — Browser CI job prepared
 - Added a separate e2e job with PostgreSQL18, pinned Bun1.4.2 and Node22, matching Chromium installation, ten-minute timeout and failure-only seven-day HTML/trace/screenshot artifacts. The existing validate/workers/integration jobs remain intact.
 - The same locally verified source tree passed all eleven required gates before this commit; no application code changed. Actual remote acceptance is pending push/PR creation and will be recorded separately.
