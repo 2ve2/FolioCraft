@@ -74,6 +74,7 @@
     },
   },
   "patchedDependencies": {
+    "pg-cloudflare@1.4.1": "patches/pg-cloudflare@1.4.1.patch",
     "@opennextjs/cloudflare@1.20.11": "patches/@opennextjs%2Fcloudflare@1.20.11.patch",
   },
   "overrides": {

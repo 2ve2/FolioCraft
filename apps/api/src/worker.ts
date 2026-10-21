@@ -38,7 +38,7 @@ export default {
 					);
 					throw error;
 				}
-			}),
+			}, "scheduled"),
 		);
 	},
 };

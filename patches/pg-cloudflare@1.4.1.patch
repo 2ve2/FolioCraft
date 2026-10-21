@@ -1,0 +1,30 @@
+diff --git a/dist/index.js b/dist/index.js
+index eb6bbf2d44d5ae85ae9e9b37dd245dd5c9903a0b..68d2a962becd3ae9cc870c67c156cf86905bfcc5 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -98,7 +98,9 @@ class CloudflareSocket extends events_1.EventEmitter {
+         log('ending CF socket');
+         this.write(data, encoding, (err) => {
+             const socket = this._cfSocket;
+-            const closePromise = socket?.close();
++            // end() sends a graceful FIN after the final write; destroy() still aborts.
++            // Forcing socket.close() here rejects the active reader during normal shutdown.
++            const closePromise = this.destroyed ? socket?.close() : this._cfWriter?.close();
+             closePromise
+                 ?.then(() => {
+                 if (this._cfSocket === socket) {
+diff --git a/src/index.ts b/src/index.ts
+index 527b433f524a0742fb51297cf22ef59db9d0f48c..8d210a559db02c82ba23d564385d47aa2e04000a 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -112,7 +112,9 @@ export class CloudflareSocket extends EventEmitter {
+     log('ending CF socket')
+     this.write(data, encoding, (err) => {
+       const socket = this._cfSocket
+-      const closePromise = socket?.close()
++      // end() sends a graceful FIN after the final write; destroy() still aborts.
++      // Forcing socket.close() here rejects the active reader during normal shutdown.
++      const closePromise = this.destroyed ? socket?.close() : this._cfWriter?.close()
+       closePromise
+         ?.then(() => {
+           if (this._cfSocket === socket) {

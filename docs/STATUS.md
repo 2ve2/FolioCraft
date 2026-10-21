@@ -9,6 +9,13 @@
 - Active source work:none. Blockers:none for this scope. Next action: human reviews/merges PR4. Required provisioning/new secrets/production migration/deployment:none. [Full evidence](evidence/2026-10-21-playwright-e2e.md).
 - Not verified: real email/R2/image uploads, hosted cookies/persistence, staff MFA through Playwright and other browser/device engines. Existing deployed-trial limits below remain open.
 
+## Earlier completed work — database pool errors (PR #3, merged), 2026-10-21
+- Merged as PR #3 (branch codex/pool-error-diagnostics, based on fetched origin/main ba37ac6). Safe allowlisted diagnostics and a proven local pg-cloudflare normal-close defect are fixed; no deployment or Neon/provider access was performed.
+- Cause: normal socket.close() aborts the pending adapter read, forwarding the same error to the idle pool listener after pool.end. Three identity-traced workerd requests prove provenance. The pinned Bun patch uses graceful writable close for end(), retaining forced destroy and real error logging.
+- Verification: all eleven requested gates passed. Web 37/0/685 assertions; guarded API 69 pass/12 unchanged conditional skips/0 fail/5207 assertions plus MFA child 11/0/308; seven new actual workerd checks, including 12 isolated concurrent connections and retained 57P01; storage 8/8; mail 15/15; Next 49/49, OpenNext and API dry run exit 0. Regression fails before fix and passes after it. Repeated local API flow drops from eight pool errors to zero.
+- Active source work: none. Code blockers: none. Hosted historical-event attribution, Neon autosuspension/TLS, real reset/upload delivery and browser UI acceptance remain unverified. No pool-size, deadline, transaction, security or schema change. Local accounts cleaned; all investigation servers stopped.
+- Next action: human reviews/merges the PR, installs the frozen lockfile and deploys the API only, then captures projected events if any recur. No migration/new secret/web deployment is required. [Evidence](evidence/2026-10-21-pool-error-investigation.md), [ordered rollout/capture](OPERATIONS.md#database-pool-error-capture--2026-10-21).
+
 Updated: 2026-10-21, Asia/Riyadh. This page is the short continuation point. Older detail is in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md); step evidence is in [evidence/2026-10-20-audit-fixes.md](evidence/2026-10-20-audit-fixes.md) and [evidence/2026-10-20-locale-routing.md](evidence/2026-10-20-locale-routing.md).
 
 ## Deployed friends-only trial
@@ -17,7 +24,7 @@ Updated: 2026-10-21, Asia/Riyadh. This page is the short continuation point. Old
 - The audit fixes (PR 2ve2/FolioCraft#1) are merged into `main`. The human reported running the database migrations and deploying from the independent checkout; the new Worker version ids were not recorded in this session and hosted behaviour was not verified from here (network policy).
 - Known hosted limits: mailbox delivery of the new email templates is unconfirmed; MFA and upload are not acceptance-tested; signup skips email verification by human instruction; no staging, monitoring or scheduled backups.
 
-## Latest work: language path prefixes (branch `claude/modest-davinci-osg31w`, not deployed)
+## Previous work: language path prefixes (branch `claude/modest-davinci-osg31w`, not deployed)
 
 - Root fix for the "refresh on every page change" report: platform pages are served under `/ar/...` and `/en/...`, prerendered with final text and direction, so no page shows a loading screen to restore its language. Old `?lang=` links redirect to the matching prefix and keep their tokens.
 - No page mixes Arabic and English any more: single-language portfolio error page, localized browser-tab titles, 404 pages in the URL's language, Arabic-only logo label, real `/p/<slug>` in the studio preview bar.
@@ -29,11 +36,12 @@ Typecheck exit 0; Biome 392 files, 0 issues; web 37 pass / 0 fail / 685 assertio
 
 ## Blockers
 
-- None for the E2E scope. Hosted verification remains a separate authorized activity.
+- None for the E2E scope. Hosted verification of the pool fix requires the human-operated API deployment and projected-event capture described above.
 
 ## Next actions
 
 1. Human: review and merge PR4. This test-only change requires no deployment or production migration.
-2. Human: send one password-reset email to a private mailbox to confirm delivery and the new single-language template.
-3. Human: decide the legal page contact address, retention periods and governing law; then set `TRIAL_SKIP_EMAIL_VERIFICATION=false` once mail delivery is confirmed.
-4. Engineering backlog not started: error tracking/uptime alerts, Hyperdrive, public response caching, a staging environment, platform color tokens, and the logged `database_pool_error` investigation.
+2. Human: if not done yet, deploy the API from main for the merged pool fix (PR #3) and capture any pool-error recurrence. No database migration, web deployment or new secret is required.
+3. Human: send one password-reset email to a private mailbox to confirm delivery and the new single-language template.
+4. Human: decide the legal page contact address, retention periods and governing law; then set `TRIAL_SKIP_EMAIL_VERIFICATION=false` once mail delivery is confirmed.
+5. Engineering backlog not started: error tracking/uptime alerts, Hyperdrive, public response caching, a staging environment, platform color tokens, and hosted follow-up for `database_pool_error` if it recurs after the fix.
