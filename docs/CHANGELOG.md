@@ -1,5 +1,11 @@
 # Action log
 
+## 2026-10-21 — Proven Worker socket shutdown defect fixed
+- After three local error-identity traces and a fail-before workerd assertion, patched pg-cloudflare 1.4.1 normal end() to close its writable stream gracefully; forced destroy and actual disconnect errors remain unchanged. Reader cancellation was experimentally rejected, not shipped. No dependency upgrade, migration, TLS/security configuration, timeout, pool size or transaction change.
+- Added the test-only Worker fixture and a guarded workerd runner after the root API suite. Seven checks prove clean close, one-client transactions/rollback, twelve isolated concurrent connections, actual scheduled maintenance, retained 57P01 and recovery. Updated package/lock patch registration, source map, decisions, operations/capture instructions, STATUS and dated evidence.
+- Final requested gates all exit 0: frozen install; audit 456 packages/zero vulnerabilities; both typechecks; Biome 396 files; web 37/0/685; API 69 pass/12 unchanged conditional skips/0 fail/5207 plus MFA child 11/0/308 and seven workerd checks; storage 8/8; mail 15/15; Next 49/49; OpenNext; API dry run. Repeated actual local API HTTP flow: eight pool errors before, zero after; synthetic users cleaned, test servers/ports closed.
+- No deployment, hosted tail, Neon or provider access. Historical hosted causes and TLS/provider/browser acceptance remain unverified; human API-only rollout and projected-event capture are documented in OPERATIONS.
+
 ## 2026-10-21 — Safe pool diagnostics completed
 - Added finite error-name/code sanitization, request/scheduled/shared stage and actual pg ending/ended state; three tests cover metadata, redaction and hostile fields. No pool lifecycle, size, timeout, severity, ownership or transaction change.
 - All eleven requested gates passed on this diagnostic source: web 37/0/685 assertions; guarded API 69 pass/12 existing conditional skips/0 fail/5207 assertions plus enforced MFA child 11/0/308; storage 8/8; mail 15/15; Next 49/49 and OpenNext build, API dry run, install/audit/typecheck/Biome passed.
