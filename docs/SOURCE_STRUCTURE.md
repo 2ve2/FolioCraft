@@ -247,3 +247,9 @@ services/admin/sensitive-action.ts owns shared strict credentials/reasons, ordin
 
 ## P6 — 2026-10-19
 contracts/data-requests owns enums/transitions/input/types. db/schema/data-requests and generated0007/meta own requests plus verification evidence. services/admin/request-service owns attestation/state transitions/explicit bounded export; routes/admin/requests declares resource gates and strict input. routes/admin/staff owns safe read-only registry projection. sensitive-action reuses the existing pipeline for request.handle/export. Web admin-requests, admin-staff, requests-copy and own-sessions own the new UI; /security keeps its native protocol boundary. data-requests integration, enforced MFA and admin-requests web tests provide local evidence.
+
+## Committed browser E2E suite — 2026-10-21
+
+`e2e/playwright.config.ts` owns Chromium configuration, per-test failure artifacts and a serial/no-retry policy. `fixtures.ts` owns unique identities, real authentication/domain helpers, per-test cleanup and the exact-origin browser network gate. `seed.ts` imports the existing database guard before application imports and creates disposable identities through native Better Auth, like the existing browser fixture; it adds no application endpoint. `routing.spec.ts`, `journeys.spec.ts`, `language.spec.ts` and `guards.spec.ts` cover platform navigation, real owned publication, single-language UI and harness boundaries. `language.ts` centralizes the explicit script-check exceptions.
+
+`scripts/test-e2e.ts` validates loopback folio_test, applies existing migrations, builds an environment-file-free web source copy under ignored work/e2e-runtime, starts the real API and production Next server and owns their teardown. `e2e/tsconfig.json` is checked by root typecheck. `.github/workflows/check.yml` adds an isolated PostgreSQL browser job with failure artifacts. See [E2E.md](E2E.md) for execution, scope and limitations.

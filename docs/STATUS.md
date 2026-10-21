@@ -1,6 +1,14 @@
 # Current status
 
-Updated: 2026-10-20, Asia/Riyadh. This page is the short continuation point. Older detail is in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md); step evidence is in [evidence/2026-10-20-audit-fixes.md](evidence/2026-10-20-audit-fixes.md) and [evidence/2026-10-20-locale-routing.md](evidence/2026-10-20-locale-routing.md).
+## Latest completed local work — committed browser E2E suite, 2026-10-21
+- Branch codex/playwright-e2e starts from freshly fetched main ba37ac6. The prior local pool-investigation branch is preserved and is not part of this main-based change. Pre-existing untracked docs/ADMIN_CONSOLE_TASK.md remains untouched.
+- Implemented43 Playwright Chromium checks against a real Bun API, guarded loopback folio_test and a fresh production Next build. Includes bilingual navigation/auth/studio, save-before-language-change, published/draft isolation, unpublish, ownership/admin denial, language-script checks and harness guards. Native security and application source are unchanged.
+- Local repeatability:43/43 passed three times (27.6s,26.6s,27.0s browser execution); every invocation rebuilt the web app. Eleven required gates passed: frozen install, audit, typecheck including E2E, Biome402 files, web37/0/685 assertions, API66/12 conditional skips/0/5143 plus native MFA child11/0/308, storage8/8, mail15/15, Next49/49, OpenNext and API dry run exit0.
+- Active: commit the suite and isolated PostgreSQL CI job, push, open the PR and obtain actual remote E2E acceptance. No source blocker. CI is not yet verified at this checkpoint.
+- Next action: finish remote validation, then human reviews the PR; no deployment, provider setup, new secret or production migration is required for this test-only change. Evidence: [E2E acceptance](evidence/2026-10-21-playwright-e2e.md); setup/limits: [E2E.md](E2E.md).
+- Not verified: hosted cookies/persistence, real mail/R2, image uploads, staff MFA in this browser suite and other browser/device engines. Existing deployed-trial limits below remain open.
+
+Updated: 2026-10-21, Asia/Riyadh. This page is the short continuation point. Older detail is in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md); step evidence is in [evidence/2026-10-20-audit-fixes.md](evidence/2026-10-20-audit-fixes.md) and [evidence/2026-10-20-locale-routing.md](evidence/2026-10-20-locale-routing.md).
 
 ## Deployed friends-only trial
 
@@ -27,4 +35,4 @@ Typecheck exit 0; Biome 392 files, 0 issues; web 37 pass / 0 fail / 685 assertio
 1. Human: review and merge the pull request for this branch, then deploy the API and then the web from the independent checkout (no database migration in this change).
 2. Human: send one password-reset email to a private mailbox to confirm delivery and the new single-language template.
 3. Human: decide the legal page contact address, retention periods and governing law; then set `TRIAL_SKIP_EMAIL_VERIFICATION=false` once mail delivery is confirmed.
-4. Engineering backlog not started: error tracking/uptime alerts, Hyperdrive, public response caching, a staging environment, a committed Playwright E2E suite, platform color tokens, and the logged `database_pool_error` investigation.
+4. Engineering backlog not started: error tracking/uptime alerts, Hyperdrive, public response caching, a staging environment, platform color tokens, and the logged `database_pool_error` investigation.

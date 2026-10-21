@@ -1,5 +1,15 @@
 # Action log
 
+## 2026-10-21 — Local browser suite completed
+- Added43 committed Chromium checks, local-only API/PostgreSQL/production Next orchestration, unique native fixtures and scoped verified account cleanup, exact-origin browser networking, strict script checks with negative controls, and root scripts/typecheck.
+- Actual evidence:43/43 three consecutive local runs; all eleven required gates exit0. Web37/0/685, API66/12 conditional skips/0/5143 plus MFA11/0/308, storage8/8, mail15/15, Next49/49 and both Worker builds/dry-run pass. See evidence/2026-10-21-playwright-e2e.md for exact output, files, design and limits.
+- No application/security/schema/provider change, no deployment. CI implementation/push/PR acceptance is the next separate step.
+
+## 2026-10-21 — Deterministic browser E2E suite (scope)
+- Human-authorized: committed Playwright journeys in Arabic/English against real Bun API, isolated local folio_test and a production Next build; add CI PostgreSQL job with failure reports/traces. Target three consecutive local passes and a green PR job.
+- Work only in the independent GitHub checkout on codex/playwright-e2e from freshly fetched main ba37ac6. Preserve the pre-existing untracked docs/ADMIN_CONSOLE_TASK.md.
+- No deployment, hosted database/provider access, real email or image uploads. Keep authentication, ownership, CSP and rate limits intact. Record actual gates, runtime evidence and remaining limits.
+
 ## 2026-10-20 — Language path prefixes and single-language pages completed locally
 - Done on branch claude/modest-davinci-osg31w (restarted from main after PR 2ve2/FolioCraft#1 merged): platform pages under `/ar` and `/en`, config redirects for old URLs, provider-based interface language, removal of the loading-screen language gate, path-based email language, and fixes for every page that mixed Arabic and English (portfolio error page, tab titles, prefixed 404s, logo label, preview bar).
 - Affected: apps/web (app/(platform)/[locale], app/(portfolio), global-not-found, next.config.ts, lib/locale*, lib/request-locale.ts, lib/use-interface-locale.tsx, 65 links across features, tests), apps/api mail templates and test, docs.

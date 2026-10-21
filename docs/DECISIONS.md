@@ -1,5 +1,12 @@
 # Decision ledger
 
+## 2026-10-21 — Committed deterministic browser tests
+- Human-confirmed scope: real local API/PostgreSQL/production Next Playwright journeys, Arabic/English routing and single-language checks, publication isolation/ownership/admin denials, CI failure artifacts, three consecutive local passes and a green PR E2E job. No hosted/provider operations or deployment.
+- Engineering choices, not separately human-confirmed: pin maintained stable @playwright/test 1.64.1 (registry latest; Node >=20, CI Node22); Chromium, one worker, no retries, exact local origins, ports4300/4400, unique per-test native fixture accounts and scoped cleanup.
+- Keep native security settings and rate budgets unchanged. NODE_ENV=test intentionally does not require verification even with TRIAL_SKIP_EMAIL_VERIFICATION=false; this is existing behaviour, not a new trial exception. Mail/storage remain disabled; image upload journeys and hosted verification remain excluded.
+- Build an environment-file-free web source copy under ignored work rather than allowing Next to import local .env configuration. Bun children disable automatic environment files and receive only an explicit test environment. Reject database URL query overrides and occupied application ports before migration/startup.
+- Language exceptions are exact proper names/notations plus known per-test user content; do not exempt whole preview trees or arbitrary unknown strings. No data, API, schema, CORS, CSP or authentication change is planned.
+
 ## 2026-10-20 — Language path prefixes for the platform interface
 - Human direction: page changes felt like crashes or refreshes; the human rejected an interim patch and asked for a root fix "like other platforms", then asked that no page show Arabic and English together. The concrete design below is an engineering choice within that direction, not separately human-confirmed. Evidence: `docs/evidence/2026-10-20-locale-routing.md`.
 - Platform pages live under `/ar/...` and `/en/...` (`app/(platform)/[locale]`), prerendered once per language with final text, `lang` and `dir`. This supersedes the 2026-10-20 choice to keep the language in `?lang=` behind a language-neutral loading screen, which caused a loading flash on every page change.

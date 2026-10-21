@@ -49,3 +49,7 @@ Current typography and spacing are documented in DESIGN_SYSTEM.md; real-site evi
 ## Current source map
 
 See [SOURCE_STRUCTURE.md](SOURCE_STRUCTURE.md) for responsibility placement after reorganization. Expanded previews and administration passed local reviews; external dependencies and the remaining device matrix are documented in STATUS.
+
+## Browser regression tests
+
+Run the committed production-build Playwright journeys locally with `bun run test:e2e` against disposable loopback `folio_test`. [E2E.md](E2E.md) documents setup, Arabic/English coverage, isolation, CI reports and explicit provider/browser limits.
