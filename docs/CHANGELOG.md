@@ -1,5 +1,10 @@
 # Action log
 
+## 2026-10-21 — Review hardening of the save-before-language-switch check
+- Review mutation test: changing the studio's `await flush()` before `switchLocale` to a non-awaited save still passed the E2E suite, because the old assertion read the URL at the instant the held save request started, before a premature soft navigation could commit.
+- Fix in `e2e/journeys.spec.ts`: while the save is held, `page.waitForURL` for the other language must time out (2 s window, far longer than one local RSC round trip); then the URL is asserted unchanged.
+- Evidence: with the mutation, 2 failed (ar and en) at the new assertion; with the real code, journeys 5/5 passed. After merging main (PR #3), the full suite passed 43/43 three times locally (Chromium 141 locally; CI uses the pinned Playwright browser), guarded API 69 pass/12 skip/0 fail and Workers database 7/7.
+
 ## 2026-10-21 — Browser E2E acceptance complete
 - PR4 remains open and unmerged. Corrective run39624159815 on69da0f1 is green for all four jobs; actual browser reporter43 passed (41.1s), full job approximately2m08s. Final clean local suite43/43 three consecutive times and all eleven quality gates pass. No product source changed after this acceptance.
 - Updated STATUS/evidence with the initial failed clean-install run, actual corrected CI success, exact local outputs, clean-source parity, explicit unverified boundaries and cleanup. Added only fulfilled E2E roadmap checkboxes.

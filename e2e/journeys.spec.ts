@@ -64,6 +64,11 @@ for (const locale of ["ar", "en"] as const) {
 		try {
 			await switchLanguage(page, locale);
 			await saving;
+			// A switch that did not wait for the save would land within one RSC round trip, so the
+			// held save must keep the studio on its language for this whole window.
+			await expect(
+				page.waitForURL(`${webURL}/${other}/studio`, { timeout: 2_000 }),
+			).rejects.toThrow();
 			expect(new URL(page.url()).pathname).toBe(`/${locale}/studio`);
 		} finally {
 			releaseSave();
