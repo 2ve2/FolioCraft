@@ -78,6 +78,7 @@ apps/api/src/
     validation.ts                Identifiers and pagination
   db/
     index.ts                     Bun pool and Workers request-scoped database
+    pool-diagnostics.ts          Allowlisted pool-error metadata (stage/ending/ended)
     schema/                      Tables grouped by domain
     migrations/                  Explicit reviewable migrations
 ```

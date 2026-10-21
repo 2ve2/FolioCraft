@@ -1,5 +1,11 @@
 # Current status
 
+## Active investigation — 2026-10-21
+- Branch codex/pool-error-diagnostics, based on current origin/main ba37ac6. Safe pool metadata and three sanitizer tests completed; all requested gates passed (API 69/12 conditional skips/0, web 37/0, Worker storage 8/8, mail 15/15, both builds and API dry run).
+- Proven locally: pg-cloudflare normal socket close rejects its pending read and forwards the same error after pool.end. Three identity-traced workerd requests establish provenance; forced PostgreSQL stop instead yields 57P01 before pool end.
+- Active: narrow adapter shutdown correction plus fail-before/pass-after workerd regression. Hosted attribution remains unknown. No Neon/provider access or deployment performed.
+- Next: finish regression and all gates, update evidence, push/open PR. Evidence: [pool investigation](evidence/2026-10-21-pool-error-investigation.md).
+
 Updated: 2026-10-20, Asia/Riyadh. This page is the short continuation point. Older detail is in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md); step evidence is in [evidence/2026-10-20-audit-fixes.md](evidence/2026-10-20-audit-fixes.md) and [evidence/2026-10-20-locale-routing.md](evidence/2026-10-20-locale-routing.md).
 
 ## Deployed friends-only trial

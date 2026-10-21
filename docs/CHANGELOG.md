@@ -1,5 +1,15 @@
 # Action log
 
+## 2026-10-21 — Safe pool diagnostics completed
+- Added finite error-name/code sanitization, request/scheduled/shared stage and actual pg ending/ended state; three tests cover metadata, redaction and hostile fields. No pool lifecycle, size, timeout, severity, ownership or transaction change.
+- All eleven requested gates passed on this diagnostic source: web 37/0/685 assertions; guarded API 69 pass/12 existing conditional skips/0 fail/5207 assertions plus enforced MFA child 11/0/308; storage 8/8; mail 15/15; Next 49/49 and OpenNext build, API dry run, install/audit/typecheck/Biome passed.
+- Local workerd reproduces normal-end pool errors and distinguishes forced PostgreSQL shutdown (57P01) and statement deadline (57014). Exact provenance was proven in three socket traces. A narrow shutdown fix and regression proof are the next step; no hosted cause is claimed.
+
+## 2026-10-21 — Database pool error investigation (scope)
+- Trace request, scheduled and shared database lifetimes and all potential post-response work. Add bounded, allowlisted pool diagnostics and sanitizer tests; reproduce only against a disposable local folio_test PostgreSQL database in workerd where possible.
+- Preserve transactional publication, per-request isolation, timeouts, pool sizes and severity until a cause is proven. If hosted causality remains unknown, deliver diagnostics and a safe human-operated deployment/capture procedure only.
+- Run all requested gates, record exact evidence and limits, commit completed work on codex/pool-error-diagnostics, push and open a PR. No deployment, hosted database access, secret inspection or provider mutations. Existing untracked docs/ADMIN_CONSOLE_TASK.md is outside scope.
+
 ## 2026-10-20 — Language path prefixes and single-language pages completed locally
 - Done on branch claude/modest-davinci-osg31w (restarted from main after PR 2ve2/FolioCraft#1 merged): platform pages under `/ar` and `/en`, config redirects for old URLs, provider-based interface language, removal of the loading-screen language gate, path-based email language, and fixes for every page that mixed Arabic and English (portfolio error page, tab titles, prefixed 404s, logo label, preview bar).
 - Affected: apps/web (app/(platform)/[locale], app/(portfolio), global-not-found, next.config.ts, lib/locale*, lib/request-locale.ts, lib/use-interface-locale.tsx, 65 links across features, tests), apps/api mail templates and test, docs.

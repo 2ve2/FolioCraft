@@ -1,5 +1,10 @@
 # Decision ledger
 
+## 2026-10-21 — Pool diagnostics and evidence-led shutdown investigation
+- Human-confirmed scope: investigate database_pool_error, log only non-sensitive diagnostics, preserve request isolation and transactions, and deploy nothing. The human later allowed Neon experiments, but none have been needed or performed; secret inspection and provider mutation remain outside this work.
+- Engineering choice, not separately human-confirmed: finite allowlists for error name/code, explicit request/scheduled/shared stage and pg ending/ended flags. Unknown codes become unknown; no error messages, stacks, causes, SQL, client objects or arbitrary serializers are logged.
+- Local evidence identifies an additional mechanism beyond the supplied hypotheses: pg-cloudflare 1.4.1 forwards the rejection of its pending read after its own socket.close() into pg-pool after pool.end(). Three traced requests prove error-object identity and local-end ordering. This proves a local defect, not the identity of every historical hosted occurrence. See the dated pool investigation evidence.
+
 ## 2026-10-20 — Language path prefixes for the platform interface
 - Human direction: page changes felt like crashes or refreshes; the human rejected an interim patch and asked for a root fix "like other platforms", then asked that no page show Arabic and English together. The concrete design below is an engineering choice within that direction, not separately human-confirmed. Evidence: `docs/evidence/2026-10-20-locale-routing.md`.
 - Platform pages live under `/ar/...` and `/en/...` (`app/(platform)/[locale]`), prerendered once per language with final text, `lang` and `dir`. This supersedes the 2026-10-20 choice to keep the language in `?lang=` behind a language-neutral loading screen, which caused a loading flash on every page change.
