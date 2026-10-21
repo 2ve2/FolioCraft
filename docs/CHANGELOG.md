@@ -1,5 +1,10 @@
 # Action log
 
+## 2026-10-21 — Browser E2E acceptance complete
+- PR4 remains open and unmerged. Corrective run39624159815 on69da0f1 is green for all four jobs; actual browser reporter43 passed (41.1s), full job approximately2m08s. Final clean local suite43/43 three consecutive times and all eleven quality gates pass. No product source changed after this acceptance.
+- Updated STATUS/evidence with the initial failed clean-install run, actual corrected CI success, exact local outputs, clean-source parity, explicit unverified boundaries and cleanup. Added only fulfilled E2E roadmap checkboxes.
+- Verified0 generated E2E accounts, stopped both test databases plus API/web and confirmed4300/4400/55432/55433 closed. No deployment, provider mutation, new secret or production migration. Human review/merge is next; no active source work or scope blocker remains.
+
 ## 2026-10-21 — Clean-install harness correction completed locally
 - Moved the native account/budget fixture to apps/api/tests/fixtures/e2e-account.ts; e2e/seed.ts is a bridge. E2E uses declared Bun types and a source-entry type-only contracts import. No additional dependency or runtime change.
 - Clean source-only copy installed398 packages with the frozen lockfile. Typechecks and all eleven gates passed; Biome403 files, web37/0/685, API66/12 conditional skips/0/5143 with MFA11/0/308, storage8/8, mail15/15, Next49/49/OpenNext/API dry run exit0. API ran on a second isolated local folio_test:55433 to avoid touching browser tests on55432.

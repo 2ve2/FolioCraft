@@ -34,27 +34,27 @@ Navigation sentinels/mutation observers proved the document survived landing/log
 
 Raw logs and final HTML report remain ignored under work/e2e-evidence and work/e2e-report. Failed development attempts exposed ambiguous editor/preview locators, expected hero punctuation, documented proper-name/unit exceptions and a report directory resolved relative to the config. These harness issues were corrected without modifying product behaviour or weakening assertions. The save listener was also moved before field interaction to avoid missing early autosave on slow runners.
 
-## Required quality gates — actual command output
+## Required quality gates — final clean-install command output
 
 All commands ran from the independent checkout except the explicitly noted API directory. The gate launcher used a small environment (PATH/HOME/TMPDIR plus the local test URL and Wrangler dotenv/log/metrics disabling). No environment/secret file was opened, copied or committed.
 
 ```text
 bun install --frozen-lockfile
-Checked 405 installs across 519 packages (no changes) [18.00ms]
+398 packages installed [364.00ms]
 
 bun audit
-No vulnerabilities found (checked 459 packages) [697.00ms]
+No vulnerabilities found (checked 459 packages) [686.00ms]
 
 bun run typecheck
 API tsc, web next typegen + tsc, and tsc --noEmit -p e2e/tsconfig.json: exit 0
 
 bun run check
-Checked 402 files in 98ms. No fixes applied.
+Checked 403 files in 106ms. No fixes applied.
 
 bun run test:web
 37 pass; 0 fail; 685 expect() calls
 
-TEST_DATABASE_URL=postgresql://folio@127.0.0.1:55432/folio_test bun run test
+TEST_DATABASE_URL=postgresql://folio@127.0.0.1:55433/folio_test bun run test
 66 pass; 12 skip; 0 fail; 5143 expect() calls
 MFA child: 11 pass; 0 fail; 308 expect() calls
 
@@ -100,10 +100,19 @@ bun run --cwd work/e2e-clean test:e2e
 43 passed (28.5s)
 ```
 
-The eleven gate commands above were repeated from the clean checkout (API TEST_DATABASE_URL used loopback port55433); exact raw output is in ignored work/e2e-evidence/clean-gate-*.log. Corrective remote acceptance remains pending at this checkpoint.
+The eleven gate commands above were repeated from the clean checkout (API TEST_DATABASE_URL used loopback port55433); exact raw output is in ignored work/e2e-evidence/clean-gate-*.log. Corrective remote acceptance is complete on69da0f1542a4745031127fef81cbf880a745539b. [Run39624159815](https://github.com/2ve2/FolioCraft/actions/runs/39624159815) completed successfully for all four jobs: validate119305071040, workers119305071147, integration119305070882 and e2e119305071125.
+
+The actual E2E job log reports:
+
+```text
+2026-10-21T15:18:08Z Running 43 tests using 1 worker
+2026-10-21T15:18:49Z 43 passed (41.1s)
+```
+
+The full job ran approximately2m08s (15:16:45Z setup through15:18:53Z cleanup), within the ten-minute target. Failure artifact upload was correctly not run on the successful job. The final follow-up commit records evidence and roadmap/status only; tested implementation/configuration bytes are unchanged.
 
 ## Human commands and unverified limits
 
 Required provisioning, secret, migration or deployment commands: none. This adds test tooling only and changes no schema or application behaviour. The local setup commands in E2E.md are optional for rerunning the suite. Human review/merge is still required; this task never merges.
 
-Not verified: real email or R2, image uploads (explicitly excluded; no placeholder skip), hosted persistence/authentication/cookie security, native staff MFA through Playwright, other browser/device engines, production performance or provider availability. The failure artifact uploader has not been forced to fail remotely; its actual path/configuration is reviewable and its report is generated locally. Traces contain disposable local session data, so retain them only for debugging. Scheduled/provider/production resources were not changed. Local process/database cleanup will be recorded after final verification.
+Not verified: real email or R2, image uploads (explicitly excluded; no placeholder skip), hosted persistence/authentication/cookie security, native staff MFA through Playwright, other browser/device engines, production performance or provider availability. The failure artifact uploader has not been forced to fail remotely; its actual path/configuration is reviewable and its report is generated locally. Traces contain disposable local session data, so retain them only for debugging. Scheduled/provider/production resources were not changed. Final cleanup: database query confirmed0 remaining generated E2E accounts, both owned application processes and both isolated PostgreSQL servers were stopped, and loopback ports4300/4400/55432/55433 were verified closed. Pre-existing untracked docs/ADMIN_CONSOLE_TASK.md is unchanged. The latest clean local HTML report is work/e2e-clean/work/e2e-report/index.html.
