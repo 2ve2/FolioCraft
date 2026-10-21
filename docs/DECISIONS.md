@@ -1,5 +1,13 @@
 # Decision ledger
 
+## 2026-10-21 — Committed deterministic browser tests
+- Human-confirmed scope: real local API/PostgreSQL/production Next Playwright journeys, Arabic/English routing and single-language checks, publication isolation/ownership/admin denials, CI failure artifacts, three consecutive local passes and a green PR E2E job. No hosted/provider operations or deployment.
+- Engineering choices, not separately human-confirmed: pin maintained stable @playwright/test 1.64.1 (registry latest; Node >=20, CI Node22); Chromium, one worker, no retries, exact local origins, ports4300/4400, unique per-test native fixture accounts and scoped cleanup.
+- Keep native security settings and rate budgets unchanged. NODE_ENV=test intentionally does not require verification even with TRIAL_SKIP_EMAIL_VERIFICATION=false; this is existing behaviour, not a new trial exception. Mail/storage remain disabled; image upload journeys and hosted verification remain excluded.
+- Build an environment-file-free web source copy under ignored work rather than allowing Next to import local .env configuration. Bun children disable automatic environment files and receive only an explicit test environment. Reject database URL query overrides and occupied application ports before migration/startup.
+- Clean-install correction after actual CI failure: keep database fixture imports in apps/api/tests/fixtures/e2e-account.ts, with a one-line root bridge; use declared Bun typings and a relative type-only contracts import. Never rely on accidentally hoisted workspace dependencies or add redundant runtime packages to root. This is an engineering correction, not separately human-confirmed.
+- Language exceptions are exact proper names/notations plus known per-test user content; do not exempt whole preview trees or arbitrary unknown strings. No data, API, schema, CORS, CSP or authentication change is planned.
+
 ## 2026-10-21 — Pool diagnostics and evidence-led shutdown investigation
 - Human-confirmed scope: investigate database_pool_error, log only non-sensitive diagnostics, preserve request isolation and transactions, and deploy nothing. The human later allowed Neon experiments, but none have been needed or performed; secret inspection and provider mutation remain outside this work.
 - Engineering choice, not separately human-confirmed: finite allowlists for error name/code, explicit request/scheduled/shared stage and pg ending/ended flags. Unknown codes become unknown; no error messages, stacks, causes, SQL, client objects or arbitrary serializers are logged.

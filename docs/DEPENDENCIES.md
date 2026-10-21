@@ -29,3 +29,7 @@ Root overrides target only these parents: @node-minify/core → glob10.5.0; @esb
 - Version check: npm registry `latest` was 3.3.0 (published 2026-01-25), MIT, ESM-only, dependencies `@noble/hashes`, `bignumber.js`, `error-causes`. Pinned exactly in `packages/contracts`.
 - Runtime review: the installed source draws randomness from `globalThis.crypto.getRandomValues` and initializes lazily on the first `createId()` call, so the Cloudflare Worker never generates random values at global scope. Workers bundle dry-run, `test:worker-storage` and `test:worker-mail` pass with it bundled.
 - `bun audit` after installation: no vulnerabilities found.
+
+## 2026-10-21 — Browser E2E tooling
+
+`bun info @playwright/test --json`, `bun info @playwright/test engines --json` and `bun info @playwright/test dist-tags --json` confirm maintained Microsoft Playwright stable/latest1.64.1, Node>=20. Pinned exactly in root devDependencies with its matching playwright/playwright-core1.64.1 and frozen Bun lockfile. CI uses Node22, Bun1.4.2 and matching Chromium revision1248. This is development tooling only; no application runtime dependency was added. Actual checks are recorded in the dated E2E evidence.

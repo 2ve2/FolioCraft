@@ -1,5 +1,37 @@
 # Action log
 
+## 2026-10-21 — Review hardening of the save-before-language-switch check
+- Review mutation test: changing the studio's `await flush()` before `switchLocale` to a non-awaited save still passed the E2E suite, because the old assertion read the URL at the instant the held save request started, before a premature soft navigation could commit.
+- Fix in `e2e/journeys.spec.ts`: while the save is held, `page.waitForURL` for the other language must time out (2 s window, far longer than one local RSC round trip); then the URL is asserted unchanged.
+- Evidence: with the mutation, 2 failed (ar and en) at the new assertion; with the real code, journeys 5/5 passed. After merging main (PR #3), the full suite passed 43/43 three times locally (Chromium 141 locally; CI uses the pinned Playwright browser), guarded API 69 pass/12 skip/0 fail and Workers database 7/7.
+
+## 2026-10-21 — Browser E2E acceptance complete
+- PR4 remains open and unmerged. Corrective run39624159815 on69da0f1 is green for all four jobs; actual browser reporter43 passed (41.1s), full job approximately2m08s. Final clean local suite43/43 three consecutive times and all eleven quality gates pass. No product source changed after this acceptance.
+- Updated STATUS/evidence with the initial failed clean-install run, actual corrected CI success, exact local outputs, clean-source parity, explicit unverified boundaries and cleanup. Added only fulfilled E2E roadmap checkboxes.
+- Verified0 generated E2E accounts, stopped both test databases plus API/web and confirmed4300/4400/55432/55433 closed. No deployment, provider mutation, new secret or production migration. Human review/merge is next; no active source work or scope blocker remains.
+
+## 2026-10-21 — Clean-install harness correction completed locally
+- Moved the native account/budget fixture to apps/api/tests/fixtures/e2e-account.ts; e2e/seed.ts is a bridge. E2E uses declared Bun types and a source-entry type-only contracts import. No additional dependency or runtime change.
+- Clean source-only copy installed398 packages with the frozen lockfile. Typechecks and all eleven gates passed; Biome403 files, web37/0/685, API66/12 conditional skips/0/5143 with MFA11/0/308, storage8/8, mail15/15, Next49/49/OpenNext/API dry run exit0. API ran on a second isolated local folio_test:55433 to avoid touching browser tests on55432.
+- Clean E2E43/43 passed three times (26.9s,30.6s,28.5s). Fourteen tested source/config files are byte-identical to the commit checkout. Corrective push and actual green CI remain the next action; initial remote failures are retained honestly in the dated evidence.
+
+## 2026-10-21 — Clean-install CI correction (scope and diagnosis)
+- PR#4 initial run39622808488 failed: validate could not find root node type definitions; E2E built Next but could not resolve drizzle-orm from the root seed helper. Fresh checkout dependencies differ from the pre-existing local dependency directory; these are new harness defects, not labelled pre-existing product failures.
+- Move the database helper into its declaring API workspace with a one-line root bridge, use the declared Bun typings and relative type-only contracts import, and reproduce all gates on a freshly installed source-only copy. No product/security/provider change and no additional dependency. Clean frozen install and both app/E2E typechecks already pass; clean E2E first run43/43. Remaining repeatability/gates and rerun CI are active.
+
+## 2026-10-21 — Browser CI job prepared
+- Added a separate e2e job with PostgreSQL18, pinned Bun1.4.2 and Node22, matching Chromium installation, ten-minute timeout and failure-only seven-day HTML/trace/screenshot artifacts. The existing validate/workers/integration jobs remain intact.
+- The same locally verified source tree passed all eleven required gates before this commit; no application code changed. Actual remote acceptance is pending push/PR creation and will be recorded separately.
+
+## 2026-10-21 — Local browser suite completed
+- Added43 committed Chromium checks, local-only API/PostgreSQL/production Next orchestration, unique native fixtures and scoped verified account cleanup, exact-origin browser networking, strict script checks with negative controls, and root scripts/typecheck.
+- Actual evidence:43/43 three consecutive local runs; all eleven required gates exit0. Web37/0/685, API66/12 conditional skips/0/5143 plus MFA11/0/308, storage8/8, mail15/15, Next49/49 and both Worker builds/dry-run pass. See evidence/2026-10-21-playwright-e2e.md for exact output, files, design and limits.
+- No application/security/schema/provider change, no deployment. CI implementation/push/PR acceptance is the next separate step.
+
+## 2026-10-21 — Deterministic browser E2E suite (scope)
+- Human-authorized: committed Playwright journeys in Arabic/English against real Bun API, isolated local folio_test and a production Next build; add CI PostgreSQL job with failure reports/traces. Target three consecutive local passes and a green PR job.
+- Work only in the independent GitHub checkout on codex/playwright-e2e from freshly fetched main ba37ac6. Preserve the pre-existing untracked docs/ADMIN_CONSOLE_TASK.md.
+- No deployment, hosted database/provider access, real email or image uploads. Keep authentication, ownership, CSP and rate limits intact. Record actual gates, runtime evidence and remaining limits.
 ## 2026-10-21 — Proven Worker socket shutdown defect fixed
 - After three local error-identity traces and a fail-before workerd assertion, patched pg-cloudflare 1.4.1 normal end() to close its writable stream gracefully; forced destroy and actual disconnect errors remain unchanged. Reader cancellation was experimentally rejected, not shipped. No dependency upgrade, migration, TLS/security configuration, timeout, pool size or transaction change.
 - Added the test-only Worker fixture and a guarded workerd runner after the root API suite. Seven checks prove clean close, one-client transactions/rollback, twelve isolated concurrent connections, actual scheduled maintenance, retained 57P01 and recovery. Updated package/lock patch registration, source map, decisions, operations/capture instructions, STATUS and dated evidence.
