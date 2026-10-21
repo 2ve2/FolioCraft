@@ -84,7 +84,7 @@ export function WorkspacePreview({
 						<i />
 						<i />
 					</div>
-					<span dir="ltr">folio / {site.slug}</span>
+					<span dir="ltr">/p/{site.slug}</span>
 					<span>
 						<Globe2 size={12} />
 					</span>

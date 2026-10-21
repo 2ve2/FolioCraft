@@ -11,13 +11,19 @@ const escapeHtml = (s: string) =>
 	);
 
 /**
- * Reads the interface language the web app placed in the native link's callback URL
- * (`?lang=ar|en`). Anything missing or unexpected falls back to English.
+ * Reads the interface language of the web page the native link returns to: its path prefix
+ * (`/ar/reset-password`), or the legacy `?lang=ar|en` of links issued before path-based
+ * languages. Anything missing or unexpected falls back to English.
  */
 export function mailLocale(url: string): Locale {
 	try {
-		const callback = new URL(url).searchParams.get("callbackURL");
-		return callback && new URL(callback).searchParams.get("lang") === "ar" ? "ar" : "en";
+		const raw = new URL(url).searchParams.get("callbackURL");
+		if (!raw) return "en";
+		const callback = new URL(raw);
+		const prefix = callback.pathname.split("/")[1];
+		const language =
+			prefix === "ar" || prefix === "en" ? prefix : callback.searchParams.get("lang");
+		return language === "ar" ? "ar" : "en";
 	} catch {
 		return "en";
 	}

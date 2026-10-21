@@ -7,6 +7,7 @@ import { Brand } from "../../../components/ui/brand";
 import { ButtonContent } from "../../../components/ui/button-content";
 import { LanguageSwitch } from "../../../components/ui/language-switch";
 import { authClient } from "../../../lib/auth-client";
+import { localeHref } from "../../../lib/locale";
 import { useInterfaceLocale } from "../../../lib/use-interface-locale";
 import styles from "../../auth/auth.module.css";
 import { LoadingScreen } from "../../studio/loading-screen";
@@ -15,7 +16,7 @@ import { OwnSessions } from "./own-sessions";
 
 /** Provides only native own-account enrollment/challenge actions; never requests management data. */
 export function AdminSecurity() {
-	const [locale, setLocale, ready] = useInterfaceLocale();
+	const [locale, setLocale] = useInterfaceLocale();
 	const t = adminSecurityCopy[locale];
 	const router = useRouter();
 	const { data: session, isPending, error: sessionError, refetch } = authClient.useSession();
@@ -78,7 +79,9 @@ export function AdminSecurity() {
 				const current = await authClient.getSession();
 				if (current.error || !current.data?.user) throw new Error(t.failure);
 				setSetup(null);
-				router.replace(`/${isStaff(current.data.user.role) ? "admin" : "studio"}?lang=${locale}`);
+				router.replace(
+					localeHref(locale, `/${isStaff(current.data.user.role) ? "admin" : "studio"}`),
+				);
 			} else {
 				setComplete(true);
 				await refetch();
@@ -101,7 +104,7 @@ export function AdminSecurity() {
 			const result = await authClient.signOut();
 			if (result.error) throw new Error(t.failure);
 			setSetup(null);
-			window.location.replace(`/login?lang=${locale}&from=admin`);
+			window.location.replace(localeHref(locale, "/login?from=admin"));
 		} catch {
 			setError(t.failure);
 		} finally {
@@ -109,8 +112,7 @@ export function AdminSecurity() {
 			setBusy(false);
 		}
 	}
-	if (!ready || isPending)
-		return <LoadingScreen locale={locale} localeReady={ready} message={t.loading} />;
+	if (isPending) return <LoadingScreen locale={locale} message={t.loading} />;
 	const staff = session?.user && isStaff(session.user.role) && !session.session.impersonatedBy;
 	const canEnroll = staff && !session.user.twoFactorEnabled && !complete;
 	const showVerify =
@@ -122,7 +124,7 @@ export function AdminSecurity() {
 			lang={locale}
 		>
 			<header className="welcome-header">
-				<Link href={`/?lang=${locale}`}>
+				<Link href={localeHref(locale, "/")}>
 					<Brand locale={locale} />
 				</Link>
 				<LanguageSwitch locale={locale} onChange={setLocale} />
@@ -205,13 +207,13 @@ export function AdminSecurity() {
 					)}
 					{!sessionError && session?.user && !staff && <p>{t.denied}</p>}
 					{!session?.user && !challenge && (
-						<Link href={`/login?lang=${locale}&from=admin`}>{t.login}</Link>
+						<Link href={localeHref(locale, "/login?from=admin")}>{t.login}</Link>
 					)}
 					{staff && session.user.twoFactorEnabled && !complete && !setup && (
 						<OwnSessions locale={locale} currentId={session.session.id} />
 					)}
 					<p>{t.recovery}</p>
-					<Link href={`/?lang=${locale}`}>{t.home}</Link>
+					<Link href={localeHref(locale, "/")}>{t.home}</Link>
 				</section>
 			</main>
 		</div>

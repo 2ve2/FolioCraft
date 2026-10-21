@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { localeRedirects } from "./src/lib/locale-redirects";
 import { securityHeaders } from "./src/lib/security-headers";
 
 const config: NextConfig = {
@@ -20,9 +21,10 @@ const config: NextConfig = {
 			},
 		];
 	},
-	/** Keeps existing brand-kit links working without storing a duplicate archive. */
+	/** Adds language prefixes to platform URLs and keeps existing brand-kit links working. */
 	async redirects() {
 		return [
+			...localeRedirects(),
 			{
 				source: "/brand/ichnara/ichnara-brand-kit-v1.1.zip",
 				destination: "/brand/ichnara/ichnara-brand-kit-v1.2.zip",

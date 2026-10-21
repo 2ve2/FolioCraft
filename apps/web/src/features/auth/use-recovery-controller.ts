@@ -1,13 +1,14 @@
 "use client";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { authClient } from "../../lib/auth-client";
+import { localeHref } from "../../lib/locale";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import { recoveryCopy } from "./recovery-copy";
 import { type RecoveryMode, recoveryError, requestRecovery } from "./recovery-request";
 
 /** Keeps recovery requests, token handling and truthful result feedback in the account feature. */
 export function useRecoveryController(mode: RecoveryMode) {
-	const [locale, setLocale, ready] = useInterfaceLocale();
+	const [locale, setLocale] = useInterfaceLocale();
 	const [token, setToken] = useState("");
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState(false);
@@ -61,7 +62,7 @@ export function useRecoveryController(mode: RecoveryMode) {
 			if (mode === "reset") {
 				setToken("");
 				form.reset();
-				window.history.replaceState(null, "", `/reset-password?lang=${locale}`);
+				window.history.replaceState(null, "", localeHref(locale, "/reset-password"));
 			}
 		} catch {
 			if (mounted.current) setError(t.failure);
@@ -74,7 +75,6 @@ export function useRecoveryController(mode: RecoveryMode) {
 	return {
 		locale,
 		setLocale,
-		ready,
 		t,
 		token,
 		error,

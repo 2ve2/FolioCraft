@@ -7,6 +7,7 @@ import { Brand } from "../../components/ui/brand";
 import { ButtonContent } from "../../components/ui/button-content";
 import { Field } from "../../components/ui/field";
 import { SelectControl } from "../../components/ui/select-control";
+import { localeHref } from "../../lib/locale";
 import { copy } from "./copy";
 
 /** Validates a portfolio address before submitting site creation. */
@@ -37,7 +38,7 @@ export function OnboardingScreen({
 				<div className="header-actions">
 					{localeControl}
 					{isStaff(role) && (
-						<a className="secondary" href={`/admin?lang=${locale}`}>
+						<a className="secondary" href={localeHref(locale, "/admin")}>
 							{t.admin}
 						</a>
 					)}

@@ -1,4 +1,5 @@
 import type { Locale } from "@ichnara/contracts";
+import { localeHref } from "../../lib/locale";
 
 export type RecoveryMode = "forgot" | "reset" | "verify";
 type NativeResult = { error?: { code?: string; status?: number } | null };
@@ -27,8 +28,10 @@ export async function requestRecovery(
 			null
 		);
 	}
-	const callback = new URL(mode === "forgot" ? "/reset-password" : "/verify-email", origin);
-	callback.searchParams.set("lang", locale);
+	const callback = new URL(
+		localeHref(locale, mode === "forgot" ? "/reset-password" : "/verify-email"),
+		origin,
+	);
 	if (mode === "verify") callback.searchParams.set("verified", "1");
 	const result =
 		mode === "forgot"

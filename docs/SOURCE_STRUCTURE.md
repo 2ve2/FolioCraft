@@ -93,7 +93,9 @@ Guarded database tests live in `apps/api/tests`; `tests/fixtures/browser-server.
 ```text
 apps/web/src/
   app/                           Thin routes, metadata and layouts
-    (platform)/layout.tsx        Root layout for landing, auth, studio and admin (lang="en", client locale)
+    (platform)/[locale]/         Landing, auth, legal, studio and admin under /ar and /en
+      layout.tsx                 Root layout: both languages prebuilt, <html lang/dir>, LocaleProvider
+      [...missing]/page.tsx      Unknown paths under a prefix → that language's not-found.tsx
     (portfolio)/p/[slug]/        Published portfolio routes with their own root layout:
       layout.tsx                 <html lang/dir> from the published release locale (server-rendered)
       _public.tsx                Request-memoized public release reads shared by layout/metadata/page
@@ -150,7 +152,12 @@ apps/web/src/
         copy.ts, types.ts        Management copy and resource contracts
         management.module.css   Shared management styles
     portfolio/                   Preview integration and public inquiry form
-  lib/                           API/auth clients, public metadata and interface-locale hook
+  lib/                           API/auth clients, public metadata and interface language:
+    locale.ts                    Languages, cookie name, localeHref, prefix parsing, negotiation
+    locale-redirects.ts          next.config redirects for un-prefixed URLs (no proxy runtime)
+    locale-metadata.ts           Per-language page titles (localizedMetadata)
+    request-locale.ts            Visitor language for pages without a prefix (cookie, then browser)
+    use-interface-locale.tsx     LocaleProvider, useInterfaceLocale (switching), useRoutePath
   styles/                        Ordered global styles
 ```
 
@@ -203,7 +210,7 @@ This refactor retained 108 deterministic renderer outputs and eight extracted ad
 
 ## Authentication entry routes
 
-`app/login/page.tsx` and `app/signup/page.tsx` mount the shared auth feature with a fixed mode. WelcomeScreen contains only product introduction, example and links. Auth requests do not belong in the workspace save controller. `lib/use-interface-locale.ts` reads/updates the `lang` URL parameter and document direction; its readiness guard prevents authenticated redirects from losing the requested language. This is interface state, never portfolio draft content.
+`app/login/page.tsx` and `app/signup/page.tsx` mount the shared auth feature with a fixed mode. WelcomeScreen contains only product introduction, example and links. Auth requests do not belong in the workspace save controller. The interface language is the URL prefix (`/ar`, `/en`): routes link with `localeHref`, and `lib/use-interface-locale.tsx` supplies it from the server-rendered layout and switches it with a soft navigation to the other prefix. This is interface state, never portfolio draft content.
 
 Explore the template opens ExpandedPortfolioPreview through WelcomeScreen state; LandingShowcase supplies the same fictional draft/theme used by its inline preview. Reuse the modal focus/Escape/scroll handling instead of implementing a second overlay.
 

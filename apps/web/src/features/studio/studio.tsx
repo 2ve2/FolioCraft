@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { LanguageSwitch } from "../../components/ui/language-switch";
 import { PublicNotices } from "../../components/ui/public-notices";
+import { localeHref } from "../../lib/locale";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import { SiteOperations } from "../management/site/site-operations";
 import { LoadingScreen } from "./loading-screen";
@@ -19,7 +20,6 @@ import { WorkspaceSidebar } from "./workspace-sidebar";
 function StudioWorkspace() {
 	const {
 		locale,
-		localeReady,
 		setLocale,
 		t,
 		session,
@@ -64,12 +64,10 @@ function StudioWorkspace() {
 	} = useStudioController();
 	const router = useRouter();
 	useEffect(() => {
-		if (localeReady && !isPending && !sessionError && !session?.user)
-			router.replace(`/login?lang=${locale}`);
-	}, [localeReady, isPending, sessionError, session?.user, locale, router]);
+		if (!isPending && !sessionError && !session?.user) router.replace(localeHref(locale, "/login"));
+	}, [isPending, sessionError, session?.user, locale, router]);
 	const localeControl = <LanguageSwitch locale={locale} onChange={setLocale} />;
-	if (isPending || !localeReady || signingOut)
-		return <LoadingScreen locale={locale} localeReady={localeReady} message={t.authLoading} />;
+	if (isPending || signingOut) return <LoadingScreen locale={locale} message={t.authLoading} />;
 	if (sessionError)
 		return (
 			<LoadingScreen locale={locale} message={t.startupError} error>
@@ -277,10 +275,10 @@ function StudioWorkspace() {
 
 /** Notices are product chrome across the Studio's loading, onboarding and editing screens. */
 export function Studio() {
-	const [locale, , ready] = useInterfaceLocale();
+	const [locale] = useInterfaceLocale();
 	return (
 		<div className="studio-notice-shell">
-			{ready && <PublicNotices locale={locale} />}
+			<PublicNotices locale={locale} />
 			<StudioWorkspace />
 		</div>
 	);

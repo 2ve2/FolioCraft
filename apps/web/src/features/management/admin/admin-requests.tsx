@@ -10,6 +10,7 @@ import { type FormEvent, useRef, useState } from "react";
 import { ButtonContent } from "../../../components/ui/button-content";
 import { SelectControl } from "../../../components/ui/select-control";
 import { ApiError, api, apiOrigin } from "../../../lib/api";
+import { localeHref } from "../../../lib/locale";
 import { date, errorText } from "../shared";
 import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
@@ -127,7 +128,7 @@ export function AdminRequests({ id }: { id?: string }) {
 			<p>{t.duePolicy}</p>
 			{message && <p role="status">{message}</p>}
 			{id ? (
-				<Link href={`/admin/requests?lang=${locale}`}>{t.back}</Link>
+				<Link href={localeHref(locale, "/admin/requests")}>{t.back}</Link>
 			) : (
 				<>
 					<div className={layout.filters}>
@@ -189,7 +190,7 @@ export function AdminRequests({ id }: { id?: string }) {
 					{!page.items.length && <p>{t.empty}</p>}
 					{page.items.map((row) => (
 						<article className={styles.card} key={row.id}>
-							<Link href={`/admin/requests/${row.id}?lang=${locale}`}>
+							<Link href={localeHref(locale, `/admin/requests/${row.id}`)}>
 								<bdi>{row.id}</bdi>
 							</Link>
 							<p>

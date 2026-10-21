@@ -4,6 +4,7 @@ import Link from "next/link";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { SelectControl } from "../../../components/ui/select-control";
 import { api } from "../../../lib/api";
+import { localeHref } from "../../../lib/locale";
 import { date, errorText } from "../shared";
 import type { AdminSite, AdminUser } from "../shared/types";
 import styles from "./admin.module.css";
@@ -187,7 +188,7 @@ export function AdminDirectory({ kind }: { kind: "accounts" | "sites" }) {
 				<ul className={layout.queue}>
 					{state.data?.items.map((row) => (
 						<li key={row.id}>
-							<Link href={`/admin/${kind}/${encodeURIComponent(row.id)}?lang=${locale}`}>
+							<Link href={localeHref(locale, `/admin/${kind}/${encodeURIComponent(row.id)}`)}>
 								<strong dir="auto">{kind === "accounts" ? row.name : row.slug}</strong>
 								{kind === "accounts" ? (
 									<>
@@ -257,7 +258,7 @@ function Related({ type, filter }: { type: "sites" | "reports" | "audit"; filter
 									{r.reason}
 								</p>
 							) : (
-								<Link href={`/admin/${type}/${r.id}?lang=${locale}`}>
+								<Link href={localeHref(locale, `/admin/${type}/${r.id}`)}>
 									{r.slug} {type === "reports" && `· ${r.status}`}
 								</Link>
 							)}
@@ -329,7 +330,7 @@ export function AdminAccountDetail({ id }: { id: string }) {
 				state.reload();
 				sessions.reload();
 			} else {
-				window.location.assign(`/admin/accounts?lang=${locale}`);
+				window.location.assign(localeHref(locale, "/admin/accounts"));
 			}
 		} catch (e) {
 			setError(errorText(e, locale));
@@ -350,7 +351,7 @@ export function AdminAccountDetail({ id }: { id: string }) {
 	] as const;
 	return (
 		<section className={`${layout.page} ${fields.page}`}>
-			<Link href={`/admin/accounts?lang=${locale}`}>{t.back}</Link>
+			<Link href={localeHref(locale, "/admin/accounts")}>{t.back}</Link>
 			<h1>{t.identity}</h1>
 			{notice && <p role="status">{notice}</p>}
 			{email && <p dir="ltr">{email}</p>}
@@ -496,7 +497,7 @@ export function AdminSiteDetail({ id }: { id: string }) {
 	}, [c.notice, state.reload]);
 	return (
 		<section className={`${layout.page} ${fields.page}`}>
-			<Link href={`/admin/sites?lang=${locale}`}>{t.back}</Link>
+			<Link href={localeHref(locale, "/admin/sites")}>{t.back}</Link>
 			<ReadState state={state}>
 				{state.data && (
 					<section className={styles.card}>

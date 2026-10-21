@@ -3,6 +3,7 @@ import type { Locale } from "@ichnara/contracts";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { authClient } from "../../../lib/auth-client";
+import { localeHref } from "../../../lib/locale";
 import { adminSecurityCopy } from "./admin-security-copy";
 import fields from "./operations.module.css";
 
@@ -85,7 +86,7 @@ export function OwnSessions({ locale, currentId }: { locale: Locale; currentId: 
 					</article>
 				))
 			)}
-			<Link href={`/admin?lang=${locale}`}>{t.console}</Link>
+			<Link href={localeHref(locale, "/admin")}>{t.console}</Link>
 		</section>
 	);
 }

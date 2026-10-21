@@ -35,14 +35,14 @@ test("native recovery uses fixed bilingual callback destinations and preserves n
 		).toEqual({ code: "MAIL_UNAVAILABLE", status: 503 });
 		expect(calls.at(-1)).toEqual({
 			email: input.email,
-			redirectTo: `https://app.example.com/reset-password?lang=${locale}`,
+			redirectTo: `https://app.example.com/${locale}/reset-password`,
 		});
 		expect(
 			await requestRecovery(client, "verify", input, "https://app.example.com", locale),
 		).toBeNull();
 		expect(calls.at(-1)).toEqual({
 			email: input.email,
-			callbackURL: `https://app.example.com/verify-email?lang=${locale}&verified=1`,
+			callbackURL: `https://app.example.com/${locale}/verify-email?verified=1`,
 		});
 	}
 	expect(await requestRecovery(client, "reset", input, "https://app.example.com", "en")).toEqual({

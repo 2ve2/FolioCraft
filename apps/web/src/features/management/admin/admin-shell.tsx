@@ -11,14 +11,15 @@ import {
 	UsersRound,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
 import { Brand } from "../../../components/ui/brand";
 import { LanguageSwitch } from "../../../components/ui/language-switch";
 import { TooltipButton } from "../../../components/ui/tooltip-button";
 import { ApiError, api } from "../../../lib/api";
 import { authClient } from "../../../lib/auth-client";
-import { useInterfaceLocale } from "../../../lib/use-interface-locale";
+import { localeHref } from "../../../lib/locale";
+import { useInterfaceLocale, useRoutePath } from "../../../lib/use-interface-locale";
 import { LoadingScreen } from "../../studio/loading-screen";
 import ui from "./admin.module.css";
 import { AdminContext } from "./admin-context";
@@ -39,9 +40,9 @@ const navigation = [
 
 /** Gates administration children and supplies an independent responsive navigation shell. */
 function AuthorizedAdminShell({ children }: { children: ReactNode }) {
-	const [locale, setLocale, localeReady] = useInterfaceLocale();
+	const [locale, setLocale] = useInterfaceLocale();
 	const t = adminCopy[locale];
-	const pathname = usePathname();
+	const pathname = useRoutePath();
 	const router = useRouter();
 	const { data: session, isPending, error, refetch } = authClient.useSession();
 	const [signingOut, setSigningOut] = useState(false);
@@ -65,7 +66,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 				})
 				.catch((error) => {
 					if (current && error instanceof ApiError && error.code === "ADMIN_MFA_REQUIRED") {
-						router.replace(`/admin/security?lang=${locale}`);
+						router.replace(localeHref(locale, "/admin/security"));
 						return;
 					}
 					if (current) setAuthorizationError(true);
@@ -105,7 +106,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 		try {
 			const result = await authClient.signOut();
 			if (result.error) throw new Error("Signout failed");
-			router.replace(`/?lang=${locale}`);
+			router.replace(localeHref(locale, "/"));
 		} catch {
 			setSignoutError(true);
 		} finally {
@@ -113,11 +114,10 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 		}
 	}
 
-	if (isPending || !localeReady || (!error && admin && !authorization && !authorizationError))
+	if (isPending || (!error && admin && !authorization && !authorizationError))
 		return (
 			<LoadingScreen
 				locale={locale}
-				localeReady={localeReady}
 				message={
 					locale === "ar" ? "جارٍ التحقق من صلاحيات الإدارة…" : "Checking administrator access…"
 				}
@@ -127,7 +127,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 		return (
 			<div className={styles.gate} dir={locale === "ar" ? "rtl" : "ltr"}>
 				<header>
-					<Link href={`/?lang=${locale}`}>
+					<Link href={localeHref(locale, "/")}>
 						<Brand locale={locale} />
 					</Link>
 					<LanguageSwitch
@@ -153,15 +153,15 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 								{t.retry}
 							</button>
 						) : !session?.user ? (
-							<Link className={ui.primary} href={`/login?lang=${locale}&from=admin`}>
+							<Link className={ui.primary} href={localeHref(locale, "/login?from=admin")}>
 								{t.signIn}
 							</Link>
 						) : (
-							<Link className={ui.primary} href={`/studio?lang=${locale}`}>
+							<Link className={ui.primary} href={localeHref(locale, "/studio")}>
 								{t.studio}
 							</Link>
 						)}
-						<Link className={ui.secondary} href={`/?lang=${locale}`}>
+						<Link className={ui.secondary} href={localeHref(locale, "/")}>
 							{t.home}
 						</Link>
 					</div>
@@ -177,7 +177,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 					{t.skip}
 				</a>
 				<aside className={styles.sidebar}>
-					<Link className={styles.brand} href={`/admin?lang=${locale}`}>
+					<Link className={styles.brand} href={localeHref(locale, "/admin")}>
 						<Brand locale={locale} />
 					</Link>
 					<span className={styles.navLabel}>{t.label}</span>
@@ -187,7 +187,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 							.map(({ key, path, icon: Icon }) => (
 								<Link
 									key={key}
-									href={`${path}?lang=${locale}`}
+									href={localeHref(locale, `${path}`)}
 									aria-current={pathname === path ? "page" : undefined}
 									className={styles.navLink}
 								>
@@ -198,10 +198,10 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 							))}
 					</nav>
 					<div className={styles.sidebarBottom}>
-						<Link className={styles.studioLink} href={`/admin/security?lang=${locale}`}>
+						<Link className={styles.studioLink} href={localeHref(locale, "/admin/security")}>
 							{t.security}
 						</Link>
-						<Link className={styles.studioLink} href={`/studio?lang=${locale}`}>
+						<Link className={styles.studioLink} href={localeHref(locale, "/studio")}>
 							<span>{t.studio}</span>
 							<ArrowUpRight size={17} aria-hidden="true" />
 						</Link>
@@ -247,7 +247,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 							<div className={styles.mobileActions}>
 								<Link
 									className={ui.iconButton}
-									href={`/studio?lang=${locale}`}
+									href={localeHref(locale, "/studio")}
 									aria-label={t.studio}
 								>
 									<ArrowUpRight size={18} />
@@ -275,7 +275,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 
 /** Excludes enrollment/challenge pages from management providers and permission/data requests. */
 export function AdminShell({ children }: { children: ReactNode }) {
-	const pathname = usePathname();
+	const pathname = useRoutePath();
 	if (pathname === "/admin/security" || pathname === "/admin/mfa-required") return children;
 	return <AuthorizedAdminShell>{children}</AuthorizedAdminShell>;
 }

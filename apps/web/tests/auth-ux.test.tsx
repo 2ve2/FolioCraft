@@ -5,17 +5,16 @@ import { AuthRecoveryLinks } from "../src/features/auth/auth-recovery-links";
 import { LoadingScreen } from "../src/features/studio/loading-screen";
 import { WorkspaceHeader } from "../src/features/studio/workspace-header";
 
-/** Initial static HTML must not flash the default language before the URL locale is restored. */
-test("unresolved interface locale renders neutral artwork without translated text or an English wordmark", () => {
-	const markup = renderToStaticMarkup(
-		<LoadingScreen locale="en" localeReady={false} message="Checking your session…" />,
-	);
-	expect(markup).toContain("loading-sheet--front");
-	expect(markup).toContain('aria-busy="true"');
-	expect(markup).not.toContain("Opening your page");
-	expect(markup).not.toContain("Checking your session");
-	expect(markup).not.toContain("Ichnara");
-	expect(markup).not.toContain("loading-signature");
+/** The route already carries the language, so loading states render localized text at once. */
+test("loading screen renders its localized status immediately in both languages", () => {
+	const ar = renderToStaticMarkup(<LoadingScreen locale="ar" message="جارٍ التحقق…" />);
+	expect(ar).toContain('dir="rtl"');
+	expect(ar).toContain("جارٍ فتح صفحتك");
+	expect(ar).toContain("جارٍ التحقق…");
+	expect(ar).not.toContain("aria-busy");
+	const en = renderToStaticMarkup(<LoadingScreen locale="en" message="Checking your session…" />);
+	expect(en).toContain("Opening your page");
+	expect(en).toContain("Checking your session…");
 });
 
 /** Recovery links follow their actual account state and keep the selected interface language. */
@@ -30,8 +29,8 @@ test("signup omits recovery shortcuts and verification resend appears only when 
 						verificationRequired={verificationRequired}
 					/>,
 				);
-				expect(markup.includes(`/forgot-password?lang=${locale}`)).toBe(mode === "login");
-				expect(markup.includes(`/verify-email?lang=${locale}`)).toBe(verificationRequired);
+				expect(markup.includes(`/${locale}/forgot-password`)).toBe(mode === "login");
+				expect(markup.includes(`/${locale}/verify-email`)).toBe(verificationRequired);
 			}
 		}
 	}

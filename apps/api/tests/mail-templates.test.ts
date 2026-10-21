@@ -14,6 +14,16 @@ test("mail language follows the web callback and falls back to English", () => {
 	expect(mailLocale("not a url")).toBe("en");
 });
 
+test("mail language follows the callback path prefix used by localized web routes", () => {
+	const prefixed = (path: string) =>
+		`https://api.example.test/api/auth/verify-email?token=t&callbackURL=${encodeURIComponent(
+			`https://example.test${path}`,
+		)}`;
+	expect(mailLocale(prefixed("/ar/verify-email?verified=1"))).toBe("ar");
+	expect(mailLocale(prefixed("/en/reset-password"))).toBe("en");
+	expect(mailLocale(prefixed("/arabic/reset-password"))).toBe("en");
+});
+
 test("Arabic and English mails are single-language, directional and escape the account name", () => {
 	const ar = authMailContent("reset", "ar", "<b>سارة</b>", link("ar"));
 	expect(ar.subject).toBe("إعادة تعيين كلمة المرور — إيكنارا");

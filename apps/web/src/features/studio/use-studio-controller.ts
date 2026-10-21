@@ -8,6 +8,7 @@ import {
 } from "@ichnara/contracts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, api, authClient } from "../../lib/api";
+import { localeHref } from "../../lib/locale";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import { useAssetUrls } from "../assets/use-asset-urls";
 import { copy } from "./copy";
@@ -18,7 +19,7 @@ import type { SaveState, Section } from "./types";
 /** Owns authenticated draft loading, recovery, revisioned saves and publication operations. */
 export function useStudioController() {
 	// Session identity and the current owned workspace.
-	const [locale, setLocale, localeReady] = useInterfaceLocale();
+	const [locale, switchLocale] = useInterfaceLocale();
 	const t = copy[locale];
 	const {
 		data: session,
@@ -419,13 +420,28 @@ export function useStudioController() {
 			// Commit the confirmed discard only after sign-out succeeds, before full navigation.
 			dirty.current = false;
 			// Do not expose an empty workspace while the session store still contains the old user.
-			window.location.replace(`/login?lang=${locale}`);
+			window.location.replace(localeHref(locale, "/login"));
 		} catch {
 			intentionalLogout.current = false;
 			operation.current = false;
 			setSigningOut(false);
 			setBusy(false);
 			setError(t.unavailable);
+		}
+	}
+
+	/** Saves owned edits first: the language lives in the URL, so switching remounts the studio. */
+	async function setLocale(value: typeof locale) {
+		if (value === locale || operation.current) return;
+		operation.current = true;
+		setBusy(true);
+		try {
+			await flush();
+			switchLocale(value);
+		} catch {
+			// The revisioned save already reports the specific validation or network failure.
+			operation.current = false;
+			setBusy(false);
 		}
 	}
 
@@ -438,7 +454,7 @@ export function useStudioController() {
 		try {
 			await flush();
 			if (identity === sessionIdentityRef.current && mounted.current)
-				window.location.assign(`/admin?lang=${locale}`);
+				window.location.assign(localeHref(locale, "/admin"));
 		} catch {
 			// The revisioned save already reports the specific validation or network failure.
 		} finally {
@@ -565,7 +581,6 @@ export function useStudioController() {
 
 	return {
 		locale,
-		localeReady,
 		setLocale,
 		t,
 		session,

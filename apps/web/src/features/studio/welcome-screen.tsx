@@ -4,6 +4,7 @@ import Link from "next/link";
 import { type ReactNode, useState } from "react";
 import { Brand } from "../../components/ui/brand";
 import { ProductFooter } from "../../components/ui/product-footer";
+import { localeHref } from "../../lib/locale";
 import { copy } from "./copy";
 import { LandingDetails, LandingShowcase } from "./landing-showcase";
 
@@ -41,7 +42,7 @@ export function WelcomeScreen({
 					{localeControl}
 					<Link
 						className="secondary"
-						href={`/${authenticated ? "studio" : "login"}?lang=${locale}`}
+						href={localeHref(locale, `/${authenticated ? "studio" : "login"}`)}
 					>
 						{authenticated ? (locale === "ar" ? "فتح الاستوديو" : "Open studio") : t.login}
 					</Link>
@@ -59,7 +60,7 @@ export function WelcomeScreen({
 						<div className="landing-actions">
 							<Link
 								className="primary"
-								href={`/${authenticated ? "studio" : "signup"}?lang=${locale}`}
+								href={localeHref(locale, `/${authenticated ? "studio" : "signup"}`)}
 							>
 								{authenticated ? (locale === "ar" ? "فتح الاستوديو" : "Open studio") : t.signup}
 								<LinkArrow locale={locale} />

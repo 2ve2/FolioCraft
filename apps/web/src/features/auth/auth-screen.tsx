@@ -7,6 +7,7 @@ import { ButtonContent } from "../../components/ui/button-content";
 import { Field } from "../../components/ui/field";
 import { LanguageSwitch } from "../../components/ui/language-switch";
 import { ProductFooter } from "../../components/ui/product-footer";
+import { localeHref } from "../../lib/locale";
 import { LoadingScreen } from "../studio/loading-screen";
 import styles from "./auth.module.css";
 import { AuthRecoveryLinks } from "./auth-recovery-links";
@@ -16,11 +17,9 @@ import { type AuthMode, useAuthController } from "./use-auth-controller";
 export function AuthScreen({ mode }: { mode: AuthMode }) {
 	const {
 		locale,
-		localeReady,
 		setLocale,
 		t,
 		session,
-		isPending,
 		sessionError,
 		refetch,
 		busy,
@@ -35,18 +34,21 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 	const title = mode === "signup" ? t.signup : t.login;
 
 	useEffect(() => {
-		if (!isPending && !session && !sessionError) firstInput.current?.focus();
-	}, [isPending, session, sessionError]);
+		// Never move focus away from a field the visitor already chose.
+		if (!session && !sessionError && document.activeElement === document.body)
+			firstInput.current?.focus();
+	}, [session, sessionError]);
 
-	if (isPending || session?.user)
-		return <LoadingScreen locale={locale} localeReady={localeReady} message={t.authLoading} />;
+	// The form renders immediately (also in the prerendered HTML); only an existing session
+	// replaces it while redirecting to the workspace.
+	if (session?.user) return <LoadingScreen locale={locale} message={t.authLoading} />;
 	if (sessionError)
 		return (
 			<LoadingScreen locale={locale} message={t.startupError} error>
 				<button type="button" className="primary" onClick={() => void refetch()}>
 					{t.loadRetry}
 				</button>
-				<Link className="text-button" href={`/?lang=${locale}`}>
+				<Link className="text-button" href={localeHref(locale, "/")}>
 					{t.back}
 				</Link>
 			</LoadingScreen>
@@ -55,14 +57,14 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 	return (
 		<div className={`welcome-page ${styles.page}`}>
 			<header className="welcome-header">
-				<Link href={`/?lang=${locale}`} aria-label={ar ? "الصفحة الرئيسية" : "Home"}>
+				<Link href={localeHref(locale, "/")} aria-label={ar ? "الصفحة الرئيسية" : "Home"}>
 					<Brand locale={locale} />
 				</Link>
 				<LanguageSwitch locale={locale} onChange={setLocale} />
 			</header>
 			<main className={styles.main}>
 				<section className={`auth-card ${styles.card}`} aria-labelledby="auth-title">
-					<Link className="text-button" href={`/?lang=${locale}`}>
+					<Link className="text-button" href={localeHref(locale, "/")}>
 						{ar ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
 						{t.back}
 					</Link>
@@ -126,11 +128,11 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 							{mode === "signup" && (
 								<p className="auth-privacy auth-consent">
 									{ar ? "بإنشاء حسابك فإنك توافق على " : "By creating an account you agree to the "}
-									<Link href={`/terms?lang=${locale}`}>
+									<Link href={localeHref(locale, "/terms")}>
 										{ar ? "شروط الاستخدام" : "Terms of use"}
 									</Link>
 									{ar ? " وتقرّ بأنك اطلعت على " : " and acknowledge the "}
-									<Link href={`/privacy?lang=${locale}`}>
+									<Link href={localeHref(locale, "/privacy")}>
 										{ar ? "إشعار الخصوصية" : "Privacy notice"}
 									</Link>
 									.
@@ -143,7 +145,10 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 					</form>
 					<Link
 						className="text-button auth-switch"
-						href={`/${mode === "signup" ? "login" : "signup"}?lang=${locale}${returnToAdmin ? "&from=admin" : ""}`}
+						href={localeHref(
+							locale,
+							`/${mode === "signup" ? "login" : "signup"}${returnToAdmin ? "?from=admin" : ""}`,
+						)}
 					>
 						{mode === "signup" ? t.switchLogin : t.switchSignup}
 					</Link>
