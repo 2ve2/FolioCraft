@@ -2,6 +2,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { env } from "../config/env";
+import { type PoolStage, poolErrorDiagnostic } from "./pool-diagnostics";
 import * as adminSchema from "./schema/admin";
 import * as assetSchema from "./schema/asset";
 import * as authSchema from "./schema/auth";
@@ -46,10 +47,13 @@ export const db: typeof defaultDatabase = new Proxy(defaultDatabase, {
 });
 
 /** Prevents connections created by one edge request from leaking into another request. */
-export async function withRequestDatabase<T>(operation: () => Promise<T>): Promise<T> {
+export async function withRequestDatabase<T>(
+	operation: () => Promise<T>,
+	stage: Exclude<PoolStage, "shared"> = "request",
+): Promise<T> {
 	const requestPool = new Pool({ ...poolConfig, max: 1 });
 	requestPool.on("error", (error) =>
-		console.error(JSON.stringify({ event: "database_pool_error", name: error.name })),
+		console.error(JSON.stringify(poolErrorDiagnostic(error, stage, requestPool))),
 	);
 	try {
 		return await requestDatabase.run(drizzle(requestPool, { schema }), operation);
@@ -60,5 +64,5 @@ export async function withRequestDatabase<T>(operation: () => Promise<T>): Promi
 
 /** Keeps idle database disconnects observable without exposing queries or credentials. */
 pool.on("error", (error) =>
-	console.error(JSON.stringify({ event: "database_pool_error", name: error.name })),
+	console.error(JSON.stringify(poolErrorDiagnostic(error, "shared", pool))),
 );

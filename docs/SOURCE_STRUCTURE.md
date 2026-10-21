@@ -78,6 +78,7 @@ apps/api/src/
     validation.ts                Identifiers and pagination
   db/
     index.ts                     Bun pool and Workers request-scoped database
+    pool-diagnostics.ts          Allowlisted pool-error metadata (stage/ending/ended)
     schema/                      Tables grouped by domain
     migrations/                  Explicit reviewable migrations
 ```
@@ -86,7 +87,9 @@ Routes validate requests and delegate to services; database rules do not belong 
 
 Internal callers import the responsible site service. Keep `services/sites/index.ts` as a compatibility facade, without adding implementation there. The `#image-validation` Bun import and Wrangler alias intentionally select different decoders; update both when moving their targets.
 
-Guarded database tests live in `apps/api/tests`; `tests/fixtures/browser-server.ts` creates disposable local browser accounts through the root test wrapper. Never use that fixture against hosted databases.
+`db/pool-diagnostics.ts` owns the finite log projection. The pinned `patches/pg-cloudflare@1.4.1.patch` gives normal adapter `end()` a graceful writable close while preserving forced `destroy()`. It is installed by the frozen Bun lockfile and does not affect Bun sockets.
+
+Guarded database tests live in `apps/api/tests`; `tests/fixtures/browser-server.ts` creates disposable local browser accounts through the root test wrapper. Never use that fixture against hosted databases. The root `scripts/test-api.ts` also runs `scripts/test-worker-database.ts` after the Bun suite (except browser-fixture mode); its `tests/fixtures/worker-database.ts` is a test-only Worker covering clean teardown, transaction/client reuse, 12 isolated concurrent clients, actual scheduled maintenance and an unexpected idle disconnect. It is not an application route.
 
 ## Frontend: feature ownership
 

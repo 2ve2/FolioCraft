@@ -347,3 +347,29 @@ Round4 verification/cleanup: final guarded local root57 pass/11 child-only skips
 
 ## Round5 account search boundary — 2026-10-19
 Account directory search is name-only for every staff role, including owner/support. Never use user.read_email to add an email predicate/filter/sort: full-email revelation retains the existing sensitive reason/password/TOTP/durable-audit operation. The current request/report/site administrative services contain no email matching/sorting lookup; public report duplicate suppression includes the submitted contact as part of its exact dedup tuple and remains unchanged. Do not describe the previous round4 role restriction as a complete fix. No historical inference count can be established from reveal audit rows alone. This round changes no deployment, provider configuration, data-rights workflow or operational policy.
+
+
+## Database pool error capture — 2026-10-21
+
+The safe event projection includes event/name/code/stage/ending/ended. Names and codes use finite allowlists; unknown is intentional, not evidence of a particular network condition. No messages, stack traces, SQL, parameters, client objects, URLs or user data are included. A local pg-cloudflare normal-close defect is fixed with the pinned Bun patch; see [investigation evidence](evidence/2026-10-21-pool-error-investigation.md). Do not lower severity or tune pools/deadlines based only on a name-only historical event.
+
+Human-operated rollout, after reviewing/merging the PR (not executed by this task):
+
+```sh
+cd ~/Desktop/blog-website/work/github-upload
+git switch main
+git pull --ff-only origin main
+bun install --frozen-lockfile
+CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false WRANGLER_WRITE_LOGS=false WRANGLER_SEND_METRICS=false bun --no-env-file x wrangler deploy --config apps/api/wrangler.toml
+```
+
+No migration, new secret, web deployment or provider provisioning is required. Existing Worker secrets are retained; do not reenter/print their values. Verify the target name foliocraft-api-trial before deployment.
+
+Then capture only projected events; do not save or share the raw JSON tail, which may carry request headers/cookies. This pipeline outputs only the fixed safe fields and timestamp:
+
+```sh
+CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false WRANGLER_WRITE_LOGS=false WRANGLER_SEND_METRICS=false bun --no-env-file x wrangler tail foliocraft-api-trial --config apps/api/wrangler.toml --format json |
+  jq --unbuffered -c '. as $entry | .logs[]? | .message[]? | fromjson? | select(.event == "database_pool_error") | {timestamp: $entry.eventTimestamp, event, name, code, stage, ending, ended}'
+```
+
+Exercise normal sign-in/save/publish and one intended reset/upload operation through the existing UI; observe the normal scheduled run without triggering arbitrary maintenance on hosted data. Keep only the projected event, approximate operation/time and deployed version identifier. A real 57P01 with ending=false indicates server termination, not proof of Neon autosuspension; correlate provider lifecycle separately. Unknown/request/ended=true needs investigation if it recurs; the patch is not blanket error suppression. A quiet tail alone does not prove all hosted flows, TLS, mail or storage acceptance.

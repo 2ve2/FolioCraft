@@ -58,3 +58,14 @@ for (const command of [
 	}
 	if (code !== 0) process.exit(code);
 }
+
+// Worker socket lifecycle needs actual workerd, after the same guarded local migrations/tests.
+if (!adminBrowser) {
+	const worker = Bun.spawn(["bun", "scripts/test-worker-database.ts"], {
+		cwd: new URL("../", import.meta.url).pathname,
+		env: environment,
+		stdout: "inherit",
+		stderr: "inherit",
+	});
+	process.exit(await worker.exited);
+}
