@@ -1,5 +1,9 @@
 # Action log
 
+## 2026-10-21 — Browser CI job prepared
+- Added a separate e2e job with PostgreSQL18, pinned Bun1.4.2 and Node22, matching Chromium installation, ten-minute timeout and failure-only seven-day HTML/trace/screenshot artifacts. The existing validate/workers/integration jobs remain intact.
+- The same locally verified source tree passed all eleven required gates before this commit; no application code changed. Actual remote acceptance is pending push/PR creation and will be recorded separately.
+
 ## 2026-10-21 — Local browser suite completed
 - Added43 committed Chromium checks, local-only API/PostgreSQL/production Next orchestration, unique native fixtures and scoped verified account cleanup, exact-origin browser networking, strict script checks with negative controls, and root scripts/typecheck.
 - Actual evidence:43/43 three consecutive local runs; all eleven required gates exit0. Web37/0/685, API66/12 conditional skips/0/5143 plus MFA11/0/308, storage8/8, mail15/15, Next49/49 and both Worker builds/dry-run pass. See evidence/2026-10-21-playwright-e2e.md for exact output, files, design and limits.
