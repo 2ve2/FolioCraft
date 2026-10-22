@@ -19,9 +19,12 @@
 	--space-12: 48px;
 	--space-16: 64px;
 	--control-min: 44px;
-	--radius-control: 8px;
+	--radius-control: 10px;
 	--radius-card: 12px;
-	/* Keyboard focus indicator: 4.8:1 on white, above the 3:1 non-text contrast minimum. */
+	--radius-panel: 20px;
+	/* Shared page gutter: headers, footers and landing sections align to one 1240px column. */
+	--page-gutter: max(5vw, calc((100% - 1240px) / 2));
+	/* Keyboard focus indicator: 5.0:1 on white, above the 3:1 non-text contrast minimum. */
 	--focus-ring: var(--color-focus-ring);
 
 	/* Exact platform palette. Keep near-equal legacy shades distinct. */
@@ -43,11 +46,9 @@
 	--color-text-muted: #706c80;
 	--color-border: #e9e6ef;
 	--color-page: #faf9fc;
-	--color-control-focus-border: #9a7ae4;
+	--color-control-focus-border: #7a7fe4;
 	--color-accent-shadow-subtle: #3f46c815;
 	--color-control-placeholder: #8b8796;
-	--color-brand-shadow: #3f46c823;
-	--color-brand-caption: #8b839a;
 	--color-accent-hover: #3036a6;
 	--color-secondary-border: #ded8eb;
 	--color-secondary-text: #4c415f;
@@ -57,19 +58,18 @@
 	--color-danger-surface: #fff3f3;
 	--color-danger-text-emphasis: #a74049;
 	--color-locale-border: #e9e4ef;
-	--color-status-dot: #8c66dc;
+	--color-status-dot: #666cdc;
 	--color-error-border: #efcccf;
 	--color-error-text: #93353e;
 	--color-avatar-surface: #eee6f7;
 	--color-selection-surface: #f0e9fb;
-	--color-focus-ring: #7c5cd6;
+	--color-focus-ring: #5c62d6;
 
 	/* Footer roles. */
 	--color-footer-surface: #241b38;
 	--color-footer-text: #d6cede;
 	--color-footer-border: #41314f;
-	--color-footer-brand-caption: #beb0d1;
-	--color-footer-signature: #bca1ed;
+	--color-footer-signature: #a1a5ed;
 	--color-footer-studio-link: #d3b9ff;
 	--color-footer-bottom-border: #493a58;
 	--color-footer-bottom-text: #bcb0cc;
@@ -89,16 +89,16 @@
 	--color-asset-hint-text: #625e72;
 	--color-asset-picker-button-border: #ddd9e6;
 	--color-asset-picker-button-text: #373247;
-	--color-asset-focus-ring: #7458ce;
+	--color-asset-focus-ring: #585ece;
 	--color-asset-card-img-surface: #f5f3f8;
 	--color-asset-selected-surface: #f1ebff;
-	--color-asset-selected-border: #9274dc;
+	--color-asset-selected-border: #7479dc;
 	--color-asset-danger: #a62937;
 	--color-asset-error-surface: #fff0f1;
 
 	/* Legal roles. */
 	--color-legal-tab-active-surface: #f1ebfc;
-	--color-legal-tab-active-text: #4b2f9e;
+	--color-legal-tab-active-text: #2f359e;
 	--color-legal-article-border: #ebe6f2;
 	--color-legal-article-p-text: #4a4458;
 	--color-legal-article-notice-border: #c79a2b;
@@ -106,19 +106,19 @@
 	--color-legal-article-notice-text: #5c4612;
 
 	/* Admin roles. */
-	--color-admin-accent: #7045ce;
+	--color-admin-accent: #3f46c8;
 	--color-admin-text-muted: #746d83;
 	--color-admin-border: #e9e5ef;
 	--color-admin-text: #2d253e;
 	--color-admin-page: #f7f7fb;
-	--color-admin-focus-ring: #ab91e8;
+	--color-admin-focus-ring: #9195e8;
 	--color-admin-nav-label-text: #9b92aa;
 	--color-admin-nav-link-text: #777083;
 	--color-admin-nav-link-hover-surface: #f8f6fc;
 	--color-admin-nav-active-surface: #f0eafa;
 	--color-admin-studio-link-text: #6d617f;
 	--color-admin-avatar-surface: #eee7f9;
-	--color-admin-avatar-text: #7955bd;
+	--color-admin-avatar-text: #555abd;
 	--color-admin-topbar-surface: #ffffffd9;
 	--color-admin-topbar-strong-text: #4b3f5e;
 	--color-admin-breadcrumb-text: #c5becf;
@@ -126,13 +126,9 @@
 	--color-admin-gate-card-svg-text: #9d83bf;
 	--color-admin-gate-card-p-text: #7d718b;
 	--color-admin-icon-button-text: #79658f;
-	--color-admin-stat-icon-text: #8b6cbb;
 	--color-admin-stat-small-text: #8a8197;
 	--color-admin-card-header-border: #f0edf4;
-	--color-admin-table-th-text: #8b8298;
 	--color-admin-identity-small-text: #8e859d;
-	--color-admin-row-icon-surface: #f4f1fa;
-	--color-admin-row-icon-text: #977eb7;
 	--color-admin-badge-surface: #f0edf6;
 	--color-admin-badge-text: #81748f;
 	--color-admin-good-surface: #edf7f1;
@@ -149,7 +145,6 @@
 	--color-admin-filters-button-aria-pressed-true-border: #e2dce9;
 	--color-admin-filters-button-aria-pressed-true-text: #594170;
 	--color-admin-filters-button-aria-pressed-true-shadow: #41335608;
-	--color-admin-audit-meta-text: #8b8197;
 	--color-admin-empty-text: #9b8dad;
 	--color-admin-empty-h3-text: #665a78;
 	--color-admin-empty-p-text: #978ba2;
@@ -158,7 +153,6 @@
 	--color-admin-notice-text: #377357;
 	--color-admin-loading-surface: #eeeaf7;
 	--color-admin-loading-text: #8a77a4;
-	--color-admin-skeleton-text: #9c91ab;
 	--color-admin-dialog-shadow: #24103638;
 	--color-admin-dialog-backdrop-surface: #23193666;
 	--color-admin-secondary-border: #e5ddeb;
@@ -166,13 +160,11 @@
 	--color-admin-danger-surface: #fff3f1;
 	--color-admin-danger-border: #f1d8d5;
 	--color-admin-danger-text: #ad5b56;
-	--color-admin-table-td-data-label-before-text: #9d92aa;
 	--color-admin-operation-page-input-border: #d7d3e3;
 	--color-admin-operation-page-input-text: #242037;
 	--color-admin-report-queue-li-border: #e4e4ee;
 	--color-admin-report-queue-time-text: #666;
 	--color-admin-report-handling-textarea-border: #ddd;
-	--color-admin-resource-icon: #9b85b5;
 
 	/* Management roles. */
 	--color-management-panel-input-border: #d9d7df;
@@ -180,21 +172,21 @@
 	--color-management-panel-button-text: #393348;
 	--color-management-panel-button-aria-pressed-true-surface: #eee9ff;
 	--color-management-panel-button-aria-pressed-true-border: #b9a5f5;
-	--color-management-panel-button-focus-visible-focus: #7952d8;
+	--color-management-panel-button-focus-visible-focus: #5259d8;
 	--color-management-card-border: #e7e3ec;
 
 	/* Not-found roles. */
 	--color-not-found-page-surface: #eee7fb;
 	--color-not-found-orbit-border: #d9cbed;
 	--color-not-found-orbit-surface: #e5d9f8;
-	--color-not-found-number-text: #7048c7;
-	--color-not-found-number-shadow: #e1d4f5;
+	--color-not-found-number-text: #3f46c8;
+	--color-not-found-number-shadow: #d9dbf4;
 	--color-not-found-file-border: #e4daef;
 	--color-not-found-file-shadow: #51308012;
 	--color-not-found-eyebrow-text: #72529a;
 	--color-not-found-description-text: #70677e;
 	--color-not-found-primary-shadow: #3f46c81a;
-	--color-not-found-primary-hover-surface: #5e38bf;
+	--color-not-found-primary-hover-surface: #3036a6;
 	--color-not-found-secondary-surface: #ffffffb3;
 	--color-not-found-secondary-border: #ddd3e9;
 	--color-not-found-secondary-text: #574267;
@@ -209,9 +201,9 @@
 	--color-landing-showcase-dots-text: #baa8cd;
 	--color-landing-showcase-themes-span-text: #6c637f;
 	--color-landing-showcase-themes-button-text: #63546f;
-	--color-landing-theme-active-border: #8965bb;
+	--color-landing-theme-active-border: #6569bb;
 	--color-landing-theme-active-surface: #f0e8fb;
-	--color-landing-theme-active-text: #59388b;
+	--color-landing-theme-active-text: #383c8b;
 	--color-landing-benefits-border: #e6deed;
 	--color-landing-feature-list-article-span-text: #9b80b8;
 
@@ -228,7 +220,7 @@
 
 	/* Readability roles. */
 	--color-readability-content-jump-nav-a-text: #716080;
-	--color-readability-content-jump-nav-a-hover-border: #bba7df;
+	--color-readability-content-jump-nav-a-hover-border: #a7aadf;
 	--color-readability-feedback-feedback-operation-notice-border: #d7d2de;
 	--color-readability-feedback-feedback-operation-notice-text: #34705b;
 
@@ -241,32 +233,32 @@
 	--color-mobile-collection-item-border: #e5e5e5;
 
 	/* Scrollbar roles. */
-	--color-scrollbar-thumb: #9470df;
+	--color-scrollbar-thumb: #7076df;
 	--color-scrollbar-track: #f0eaf9;
 	--color-scrollbar-track-start: #f7f3fc;
 	--color-scrollbar-track-middle: #eee5fa;
-	--color-scrollbar-thumb-start: #b79be8;
-	--color-scrollbar-thumb-middle: #8055d9;
-	--color-scrollbar-thumb-end: #6340b9;
+	--color-scrollbar-thumb-start: #9b9fe8;
+	--color-scrollbar-thumb-middle: #555cd9;
+	--color-scrollbar-thumb-end: #4046b9;
 	--color-scrollbar-thumb-inset: #ffffff38;
 	--color-scrollbar-thumb-hover-start: #c5a8f4;
-	--color-scrollbar-thumb-hover-end: #543298;
+	--color-scrollbar-thumb-hover-end: #323798;
 	--color-scrollbar-thumb-hover-inset: #ffffff55;
-	--color-scrollbar-thumb-active-start: #9b78e3;
-	--color-scrollbar-thumb-active-end: #5934b7;
+	--color-scrollbar-thumb-active-start: #787de3;
+	--color-scrollbar-thumb-active-end: #343bb7;
 
 	/* Select roles. */
 	--color-select-root-select-trigger-border: #e4dfed;
 	--color-select-root-select-trigger-text: #514663;
 	--color-select-root-select-trigger-shadow: #30204005;
-	--color-select-root-select-trigger-hover-border: #b5a1df;
+	--color-select-root-select-trigger-hover-border: #a1a4df;
 	--color-select-root-select-trigger-hover-surface: #f9f6ff;
-	--color-select-trigger-svg-first-child-text: #8a6ab8;
+	--color-select-trigger-svg-first-child-text: #6a6eb8;
 	--color-select-chevron-text: #96899f;
 	--color-select-popup-shadow: #38264e20;
 	--color-select-popup-title-text: #9c8da9;
 	--color-select-option-text: #43344f;
-	--color-select-option-focus: #b9a3e3;
+	--color-select-option-focus: #a3a6e3;
 	--color-select-code-surface: #f5f2f8;
 	--color-select-code-border: #e8e1ef;
 	--color-select-code-text: #8b739f;
@@ -277,7 +269,7 @@
 	--color-welcome-journey-small-text: #8c7d9f;
 	--color-welcome-journey-span-text: #5c536b;
 	--color-welcome-journey-b-text: #a592c4;
-	--color-welcome-journey-svg-text: #9773d0;
+	--color-welcome-journey-svg-text: #7378d0;
 	--color-welcome-auth-card-border: #ebe4f1;
 	--color-welcome-auth-card-shadow: #4d326610;
 	--color-welcome-large-mark-surface: #f2ecfc;
@@ -320,7 +312,7 @@
 	--color-workspace-section-heading-eyebrow-text: #9986b3;
 	--color-workspace-section-heading-p-text: #988aa3;
 	--color-workspace-editor-card-shadow: #33214a02;
-	--color-workspace-card-icon-text: #9573c7;
+	--color-workspace-card-icon-text: #7377c7;
 	--color-workspace-editor-card-input-border: #e6e0ee;
 	--color-workspace-switch-row-border: #eeebf3;
 	--color-workspace-switch-row-text: #776882;
@@ -346,9 +338,9 @@
 	--color-workspace-browser-bar-border: #f0ecf4;
 	--color-workspace-browser-bar-text: #ada1b8;
 	--color-workspace-preview-caption-text: #9b8aab;
-	--color-workspace-preview-link-text: #8662b5;
+	--color-workspace-preview-link-text: #6266b5;
 	--color-workspace-theme-choice-border: #e5deed;
-	--color-workspace-theme-choice-selected-border: #9d7ce1;
+	--color-workspace-theme-choice-selected-border: #7c81e1;
 	--color-workspace-theme-choice-selected-shadow: #eee6fb;
 	--color-workspace-theme-choice-span-last-child-text: #796985;
 	--color-workspace-accent-chip-selected-focus: #aa9fb7;

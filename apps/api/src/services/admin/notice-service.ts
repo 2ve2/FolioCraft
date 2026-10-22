@@ -6,7 +6,11 @@ import { systemNotices as notices } from "../../db/schema/notices";
 import { auth } from "../../lib/auth";
 import { ApiError } from "../../lib/response-helpers";
 import { recordAdminAction } from "./audit-service";
-import { appendSensitiveOutcome, prepareSensitiveAction } from "./sensitive-action";
+import {
+	appendSensitiveOutcome,
+	markSensitiveDenial,
+	prepareSensitiveAction,
+} from "./sensitive-action";
 export const noticeService = {
 	async list(limit: number, offset: number) {
 		const rows = await db
@@ -109,6 +113,8 @@ export const noticeService = {
 			});
 		} catch (e) {
 			await appendSensitiveOutcome(audit, "failed");
+			// The failed outcome is already audited; do not add a second denial row.
+			if (e && typeof e === "object") markSensitiveDenial(e);
 			throw e;
 		}
 	},

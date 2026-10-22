@@ -25,12 +25,13 @@ export default async function PortfolioRootLayout({
 	children,
 	params,
 }: Readonly<{ children: React.ReactNode; params: Promise<{ slug: string }> }>) {
-	const locale = (await publishedLocale((await params).slug)) ?? (await requestLocale());
+	const published = await publishedLocale((await params).slug);
+	const locale = published ?? (await requestLocale());
 	return (
 		<html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
 			<body>
 				{/* The portfolio's language must not overwrite the visitor's interface preference. */}
-				<LocaleProvider locale={locale} remember={false}>
+				<LocaleProvider locale={locale} remember={false} pinned={Boolean(published)}>
 					{children}
 				</LocaleProvider>
 			</body>

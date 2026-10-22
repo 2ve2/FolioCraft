@@ -1,0 +1,60 @@
+/*
+ * Platform type and shape system, loaded last so every platform screen follows one scale:
+ * one weight per heading level, one page-title size, readable labels and lead lines, and three
+ * corner radii (controls, cards, standalone page panels). Published portfolios and the studio
+ * preview (.folio) keep their renderer styles.
+ */
+:where(h1, h2):not(:where(.folio *)) {
+	font-weight: 650;
+}
+:where(h1):not(:where(.folio *)) {
+	font-weight: 700;
+}
+:where(h3):not(:where(.folio *)) {
+	font-weight: 600;
+}
+
+/* Page titles and the lead line under them. */
+.auth-card h1,
+.onboarding h1,
+.section-heading h1 {
+	font-size: var(--text-title);
+	line-height: 1.35;
+	letter-spacing: -0.3px;
+}
+.auth-card > p,
+.onboarding > p,
+.section-heading p {
+	font-size: var(--text-body);
+	line-height: 1.8;
+}
+
+/* Labels and text actions share the label size; typed values use the body size. */
+.field > span,
+.text-button {
+	font-size: var(--text-label);
+}
+.text-button {
+	min-height: var(--control-min);
+}
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]),
+textarea,
+.select-root .select-trigger {
+	font-size: var(--text-body);
+	border-radius: var(--radius-control);
+}
+.primary,
+.secondary,
+.danger-button {
+	min-height: var(--control-min);
+	border-radius: var(--radius-control);
+}
+
+/* Corner radii. */
+.editor-card {
+	border-radius: var(--radius-card);
+}
+.auth-card,
+.onboarding-card {
+	border-radius: var(--radius-panel);
+}

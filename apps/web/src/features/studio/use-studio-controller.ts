@@ -62,6 +62,8 @@ export function useStudioController() {
 	const mounted = useRef(true);
 	const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const operation = useRef(false);
+	// Async results (such as a finished upload) that arrive while an operation freezes edits.
+	const deferredUpdates = useRef<{ identity: string; apply: (current: Draft) => Draft }[]>([]);
 	const publicationVersion = useRef(0);
 
 	/** Keeps the operation guard and visible busy state synchronized. */
@@ -299,8 +301,14 @@ export function useStudioController() {
 	/** Applies a local draft edit and schedules its guarded autosave. */
 	const update = (value: Draft | ((current: Draft) => Draft)) => {
 		if (!draftRef.current) return;
+		if (operation.current) {
+			// Edits are frozen during publish, rename, import and language switches. Queue async
+			// results for the same account instead of dropping them while their UI reports success.
+			if (typeof value === "function")
+				deferredUpdates.current.push({ identity: sessionIdentityRef.current, apply: value });
+			return;
+		}
 		const next = typeof value === "function" ? value(draftRef.current) : value;
-		if (operation.current) return;
 		draftRef.current = next;
 		setDraft(next);
 		dirty.current = JSON.stringify(next) !== savedJson.current;
@@ -312,6 +320,17 @@ export function useStudioController() {
 			void flush().catch(() => undefined);
 		}, 900);
 	};
+
+	// Applies queued async results once the freezing operation has ended.
+	useEffect(() => {
+		if (busy || operation.current || !deferredUpdates.current.length) return;
+		const identity = sessionIdentityRef.current;
+		const pending = deferredUpdates.current
+			.splice(0)
+			.filter((entry) => entry.identity === identity);
+		if (pending.length)
+			update((current) => pending.reduce((draft, entry) => entry.apply(draft), current));
+	});
 
 	/** Creates an owned site from the validated address and chosen content language. */
 	async function createSite(event: React.FormEvent<HTMLFormElement>) {
@@ -529,7 +548,8 @@ export function useStudioController() {
 		anchor.href = url;
 		anchor.download = `${site?.slug || "portfolio"}-draft.json`;
 		anchor.click();
-		URL.revokeObjectURL(url);
+		// WebKit can cancel a download whose object URL is revoked in the same task.
+		setTimeout(() => URL.revokeObjectURL(url), 1000);
 	}
 
 	/** Restores a validated backup through the owned revision guard before changing editor state. */

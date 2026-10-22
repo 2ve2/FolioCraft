@@ -96,6 +96,7 @@ export function ProjectsSection({
 					</div>
 					<Field label={`${t.projectTitle} · ${t.required}`}>
 						<input
+							dir="auto"
 							required
 							maxLength={120}
 							value={project.title}
@@ -123,6 +124,7 @@ export function ProjectsSection({
 					<div className="two-fields">
 						<Field label={t.projectRole}>
 							<input
+								dir="auto"
 								maxLength={140}
 								value={project.role}
 								onChange={(e) => changeProject(project.id, "role", e.target.value)}
@@ -130,6 +132,7 @@ export function ProjectsSection({
 						</Field>
 						<Field label={t.year}>
 							<input
+								dir="auto"
 								maxLength={20}
 								value={project.year}
 								onChange={(e) => changeProject(project.id, "year", e.target.value)}
@@ -138,6 +141,7 @@ export function ProjectsSection({
 					</div>
 					<Field label={t.tools}>
 						<input
+							dir="auto"
 							maxLength={300}
 							value={project.tools}
 							onChange={(e) => changeProject(project.id, "tools", e.target.value)}

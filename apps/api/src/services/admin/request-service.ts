@@ -12,6 +12,7 @@ import { ApiError } from "../../lib/response-helpers";
 import { recordAdminAction } from "./audit-service";
 import {
 	appendSensitiveOutcome,
+	markSensitiveDenial,
 	prepareSensitiveAction,
 	requireOrdinaryTarget,
 } from "./sensitive-action";
@@ -167,6 +168,8 @@ export const requestService = {
 			});
 		} catch (e) {
 			await appendSensitiveOutcome(audit, "failed");
+			// The failed outcome is already audited; do not add a second denial row.
+			if (e && typeof e === "object") markSensitiveDenial(e);
 			throw e;
 		}
 	},
@@ -278,6 +281,8 @@ export const requestService = {
 			});
 		} catch (e) {
 			await appendSensitiveOutcome(audit, "failed");
+			// The failed outcome is already audited; do not add a second denial row.
+			if (e && typeof e === "object") markSensitiveDenial(e);
 			throw e;
 		}
 		// Withhold bytes until a durable success outcome exists.

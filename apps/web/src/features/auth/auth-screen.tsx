@@ -102,12 +102,13 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 									required
 								/>
 							</Field>
-							<Field label={t.password} hint={t.authHint}>
+							{/* Password rules apply when choosing a password; sign-in accepts any stored one. */}
+							<Field label={t.password} hint={mode === "signup" ? t.authHint : undefined}>
 								<input
 									name="password"
 									type="password"
 									dir="ltr"
-									minLength={10}
+									minLength={mode === "signup" ? 10 : undefined}
 									maxLength={128}
 									autoComplete={mode === "signup" ? "new-password" : "current-password"}
 									required

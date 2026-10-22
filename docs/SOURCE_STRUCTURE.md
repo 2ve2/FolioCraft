@@ -75,7 +75,6 @@ apps/api/src/
       public-service.ts          Published release reads
       content-service.ts         Content collection operations
       public-access.ts           Shared public availability predicate
-      index.ts                   Small siteService compatibility facade
     admin/
       site-service.ts            Administrative resources and site moderation
       audit-service.ts           Administrative action recording
@@ -106,7 +105,7 @@ apps/api/src/
 
 Routes validate requests and delegate to services; database rules do not belong in route handlers. `admin/index.ts` applies the administrator gate before mounting its children. Private operations retain ownership/session checks. Publication retains its transaction and immutable snapshot. Better Auth owns its protocol responses.
 
-Internal callers import the responsible site service. Keep `services/sites/index.ts` as a compatibility facade, without adding implementation there. The `#image-validation` Bun import and Wrangler alias intentionally select different decoders; update both when moving their targets.
+Callers import the responsible site service directly; there is no aggregating index. The `#image-validation` Bun import and Wrangler alias intentionally select different decoders; update both when moving their targets.
 
 `db/pool-diagnostics.ts` owns the finite log projection. The pinned `patches/pg-cloudflare@1.4.1.patch` gives normal adapter `end()` a graceful writable close while preserving forced `destroy()`. It is installed by the frozen Bun lockfile and does not affect Bun sockets.
 
@@ -159,9 +158,7 @@ apps/web/src/
       admin/
         admin-shell.tsx          Role-aware navigation, session gate and account exit
         admin-context.tsx        Authorized identity and interface-locale context
-        admin-panel.tsx          Route view composition and refresh feedback
-        admin-overview.tsx       Real totals, resources and recent activity
-        admin-lists.tsx          Site/account/audit records and bounded pagination
+        admin-pagination.tsx     Shared bounded twenty-record pagination
         admin-management-dialogs.tsx Site moderation and native account confirmation
         admin-dialog.tsx         Native modal lifecycle and focus restoration
         use-admin-controller.ts  Requests, filtering, paging and guarded mutations
@@ -297,6 +294,6 @@ Worker HTTP/Cron pass the optional HYPERDRIVE binding into the existing request 
 
 ## Platform palette ownership — 2026-10-22
 
-`apps/web/src/styles/tokens.css` owns exact platform `--color-*` semantic values; global and feature/module styles consume them without changing import order. Legacy base and scoped admin variables remain aliases. `features/management/admin/admin-overview.tsx` uses the same palette for its decorative resource icons. Public portfolio modules and shared renderer palettes are deliberately separate and unchanged.
+`apps/web/src/styles/tokens.css` owns exact platform `--color-*` semantic values; global and feature/module styles consume them without changing import order. Legacy base and scoped admin variables remain aliases. Public portfolio modules and shared renderer palettes are deliberately separate and unchanged.
 
 `docs/evidence/2026-10-22-platform-color-tokens.md` records the extraction, checks and limits. Its adjacent directory contains `inventory.json` (baseline CSS occurrences/counts), `palette.json` (exact literal-to-role map and first use), `visual.json` (all48 screenshot dimensions/decoded hashes/pixel counts) and `contrast.json` (identical before/after WCAG ratios). Generated captures and session-local measurement scripts stay under ignored `work/platform-color-tokens/`; no credentials or browser state are included in committed evidence.

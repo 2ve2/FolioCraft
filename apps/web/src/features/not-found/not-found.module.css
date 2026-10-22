@@ -9,9 +9,7 @@
 	);
 }
 .header {
-	width: min(1280px, 100%);
-	margin-inline: auto;
-	padding: 28px 6vw;
+	padding: 28px var(--page-gutter);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -83,9 +81,9 @@
 	letter-spacing: 0;
 }
 .content h1 {
-	font-size: clamp(26px, 4vw, 36px);
-	line-height: 1.45;
-	letter-spacing: -0.7px;
+	font-size: var(--text-title);
+	line-height: 1.35;
+	letter-spacing: -0.3px;
 	margin: 0;
 }
 .description {
@@ -179,12 +177,5 @@
 	.header {
 		padding-inline: 16px;
 		gap: 8px;
-	}
-	.header :global(.brand) {
-		gap: 8px;
-		font-size: 20px;
-	}
-	.header :global(.brand small) {
-		font-size: 10px;
 	}
 }

@@ -1,63 +1,38 @@
-# Ichnara — Project handoff
+# Ichnara documentation
 
-Last updated: 2026-10-22, Asia/Riyadh. Latest work: [studio startup evidence](evidence/2026-10-22-studio-startup.md).
+Last updated: 2026-10-22, Asia/Riyadh. This directory is the source of truth for the project. Start every session with [STATUS.md](STATUS.md), then [DECISIONS.md](DECISIONS.md), as [AGENTS.md](../AGENTS.md) requires.
 
-The human confirmed "Ichnara" as the platform name on 2026-10-17. FolioCraft was the prototype working name. Historical references, the existing repository and trial hosts retain that earlier name. On 2026-10-18 the human selected Ichnara again; current root/workspace package names and imports now use ichnara/@ichnara. Worker names, URLs, database resources and existing protocol headers retain their compatibility identifiers.
+Ichnara (the human confirmed the name on 2026-10-17; FolioCraft was the prototype working name and survives in the repository, Worker and resource names) is a bilingual Arabic/English portfolio builder with one fixed, comprehensive layout. Owners change themes, colors, fonts and text size; the structure stays consistent. The backend is independent: Bun, Hono, Better Auth and Drizzle ORM. The web app is Next.js on Cloudflare Workers.
 
-## Goal
-A portfolio builder with one fixed, comprehensive layout. Users customize themes, colors, font family/style, and text size while retaining a consistent UI structure. Support Arabic and English and content suitable for different disciplines.
+## Start here
 
-## Human-confirmed decisions
-- The backend is independent of the frontend.
-- Backend: Bun + Hono + Better Auth + Drizzle ORM.
-- Use `<read-only reference backend>` as a style reference without modifying that project.
-- Open a new implementation session, transfer context, and create Markdown files to preserve decisions and progress.
+- [STATUS.md](STATUS.md): current state, active work, blockers and next actions.
+- [DECISIONS.md](DECISIONS.md): dated decisions, rationale and confirmation status.
+- [CHANGELOG.md](CHANGELOG.md): action log, newest first.
+- [REQUIREMENTS.md](REQUIREMENTS.md) and [ROADMAP.md](ROADMAP.md): product scope, acceptance criteria and phases.
 
-## Initial proposed plan
-- Frontend: Next.js + TypeScript + Tailwind + shadcn/ui for the dashboard, with a custom public portfolio design.
-- PostgreSQL, S3-compatible storage, Zod, Biome, Bun Test for the backend, and browser tests of the full flow.
-- Two independent applications in one repository; this proposed organization does not require shared execution or deployment.
-- First implementation goal: account -> profile -> project -> appearance -> preview -> real publication.
+## Engineering
 
-## Reading order
-Start a new session with `HANDOFF.md`, then `STATUS.md`; they describe the current continuation point and actual remaining work.
-1. `AGENTS.md`: work continuity and documentation protocol.
-2. `REQUIREMENTS.md`: product, scope, and acceptance criteria.
-3. `ARCHITECTURE.md`: frontend, backend, data, API, and deployment.
-4. `BACKEND_STYLE.md`: patterns observed in the reference project source and reuse boundaries.
-5. `UI_UX_REVIEW.md`: actual prototype test findings.
-6. `DECISIONS.md`: confirmed decisions, proposals, and open questions.
-7. `ROADMAP.md`: implementation phases and completion criteria.
-8. `STATUS.md`: current status, evidence, and next action.
-9. `CHANGELOG.md`: work and handoff history.
+- [ARCHITECTURE.md](ARCHITECTURE.md): applications, data, API and deployment shape.
+- [SOURCE_STRUCTURE.md](SOURCE_STRUCTURE.md): where each responsibility lives in the source tree.
+- [BACKEND_STYLE.md](BACKEND_STYLE.md): backend conventions taken from the read-only reference project.
+- [API.md](API.md): HTTP endpoints and response envelopes.
+- [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md): fonts, type scale, spacing and color tokens.
+- [DEPENDENCIES.md](DEPENDENCIES.md): dependency pins and security remediation.
+- [E2E.md](E2E.md): the committed Playwright suite.
 
-## Context sources
-- Prototype: https://ai.studio/apps/8adde5df-a98e-4263-8e84-910e47a5accd
-- Prototype title: FolioCraft — Universal Portfolio Studio.
-- Original conversation: `6ace08fc-25b0-83ed-9668-30315581eed3`, title translated as "Digital identity platform proposal".
-- Retrieval of the original conversation returned the human requirement for a fixed layout; some assistant replies contained only placeholders, so their missing details must not be assumed.
-- Review image: `../editorial-review.jpg` in the original handoff package.
+## Operations
 
-Original handoff instruction: copy this package into the implementation project's `docs/` directory and keep those files current. Place `AGENTS.md` at the project root. Avoid competing sources of truth; the original package remains the initial handoff record.
+- [CLOUDFLARE.md](CLOUDFLARE.md): trial Workers, bindings, domains and deployment commands.
+- [OPERATIONS.md](OPERATIONS.md): maintenance, administration procedures, data requests and incident notes.
+- [MONITORING.md](MONITORING.md): optional Sentry capture and UptimeRobot checks.
+- [PUBLIC_CACHE.md](PUBLIC_CACHE.md): optional published-page cache runbook (off by default).
+- [HYPERDRIVE.md](HYPERDRIVE.md): optional Hyperdrive runbook.
+- [LAUNCH.md](LAUNCH.md): work required before opening public registration.
+- [ADMIN_CONSOLE.md](ADMIN_CONSOLE.md): administration design, permissions and acceptance record.
 
-## Current implementation
+## Evidence and history
 
-This copy at `docs/` is the source of truth. Content, appearance, inbox, release, and administration editors work locally. The human adopted independent desktop editor/preview scrolling and the violet styling. Backend source is organized by responsibility and frontend source by feature; see SOURCE_STRUCTURE for the map and STATUS for evidence and actual remaining work. A Cloudflare-only friends-testing trial is deployed; see [CLOUDFLARE.md](CLOUDFLARE.md) for actual targets, runtime adapters, the human-authorized temporary email-verification exception and verification limits. Mail delivery, live hosted uploads, a broader browser matrix and general-launch operations remain pending. The root README explains local execution.
-
-Current typography and spacing are documented in DESIGN_SYSTEM.md; real-site evidence and limitations are in STATUS.md.
-
-## Current source map
-
-See [SOURCE_STRUCTURE.md](SOURCE_STRUCTURE.md) for responsibility placement after reorganization. Expanded previews and administration passed local reviews; external dependencies and the remaining device matrix are documented in STATUS.
-
-## Browser regression tests
-
-Run the committed production-build Playwright journeys locally with `bun run test:e2e` against disposable loopback `folio_test`. [E2E.md](E2E.md) documents setup, Arabic/English coverage, isolation, CI reports and explicit provider/browser limits.
-
-## Owner monitoring
-
-[MONITORING.md](MONITORING.md) documents optional server-only Sentry capture, privacy/sampling, owner email settings and the two no-database UptimeRobot checks. This is prepared source and local verification, not proof of hosted alert activation.
-
-## Optional Hyperdrive evaluation
-
-[HYPERDRIVE.md](HYPERDRIVE.md) documents the inactive API binding, origin deadline requirement, safe manual provisioning, before/after trial measurements and per-step rollback. Local measurements did not establish an edge gain; no Service Binding is shipped.
+- [evidence/](evidence/): dated evidence for each completed step.
+- [brand/](brand/): brand verification and the review inputs the brand-kit generator reads. Published brand assets live in `apps/web/public/brand/ichnara`.
+- [archive/](archive/): superseded reports kept for history (earlier status pages, handoff notes, route/media/domain/mail diagnoses, the prototype review and earlier brand studies). They do not override the documents above.

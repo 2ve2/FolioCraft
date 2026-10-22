@@ -64,8 +64,14 @@ export default monitorApi({
 		const task = withRequestDatabase(
 			async () => {
 				try {
-					// Daily backstop: drains any backlog even if its retry signal was never written.
-					await cacheInvalidationService.flush(revalidationDelivery(bindings));
+					// Daily backstop: drains any backlog even if its retry signal was never written, in bounded
+					// batches that stop at the first failure so an outage is not retried in a loop.
+					const deliver = revalidationDelivery(bindings);
+					for (let handled = 0; handled < 200; ) {
+						const batch = await cacheInvalidationService.flush(deliver, 20);
+						handled += batch.delivered + batch.failed;
+						if (batch.disabled || batch.failed > 0 || batch.delivered < 20) break;
+					}
 					const report = await maintenanceService.run();
 					console.info(
 						JSON.stringify({

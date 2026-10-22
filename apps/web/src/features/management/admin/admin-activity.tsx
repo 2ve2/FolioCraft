@@ -8,7 +8,7 @@ import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { AdminDialog } from "./admin-dialog";
 import { DirectoryFilter, ReadState, useAdminData } from "./admin-directory";
-import { AdminPagination } from "./admin-lists";
+import { AdminPagination } from "./admin-pagination";
 import { directoryCopy } from "./directory-copy";
 import fields from "./operations.module.css";
 import { operationsCopy } from "./operations-copy";

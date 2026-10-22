@@ -42,7 +42,7 @@
 	padding: 15px 20px;
 	background: var(--color-landing-showcase-bar-surface);
 	color: var(--color-landing-showcase-bar-text);
-	font-size: 12px;
+	font-size: var(--text-caption);
 	border-bottom: 1px solid var(--color-landing-showcase-bar-border);
 }
 .showcase-dots {
@@ -123,7 +123,7 @@
 }
 .landing-feature-list article > span {
 	color: var(--color-landing-feature-list-article-span-text);
-	font-family: monospace;
+	font-family: var(--font-mono);
 	padding-top: 4px;
 }
 .landing-details h3 {
@@ -147,7 +147,7 @@
 }
 .landing-steps b {
 	display: block;
-	font: 22px monospace;
+	font: 22px var(--font-mono);
 	color: var(--color-landing-feature-list-article-span-text);
 	margin-bottom: 22px;
 }
@@ -256,7 +256,7 @@
 	.showcase-bar {
 		gap: 10px;
 		padding: 12px;
-		font-size: 11px;
+		font-size: var(--text-caption);
 	}
 }
 @media (prefers-reduced-motion: reduce) {

@@ -8,7 +8,7 @@ import styles from "./asset-picker.module.css";
 import { AssetPreview } from "./asset-preview";
 import { copy } from "./copy";
 import type { Asset, UploadIntent } from "./types";
-import { useAssetUrls } from "./use-asset-urls";
+import { useAssetUrlState } from "./use-asset-urls";
 
 /** Manages owned image uploads, verified attachments and explicit protected file deletion. */
 export function AssetPicker({
@@ -52,7 +52,7 @@ export function AssetPicker({
 	const epoch = useRef(0);
 	const request = useRef(0);
 	const items = library.context === context ? library.items : [];
-	const urls = useAssetUrls(
+	const { urls, loading: urlsLoading } = useAssetUrlState(
 		siteId,
 		open
 			? [...items.filter((a) => a.status === "ready").map((a) => a.id), ...(value ? [value] : [])]
@@ -282,6 +282,8 @@ export function AssetPicker({
 				<AssetPreview
 					selected
 					url={urls[value]}
+					loading={urlsLoading}
+					loadingLabel={t.previewLoading}
 					label={t.selected}
 					unavailable={t.previewUnavailable}
 					retryLabel={t.previewRetry}
@@ -302,6 +304,8 @@ export function AssetPicker({
 							{asset.status === "ready" ? (
 								<AssetPreview
 									url={urls[asset.id]}
+									loading={urlsLoading}
+									loadingLabel={t.previewLoading}
 									label={t.preview}
 									unavailable={t.previewUnavailable}
 									retryLabel={t.previewRetry}

@@ -448,3 +448,19 @@ test("site outcome failure rolls state back and moderation uses the request-owne
 	expect(events.filter((row) => row.status === "attempted")).toHaveLength(2);
 	expect(events.filter((row) => row.status === "succeeded")).toHaveLength(1);
 });
+
+test("ordinary accounts cannot write administrative denial rows", async () => {
+	const member = await fixture();
+	const target = await fixture();
+	for (let i = 0; i < 3; i++)
+		await error(
+			await request(
+				`/api/admin/users/${target.id}/ban`,
+				"POST",
+				{ reason: "Not staff at all", password: member.password },
+				member.cookie,
+			),
+			403,
+		);
+	expect(await audit(member.id)).toHaveLength(0);
+});

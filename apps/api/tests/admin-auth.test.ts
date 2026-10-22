@@ -239,6 +239,26 @@ test("native external HTTP is intercepted while internal calls execute authorita
 				expect((await response.json()).code).toBe("NATIVE_ADMIN_HTTP_DISABLED");
 		}
 	}
+	// The server-only password check is never reachable over HTTP, so it cannot bypass the budget.
+	for (const path of [
+		"/api/auth/verify-password",
+		"/api/auth/verify-password/",
+		"/api/auth/Verify-Password",
+		"/api/auth/verify%2Dpassword",
+		"/api/auth//verify-password",
+	]) {
+		const response = await app.request(`http://localhost:4000${path}`, {
+			method: "POST",
+			headers: {
+				Cookie: owner.cookie,
+				Origin: "http://localhost:3000",
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ password: "not-the-password" }),
+		});
+		expect(response.status, path).toBe(404);
+		expect(response.headers.get("Cache-Control")).toBe("no-store");
+	}
 });
 
 test("all identities are masked, session DTOs exclude secrets and reason bounds apply on the server", async () => {

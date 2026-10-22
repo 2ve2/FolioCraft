@@ -11,6 +11,7 @@ import { enqueueStorageDeletion, sitePrefixes } from "../maintenance";
 import {
 	appendSensitiveOutcome,
 	banSchema,
+	markSensitiveDenial,
 	prepareSensitiveAction,
 	removeSchema,
 	sensitiveSchema,
@@ -82,6 +83,8 @@ export const adminUserService = {
 			email = target.email;
 		} catch (error) {
 			await appendSensitiveOutcome(audit, "failed");
+			// The failed outcome is already audited; do not add a second denial row.
+			if (error && typeof error === "object") markSensitiveDenial(error);
 			throw error;
 		}
 		await appendSensitiveOutcome(audit, "succeeded");

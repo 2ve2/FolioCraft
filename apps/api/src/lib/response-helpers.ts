@@ -100,6 +100,8 @@ export class ApiError extends Error {
 	constructor(
 		public status: 400 | 401 | 403 | 404 | 409 | 413 | 422 | 429 | 500 | 502 | 503,
 		public code: string,
+		/** Seconds until a rate-limited caller may retry; sent as Retry-After. */
+		public retryAfter?: number,
 	) {
 		super(code);
 	}

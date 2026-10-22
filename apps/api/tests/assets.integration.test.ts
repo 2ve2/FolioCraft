@@ -67,6 +67,8 @@ test("images attach, detach and delete while owned drafts and retained releases 
 			);
 			expect(asset.status).toBe("ready");
 			expect(objects.get(`verified/${site.id}/${asset.id}`)).toEqual(bytes);
+			// The staging upload is removed once the verified copy is committed.
+			expect(objects.has(`staging/${site.id}/${intent.id}`)).toBe(false);
 			return asset;
 		};
 		const draftOnly = await uploaded();

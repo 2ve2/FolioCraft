@@ -1,3 +1,4 @@
+import { isStaff } from "@ichnara/contracts/admin-policy";
 import type { ErrorHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { ZodError } from "zod";
@@ -13,9 +14,12 @@ import { recordSensitiveDenial, sensitiveRoute } from "../services/admin/sensiti
 export const errorHandler: ErrorHandler = async (error, c) => {
 	const action = ["POST", "PATCH"].includes(c.req.method) ? sensitiveRoute(c.req.path) : undefined;
 	const actor = c.get("authSession");
+	// Only staff denials are audit-worthy; ordinary accounts are refused by the admin gate and must
+	// not be able to fill the administrative audit log.
 	if (
 		action &&
 		actor?.user &&
+		isStaff(actor.user.role) &&
 		((error instanceof ApiError && error.status < 500) ||
 			(error instanceof ApiError && error.code === "ADMIN_ACTION_UNAVAILABLE") ||
 			error instanceof ZodError ||
@@ -27,7 +31,10 @@ export const errorHandler: ErrorHandler = async (error, c) => {
 			return errorResponse(c, "Audit unavailable", 503, "ADMIN_AUDIT_UNAVAILABLE");
 		}
 	}
-	if (error instanceof ApiError) return errorResponse(c, error.code, error.status, error.code);
+	if (error instanceof ApiError) {
+		if (error.retryAfter !== undefined) c.header("Retry-After", String(error.retryAfter));
+		return errorResponse(c, error.code, error.status, error.code);
+	}
 	if (error instanceof ZodError) return validationErrorResponse(c, error.flatten());
 	if (error instanceof SyntaxError)
 		return errorResponse(c, "Invalid JSON body", 400, "INVALID_JSON");

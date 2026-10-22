@@ -144,35 +144,8 @@ textarea {
 .brand {
 	display: flex;
 	align-items: center;
-	gap: 11px;
 	direction: ltr;
-	font-family: "Segoe UI", Arial, sans-serif;
-	font-weight: 750;
-	font-size: 23px;
-	letter-spacing: -0.8px;
 	white-space: nowrap;
-}
-.brand-mark {
-	background: var(--purple);
-	color: var(--color-surface);
-	width: 35px;
-	height: 38px;
-	display: grid;
-	place-items: center;
-	border-radius: 11px 11px 4px 11px;
-	box-shadow: 0 4px 10px var(--color-brand-shadow);
-}
-.brand-light {
-	font-weight: 450;
-}
-.brand small {
-	font-weight: 600;
-	display: block;
-	font-size: 12px;
-	letter-spacing: 0.35px;
-	line-height: 1.2;
-	color: var(--color-brand-caption);
-	margin-top: 3px;
 }
 .primary,
 .secondary,

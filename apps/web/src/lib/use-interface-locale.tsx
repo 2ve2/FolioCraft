@@ -5,6 +5,7 @@ import { createContext, type ReactNode, useCallback, useContext, useEffect } fro
 import { defaultLocale, localeCookie, localeHref, splitLocalePath } from "./locale";
 
 const LocaleContext = createContext<Locale>(defaultLocale);
+const LocalePinnedContext = createContext(false);
 
 /** Saves the interface language for requests that do not carry it in the path. */
 function rememberLocale(locale: Locale) {
@@ -20,17 +21,27 @@ function rememberLocale(locale: Locale) {
 export function LocaleProvider({
 	locale,
 	remember = true,
+	pinned = false,
 	children,
 }: {
 	locale: Locale;
 	remember?: boolean;
+	/** The language is fixed by content (a published portfolio), so switching cannot apply. */
+	pinned?: boolean;
 	children: ReactNode;
 }) {
 	useEffect(() => {
 		if (remember) rememberLocale(locale);
 	}, [locale, remember]);
-	return <LocaleContext.Provider value={locale}>{children}</LocaleContext.Provider>;
+	return (
+		<LocaleContext.Provider value={locale}>
+			<LocalePinnedContext.Provider value={pinned}>{children}</LocalePinnedContext.Provider>
+		</LocaleContext.Provider>
+	);
 }
+
+/** True when the page language comes from published content rather than the visitor's choice. */
+export const useLocalePinned = () => useContext(LocalePinnedContext);
 
 /**
  * Returns the interface language of the current route and a switcher. The language is part

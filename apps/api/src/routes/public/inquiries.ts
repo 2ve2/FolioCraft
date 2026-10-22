@@ -21,7 +21,8 @@ publicInquiries.post("/:slug/inquiries", async (c) => {
 	const data = inquiryInput.parse(await c.req.json());
 	const ip = c.req.header("x-folio-client-ip") ?? "unknown";
 	for (const [key, max, window] of [
-		[`inquiry:${slug}:${ip}`, 5, 60],
+		// One sender cannot use up the site's hourly budget: both windows are an hour long.
+		[`inquiry:${slug}:${ip}`, 5, 3600],
 		[`inquiry:site:${slug}`, 60, 3600],
 	] as const) {
 		const limit = await rateLimitService.consume(key, max, window);

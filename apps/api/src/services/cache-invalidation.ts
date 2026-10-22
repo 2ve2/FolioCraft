@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { newId } from "@ichnara/contracts";
 import { REVALIDATION_PATH } from "@ichnara/contracts/public-cache";
 import { captureMessage } from "@sentry/cloudflare";
-import { and, asc, desc, eq, inArray, lt, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, lt, or, sql } from "drizzle-orm";
 import { db } from "../db";
 import { cacheInvalidations } from "../db/schema/cache";
 
@@ -26,6 +26,12 @@ export type RevalidationBindings = {
 
 /** Lives beside, never inside, the web Worker's incremental-cache keys in the same bucket. */
 export const PENDING_SIGNAL_KEY = "ichnara-signals/cache-invalidation-pending";
+/**
+ * The minute retry backs off 2, 4, 8... up to 60 minutes per intent and gives up after this many
+ * failures (about three hours), leaving the intent to the daily backstop so a lasting outage does
+ * not keep the database awake every minute.
+ */
+export const MAX_RETRY_ATTEMPTS = 8;
 
 /** Records that a delivery failed, so the minute retry knows the database has work for it. */
 async function markPending(signal: SignalBucket | undefined) {
@@ -38,6 +44,17 @@ async function markPending(signal: SignalBucket | undefined) {
 		console.error(JSON.stringify({ event: "cache_signal_failed" }));
 	}
 }
+/** Intents the minute retry may attempt now: never failed, or past their backoff and under the limit. */
+const retryDue = or(
+	eq(cacheInvalidations.attempts, 0),
+	and(
+		lt(cacheInvalidations.attempts, MAX_RETRY_ATTEMPTS),
+		lt(
+			cacheInvalidations.updatedAt,
+			sql`now() - least(power(2, ${cacheInvalidations.attempts}), 60) * interval '1 minute'`,
+		),
+	),
+);
 type Delivery = (intent: { siteId: string; slug: string }) => Promise<void>;
 const deliveryContext = new AsyncLocalStorage<Delivery | undefined>();
 const affectedSites = new AsyncLocalStorage<Set<string>>();
@@ -55,9 +72,13 @@ export function revalidationDelivery(
 	const secret = bindings.PORTFOLIO_REVALIDATION_SECRET;
 	const binding = bindings.PORTFOLIO_REVALIDATION;
 	if (!binding && !localUrl) return undefined;
+	// A target without its secret is a configuration gap, not a delivery failure to retry forever.
+	if (!secret || secret.length < 32) {
+		console.error(JSON.stringify({ event: "cache_revalidation_unconfigured" }));
+		return undefined;
+	}
 	return async (intent) => {
 		try {
-			if (!secret || secret.length < 32) throw new Error("CACHE_REVALIDATION_UNCONFIGURED");
 			const request = new Request(localUrl ?? `https://portfolio.internal${REVALIDATION_PATH}`, {
 				method: "POST",
 				headers: { "content-type": "application/json", authorization: `Bearer ${secret}` },
@@ -81,7 +102,12 @@ export function withRevalidationDelivery<T>(delivery: Delivery | undefined, oper
 
 export const cacheInvalidationService = {
 	/** Acknowledges only the generation actually delivered; concurrent newer changes remain pending. */
-	async flush(deliver = deliveryContext.getStore(), limit = 20, siteIds?: string[]) {
+	async flush(
+		deliver = deliveryContext.getStore(),
+		limit = 20,
+		siteIds?: string[],
+		{ backoff = false }: { backoff?: boolean } = {},
+	) {
 		if (!deliver) return { delivered: 0, failed: 0, disabled: true };
 		if (siteIds?.length === 0) return { delivered: 0, failed: 0, disabled: false };
 		const pending = await db
@@ -91,6 +117,7 @@ export const cacheInvalidationService = {
 				and(
 					lt(cacheInvalidations.deliveredVersion, cacheInvalidations.version),
 					siteIds ? inArray(cacheInvalidations.siteId, siteIds) : undefined,
+					backoff ? retryDue : undefined,
 				),
 			)
 			.orderBy(siteIds ? desc(cacheInvalidations.updatedAt) : asc(cacheInvalidations.updatedAt))
@@ -148,11 +175,17 @@ export const cacheInvalidationService = {
 		const marker = await signal.head(PENDING_SIGNAL_KEY);
 		if (marker?.customMetadata?.state !== "pending") return { skipped: true };
 		return withDatabase(async () => {
-			const report = await this.flush(deliver);
+			const report = await this.flush(deliver, 20, undefined, { backoff: true });
+			// Intents past the retry limit no longer keep the signal (and the database) awake.
 			const [remaining] = await db
 				.select({ siteId: cacheInvalidations.siteId })
 				.from(cacheInvalidations)
-				.where(lt(cacheInvalidations.deliveredVersion, cacheInvalidations.version))
+				.where(
+					and(
+						lt(cacheInvalidations.deliveredVersion, cacheInvalidations.version),
+						lt(cacheInvalidations.attempts, MAX_RETRY_ATTEMPTS),
+					),
+				)
 				.limit(1);
 			if (!remaining)
 				await signal.put(PENDING_SIGNAL_KEY, "", {

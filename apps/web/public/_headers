@@ -1,0 +1,9 @@
+# Workers Static Assets serves these files without running the web Worker, so the security
+# headers from next.config.ts do not apply to them. Keep them consistent here.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Brand SVGs are images: never let them run scripts or load other resources.
+/brand/*
+  Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; sandbox

@@ -9,7 +9,7 @@
 	background: var(--color-tooltip-bubble-surface);
 	color: var(--color-surface);
 	box-shadow: 0 6px 20px var(--color-tooltip-bubble-shadow);
-	font-family: "Noto Sans Arabic Variable", sans-serif;
+	font-family: var(--font-ui);
 	font-size: 13px;
 	font-weight: 500;
 	line-height: 1.7;

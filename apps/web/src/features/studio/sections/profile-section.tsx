@@ -24,6 +24,7 @@ export function ProfileSection({ draft, site, locale, update }: EditorSectionPro
 			</div>
 			<Field label={t.name}>
 				<input
+					dir="auto"
 					value={profile.name}
 					maxLength={100}
 					required
@@ -32,6 +33,7 @@ export function ProfileSection({ draft, site, locale, update }: EditorSectionPro
 			</Field>
 			<Field label={t.role}>
 				<input
+					dir="auto"
 					value={profile.role}
 					maxLength={140}
 					onChange={(e) => updateProfile("role", e.target.value)}
@@ -48,6 +50,7 @@ export function ProfileSection({ draft, site, locale, update }: EditorSectionPro
 			</Field>
 			<Field label={t.location}>
 				<input
+					dir="auto"
 					maxLength={100}
 					value={profile.location}
 					onChange={(e) => updateProfile("location", e.target.value)}
@@ -96,6 +99,7 @@ export function ProfileSection({ draft, site, locale, update }: EditorSectionPro
 				<div className="collection-item" key={index}>
 					<Field label={locale === "ar" ? "اسم الرابط" : "Link label"}>
 						<input
+							dir="auto"
 							maxLength={50}
 							value={link.label}
 							onChange={(e) => {

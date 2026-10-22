@@ -27,11 +27,26 @@ const cursorSchema = z.object({ createdAt: z.iso.datetime(), id: idSchema }).str
 export function reportIpHash(address: string) {
 	if (!env.REPORT_IP_SALT) throw new ApiError(503, "REPORTING_UNAVAILABLE");
 	if (!isIP(address)) throw new ApiError(400, "CLIENT_IP_REQUIRED");
-	// Normalize IPv6 textual variants before hashing so alternate spelling cannot split a bucket.
-	const normalized = isIP(address) === 6 ? new URL(`http://[${address}]/`).hostname : address;
+	// One IPv6 subscriber usually holds a whole /64, so it is one reporter, not 2^64 of them.
+	const normalized = isIP(address) === 6 ? ipv6Network64(address) : address;
 	return createHmac("sha256", env.REPORT_IP_SALT)
-		.update(`ichnara:report-ip:v1\0${normalized}`)
+		.update(`ichnara:report-ip:v2\0${normalized}`)
 		.digest("hex");
+}
+
+/** Returns the canonical /64 network of an IPv6 address, e.g. "2001:db8:0:0::/64". */
+function ipv6Network64(address: string) {
+	const host = new URL(`http://[${address}]/`).hostname.slice(1, -1);
+	const [head, tail = ""] = host.split("::");
+	const left = head ? head.split(":") : [];
+	const right = tail ? tail.split(":") : [];
+	const groups = host.includes("::")
+		? [...left, ...Array(8 - left.length - right.length).fill("0"), ...right]
+		: left;
+	return `${groups
+		.slice(0, 4)
+		.map((group) => Number.parseInt(group, 16).toString(16))
+		.join(":")}::/64`;
 }
 
 /** Excludes stored IP hashes and always masks reporter contact details, for every staff role. */
@@ -73,7 +88,7 @@ export const reportService = {
 			[`report:site:${site.id}`, reportLimits.site],
 		] as const) {
 			const limit = await rateLimitService.consume(key, max, reportLimits.windowSeconds);
-			if (!limit.allowed) throw new ApiError(429, "RATE_LIMITED");
+			if (!limit.allowed) throw new ApiError(429, "RATE_LIMITED", limit.retryAfter ?? undefined);
 		}
 		const fingerprint = createHash("sha256")
 			.update(

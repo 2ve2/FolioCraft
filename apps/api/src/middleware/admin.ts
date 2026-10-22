@@ -60,7 +60,7 @@ export const requireAdmin = createMiddleware<AuthEnv>(async (c, next) => {
 	await next();
 });
 
-/** Blocks native administration over HTTP; server auth.api calls still execute Better Auth hooks. */
+/** Blocks native administration and server-only auth endpoints over HTTP; server auth.api calls still run. */
 export const blockNativeAdminHttp = createMiddleware<AuthEnv>(async (c, next) => {
 	let path: string;
 	try {
@@ -72,6 +72,13 @@ export const blockNativeAdminHttp = createMiddleware<AuthEnv>(async (c, next) =>
 	if (/^\/api\/auth\/admin(?:\/|$)/i.test(path)) {
 		c.header("Cache-Control", "no-store");
 		throw new ApiError(403, "NATIVE_ADMIN_HTTP_DISABLED");
+	}
+	// verify-password is server-only in Better Auth, but better-call still routes it over HTTP. Over
+	// HTTP it would be an unbudgeted password oracle for a stolen session; sensitive actions call
+	// it in-process behind the password-failure budget instead.
+	if (/^\/api\/auth\/verify-password\/?$/i.test(path)) {
+		c.header("Cache-Control", "no-store");
+		throw new ApiError(404, "NOT_FOUND");
 	}
 	await next();
 });

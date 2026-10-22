@@ -6,7 +6,7 @@ import {
 } from "@ichnara/contracts/public-cache";
 
 /** Compares fixed-size digests in constant time, including absent/wrong credentials. */
-export function revalidationAuthorized(header: string | null, secret: string | undefined) {
+function revalidationAuthorized(header: string | null, secret: string | undefined) {
 	const expected = createHash("sha256")
 		.update(`Bearer ${secret ?? ""}`)
 		.digest();
