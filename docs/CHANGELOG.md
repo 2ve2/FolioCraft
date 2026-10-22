@@ -1,5 +1,10 @@
 # Action log
 
+## 2026-10-22 — Review fixes on the monitoring branch
+- `workers` CI failed on this branch: `test:worker-monitoring` could not resolve the API alias `@aws-sdk/xml-builder/dist-cjs/index.js` from its generated config under `work/` on a clean install. Reproduced locally on a clean install; the harness now resolves the alias from `apps/api/package.json`. Result: 20/20, and 28/28 with `--web-built` after `build:cloudflare`.
+- Removed the operator-status sentence ("external alert setup and activation have not yet been verified") from the Arabic and English privacy notice; rollout status stays in MONITORING.md/STATUS.
+- Ported the Workers mail log-wait fix (PR #6) so the known log-delivery race cannot fail this branch's `workers` job.
+
 ## 2026-10-22 — Deterministic Workers mail log assertions
 - `test:worker-mail` failed intermittently in CI (`server-error` on main run 39629329184, `network` on PR #5 run 39703232423) although the same tree passed elsewhere. Cause: Miniflare delivers structured logs on a separate channel that can trail the HTTP response, and the test searched the logs once, immediately.
 - Proof: delaying every captured log line by 50 ms made the unchanged test fail at its first scenario. `scripts/test-worker-mail.ts` now waits (up to 5 s, polling) for the correlated log line and lets trailing lines arrive before the private-value scan. With the same 50 ms delay the fixed test passes 15/15; an intentionally wrong expected code still fails with "Missing correlated log: server-error".
