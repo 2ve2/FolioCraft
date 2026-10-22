@@ -53,6 +53,10 @@ Better Auth limits are database-backed: general window100 requests/60 seconds; s
 
 Private `Site`: `{id,slug,revision,publishedReleaseId,draft}`. Currently one site per account. Globally unique `slug` is3–50 lowercase Latin letters/digits with separator hyphens.
 
+Since2026-10-22, authenticated `GET /api/sites` additionally returns `sessionIdentity: {userId,sessionId}` alongside `status` and `result`, outside the unchanged `Site` DTO. These are the requesting account ID and native session record ID from the same `requireAuth` context that authorizes the owned read. Neither is a session token or credential. Only this private GET includes the binding; signed-out requests still return401 without it. Preserve `Cache-Control: no-store`; never log, persist, cache or expose these values in public output.
+
+The studio may start this read with the existing signed-in hint and transient cross-tab observation available, but may use its result only when both IDs exactly match the successfully verified native session and its in-flight generation is still valid. Mismatched/missing metadata, sign-out, session mutation, cross-tab notification or unmount discards it and uses the normal authenticated load. Old API deployments without metadata discard speculation and perform the normal authenticated read. The hint grants no access. No cookie, CORS, CSP or Better Auth configuration changes accompany this contract extension.
+
 | Method and path | Request / result |
 |---|---|
 | `GET /api/sites` | Owned site or `null` |

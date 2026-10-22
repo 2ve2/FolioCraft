@@ -16,6 +16,7 @@ import { copy } from "./copy";
 import { formatDraftIssues } from "./draft-errors";
 import { DraftImportError, readDraftBackup } from "./draft-import";
 import type { SaveState, Section } from "./types";
+import { startupSession, useStartupSiteRead } from "./use-startup-site-read";
 
 /** Owns authenticated draft loading, recovery, revisioned saves and publication operations. */
 export function useStudioController() {
@@ -25,9 +26,11 @@ export function useStudioController() {
 	const {
 		data: session,
 		isPending,
+		isRefetching,
 		error: sessionError,
 		refetch: refetchSession,
 	} = useAccountSession();
+	const startupRead = useStartupSiteRead();
 	const sessionIdentity = `${session?.user.id ?? ""}:${session?.session.id ?? ""}`;
 	const sessionIdentityRef = useRef(sessionIdentity);
 	sessionIdentityRef.current = sessionIdentity;
@@ -132,14 +135,28 @@ export function useStudioController() {
 			/** Rejects completion work from stale requests, sessions or unmounted views. */
 			const current = () =>
 				identity === sessionIdentityRef.current &&
+				identity === startupSession().identity &&
 				version === siteLoadVersion.current &&
 				mounted.current;
 
 			setLoadError(false);
 			setLoaded(false);
 			try {
-				const value = await api<Site | null>("/api/sites");
+				const prefetched = await startupRead.current?.take(identity, startupSession);
 				if (!current()) return;
+				// A native change while waiting must finish session verification before a new read.
+				if (startupSession().pending) {
+					requestedIdentity.current = "";
+					return;
+				}
+				const value = prefetched?.accepted
+					? prefetched.value
+					: await api<Site | null>("/api/sites");
+				if (!current()) return;
+				if (startupSession().pending) {
+					requestedIdentity.current = "";
+					return;
+				}
 				acceptSite(value);
 				const previous = recoveries.current.get(owner);
 				if (recover && value && previous?.site.id === value.id) {
@@ -168,13 +185,13 @@ export function useStudioController() {
 				if (current()) setLoaded(true);
 			}
 		},
-		[acceptSite, rememberEdits],
+		[acceptSite, rememberEdits, startupRead],
 	);
 
 	const userId = session?.user?.id;
 	const requestedIdentity = useRef("");
 	useEffect(() => {
-		if (userId && !isPending) {
+		if (userId && !isPending && !isRefetching) {
 			if (requestedIdentity.current !== sessionIdentity) {
 				requestedIdentity.current = sessionIdentity;
 				if (timer.current) clearTimeout(timer.current);
@@ -182,7 +199,7 @@ export function useStudioController() {
 				setBusy(false);
 				void loadSite(true);
 			}
-		} else if (!isPending) {
+		} else if (!isPending && !userId) {
 			requestedIdentity.current = "";
 			siteLoadVersion.current += 1;
 			rememberEdits();
@@ -192,7 +209,7 @@ export function useStudioController() {
 			acceptSite(null);
 			setLoaded(false);
 		}
-	}, [userId, sessionIdentity, isPending, loadSite, acceptSite, rememberEdits]);
+	}, [userId, sessionIdentity, isPending, isRefetching, loadSite, acceptSite, rememberEdits]);
 
 	useEffect(() => {
 		/** Warns before navigation when the current draft has unsaved edits. */

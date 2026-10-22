@@ -1,5 +1,14 @@
 # Source structure guide
 
+## Studio startup — 2026-10-22
+
+- `features/portfolio/portfolio-preview.tsx` measures the initial private preview scale before paint, avoiding a fallback-width flash.
+- `features/studio/studio-skeleton.tsx` and `styles/studio-skeleton.css` render neutral account/draft blocks using the real header, sidebar, preview toolbar and extracted `sections/content-header.tsx`. The single live status sits outside the busy subtree.
+- `features/studio/startup-site-read.ts` owns one in-memory speculative result, exact server/native session matching and cancellation. `use-startup-site-read.ts` subscribes before reading and handles native/store/storage/transient cross-tab invalidation. `lib/auth-client.ts` mirrors mutation signals without identity data or changed client options; unsupported channels retain the sequential path. `lib/api.ts` exposes the envelope while existing callers still receive only result.
+- `packages/contracts/src/index.ts` exports the strict two-ID studioSessionSchema. `apps/api/src/routes/sites/drafts.ts` adds only the authenticated user/session record IDs to GET /api/sites through the existing response helper. The Site DTO and ownership middleware are unchanged.
+- `apps/api/tests/studio-session.integration.test.ts`, web startup/skeleton tests and `e2e/studio-startup.spec.ts` cover requester binding,401, double-ID mismatches, held-response chrome, geometry, real sign-out and cross-tab cancellation, reduced motion and a working language switch.
+- `e2e/fixtures.ts` owns the shared native rate-budget-aware openStudioSignedIn helper. Ready-workspace selectors exclude aria-busy skeletons to preserve existing session-test meaning. `scripts/test-e2e.ts` keeps child temporary files in project-owned work/e2e-tmp.
+
 ## Published portfolio ISR — 2026-10-22
 
 - `packages/contracts/src/public-cache.ts`: bounded private protocol, reserved paths, site/slug tags and delivery receipts.

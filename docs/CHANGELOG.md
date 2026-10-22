@@ -1,4 +1,24 @@
+# Studio startup — scope, 2026-10-22
+
+- Measure production Next/Bun/local PostgreSQL startup before and after, Arabic/English at 1440/390, ten runs per delay/viewport/locale cell.
+- Render neutral accessible workspace chrome immediately; safely overlap hinted site reads with session verification, preserving authentication, ownership and in-memory-only data.
+- Add focused regression coverage, run every required quality gate, record evidence and open an unmerged PR. No hosted operations or secret access. The later human approval permits only the private double-ID envelope extension; the reproduced main audit failure required compatible updates of existing dependencies.
+
 # Action log
+
+## 2026-10-22 — Studio startup evidence and handoff
+- Published `9f2f92f` and `c69cd20` on `codex/studio-startup`, opened unmerged PR11 against main and attached it to this chat. No deployment.
+- Recorded the formal80-before/80-after production matrix, exact request timing samples, whole-page and settled-transition CLS, fixed-frame geometry, eight real fixture screenshots, gate output and manual API-first/web-second commands in dated evidence. Final corrected implementation passes all13 gates, including54 Chromium journeys; the separate evidence-commit rerun also passed all13 commands (26/26 final command executions exit0).
+- Updated STATUS/README handoff and API/decision/source/dependency/Cloudflare notes. No new resource/secret/migration is required. Cleanup:0 users remain locally; owned PostgreSQL stopped and4300/4301/4400/55436 closed. Source c69cd20 passed validate/workers/integration/e2e in GitHub run39836222837; final documentation-head CI is not preclaimed. Active source work:none; next action is human review/merge/manual deployment. Unrelated ADMIN_CONSOLE_TASK remains untouched.
+
+
+## 2026-10-22 — Immediate, session-bound studio startup
+- Reused the real workspace chrome, fixed content heading and preview geometry with neutral disabled data areas, a working language switch and one localized live status outside the busy subtree. A pre-paint preview measurement prevents the initial fallback scale from flashing.
+- Added one mount-local hinted site read with cancellation, synchronous native-session checks, exact requester/session envelope matching and authenticated fallback. The human approved the two non-secret identifiers on2026-10-22; Site, cookie/auth/CORS/CSP options and ownership checks remain unchanged. Transient identity-free cross-tab mutation notifications cover native sign-in; unsupported browsers use sequential loading.
+- Added API requester/no-site/401 and web mismatch/accessibility tests, seven real production browser journeys, fixed-chrome bounds and transition-CLS assertions. Moved the existing budget-aware real sign-in helper; original session tests retain their meaning. The test runner uses project-owned temporary space.
+- Verification before final preview-scale correction: all13 commands passed (web58, API90/12 existing conditional skips plus MFA11, database Workers14, storage8, mail15, Chromium54, cache runtime16); a stronger subsequent assertion found Arabic preview-scale CLS0.02234. Four corrected locale/viewport transition tests now pass with CLS0. Final corrected source passed all13 gates again: frozen install439; audit539 clean; types; Biome463; web58/0/769; API90/12 unchanged conditional skips/0/5444, native MFA11/0/308 and database Workers14; storage8; mail15; Next/OpenNext50 routes; API dry run; Chromium54/54, all four transition CLS0; real local cache runtime16. Accepted remeasurement:80 after/80 formal before, overlap80/80, loading screens0/80, delayed editable medians1665–1685ms versus3185–3216ms. Detailed evidence/handoff is the next separate step.
+- Affected source: studio components/styles/controller/startup read, portfolio preview measurement, API response/site route, contracts, web auth/API helpers and focused tests. API.md/DECISIONS.md/SOURCE_STRUCTURE.md describe the binding and responsibilities. No deployment or provider operation.
+
 
 ## 2026-10-22 — Signed-in entry and tab-return session checks
 - Scope: three human reports from the trial (loading page before the product page, loading page after returning to the tab, bare address not opening the studio while signed in). Branch `claude/modest-davinci-osg31w` restarted from `main` `1ec5337` after PR #2 merged.
@@ -1158,3 +1178,9 @@ Human explicitly selected bare MAIL_FROM=no-reply@lord2ve.tech rather than chang
 - Repeated all11 gates before this documentation commit:all exit0, preserving final counts in the evidence. Baseline plus three source states plus handoff totals55 successful command executions.48 screenshot pairs remain0 pixels;80 contrast pairs remain identical.
 - Exact local fixture cleanup0 remaining; final local folio_test0 users; all owned servers stopped and4300/4400/55435 closed. Unrelated untracked ADMIN_CONSOLE_TASK.md remains untouched. No hosted/provider/deployment operation occurred.
 - At the recorded source-CI snapshot validate/integration succeeded while workers/e2e ran; the final documentation-head checks are not preclaimed. No required human provisioning/secret/migration/deployment command. Next action:human PR review/current checks.
+
+## 2026-10-22 — Studio prerequisite: compatible security releases
+- Updated existing Next16.4.0→16.4.1 and OpenNext1.20.11→1.20.13 after reproducing two audit findings against main's original lockfile. Registry metadata confirms the paired versions' compatibility. No new direct dependency.
+- Preserved the two cache fail-closed/monotonicity patches; removed the manifest hunk now implemented upstream. Changed apps/web/package.json, package.json, bun.lock and the versioned adapter patch.
+- The combined prerequisite/frame snapshot passed all12 requested gates: audit539 clean; web45; API88 plus existing12 conditional skips and separate native MFA11; database Workers14; storage8; mail15; Next/OpenNext50 static routes; API dry run; Chromium51. Check logs are recorded in work/studio-startup/shell3-*. Production behavior remains unverified and no deployment occurred.
+- Temporary-directory quota and shared-dependency-copy failures were harness issues, resolved with project-owned TMPDIR and fresh installation. Session-bound optimization and its final expanded verification are a separate pending step.

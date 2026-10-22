@@ -1,5 +1,12 @@
 # Current status
 
+## Latest completed work — studio startup, 2026-10-22
+- Branch `codex/studio-startup` from freshly fetched main `a7eb3d3`; [PR11](https://github.com/2ve2/FolioCraft/pull/11) targets main, open and unmerged. Completed source: `9f2f92f` compatible security releases and `c69cd20` immediate session-bound studio startup. Final evidence, numeric samples and eight screenshots are saved in a separate documentation commit.
+- Reused actual bilingual/RTL workspace chrome with neutral account/draft blocks, one localized live status and working language switching. Only the private GET envelope adds the two human-approved non-secret requester/session IDs (confirmed2026-10-22). Exact double-ID checks, synchronous native verification, cancellation and normal authenticated fallback guard hinted parallel reads. No cookie/CORS/CSP/Better Auth options, ownership or published-output change.
+- Final corrected implementation passes all13 gates: frozen install439; audit539 clean; typecheck; Biome463; web58/0/769; API90/12 existing conditional skips/0/5444 plus enforced MFA11/0/308 and database Workers14; storage8; mail15; Next/OpenNext50 routes; API dry run; Chromium54/54; real local cache runtime16. All four settled frame-to-loaded transitions have CLS0. A separate complete13-gate rerun also passed before the final evidence commit (26/26 final command executions exit0). Source commit `c69cd20` additionally passed all four GitHub jobs in [run39836222837](https://github.com/2ve2/FolioCraft/actions/runs/39836222837); final documentation-head CI is not preclaimed successful.
+- Accepted local production measurements:80 formal before/80 after samples, Arabic/English1440/390, ten runs per0/1500ms-delay cell. With delay, editable medians3185–3216ms become1665–1685ms; frame medians38–48ms. Session/site overlap80/80; loading-screen appearances0/80; fixed-frame delta at most0.1875px. Whole-page navigation CLS remains separately reported (up to median0.01722 on mobile), not claimed zero. [Full evidence and manual rollout](evidence/2026-10-22-studio-startup.md), [numeric samples](evidence/2026-10-22-studio-startup-metrics.json).
+- Cleanup verified:0 users remain in owned local folio_test, owned PostgreSQL stopped, ports4300/4301/4400/55436 closed; no reset. Active source work:none. Blockers:none locally. Next action: human review/merge PR11 and API-first/web-second deployment using the exact evidence commands. No new resource, secret or migration is required. No deployment, provider mutation, hosted test or secret inspection occurred; unrelated untracked `docs/ADMIN_CONSOLE_TASK.md` remains untouched. Physical devices/Firefox/WebKit, real assets/mail and hosted cold-start gains are not verified.
+
 ## Latest work — signed-in entry and tab-return session checks, 2026-10-22
 - Branch `claude/modest-davinci-osg31w` restarted from `main` `1ec5337` (PRs #1–#9 merged). Not deployed; no hosted access from this session.
 - Fixed: returning to the tab no longer replaces an open studio/administration screen with the "could not verify sign-in" screen when Better Auth's background session re-check fails. Added: signed-in browsers opening the bare address go straight to the studio through an identity-free hint cookie; `/ar` and `/en` keep the product page.
@@ -77,8 +84,8 @@ Typecheck exit 0; Biome 392 files, 0 issues; web 37 pass / 0 fail / 685 assertio
 
 ## Next actions
 
-1. Human: review and merge the signed-in entry pull request, then deploy the web Worker from the independent checkout.
+1. Human: review and merge [studio startup PR11](https://github.com/2ve2/FolioCraft/pull/11), then follow the API-first/web-second commands in its dated evidence.
 2. Human: configure Sentry using MONITORING.md (UptimeRobot is reported done by the human; not verified here).
 3. Human: send one password-reset email to a private mailbox to confirm delivery and the single-language template.
 4. Human: decide the legal page contact address, retention periods and governing law; then set `TRIAL_SKIP_EMAIL_VERIFICATION=false` once mail delivery is confirmed.
-5. Later, together: activate the public cache (PUBLIC_CACHE.md) after Sentry; activate Hyperdrive after measurement (HYPERDRIVE.md). Optional: studio first-load task.
+5. Later, together: activate the public cache (PUBLIC_CACHE.md) after Sentry; activate Hyperdrive after measurement (HYPERDRIVE.md). Studio first-load implementation is prepared in PR11.

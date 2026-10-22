@@ -1,6 +1,6 @@
 # Ichnara — Project handoff
 
-Last updated: 2026-10-20, Asia/Riyadh. Latest work: [audit fixes evidence](evidence/2026-10-20-audit-fixes.md).
+Last updated: 2026-10-22, Asia/Riyadh. Latest work: [studio startup evidence](evidence/2026-10-22-studio-startup.md).
 
 The human confirmed "Ichnara" as the platform name on 2026-10-17. FolioCraft was the prototype working name. Historical references, the existing repository and trial hosts retain that earlier name. On 2026-10-18 the human selected Ichnara again; current root/workspace package names and imports now use ichnara/@ichnara. Worker names, URLs, database resources and existing protocol headers retain their compatibility identifiers.
 
