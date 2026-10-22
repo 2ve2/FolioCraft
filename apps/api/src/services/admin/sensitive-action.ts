@@ -147,7 +147,7 @@ export async function requireOrdinaryTarget(
 }
 
 /** Resolves site/session ownership from storage; browser session tokens are never accepted. */
-export async function resolveSensitiveTarget(
+async function resolveSensitiveTarget(
 	action: SensitiveAction,
 	id: string,
 	expectedUserId?: string,
@@ -174,7 +174,7 @@ export async function resolveSensitiveTarget(
 }
 
 /** Validates the actor again at execution, without imposing session age or changing freshAge. */
-export async function requireSensitiveActor(actor: SensitiveActor, action: SensitiveAction) {
+async function requireSensitiveActor(actor: SensitiveActor, action: SensitiveAction) {
 	if (!isStaff(actor.user.role) || actor.session.impersonatedBy)
 		throw new ApiError(403, "ADMIN_REQUIRED");
 	if (actor.user.banned && (!actor.user.banExpires || actor.user.banExpires > new Date()))

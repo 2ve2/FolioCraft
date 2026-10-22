@@ -10,8 +10,8 @@ import type { AdminSite, AdminUser } from "../shared/types";
 import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { AdminDialog } from "./admin-dialog";
-import { AdminPagination } from "./admin-lists";
 import { AdminManagementDialogs } from "./admin-management-dialogs";
+import { AdminPagination } from "./admin-pagination";
 import { directoryCopy } from "./directory-copy";
 import fields from "./operations.module.css";
 import layout from "./reports.module.css";
@@ -95,7 +95,7 @@ export function DirectoryFilter({
 		</div>
 	);
 }
-export function CursorControls({
+function CursorControls({
 	cursor,
 	next,
 	change,

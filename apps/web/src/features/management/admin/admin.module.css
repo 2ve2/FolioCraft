@@ -1,34 +1,4 @@
 /* Administrative resources, record lists and focused management dialogs. */
-.pageHeader {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 24px;
-	margin-bottom: 28px;
-}
-.pageHeader h1 {
-	font-size: 27px;
-	line-height: 1.4;
-	font-weight: 700;
-	letter-spacing: -0.6px;
-	margin: 0 0 8px;
-}
-.pageHeader p {
-	margin: 0;
-	font-size: 13px;
-	line-height: 1.9;
-	color: var(--admin-muted);
-}
-.refreshArea {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	flex: 0 0 auto;
-}
-.refreshArea small {
-	color: var(--admin-muted);
-	font-size: 13px;
-}
 .iconButton {
 	display: inline-grid;
 	place-items: center;
@@ -62,16 +32,6 @@
 	color: var(--admin-muted);
 	line-height: 1.7;
 }
-.statIcon {
-	width: 30px;
-	height: 30px;
-	display: grid;
-	place-items: center;
-	background: var(--color-icon-surface);
-	color: var(--color-admin-stat-icon-text);
-	border-radius: 9px;
-	flex: 0 0 auto;
-}
 .stat dd {
 	font-size: 33px;
 	font-weight: 650;
@@ -86,13 +46,6 @@
 	line-height: 1.7;
 	color: var(--color-admin-stat-small-text);
 }
-.overviewGrid {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr) 280px;
-	gap: 24px;
-	align-items: start;
-	margin-bottom: 24px;
-}
 .card {
 	background: var(--color-surface);
 	border: 1px solid var(--admin-line);
@@ -100,92 +53,15 @@
 	min-width: 0;
 	overflow: hidden;
 }
-.cardHeader {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 16px;
-	padding: 22px 24px;
-	border-bottom: 1px solid var(--color-admin-card-header-border);
-}
-.cardHeader h2,
 .dialog h2 {
 	font-size: 16px;
 	font-weight: 650;
 	margin: 0;
 }
-.cardHeader p {
-	margin: 6px 0 0;
-	font-size: 13px;
-	color: var(--admin-muted);
-}
-.subtleLink {
-	font-size: 13px;
-	color: var(--admin-accent);
-	display: inline-flex;
-	gap: 6px;
-	align-items: center;
-	white-space: nowrap;
-	min-height: 32px;
-}
-.resourceList {
-	margin: 0;
-	padding: 8px 24px;
-}
-.resourceList > div {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	padding: 20px 0;
-}
-.resourceList > :where(div + div) {
-	border-top: 1px solid var(--color-admin-card-header-border);
-}
-.resourceList dt {
-	font-size: 13px;
-	color: var(--admin-muted);
-	flex: 1;
-}
-.resourceList dd {
-	margin: 0;
-	font-size: 20px;
-	font-weight: 600;
-}
 .caption {
 	font-size: 13px;
 	color: var(--admin-muted);
 	line-height: 1.8;
-}
-.table {
-	border-collapse: collapse;
-	width: 100%;
-	text-align: start;
-	font-size: 13px;
-}
-.table th {
-	text-align: start;
-	padding: 12px 24px;
-	font-size: 13px;
-	font-weight: 500;
-	color: var(--color-admin-table-th-text);
-	background: var(--color-table-hover-surface);
-	border-bottom: 1px solid var(--color-admin-card-header-border);
-}
-.table td {
-	padding: 18px 24px;
-	border-bottom: 1px solid var(--color-admin-card-header-border);
-	min-width: 0;
-}
-.table tr:last-child td {
-	border-bottom: 0;
-}
-.table td:last-child {
-	text-align: end;
-	width: 1%;
-	white-space: nowrap;
-}
-.table tbody tr:hover {
-	background: var(--color-table-hover-surface);
 }
 .identity {
 	display: flex;
@@ -209,16 +85,6 @@
 	color: var(--color-admin-identity-small-text);
 	overflow-wrap: anywhere;
 	line-height: 1.8;
-}
-.rowIcon {
-	display: grid;
-	place-items: center;
-	width: 36px;
-	height: 36px;
-	border-radius: 10px;
-	background: var(--color-admin-row-icon-surface);
-	color: var(--color-admin-row-icon-text);
-	flex: 0 0 auto;
 }
 .badge {
 	display: inline-flex;
@@ -267,13 +133,6 @@
 }
 .rowAction:hover {
 	background: var(--color-admin-row-action-hover-surface);
-}
-.toolbar {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 16px;
-	margin-bottom: 20px;
 }
 .filters {
 	margin: 0;
@@ -326,45 +185,6 @@
 .activity > li + li {
 	border-top: 1px solid var(--color-admin-card-header-border);
 }
-.activityBody {
-	flex: 1;
-	min-width: 0;
-}
-.activityBody > header {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	flex-wrap: wrap;
-}
-.activityBody strong {
-	font-size: 13px;
-	font-weight: 600;
-	overflow-wrap: anywhere;
-}
-.activityBody time {
-	font-size: 13px;
-	color: var(--admin-muted);
-	margin-inline-start: auto;
-}
-.activityBody p {
-	font-size: 13px;
-	color: var(--admin-muted);
-	line-height: 1.8;
-	margin: 8px 0 0;
-	overflow-wrap: anywhere;
-}
-.auditMeta {
-	display: flex;
-	gap: 12px 32px;
-	flex-wrap: wrap;
-	font-size: 13px;
-	color: var(--color-admin-audit-meta-text);
-	margin-top: 12px;
-}
-.auditMeta span {
-	min-width: 0;
-	overflow-wrap: anywhere;
-}
 .empty {
 	text-align: center;
 	padding: 54px 24px;
@@ -404,11 +224,6 @@
 .loading {
 	background: var(--color-admin-loading-surface);
 	color: var(--color-admin-loading-text);
-}
-.skeleton {
-	padding: 28px 24px;
-	color: var(--color-admin-skeleton-text);
-	font-size: 13px;
 }
 .dialog {
 	--admin-line: var(--color-admin-border);
@@ -547,34 +362,8 @@
 	.stats {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
-	.overviewGrid {
-		grid-template-columns: minmax(0, 1fr);
-	}
-	.resourceList {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 20px;
-	}
-	.resourceList > :where(div + div) {
-		border: 0;
-	}
-	.table th,
-	.table td {
-		padding-inline: 18px;
-	}
-	.refreshArea small {
-		display: none;
-	}
 }
 @media (max-width: 600px) {
-	.pageHeader {
-		gap: 16px;
-		align-items: start;
-		margin-bottom: 24px;
-	}
-	.pageHeader h1 {
-		font-size: 23px;
-	}
 	.stats {
 		gap: 12px;
 	}
@@ -584,65 +373,12 @@
 	.stat dd {
 		font-size: 28px;
 	}
-	.statIcon {
-		display: none;
-	}
-	.cardHeader {
-		padding: 18px;
-	}
-	.resourceList {
-		display: block;
-		padding: 0 18px;
-	}
-	.resourceList > :where(div + div) {
-		border-top: 1px solid var(--color-admin-card-header-border);
-	}
-	.toolbar {
-		align-items: start;
-		flex-direction: column;
-	}
 	.filters {
 		width: 100%;
 	}
 	.filters button {
 		flex: 1;
 		padding-inline: 8px;
-	}
-	.table thead {
-		display: none;
-	}
-	.table,
-	.table tbody {
-		display: block;
-	}
-	.table tr {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-		gap: 14px;
-		padding: 18px;
-		border-bottom: 1px solid var(--color-admin-card-header-border);
-	}
-	.table td {
-		display: block;
-		padding: 0;
-		border: 0;
-		width: auto;
-		white-space: normal;
-	}
-	.table td:first-child {
-		grid-column: 1 / -1;
-	}
-	.table td:last-child {
-		width: auto;
-		text-align: start;
-		grid-column: 1 / -1;
-	}
-	.table td[data-label]::before {
-		content: attr(data-label);
-		display: block;
-		font-size: 13px;
-		color: var(--color-admin-table-td-data-label-before-text);
-		margin-bottom: 5px;
 	}
 	.pagination {
 		padding: 16px 18px;
@@ -652,10 +388,6 @@
 	}
 	.activity > li {
 		gap: 10px;
-	}
-	.activityBody time {
-		flex-basis: 100%;
-		margin: 0;
 	}
 	.dialogStats {
 		gap: 8px;
@@ -668,7 +400,6 @@
 		padding: 20px;
 	}
 }
-
 .drawer {
 	margin-block: 0;
 	margin-inline-start: auto;

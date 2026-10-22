@@ -126,13 +126,9 @@
 	--color-admin-gate-card-svg-text: #9d83bf;
 	--color-admin-gate-card-p-text: #7d718b;
 	--color-admin-icon-button-text: #79658f;
-	--color-admin-stat-icon-text: #8b6cbb;
 	--color-admin-stat-small-text: #8a8197;
 	--color-admin-card-header-border: #f0edf4;
-	--color-admin-table-th-text: #8b8298;
 	--color-admin-identity-small-text: #8e859d;
-	--color-admin-row-icon-surface: #f4f1fa;
-	--color-admin-row-icon-text: #977eb7;
 	--color-admin-badge-surface: #f0edf6;
 	--color-admin-badge-text: #81748f;
 	--color-admin-good-surface: #edf7f1;
@@ -149,7 +145,6 @@
 	--color-admin-filters-button-aria-pressed-true-border: #e2dce9;
 	--color-admin-filters-button-aria-pressed-true-text: #594170;
 	--color-admin-filters-button-aria-pressed-true-shadow: #41335608;
-	--color-admin-audit-meta-text: #8b8197;
 	--color-admin-empty-text: #9b8dad;
 	--color-admin-empty-h3-text: #665a78;
 	--color-admin-empty-p-text: #978ba2;
@@ -158,7 +153,6 @@
 	--color-admin-notice-text: #377357;
 	--color-admin-loading-surface: #eeeaf7;
 	--color-admin-loading-text: #8a77a4;
-	--color-admin-skeleton-text: #9c91ab;
 	--color-admin-dialog-shadow: #24103638;
 	--color-admin-dialog-backdrop-surface: #23193666;
 	--color-admin-secondary-border: #e5ddeb;
@@ -166,13 +160,11 @@
 	--color-admin-danger-surface: #fff3f1;
 	--color-admin-danger-border: #f1d8d5;
 	--color-admin-danger-text: #ad5b56;
-	--color-admin-table-td-data-label-before-text: #9d92aa;
 	--color-admin-operation-page-input-border: #d7d3e3;
 	--color-admin-operation-page-input-text: #242037;
 	--color-admin-report-queue-li-border: #e4e4ee;
 	--color-admin-report-queue-time-text: #666;
 	--color-admin-report-handling-textarea-border: #ddd;
-	--color-admin-resource-icon: #9b85b5;
 
 	/* Management roles. */
 	--color-management-panel-input-border: #d9d7df;

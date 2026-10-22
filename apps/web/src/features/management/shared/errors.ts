@@ -23,12 +23,3 @@ export function errorText(error: unknown, locale: Locale) {
 	}
 	return t.failed;
 }
-
-/** Keep native Better Auth status/code while preserving its response protocol. */
-export function nativeError(error: { code?: string; message?: string; status: number }) {
-	return new ApiError(
-		error.code || "REQUEST_FAILED",
-		error.message || "Request failed",
-		error.status,
-	);
-}
