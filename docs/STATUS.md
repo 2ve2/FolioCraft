@@ -1,5 +1,11 @@
 # Current status
 
+## Active work — studio startup, 2026-10-22
+- Branch `codex/studio-startup` from freshly updated main `a7eb3d3`. Source implementation is complete: immediate real neutral workspace frame, one accessible localized status and exact requester/session-bound hinted parallel loading with safe fallback. The human confirmed only the private GET envelope extension on2026-10-22; no token, cookie/CORS/CSP/auth-options change.
+- Reproduced main's two Next audit findings and updated existing compatible Next/OpenNext pins in `9f2f92f`; no new direct dependency. Earlier full13-gate run passed with web58, API90/12 existing conditional skips plus MFA11, Workers14, storage8, mail15, Chromium54 and cache runtime16. A final stronger CLS test exposed the preview's fallback-scale flash; pre-paint measurement fixes it, and all four locale/viewport transitions now have CLS0.
+- Final corrected source: all13 gates pass, including web58, API90/12 existing skips plus MFA11, database Workers14, storage8, mail15, Chromium54 and cache runtime16. All four settled transitions report CLS0;80 after samples show80 overlaps and no loading-screen appearance. With1500ms delayed responses, editable medians1665–1685ms replace3185–3216ms; fixed-frame deltas are at most0.1875px.
+- Active: save implementation, publish branch/PR and finalize evidence/handoff. No local blocker. Next action: finish verification and publish the review branch. No deployment/provider operation/hosted test or secret access; unrelated untracked `docs/ADMIN_CONSOLE_TASK.md` preserved. [Evidence](evidence/2026-10-22-studio-startup.md).
+
 ## Latest work — signed-in entry and tab-return session checks, 2026-10-22
 - Branch `claude/modest-davinci-osg31w` restarted from `main` `1ec5337` (PRs #1–#9 merged). Not deployed; no hosted access from this session.
 - Fixed: returning to the tab no longer replaces an open studio/administration screen with the "could not verify sign-in" screen when Better Auth's background session re-check fails. Added: signed-in browsers opening the bare address go straight to the studio through an identity-free hint cookie; `/ar` and `/en` keep the product page.

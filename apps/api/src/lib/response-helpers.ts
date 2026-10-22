@@ -1,3 +1,4 @@
+import type { StudioSession } from "@ichnara/contracts";
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 
@@ -8,6 +9,7 @@ export interface ApiResponse<T = unknown> {
 	error?: string;
 	code?: string;
 	fields?: unknown;
+	sessionIdentity?: StudioSession;
 }
 
 /** Returns a domain success envelope while preserving the requested HTTP status. */
@@ -16,9 +18,11 @@ export function successResponse<T>(
 	result: T,
 	message?: string,
 	statusCode: 200 | 201 | 202 = 200,
+	sessionIdentity?: StudioSession,
 ): Response {
 	const response: ApiResponse<T> = { status: true, result };
 	if (message) response.message = message;
+	if (sessionIdentity) response.sessionIdentity = sessionIdentity;
 	return c.json(response, statusCode);
 }
 

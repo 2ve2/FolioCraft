@@ -18,7 +18,7 @@ export function WorkspaceSidebar({
 	openAdministration,
 }: {
 	locale: Locale;
-	user: { name: string; email: string; role?: string | null };
+	user: { name: string; email: string; role?: string | null } | null;
 	section: Section;
 	setSection: (section: Section) => void;
 	setMobileTab: (tab: "edit" | "preview") => void;
@@ -66,7 +66,7 @@ export function WorkspaceSidebar({
 						{section === key && <span className="nav-dot" />}
 					</button>
 				))}
-				{isStaff(user.role) && (
+				{isStaff(user?.role) && (
 					<button
 						type="button"
 						className="nav-item"
@@ -84,10 +84,16 @@ export function WorkspaceSidebar({
 					<p>{t.privacy}</p>
 				</div>
 				<div className="account">
-					<span className="avatar">{user.name.slice(0, 1)}</span>
+					<span className="avatar">{user?.name.slice(0, 1)}</span>
 					<span>
-						<b>{user.name}</b>
-						<small dir="ltr">{user.email}</small>
+						{user ? (
+							<>
+								<b>{user.name}</b>
+								<small dir="ltr">{user.email}</small>
+							</>
+						) : (
+							<span className="studio-placeholder studio-placeholder--account" aria-hidden="true" />
+						)}
 					</span>
 					<TooltipButton
 						type="button"

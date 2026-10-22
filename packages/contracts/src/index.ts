@@ -3,6 +3,10 @@ import { idSchema } from "./ids";
 
 export { idSchema, newId } from "./ids";
 
+/** Binds only the private owned-site envelope to its authenticated request, never a credential. */
+export const studioSessionSchema = z.object({ userId: idSchema, sessionId: idSchema }).strict();
+export type StudioSession = z.infer<typeof studioSessionSchema>;
+
 export const localeSchema = z.enum(["ar", "en"]);
 export const slugSchema = z
 	.string()

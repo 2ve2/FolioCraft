@@ -13,7 +13,11 @@ export class ApiError extends Error {
 }
 
 /** Sends credentialed domain requests and preserves stable server failure codes. */
-export async function api<T>(path: string, method = "GET", body?: unknown): Promise<T> {
+export async function apiEnvelope<T>(
+	path: string,
+	method = "GET",
+	body?: unknown,
+): Promise<{ result: T; sessionIdentity?: unknown }> {
 	let response: Response;
 	try {
 		response = await fetch(`${apiOrigin}${path}`, {
@@ -33,5 +37,10 @@ export async function api<T>(path: string, method = "GET", body?: unknown): Prom
 			typeof data?.error === "string" ? data.error : "Request failed",
 			response.status,
 		);
-	return data.result as T;
+	return { result: data.result as T, sessionIdentity: data.sessionIdentity };
+}
+
+/** Keeps existing callers on the unchanged domain-result contract. */
+export async function api<T>(path: string, method = "GET", body?: unknown): Promise<T> {
+	return (await apiEnvelope<T>(path, method, body)).result;
 }

@@ -10,9 +10,13 @@ export const privateSites = new Hono<AuthEnv>();
 privateSites.use("*", requireAuth);
 
 /** Finds the authenticated account's site without exposing another owner. */
-privateSites.get("/", async (c) =>
-	successResponse(c, await siteDraftService.list(c.get("userId"))),
-);
+privateSites.get("/", async (c) => {
+	const session = c.get("authSession");
+	return successResponse(c, await siteDraftService.list(c.get("userId")), undefined, 200, {
+		userId: session.user.id,
+		sessionId: session.session.id,
+	});
+});
 
 /** Creates a portfolio with the validated address and chosen content language. */
 privateSites.post("/", async (c) => {

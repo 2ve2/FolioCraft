@@ -76,7 +76,7 @@ export async function signIn(page: Page, account: Account, locale: Locale) {
 	await page.locator('input[name="password"]').fill(account.password);
 	await page.locator('button[type="submit"]').click();
 	await expect(page).toHaveURL(`${webURL}/${locale}/studio`);
-	await expect(page.locator(".onboarding, .studio-shell")).toBeVisible();
+	await expect(page.locator(".onboarding, .studio-shell:not([aria-busy])")).toBeVisible();
 }
 
 /** Keeps native cookies private in Playwright's per-test request context. */
@@ -110,4 +110,29 @@ export async function switchLanguage(page: Page, from: Locale) {
 		.getByRole("button", { name: from === "ar" ? "لغة الاستوديو" : "Studio language", exact: true })
 		.click();
 	await page.getByRole("option", { name: from === "ar" ? /English/ : /العربية/ }).click();
+}
+
+/**
+ * Signs the browser in through the real API and opens the studio. Every local request shares one
+ * loopback address, so when earlier specs used up the native sign-in budget this waits for the
+ * window Better Auth reports instead of weakening the limit.
+ */
+export async function openStudioSignedIn(
+	page: Page,
+	account: { email: string; password: string },
+	locale: "ar" | "en",
+) {
+	for (let attempt = 0; ; attempt++) {
+		const response = await page.context().request.post(`${apiURL}/api/auth/sign-in/email`, {
+			headers: { Origin: webURL },
+			data: { email: account.email, password: account.password },
+		});
+		if (response.status() !== 429 || attempt === 2) {
+			expect(response.status()).toBe(200);
+			break;
+		}
+		await page.waitForTimeout((Number(response.headers()["x-retry-after"] ?? 60) + 1) * 1_000);
+	}
+	await page.goto(`/${locale}/studio`);
+	await expect(page.locator(".onboarding, .studio-shell:not([aria-busy])")).toBeVisible();
 }

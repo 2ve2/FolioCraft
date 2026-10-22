@@ -16,8 +16,8 @@ export function WorkspacePreview({
 	expandedPreview,
 	setExpandedPreview,
 }: {
-	draft: Draft;
-	site: Site;
+	draft: Draft | null;
+	site: Site | null;
 	locale: Locale;
 	assetUrls: Record<string, string>;
 	device: "desktop" | "mobile";
@@ -27,6 +27,7 @@ export function WorkspacePreview({
 	setExpandedPreview: (expanded: boolean) => void;
 }) {
 	const t = copy[locale];
+	const loading = !draft || !site;
 	return (
 		<section
 			className={`preview-panel ${mobileTab === "edit" ? "mobile-hidden" : ""}`}
@@ -40,6 +41,7 @@ export function WorkspacePreview({
 				<div className="device-controls">
 					<button
 						type="button"
+						disabled={loading}
 						aria-label={t.desktop}
 						aria-pressed={device === "desktop"}
 						className={device === "desktop" ? "active" : ""}
@@ -50,6 +52,7 @@ export function WorkspacePreview({
 					</button>
 					<button
 						type="button"
+						disabled={loading}
 						aria-label={t.mobile}
 						aria-pressed={device === "mobile"}
 						className={device === "mobile" ? "active" : ""}
@@ -59,15 +62,26 @@ export function WorkspacePreview({
 						<span>{t.mobile}</span>
 					</button>
 				</div>
-				<span className="status-pill">{t.draft}</span>
+				<span className="status-pill">
+					{loading ? (
+						<span className="studio-placeholder studio-placeholder--badge" aria-hidden="true" />
+					) : (
+						t.draft
+					)}
+				</span>
 			</div>
 			<div className="preview-expand">
-				<button type="button" className="text-button" onClick={() => setExpandedPreview(true)}>
+				<button
+					type="button"
+					className="text-button"
+					disabled={loading}
+					onClick={() => setExpandedPreview(true)}
+				>
 					<Maximize2 size={16} />
 					{locale === "ar" ? "تكبير المعاينة" : "Expand preview"}
 				</button>
 			</div>
-			{expandedPreview && (
+			{expandedPreview && draft && site && (
 				<ExpandedPortfolioPreview
 					draft={draft}
 					slug={site.slug}
@@ -84,20 +98,40 @@ export function WorkspacePreview({
 						<i />
 						<i />
 					</div>
-					<span dir="ltr">/p/{site.slug}</span>
+					<span dir="ltr">
+						{site ? (
+							`/p/${site.slug}`
+						) : (
+							<span className="studio-placeholder studio-placeholder--address" aria-hidden="true" />
+						)}
+					</span>
 					<span>
 						<Globe2 size={12} />
 					</span>
 				</div>
 				<div className="portfolio-viewport">
-					<PortfolioPreview draft={draft} slug={site.slug} assetUrls={assetUrls} device={device} />
+					{draft && site ? (
+						<PortfolioPreview
+							draft={draft}
+							slug={site.slug}
+							assetUrls={assetUrls}
+							device={device}
+						/>
+					) : (
+						<div className="studio-skeleton-preview" aria-hidden="true">
+							<div className="studio-placeholder studio-placeholder--portrait" />
+							<div className="studio-placeholder studio-placeholder--heading" />
+							<div className="studio-placeholder studio-placeholder--line" />
+							<div className="studio-placeholder studio-placeholder--body" />
+						</div>
+					)}
 				</div>
 			</div>
 			<p className="preview-caption">
 				<Circle size={8} />
 				{t.previewHint}
 			</p>
-			{site.publishedReleaseId && (
+			{site?.publishedReleaseId && (
 				<a className="preview-link" target="_blank" rel="noreferrer" href={`/p/${site.slug}`}>
 					{t.openSite}
 					<LinkArrow locale={locale} />

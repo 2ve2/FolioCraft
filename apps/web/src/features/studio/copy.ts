@@ -1,5 +1,7 @@
 export const copy = {
 	ar: {
+		studioLoading: "جارٍ تحميل الاستوديو الخاص بك",
+		studioTakingLonger: "يستغرق التحميل وقتًا أطول من المعتاد. تحقق من اتصالك بالإنترنت.",
 		publicationUpdated: "تم تحديث الإصدار العام. مسودتك الحالية لم تتغير.",
 		operations: "الرسائل والنشر",
 		admin: "الإدارة",
@@ -158,6 +160,8 @@ export const copy = {
 		startupError: "تعذر التحقق من تسجيل الدخول. حاول مجدداً بعد قليل.",
 	},
 	en: {
+		studioLoading: "Loading your studio",
+		studioTakingLonger: "This is taking longer than usual. Check your internet connection.",
 		publicationUpdated: "Public release updated. Your current draft is unchanged.",
 		operations: "Inbox & releases",
 		admin: "Administration",

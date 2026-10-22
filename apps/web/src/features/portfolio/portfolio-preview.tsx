@@ -1,7 +1,7 @@
 "use client";
 import type { Draft } from "@ichnara/contracts";
 import { Portfolio, PortfolioDetail } from "@ichnara/portfolio";
-import { type MouseEvent, useEffect, useId, useRef, useState } from "react";
+import { type MouseEvent, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { InquiryForm } from "./inquiry-form";
 
 type PreviewProps = {
@@ -35,7 +35,8 @@ export function PortfolioPreview({
 			: actualSize && metrics.width > 0
 				? Math.min(390, metrics.width)
 				: 390;
-	useEffect(() => {
+	// Measure the initial scale before paint so real content never flashes at the fallback width.
+	useLayoutEffect(() => {
 		/** Measures preview content so scaling preserves the selected device layout. */
 		const measure = () => {
 			if (!container.current || !content.current) return;

@@ -12,6 +12,7 @@ export function WorkspaceHeader({
 	section,
 	saveState,
 	busy,
+	loading = false,
 	publish,
 }: {
 	locale: Locale;
@@ -19,6 +20,7 @@ export function WorkspaceHeader({
 	section: Section;
 	saveState: SaveState;
 	busy: boolean;
+	loading?: boolean;
 	publish: () => Promise<void>;
 }) {
 	const t = copy[locale];
@@ -31,24 +33,30 @@ export function WorkspaceHeader({
 			</div>
 			<div className="header-actions">
 				{localeControl}
-				<span className={`save-status state-${saveState}`} role="status">
-					{saveState === "saving" ? (
-						<LoaderCircle size={13} className="spin" />
-					) : saveState === "saved" ? (
-						<Check size={13} />
-					) : (
-						<Circle size={9} />
-					)}
-					<span>{t[saveState]}</span>
-				</span>
+				{loading ? (
+					<span className="save-status" aria-hidden="true">
+						<span className="studio-placeholder studio-placeholder--save" />
+					</span>
+				) : (
+					<span className={`save-status state-${saveState}`} role="status">
+						{saveState === "saving" ? (
+							<LoaderCircle size={13} className="spin" />
+						) : saveState === "saved" ? (
+							<Check size={13} />
+						) : (
+							<Circle size={9} />
+						)}
+						<span>{t[saveState]}</span>
+					</span>
+				)}
 				<button
 					type="button"
 					className="primary small"
 					aria-label={t.publish}
-					disabled={busy}
+					disabled={busy || loading}
 					onClick={() => void publish()}
 				>
-					<ButtonContent loading={busy}>
+					<ButtonContent loading={busy && !loading}>
 						<Globe2 size={16} />
 						<span className="publish-label">{t.publish}</span>
 					</ButtonContent>

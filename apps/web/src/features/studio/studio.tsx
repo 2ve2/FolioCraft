@@ -11,6 +11,7 @@ import { OnboardingScreen } from "./onboarding-screen";
 import { AppearanceSection } from "./sections/appearance-section";
 import { ContentSection } from "./sections/content-section";
 import { SettingsSection } from "./sections/settings-section";
+import { StudioSkeleton } from "./studio-skeleton";
 import { useStudioController } from "./use-studio-controller";
 import { WorkspaceHeader } from "./workspace-header";
 import { WorkspacePreview } from "./workspace-preview";
@@ -67,7 +68,8 @@ function StudioWorkspace() {
 		if (!isPending && !sessionError && !session?.user) router.replace(localeHref(locale, "/login"));
 	}, [isPending, sessionError, session?.user, locale, router]);
 	const localeControl = <LanguageSwitch locale={locale} onChange={setLocale} />;
-	if (isPending || signingOut) return <LoadingScreen locale={locale} message={t.authLoading} />;
+	if (signingOut) return <LoadingScreen locale={locale} message={t.authLoading} />;
+	if (isPending) return <StudioSkeleton locale={locale} localeControl={localeControl} />;
 	if (sessionError)
 		return (
 			<LoadingScreen locale={locale} message={t.startupError} error>
@@ -77,9 +79,9 @@ function StudioWorkspace() {
 			</LoadingScreen>
 		);
 
-	if (!session?.user) return <LoadingScreen locale={locale} message={t.authLoading} />;
+	if (!session?.user) return <StudioSkeleton locale={locale} localeControl={localeControl} />;
 
-	if (!loaded || loadError || loadedIdentity !== sessionIdentity)
+	if (loadError)
 		return (
 			<LoadingScreen
 				locale={locale}
@@ -103,6 +105,9 @@ function StudioWorkspace() {
 				)}
 			</LoadingScreen>
 		);
+
+	if (!loaded || loadedIdentity !== sessionIdentity)
+		return <StudioSkeleton locale={locale} localeControl={localeControl} />;
 
 	if (!site || !draft)
 		return (

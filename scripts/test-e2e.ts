@@ -18,7 +18,9 @@ const root = resolve(import.meta.dir, "..");
 const runtime = resolve(root, "work/e2e-runtime");
 const web = "http://127.0.0.1:4300";
 const api = "http://127.0.0.1:4400";
+const temporary = resolve(root, "work/e2e-tmp");
 const environment: Record<string, string> = {
+	TMPDIR: temporary,
 	PATH: process.env.PATH ?? "",
 	HOME: process.env.HOME ?? "",
 	...(process.env.CI ? { CI: "true" } : {}),
@@ -91,6 +93,7 @@ for (const signal of ["SIGTERM", "SIGINT"] as const)
 	});
 
 try {
+	await mkdir(temporary, { recursive: true });
 	await assertFree(4300);
 	await assertFree(4400);
 	await assertFree(4301);

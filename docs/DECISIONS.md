@@ -1,5 +1,16 @@
 # Decision ledger
 
+## 2026-10-22 — Human-confirmed private studio session binding
+- Human explicitly approved only userId and native sessionId in the private GET /api/sites response envelope, outside Site. Never include a token/secret or log the identifiers. Keep private/no-store behavior and all cookie/CORS/CSP/Better Auth configuration unchanged.
+- Both IDs must match the successfully checked native session before consuming a speculative result; otherwise discard and reload through the normal authenticated path. Required API tests prove requester binding and signed-out401; web tests reject mismatches. API.md documents the extension.
+- Rationale: the installed Better Auth client does not broadcast cross-tab sign-in, so event invalidation alone cannot associate independently timed private responses. Engineering detail: mirror native mutation signals over an identity-free transient BroadcastChannel; receiving startup invalidates and asks the existing native session atom to refetch. No ID/token/private data or persistent storage in this channel; no auth options change. If the channel is unavailable, retain sequential startup. Synchronous session checks and the explicit server binding are additional guards.
+
+
+## 2026-10-22 — Immediate neutral studio frame
+- Human-requested: show workspace chrome immediately, preserve bilingual/RTL and session/ownership guarantees, overlap hinted site/session reads safely, no persistent private cache or auth configuration change.
+- Engineering choice, not separately human-confirmed: reuse actual header/sidebar and existing layout selectors with static neutral blocks and one localized live status, avoiding animation entirely. Disable controls except language switching until the authenticated owned site resolves; retain real error/sign-out screens. Measure the initial private preview scale before paint, because the existing post-paint fallback width otherwise creates a visible startup shift.
+
+
 ## 2026-10-22 — Cache invalidation retries are signalled through R2, not polled from PostgreSQL
 - Engineering choice in review (human approved fixing the finding): the minute Cron must not query Neon while nothing is pending. A failed delivery writes a unique R2 `pending` object in the existing cache bucket; the Cron reads only that object and clears it with an etag precondition after draining. Daily maintenance remains the backstop for a signal that could not be written. Alternatives rejected: polling every minute (keeps Neon awake), longer Cron intervals (still frequent wakes, longer staleness), KV (new resource, eventual consistency).
 
