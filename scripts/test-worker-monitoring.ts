@@ -42,7 +42,10 @@ for (const worker of ["api", "web"] as const) {
 						"#image-validation": fileURLToPath(
 							new URL("apps/api/src/lib/storage/image-validation.worker.ts", root),
 						),
-						"@aws-sdk/xml-builder": "@aws-sdk/xml-builder/dist-cjs/index.js",
+						// The generated config lives under work/, so resolve the API alias from the API package.
+						"@aws-sdk/xml-builder": createRequire(new URL("apps/api/package.json", root)).resolve(
+							"@aws-sdk/xml-builder/dist-cjs/index.js",
+						),
 					},
 				}
 			: {}),
