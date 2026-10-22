@@ -6,6 +6,7 @@
 - `TRIAL_SKIP_EMAIL_VERIFICATION="false"` in `apps/api/wrangler.toml` and `apps/api/wrangler.cache.toml`.
 - Studio: an existing signed-in account whose email is not verified gets a confirm-your-email screen with a resend link, retry and sign-out, instead of a generic load error; `EMAIL_NOT_VERIFIED` in other studio operations shows the same message.
 - Docs: OPERATIONS, CLOUDFLARE, API, ARCHITECTURE, LAUNCH, README, STATUS, DECISIONS; evidence `docs/evidence/2026-10-22-email-verification.md`.
+- CI: the e2e job was cancelled twice (PR #12 and #13) at its ten-minute job limit while `playwright install --with-deps` spent over nine minutes on system packages, before any test ran; the same commits passed in other runs. The install step now has its own 15-minute limit, the browser journeys keep ten minutes, and the job is capped at 25.
 - Checks: typecheck 0, Biome clean, web 58/58, guarded API 93 pass / 12 skip / 0 fail, Playwright 54/54; local production-mode verification flow (signup, blocked sign-in, link, sign-in, owned read) passed. Not deployed; hosted mail delivery not verified.
 
 ## 2026-10-22 — Full project audit and cleanup completed
