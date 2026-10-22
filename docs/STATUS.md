@@ -1,5 +1,12 @@
 # Current status
 
+## Latest work — signed-in entry and tab-return session checks, 2026-10-22
+- Branch `claude/modest-davinci-osg31w` restarted from `main` `1ec5337` (PRs #1–#9 merged). Not deployed; no hosted access from this session.
+- Fixed: returning to the tab no longer replaces an open studio/administration screen with the "could not verify sign-in" screen when Better Auth's background session re-check fails. Added: signed-in browsers opening the bare address go straight to the studio through an identity-free hint cookie; `/ar` and `/en` keep the product page.
+- Not reproduced: a loading page before the product page does not exist on `main`; the trial web build may predate PR #2 (unverified).
+- Verification: typecheck exit 0; Biome 453 files, 0 issues; web 43/43; Playwright 44/44 plus new `e2e/session.spec.ts` 3/3; mutation check fails the tab-return test without the fix. [Evidence](evidence/2026-10-22-session-entry.md).
+- Next action: human review of the pull request for this branch, then redeploy the web Worker (no migration, no API change, no new secret).
+
 ## Latest completed work — published portfolio ISR, 2026-10-22
 - Branch `codex/published-isr` from freshly fetched/fast-forwarded main `afac7a3`; independent checkout only. Unrelated untracked `docs/ADMIN_CONSOLE_TASK.md` preserved.
 - Implemented default-off published-document ISR with official R2/SQLite DO adapters, binding-only secret-checked revalidation, transactional PostgreSQL outbox and minute retries. Explicit additive migration0010 preserves existing data and survives account/site cascades. Every named mutation trigger is covered by guarded integration tests.
@@ -66,12 +73,12 @@ Typecheck exit 0; Biome 392 files, 0 issues; web 37 pass / 0 fail / 685 assertio
 
 ## Blockers
 
-- None for the E2E scope. Hosted verification of the pool fix requires the human-operated API deployment and projected-event capture described above.
+- None locally. Hosted verification of every merged change requires the human-operated deployments.
 
 ## Next actions
 
-1. Human: review and merge PR4. This test-only change requires no deployment or production migration.
-2. Human: if not done yet, deploy the API from main for the merged pool fix (PR #3) and capture any pool-error recurrence. No database migration, web deployment or new secret is required.
-3. Human: send one password-reset email to a private mailbox to confirm delivery and the new single-language template.
+1. Human: review and merge the signed-in entry pull request, then deploy the web Worker from the independent checkout.
+2. Human: configure Sentry using MONITORING.md (UptimeRobot is reported done by the human; not verified here).
+3. Human: send one password-reset email to a private mailbox to confirm delivery and the single-language template.
 4. Human: decide the legal page contact address, retention periods and governing law; then set `TRIAL_SKIP_EMAIL_VERIFICATION=false` once mail delivery is confirmed.
-5. Human: review/merge PR5 and configure monitoring using MONITORING.md. Further infrastructure work (Hyperdrive, public response caching), platform color tokens and hosted pool-error follow-up remain outside this task. Staging was cancelled by the human.
+5. Later, together: activate the public cache (PUBLIC_CACHE.md) after Sentry; activate Hyperdrive after measurement (HYPERDRIVE.md). Optional: studio first-load task.
