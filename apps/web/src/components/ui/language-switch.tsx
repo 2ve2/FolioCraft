@@ -8,15 +8,18 @@ export function LanguageSwitch({
 	locale,
 	onChange,
 	label,
+	disabled = false,
 }: {
 	locale: Locale;
 	onChange: (locale: Locale) => void;
 	label?: string;
+	disabled?: boolean;
 }) {
 	const ar = locale === "ar";
 	return (
 		<SelectControl
 			compact
+			disabled={disabled}
 			label={label ?? (ar ? "لغة الاستوديو" : "Studio language")}
 			value={locale}
 			onChange={(value) => onChange(value as Locale)}

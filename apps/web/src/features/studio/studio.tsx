@@ -67,7 +67,7 @@ function StudioWorkspace() {
 	useEffect(() => {
 		if (!isPending && !sessionError && !session?.user) router.replace(localeHref(locale, "/login"));
 	}, [isPending, sessionError, session?.user, locale, router]);
-	const localeControl = <LanguageSwitch locale={locale} onChange={setLocale} />;
+	const localeControl = <LanguageSwitch locale={locale} onChange={setLocale} disabled={busy} />;
 	if (signingOut) return <LoadingScreen locale={locale} message={t.authLoading} />;
 	if (isPending) return <StudioSkeleton locale={locale} localeControl={localeControl} />;
 	if (sessionError)
