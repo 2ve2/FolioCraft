@@ -420,3 +420,8 @@ Human authorizes SMTP_HOST=smtp.resend.com,SMTP_PORT=465,SMTP_SECURE=true,SMTP_U
 ## 2026-10-22 — Signed-in hint cookie for the bare address
 - Human request: a signed-in visitor opening the site should land in the studio. Engineering choice (not separately human-confirmed): keep the API session cookie host-only and unchanged; the web origin stores an identity-free `ichnara-signed-in=1` hint (expires with the session, dropped when the API reports no session) and static redirect rules send only `/` with the hint to `/<locale>/studio`. `/ar` and `/en` keep the product page. The hint is never trusted for access; the studio and API verify the session.
 - Engineering choice: a failed background session re-check keeps the known session on screen instead of an error screen; only a missing session is fatal. Expired sessions are still rejected by the API.
+
+## 2026-10-22 — Audit delegation and unified accent hue (human-confirmed)
+- The human authorized helper agents (subagents) for the full audit ("شغل معك مساعدين"). This covers the 2026-10-22 audit only; AGENTS.md's default of no subagents applies again afterwards unless the human says otherwise.
+- After seeing a before/after comparison of the studio, the human left the choice to the agent ("سوي يلي تريده"). Chosen: the 27 mid-tone violet accent tokens (focus rings, selection borders, status dots, scrollbar thumbs, select chevrons, small icons) take the approved accent hue (237) at their existing lightness and saturation, so secondary accents match #3f46c8. Neutral lavender surfaces, the brand ink and the owner-selectable violet portfolio accent are unchanged. This supersedes the 2026-10-14 violet scrollbar styling.
+
