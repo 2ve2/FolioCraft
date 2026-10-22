@@ -5,12 +5,12 @@ Updated: 2026-10-22, Asia/Riyadh. This page is the short continuation point. Eve
 ## Product and trial
 
 - Ichnara (confirmed name), a bilingual Arabic/English portfolio builder. Friends-only trial on the temporary domain: https://lord2ve.tech (web) and https://api.lord2ve.tech (API).
-- `main` contains PRs #1–#11: audit fixes, `/ar` and `/en` language prefixes, the pool-close fix, the committed Playwright suite, optional Sentry monitoring, optional Hyperdrive, platform color tokens, optional published-page caching (off by default), signed-in entry and tab-return fix, and the immediate studio frame with the Next.js 16.4.1 security update.
+- `main` contains PRs #1–#12 (#12: full audit and cleanup): audit fixes, `/ar` and `/en` language prefixes, the pool-close fix, the committed Playwright suite, optional Sentry monitoring, optional Hyperdrive, platform color tokens, optional published-page caching (off by default), signed-in entry and tab-return fix, and the immediate studio frame with the Next.js 16.4.1 security update.
 - Unknown: which `main` commit each trial Worker runs. The human deploys from the independent checkout; this session cannot reach the trial hosts (network policy).
 
 ## Active work
 
-- Full project audit and cleanup on `claude/modest-davinci-osg31w`, complete and pushed; next step is the human opening and merging its pull request, then deploying API then web (scope in [CHANGELOG.md](CHANGELOG.md)). Done so far: verified-unused admin views, helpers, copy keys, styles and tokens removed; documentation reorganized with history moved to [archive/](archive/). Visual identity unified (fonts, type scale, weights, radii, accent family, page column). A four-part code review found no critical issue; its 21 findings and their status are listed in [evidence/2026-10-22-full-audit.md](evidence/2026-10-22-full-audit.md). 18 findings are fixed with tests; 3 low items stay open with reasons (project slug removal has no UI yet, email-mask policy is a product decision, upload-completion locking needs its own change). Final gates: audit clean, typecheck 0, Biome clean, web 58/58, API 93/12 skip/0, Playwright 54/54.
+- Deployment readiness on `claude/modest-davinci-osg31w`: `db:migrate` needs only `DATABASE_URL`; signup email verification on in both API manifests; studio confirm-your-email state for unverified sessions. Evidence: [evidence/2026-10-22-email-verification.md](evidence/2026-10-22-email-verification.md). Next: human review and merge, then the deployment below.
 
 ## Blockers
 
@@ -18,11 +18,12 @@ Updated: 2026-10-22, Asia/Riyadh. This page is the short continuation point. Eve
 
 ## Next actions (human)
 
-1. The human reported (2026-10-22) that the trial may not have been deployed or migrated since PR #3, so the next deployment carries everything since then. Order: `bun install --frozen-lockfile` in the independent checkout; verified backup; apply the additive migration `0010_volatile_daimon_hellstrom.sql` (from PR #9; unknown whether it was ever applied — `db:migrate` skips migrations already recorded) with `bun run db:migrate` and the Neon `DATABASE_URL` supplied privately; deploy the API; deploy the web; check `/health`, sign-in and a published portfolio. No new required secret (the revalidation secret and URL stay optional while caching is off).
-2. Configure Sentry following [MONITORING.md](MONITORING.md). UptimeRobot is reported done by the human (not verified here).
-3. Administration access: the trial account still has the legacy `admin` role, which the console no longer accepts. Converting it to `owner` follows the reviewed manual procedure in [OPERATIONS.md](OPERATIONS.md) and needs explicit authorization; then enroll TOTP.
-4. Send one password-reset email to a private mailbox to confirm delivery; decide the legal contact address, retention periods and governing law; then set `TRIAL_SKIP_EMAIL_VERIFICATION=false`.
-5. Later, together: enable published-page caching ([PUBLIC_CACHE.md](PUBLIC_CACHE.md)) after Sentry, and Hyperdrive ([HYPERDRIVE.md](HYPERDRIVE.md)) after measurement.
+1. Confirm mail delivery first: request one password reset for the human's own address on the current trial and check the inbox (and spam). Only then merge the deployment-readiness PR, because it turns email verification on.
+2. Deploy the backlog (the trial may not have been deployed or migrated since PR #3): `git switch main`, `git pull --ff-only origin main`, `bun install --frozen-lockfile`; Neon backup branch; `bun run db:migrate` with the Neon `DATABASE_URL` supplied privately for one shell (applies `0010` and anything else pending; it prints the target host); build the web; deploy the API, then the web; check `/health`, sign-in, a new signup's verification email and a published portfolio. No new required secret.
+3. Configure Sentry following [MONITORING.md](MONITORING.md). UptimeRobot is reported done by the human (not verified here).
+4. Administration access: the trial account still has the legacy `admin` role, which the console no longer accepts. Converting it to `owner` follows the reviewed manual procedure in [OPERATIONS.md](OPERATIONS.md) and needs explicit authorization; then enroll TOTP.
+5. Decide the legal contact address, retention periods and governing law.
+6. Enable published-page caching ([PUBLIC_CACHE.md](PUBLIC_CACHE.md)) after Sentry, and Hyperdrive ([HYPERDRIVE.md](HYPERDRIVE.md)) after measurement.
 
 ## Known limits
 
