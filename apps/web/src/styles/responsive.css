@@ -189,18 +189,18 @@
 		display: flex;
 		padding: 10px 16px;
 		gap: 8px;
-		background: #fff;
+		background: var(--color-surface);
 		border-bottom: 1px solid var(--line);
 	}
 	.mobile-tabs button {
 		flex: 1;
 		padding: 8px;
 		font-size: var(--text-caption);
-		color: #8d7b9e;
+		color: var(--color-mobile-mobile-tabs-button-text);
 		border-radius: 7px;
 	}
 	.mobile-tabs button.active {
-		background: #f0e9fa;
+		background: var(--color-mobile-mobile-tabs-button-active-surface);
 		color: var(--purple);
 		font-weight: 650;
 	}
@@ -340,7 +340,7 @@
 }
 .collection-item,
 .rich-block {
-	border-top: 1px solid var(--border, #e5e5e5);
+	border-top: 1px solid var(--border, var(--color-mobile-collection-item-border));
 	padding-block: 18px;
 }
 .rich-editor {

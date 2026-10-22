@@ -1108,3 +1108,9 @@ Human explicitly selected bare MAIL_FROM=no-reply@lord2ve.tech rather than chang
 - Baseline and entry-only intermediate state each passed all11 gates: API81/12 unchanged conditional skips/0 fail/5311 assertions, web37/0/685, workerd database14/14, storage8/8, mail15/15, Next/OpenNext50/50; audit clean. Baseline comparison proves the skip count is unchanged.
 - Full candidate captured with one real local saved workspace and native-MFA staff session:48 before/after pairs,0 changed pixels each,0 page errors; fixture removed with0 remaining. Exact expansion matches29 stylesheets;80 contrast pairs retain their values, including explicitly reported existing low contrast. Detailed inventory/map/hashes/ratios accompany the evidence file.
 - Workspace/admin group changes are prepared and awaiting their own gate/commit checkpoints. No deployment, provider access, dependency, schema or security-policy change.
+
+
+## 2026-10-22 — Workspace palette consumers completed
+- Tokenized workspace/editor/readability/responsive/native scrollbars/preview chrome, asset-picker and shared-management styles. Existing swatch colors and owner theme settings retain their exact values; shared portfolio source remains unchanged.
+- All11 gates pass on the entry+workspace intermediate state: Biome429, web37/0/685, API81/12 baseline skips/0/5311 plus native MFA11/0/308, workerd database14/14, storage8/8, mail15/15, Next/OpenNext50/50, audit clean and API dry run exit0. Final-candidate48-pair0-pixel evidence remains valid.
+- Administration consumers are prepared but awaiting their separate gate/commit. No provider, deployment, dependency, schema or behavioral change.
