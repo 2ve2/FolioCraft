@@ -1,5 +1,9 @@
 # Action log
 
+## 2026-10-22 — Deterministic Workers mail log assertions
+- `test:worker-mail` failed intermittently in CI (`server-error` on main run 39629329184, `network` on PR #5 run 39703232423) although the same tree passed elsewhere. Cause: Miniflare delivers structured logs on a separate channel that can trail the HTTP response, and the test searched the logs once, immediately.
+- Proof: delaying every captured log line by 50 ms made the unchanged test fail at its first scenario. `scripts/test-worker-mail.ts` now waits (up to 5 s, polling) for the correlated log line and lets trailing lines arrive before the private-value scan. With the same 50 ms delay the fixed test passes 15/15; an intentionally wrong expected code still fails with "Missing correlated log: server-error".
+
 ## 2026-10-21 — Review hardening of the save-before-language-switch check
 - Review mutation test: changing the studio's `await flush()` before `switchLocale` to a non-awaited save still passed the E2E suite, because the old assertion read the URL at the instant the held save request started, before a premature soft navigation could commit.
 - Fix in `e2e/journeys.spec.ts`: while the save is held, `page.waitForURL` for the other language must time out (2 s window, far longer than one local RSC round trip); then the URL is asserted unchanged.
