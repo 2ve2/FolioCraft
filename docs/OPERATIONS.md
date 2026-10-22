@@ -377,3 +377,7 @@ Exercise normal sign-in/save/publish and one intended reset/upload operation thr
 ## Prepared owner monitoring — 2026-10-22
 
 [MONITORING.md](MONITORING.md) is the operational source for Sentry project privacy/email configuration and UptimeRobot Free monitors. Probe only API `/health` and prerendered web `/en`, never `/ready` or a portfolio, to avoid keeping Neon compute awake. The source remains disabled without a valid Worker-secret DSN and actual version binding; provider account setup and hosted delivery remain unverified. No deployment, production migration or provider action has been executed for this scope.
+
+## Optional Hyperdrive trial — 2026-10-22
+
+Follow [HYPERDRIVE.md](HYPERDRIVE.md) for the separate unbound-code deployment, origin deadline and cache-disabled resource provisioning, optional binding deployment, measurement and rollback. Nothing is enabled/provisioned by this task. Keep DATABASE_URL for absence-only fallback; never run integration tests against Neon. The optional numeric database_timing projection shares the safe tail with database_pool_error. No Service Binding/web deployment is included.

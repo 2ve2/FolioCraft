@@ -2,6 +2,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { env } from "../config/env";
+import { type DatabaseBindings, hyperdriveConfig, useHyperdrive } from "./hyperdrive";
 import { type PoolStage, poolErrorDiagnostic } from "./pool-diagnostics";
 import * as adminSchema from "./schema/admin";
 import * as assetSchema from "./schema/asset";
@@ -12,6 +13,7 @@ import * as operationsSchema from "./schema/operations";
 import * as reportSchema from "./schema/reports";
 import * as siteSchema from "./schema/site";
 import * as storageSchema from "./schema/storage";
+import { databaseTiming } from "./timing";
 
 const poolConfig = {
 	connectionString: env.DATABASE_URL,
@@ -50,8 +52,29 @@ export const db: typeof defaultDatabase = new Proxy(defaultDatabase, {
 export async function withRequestDatabase<T>(
 	operation: () => Promise<T>,
 	stage: Exclude<PoolStage, "shared"> = "request",
+	options: {
+		timing?: boolean;
+		requestId?: string;
+		hyperdrive?: DatabaseBindings["HYPERDRIVE"];
+	} = {},
 ): Promise<T> {
-	const requestPool = new Pool({ ...poolConfig, max: 1 });
+	const timing = options.timing ? databaseTiming() : undefined;
+	const started = performance.now();
+	const hyperdrive =
+		options.hyperdrive &&
+		(await useHyperdrive(options.hyperdrive, {
+			statementTimeoutMs: env.DB_STATEMENT_TIMEOUT_MS,
+			connectionTimeoutMillis: poolConfig.connectionTimeoutMillis,
+			queryTimeoutMs: poolConfig.query_timeout,
+		}))
+			? options.hyperdrive
+			: undefined;
+	const requestPool = new Pool({
+		...poolConfig,
+		...(hyperdrive && hyperdriveConfig(hyperdrive)),
+		max: 1,
+		...(timing && { Client: timing.Client }),
+	});
 	requestPool.on("error", (error) =>
 		console.error(JSON.stringify(poolErrorDiagnostic(error, stage, requestPool))),
 	);
@@ -59,6 +82,19 @@ export async function withRequestDatabase<T>(
 		return await requestDatabase.run(drizzle(requestPool, { schema }), operation);
 	} finally {
 		await requestPool.end();
+		if (timing)
+			console.info(
+				JSON.stringify({
+					event: "database_timing",
+					transport: hyperdrive ? "hyperdrive" : "direct",
+					stage,
+					requestId: options.requestId,
+					...timing.totals,
+					connectionMs: Math.round(timing.totals.connectionMs * 100) / 100,
+					queryMs: Math.round(timing.totals.queryMs * 100) / 100,
+					durationMs: Math.round((performance.now() - started) * 100) / 100,
+				}),
+			);
 	}
 }
 

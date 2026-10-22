@@ -1,5 +1,38 @@
 # Action log
 
+## 2026-10-22 — Hyperdrive review fixes (once-per-isolate check, direct fallback)
+- Review finding 1: the origin `statement_timeout` guard ran as an `onConnect` query on every request's new client, adding one origin round trip per request to the path meant to remove round trips. It now runs once per Worker isolate through a separate short-lived client (`useHyperdrive` in `apps/api/src/db/hyperdrive.ts`); only plain values are kept across requests.
+- Review finding 2: a failed guard rejected every database request (fail closed), an outage UptimeRobot's DB-free `/health` would not see. A missing/unsafe default or an unreachable Hyperdrive now keeps the request on the bounded direct `DATABASE_URL` path, logs `hyperdrive_unverified` (reason only, no connection data) and retries after 60 s.
+- Tests (`hyperdrive.integration.test.ts`): once-per-isolate check proven with a 10 s origin default served on three requests and one check; unsafe (0, 16 s) and unreachable bindings fall back to the direct 15 s path with the warning and no connection data; no recheck inside the retry window. Mutations (per-request check; ignoring the check result) each fail their test. Guarded API 81 pass/12 skip/0 fail; Workers database 7/7 unbound and 7/7 bound.
+- Pre-existing, unrelated: running the guarded suite twice back to back can fail auth tests (shared local rate budgets); the unmodified branch shows the same failures. Single runs and CI are unaffected.
+- HYPERDRIVE.md: recommends creating the configuration in the Cloudflare dashboard (caching off) instead of the CLI stdin script, and documents the fallback event to watch.
+
+## 2026-10-22 — Hyperdrive operational handoff complete
+- Added HYPERDRIVE.md with exact secret-safe stdin/in-process-argv creation (query caching disabled), origin deadline preservation/restoration, separate unbound/bound API deployments, trial curl/timing projection and rollback for every step. README/Cloudflare/operations/source map link to it. No provisioning/deployment/hosted operation performed.
+- Final password-authenticated acceptance14/14 commands exit0:all eleven gates, monitoring28/28 and both benchmark harnesses. Counts remain API79/0/5297 plus MFA11/0/308, database14/14, web37/0/685, storage8/8, mail15/15, Biome425, Next/OpenNext50/50. Initial two Service Binding runs had0ms median gain; final SCRAM run differs by1ms at coarse resolution. No repeatable edge benefit or production Service Binding is claimed.
+- PR7 is open/unmerged. Corrected remote run39709019010 on194d189 passes all four jobs, including Chromium43 passed. Final documentation-head checks are not preclaimed. Cleanup:0 fixture accounts,0 residual deadline overrides, owned PostgreSQL stopped/55434 closed. Unrelated untracked ADMIN_CONSOLE_TASK.md preserved. Source work complete; human review and measured optional trial activation are next.
+
+## 2026-10-22 — Local fixture password preservation verified
+- `scripts/test-worker-database.ts` and `scripts/measure-worker-database.ts` now keep supplied local fixture passwords, generating a Miniflare placeholder only when absent. Initial PR7 integration run39708626819 independently reproduced the original bound-path authentication failure after unbound checks passed.
+- Full verification against disposable local SCRAM-authenticated folio_test passes all eleven gates plus monitoring: API79/0/5297 and MFA11/0/308, workerd database14/14, web37/0/685, Biome425, storage8/8, mail15/15, Next/OpenNext50/50 and monitoring28/28. This correction changes test harnesses only; no product/provider authentication policy changed.
+
+## 2026-10-22 — Password-authenticated local binding acceptance (scope)
+- Final source review found that native-binding harnesses replaced an explicitly supplied local password with the trust-authentication placeholder. Preserve provided passwords and synthesize one only when absent; production source is unaffected. Verify all gates again against disposable local folio_test using SCRAM authentication before completing the operational handoff. No real/hosted password is read or changed.
+
+## 2026-10-22 — Hyperdrive operational handoff (scope)
+- Implementation completed in `ae1749f` after all eleven gates plus actual monitoring checks. Prepare exact manual stdin-only provisioning, origin deadline preservation/restoration, separate unbound/bound API deployments, public trial timing and safe-tail commands with per-step rollback. No external command is executed.
+- Reconcile source/operations/Cloudflare/README/STATUS/evidence and rerun every gate before the documentation commit/push/PR. Preserve cancelled staging, disabled query caching and the no-Service-Binding decision.
+
+## 2026-10-22 — Optional database path implementation verified
+- Added optional HTTP/Cron Hyperdrive selection, fail-closed origin deadline verification and opt-in numeric pg timings; no active binding, query caching, dependency, schema or web routing change. Added explicit publication/rollback/deadline tests and doubled actual workerd database checks to both modes. Local-only harness restores the caller role/database deadline.
+- Baseline and after measurements recorded in evidence/2026-10-22-hyperdrive-latency.md. Local binding cannot prove distributed pooling gains; HTTP/Service Binding have identical6ms medians, so no Service Binding ships. Synthetic accounts were cleaned after each run.
+- All eleven gates and monitoring pass: API79/0/5297 plus MFA11/0/308, web37/0/685, database14/14, storage8/8, mail15/15, monitoring28/28, Biome425, Next/OpenNext50/50, API dry run exit0. Manual operational handoff and PR remain active. No hosted/provider action or secret inspection.
+
+## 2026-10-22 — Optional Hyperdrive latency evaluation (scope)
+- Start from fetched main `3f85e37` on `codex/hyperdrive-latency`; work only in the independent checkout. Preserve unrelated untracked `docs/ADMIN_CONSOLE_TASK.md`.
+- Measure representative public/session/studio database connection and query time locally before changing routing. Evaluate optional cache-disabled Hyperdrive with unchanged unbound/Bun behavior, transaction/deadline evidence, and Service Binding only if measured latency warrants it.
+- Prepare safe manual trial provisioning, before/after measurements and reversible rollout/rollback instructions. No staging, deployment, hosted database tests, secret inspection or external resource mutation. Run every requested gate before pushed commits and open a PR without merging.
+
 ## 2026-10-22 — Review fixes on the monitoring branch
 - `workers` CI failed on this branch: `test:worker-monitoring` could not resolve the API alias `@aws-sdk/xml-builder/dist-cjs/index.js` from its generated config under `work/` on a clean install. Reproduced locally on a clean install; the harness now resolves the alias from `apps/api/package.json`. Result: 20/20, and 28/28 with `--web-built` after `build:cloudflare`.
 - Removed the operator-status sentence ("external alert setup and activation have not yet been verified") from the Arabic and English privacy notice; rollout status stays in MONITORING.md/STATUS.

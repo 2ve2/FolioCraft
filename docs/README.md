@@ -57,3 +57,7 @@ Run the committed production-build Playwright journeys locally with `bun run tes
 ## Owner monitoring
 
 [MONITORING.md](MONITORING.md) documents optional server-only Sentry capture, privacy/sampling, owner email settings and the two no-database UptimeRobot checks. This is prepared source and local verification, not proof of hosted alert activation.
+
+## Optional Hyperdrive evaluation
+
+[HYPERDRIVE.md](HYPERDRIVE.md) documents the inactive API binding, origin deadline requirement, safe manual provisioning, before/after trial measurements and per-step rollback. Local measurements did not establish an edge gain; no Service Binding is shipped.

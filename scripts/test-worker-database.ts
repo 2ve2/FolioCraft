@@ -1,10 +1,14 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
+import { withLocalStatementTimeout } from "./local-statement-timeout";
 
 const database = process.env.TEST_DATABASE_URL ?? "postgresql://folio@127.0.0.1:55432/folio_test";
 const parsed = new URL(database);
 if (
+	parsed.protocol !== "postgresql:" ||
+	parsed.search ||
+	parsed.hash ||
 	!["127.0.0.1", "localhost", "[::1]"].includes(parsed.hostname) ||
 	parsed.pathname !== "/folio_test"
 )
@@ -57,76 +61,89 @@ const [stdout, stderr] = await Promise.all([
 	new Response(child.stderr).text(),
 ]);
 assert.equal(await child.exited, 0, `Local bundle failed: ${stdout}\n${stderr}`);
-const mf = new Miniflare(
-	convertV4MiniflareOptions({
-		modules: true,
-		modulesRoot: fileURLToPath(output),
-		scriptPath: fileURLToPath(new URL("worker-database.js", output)),
-		compatibilityDate: "2026-10-14",
-		compatibilityFlags: ["nodejs_compat", "nodejs_compat_populate_process_env"],
-		bindings: {
-			NODE_ENV: "test",
-			DATABASE_URL: database,
-			BETTER_AUTH_SECRET: "synthetic-worker-database-test-value-at-least-32-characters",
-			API_URL: "http://localhost:4000",
-			WEB_URL: "http://localhost:3000",
-		},
-		log: new CapturedLog(LogLevel.ERROR),
-		logRequests: false,
-		handleStructuredLogs: (entry: { message: string }) => {
-			logs.push(entry.message);
-		},
-	}),
-);
-/** Extracts the fixed event payload even when a runtime decorates console output. */
-const events = () =>
-	[...logs.join("\n").matchAll(/\{"event":"database_pool_error"[^}]*\}/g)].map(
-		(match) =>
-			JSON.parse(match[0]) as { code: string; stage: string; ending: boolean; ended: boolean },
-	);
-let passed = 0;
-try {
-	const origin = await mf.ready;
-	const run = async (path: string) => {
-		const response = await fetch(new URL(path, origin));
-		assert.equal(response.status, 200);
-		return response.json() as Promise<Record<string, unknown>>;
-	};
-	await run("/probe/normal");
-	assert.equal(events().length, 0, "Successful request teardown must not emit a pool error");
-	passed++;
-	assert.equal((await run("/probe/transaction")).sameClient, true);
-	assert.equal((await run("/probe/rollback")).reusableAfterRollback, true);
-	assert.equal(events().length, 0, "Transactions and rollback must close cleanly");
-	passed += 2;
-	const concurrent = await Promise.all(Array.from({ length: 12 }, () => run("/probe/normal")));
-	assert.equal(new Set(concurrent.map((result) => result.pid)).size, 12);
-	assert.equal(events().length, 0, "Concurrent request scopes must close cleanly");
-	passed++;
-	assert.equal((await run("/probe/scheduled")).completed, true);
-	assert.ok(logs.some((line) => line.includes('"event":"maintenance_completed"')));
-	assert.equal(events().length, 0, "Scheduled teardown must close cleanly");
-	passed++;
-	await run("/probe/terminate");
-	const failures = events();
-	assert.ok(
-		failures.some(
-			(event) =>
-				event.code === "57P01" && event.stage === "request" && !event.ending && !event.ended,
-		),
-		"Unexpected idle termination must remain an error before pool end",
-	);
-	assert.ok(
-		failures.every((event) => event.code === "57P01"),
-		"Only the intentional fault may emit pool errors",
-	);
-	passed++;
-	await run("/probe/normal");
-	assert.equal(events().length, failures.length, "Fresh request recovers without teardown errors");
-	passed++;
-	console.info(
-		`${passed} Workers database checks passed; local folio_test only; 12 concurrent clients isolated; real idle termination retained.`,
-	);
-} finally {
-	await mf.dispose();
-}
+await withLocalStatementTimeout(database, async () => {
+	for (const bound of [false, true]) {
+		const bindingDatabase = new URL(database);
+		if (!bindingDatabase.password) bindingDatabase.password = "synthetic-local-only";
+		bindingDatabase.searchParams.set("options", "-c statement_timeout=15000");
+		logs.length = 0;
+		const mf = new Miniflare(
+			convertV4MiniflareOptions({
+				modules: true,
+				modulesRoot: fileURLToPath(output),
+				scriptPath: fileURLToPath(new URL("worker-database.js", output)),
+				compatibilityDate: "2026-10-14",
+				compatibilityFlags: ["nodejs_compat", "nodejs_compat_populate_process_env"],
+				bindings: {
+					NODE_ENV: "test",
+					DATABASE_URL: bound ? "postgresql://unreachable@127.0.0.1:1/folio_test" : database,
+					BETTER_AUTH_SECRET: "synthetic-worker-database-test-value-at-least-32-characters",
+					API_URL: "http://localhost:4000",
+					WEB_URL: "http://localhost:3000",
+				},
+				...(bound ? { hyperdrives: { HYPERDRIVE: bindingDatabase.href } } : {}),
+				log: new CapturedLog(LogLevel.ERROR),
+				logRequests: false,
+				handleStructuredLogs: (entry: { message: string }) => {
+					logs.push(entry.message);
+				},
+			}),
+		);
+		/** Extracts the fixed event payload even when a runtime decorates console output. */
+		const events = () =>
+			[...logs.join("\n").matchAll(/\{"event":"database_pool_error"[^}]*\}/g)].map(
+				(match) =>
+					JSON.parse(match[0]) as { code: string; stage: string; ending: boolean; ended: boolean },
+			);
+		let passed = 0;
+		try {
+			const origin = await mf.ready;
+			const run = async (path: string) => {
+				const response = await fetch(new URL(path, origin));
+				assert.equal(response.status, 200);
+				return response.json() as Promise<Record<string, unknown>>;
+			};
+			await run("/probe/normal");
+			assert.equal(events().length, 0, "Successful request teardown must not emit a pool error");
+			passed++;
+			assert.equal((await run("/probe/transaction")).sameClient, true);
+			assert.equal((await run("/probe/rollback")).reusableAfterRollback, true);
+			assert.equal(events().length, 0, "Transactions and rollback must close cleanly");
+			passed += 2;
+			const concurrent = await Promise.all(Array.from({ length: 12 }, () => run("/probe/normal")));
+			assert.equal(new Set(concurrent.map((result) => result.pid)).size, 12);
+			assert.equal(events().length, 0, "Concurrent request scopes must close cleanly");
+			passed++;
+			assert.equal((await run("/probe/scheduled")).completed, true);
+			assert.ok(logs.some((line) => line.includes('"event":"maintenance_completed"')));
+			assert.equal(events().length, 0, "Scheduled teardown must close cleanly");
+			passed++;
+			await run("/probe/terminate");
+			const failures = events();
+			assert.ok(
+				failures.some(
+					(event) =>
+						event.code === "57P01" && event.stage === "request" && !event.ending && !event.ended,
+				),
+				"Unexpected idle termination must remain an error before pool end",
+			);
+			assert.ok(
+				failures.every((event) => event.code === "57P01"),
+				"Only the intentional fault may emit pool errors",
+			);
+			passed++;
+			await run("/probe/normal");
+			assert.equal(
+				events().length,
+				failures.length,
+				"Fresh request recovers without teardown errors",
+			);
+			passed++;
+			console.info(
+				`${passed} Workers database checks passed (${bound ? "local optional binding" : "unbound"}); local folio_test only; 12 concurrent clients isolated; real idle termination retained.`,
+			);
+		} finally {
+			await mf.dispose();
+		}
+	}
+});

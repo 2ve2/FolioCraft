@@ -79,6 +79,8 @@ apps/api/src/
   db/
     index.ts                     Bun pool and Workers request-scoped database
     pool-diagnostics.ts          Allowlisted pool-error metadata (stage/ending/ended)
+    hyperdrive.ts                Optional connection selector and origin deadline guard
+    timing.ts                    Opt-in numeric request-local pg timings
     schema/                      Tables grouped by domain
     migrations/                  Explicit reviewable migrations
 ```
@@ -264,3 +266,11 @@ contracts/data-requests owns enums/transitions/input/types. db/schema/data-reque
 - `apps/web/worker.ts` and `monitoring.ts`: official Next.js Cloudflare wrapper around generated OpenNext output with preserved Durable Object exports; no generated file is edited. `src/instrumentation.ts` captures Next server errors. `src/app/health/route.ts` is a no-write/provider-free liveness route.
 - `apps/api/tests/monitoring.test.ts`: privacy/sampling/identity regression checks. Both apps' `tests/fixtures/worker-monitoring.ts` and `scripts/test-worker-monitoring.ts`: local SDK faults, whole-envelope privacy and actual generated OpenNext tests with intercepted ingestion/API. CI runs built-web mode after OpenNext build.
 - `docs/MONITORING.md`: human-owned project settings, two no-database uptime monitors, interactive secret/deployment checklist and silencing. `docs/evidence/2026-10-21-owner-monitoring.md`: official comparison, local runtime/build/gate evidence and explicit unverified limits.
+
+## Optional database latency evaluation — 2026-10-22
+
+Worker HTTP/Cron pass the optional HYPERDRIVE binding into the existing request database scope. `db/hyperdrive.ts` requires a bounded origin role/database deadline; Bun and unbound configuration stay unchanged. `db/timing.ts` preserves pg promise/callback behavior while collecting numeric timings only when requested by DB_TIMING_LOGS. No active binding/timing variable is committed.
+
+`tests/hyperdrive.integration.test.ts` verifies selection/deadlines, real native publication and an explicit same-connection serializable release/pointer rollback. The existing workerd fixture runs in bound and unbound modes, including Cron and real idle disconnects. `scripts/local-statement-timeout.ts` guards/restores the disposable local role/database setting for native binding tests; run database suites sequentially. `scripts/measure-worker-database.ts` and `scripts/measure-service-binding.ts` create/clean exact synthetic local accounts and save numeric-only latency evidence. Neither accepts hosted targets. See [latency evidence](evidence/2026-10-22-hyperdrive-latency.md).
+
+`docs/HYPERDRIVE.md` owns the manual, secret-safe trial provisioning/deadline/binding/timing and rollback instructions; OPERATIONS/CLOUDFLARE/README link to it. Numeric benchmarks and official-source rationale stay in the dated evidence file.
