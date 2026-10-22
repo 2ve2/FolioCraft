@@ -12,6 +12,7 @@ import { storage } from "../src/lib/storage";
 import { assetService } from "../src/services/assets";
 import {
 	cacheInvalidationService,
+	MAX_RETRY_ATTEMPTS,
 	PENDING_SIGNAL_KEY,
 	revalidationDelivery,
 	withRevalidationDelivery,
@@ -344,13 +345,22 @@ test("a failed delivery leaves a pending signal that the minute retry drains and
 		const firstMark = bucket.objects.get(PENDING_SIGNAL_KEY)?.etag;
 		await cacheInvalidationService.flush(failing, 20, [site.id]);
 		expect(bucket.objects.get(PENDING_SIGNAL_KEY)?.etag).not.toBe(firstMark);
-		const retried = await cacheInvalidationService.retryPending(
-			{
-				PORTFOLIO_REVALIDATION_SECRET: secret,
-				PORTFOLIO_REVALIDATION: accepting,
-				PUBLIC_CACHE_SIGNAL: bucket,
-			},
-			(operation) => operation(),
+		const recovered = {
+			PORTFOLIO_REVALIDATION_SECRET: secret,
+			PORTFOLIO_REVALIDATION: accepting,
+			PUBLIC_CACHE_SIGNAL: bucket,
+		};
+		// Two failures back the intent off for four minutes: the retry waits and keeps the signal.
+		expect(
+			await cacheInvalidationService.retryPending(recovered, (operation) => operation()),
+		).toMatchObject({ skipped: false, delivered: 0, failed: 0, remaining: true });
+		expect(state(bucket)).toBe("pending");
+		await db
+			.update(cacheInvalidations)
+			.set({ updatedAt: sql`now() - interval '5 minutes'` })
+			.where(eq(cacheInvalidations.siteId, site.id));
+		const retried = await cacheInvalidationService.retryPending(recovered, (operation) =>
+			operation(),
 		);
 		expect(retried).toMatchObject({ skipped: false, delivered: 1, failed: 0, remaining: false });
 		expect((await intent(site.id))[0]).toMatchObject({ version: 1, deliveredVersion: 1 });
@@ -384,4 +394,47 @@ test("a failure recorded while the retry runs keeps the signal pending", async (
 	);
 	expect(retried).toMatchObject({ skipped: false, delivered: 1, remaining: false });
 	expect(state(bucket)).toBe("pending");
+});
+
+test("intents past the retry limit release the signal and wait for the daily backstop", async () => {
+	await db.update(cacheInvalidations).set({ deliveredVersion: sql`${cacheInvalidations.version}` });
+	const { site } = await fixture("signal-limit");
+	await db.update(sites).set({ suspended: true }).where(eq(sites.id, site.id));
+	await db
+		.update(cacheInvalidations)
+		.set({ attempts: MAX_RETRY_ATTEMPTS, updatedAt: sql`now() - interval '2 hours'` })
+		.where(eq(cacheInvalidations.siteId, site.id));
+	const bucket = signalBucket();
+	await bucket.put(PENDING_SIGNAL_KEY, newId(), { customMetadata: { state: "pending" } });
+	const bindings = {
+		PORTFOLIO_REVALIDATION_SECRET: secret,
+		PORTFOLIO_REVALIDATION: accepting,
+		PUBLIC_CACHE_SIGNAL: bucket,
+	};
+	expect(
+		await cacheInvalidationService.retryPending(bindings, (operation) => operation()),
+	).toMatchObject({ delivered: 0, remaining: false });
+	expect(state(bucket)).toBe("clear");
+	// The daily backstop ignores the limit and still delivers it.
+	expect(
+		await cacheInvalidationService.flush(revalidationDelivery(bindings), 20, [site.id]),
+	).toMatchObject({ delivered: 1 });
+});
+
+test("a target without a valid secret is disabled instead of failing every delivery", () => {
+	const logs = spyOn(console, "error").mockImplementation(() => {});
+	try {
+		for (const value of [undefined, "too-short"])
+			expect(
+				revalidationDelivery({
+					PORTFOLIO_REVALIDATION_SECRET: value,
+					PORTFOLIO_REVALIDATION: accepting,
+				}),
+			).toBeUndefined();
+		expect(logs.mock.calls.flat()).toContain(
+			JSON.stringify({ event: "cache_revalidation_unconfigured" }),
+		);
+	} finally {
+		logs.mockRestore();
+	}
 });
