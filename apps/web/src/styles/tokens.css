@@ -21,6 +21,8 @@
 	--control-min: 44px;
 	--radius-control: 8px;
 	--radius-card: 12px;
+	/* Shared page gutter: headers, footers and landing sections align to one 1240px column. */
+	--page-gutter: max(5vw, calc((100% - 1240px) / 2));
 	/* Keyboard focus indicator: 4.8:1 on white, above the 3:1 non-text contrast minimum. */
 	--focus-ring: var(--color-focus-ring);
 
@@ -46,8 +48,6 @@
 	--color-control-focus-border: #9a7ae4;
 	--color-accent-shadow-subtle: #3f46c815;
 	--color-control-placeholder: #8b8796;
-	--color-brand-shadow: #3f46c823;
-	--color-brand-caption: #8b839a;
 	--color-accent-hover: #3036a6;
 	--color-secondary-border: #ded8eb;
 	--color-secondary-text: #4c415f;
@@ -68,7 +68,6 @@
 	--color-footer-surface: #241b38;
 	--color-footer-text: #d6cede;
 	--color-footer-border: #41314f;
-	--color-footer-brand-caption: #beb0d1;
 	--color-footer-signature: #bca1ed;
 	--color-footer-studio-link: #d3b9ff;
 	--color-footer-bottom-border: #493a58;
@@ -106,7 +105,7 @@
 	--color-legal-article-notice-text: #5c4612;
 
 	/* Admin roles. */
-	--color-admin-accent: #7045ce;
+	--color-admin-accent: #3f46c8;
 	--color-admin-text-muted: #746d83;
 	--color-admin-border: #e9e5ef;
 	--color-admin-text: #2d253e;
@@ -179,14 +178,14 @@
 	--color-not-found-page-surface: #eee7fb;
 	--color-not-found-orbit-border: #d9cbed;
 	--color-not-found-orbit-surface: #e5d9f8;
-	--color-not-found-number-text: #7048c7;
-	--color-not-found-number-shadow: #e1d4f5;
+	--color-not-found-number-text: #3f46c8;
+	--color-not-found-number-shadow: #d9dbf4;
 	--color-not-found-file-border: #e4daef;
 	--color-not-found-file-shadow: #51308012;
 	--color-not-found-eyebrow-text: #72529a;
 	--color-not-found-description-text: #70677e;
 	--color-not-found-primary-shadow: #3f46c81a;
-	--color-not-found-primary-hover-surface: #5e38bf;
+	--color-not-found-primary-hover-surface: #3036a6;
 	--color-not-found-secondary-surface: #ffffffb3;
 	--color-not-found-secondary-border: #ddd3e9;
 	--color-not-found-secondary-text: #574267;

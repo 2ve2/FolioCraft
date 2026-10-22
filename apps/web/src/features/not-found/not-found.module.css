@@ -9,9 +9,7 @@
 	);
 }
 .header {
-	width: min(1280px, 100%);
-	margin-inline: auto;
-	padding: 28px 6vw;
+	padding: 28px var(--page-gutter);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -179,12 +177,5 @@
 	.header {
 		padding-inline: 16px;
 		gap: 8px;
-	}
-	.header :global(.brand) {
-		gap: 8px;
-		font-size: 20px;
-	}
-	.header :global(.brand small) {
-		font-size: 10px;
 	}
 }

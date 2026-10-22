@@ -5,9 +5,7 @@
 	background: var(--color-entry-surface);
 }
 .header {
-	width: min(1280px, 100%);
-	margin-inline: auto;
-	padding: 28px 6vw;
+	padding: 28px var(--page-gutter);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
