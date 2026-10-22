@@ -126,6 +126,9 @@ describe("outgoing error privacy allowlist", () => {
 		expect(scrubEvent({ ...base, tags: { worker: "api", kind: "cron_failed" } })?.message).toBe(
 			"Scheduled maintenance failed",
 		);
+		expect(
+			scrubEvent({ ...base, tags: { worker: "api", kind: "cache_invalidation_failed" } })?.message,
+		).toBe("Public cache invalidation failed");
 	});
 	test("has no capture without secret and actual version; disables every other telemetry type", () => {
 		expect(monitoringEnabled({ CF_VERSION_METADATA: { id: release } })).toBe(false);

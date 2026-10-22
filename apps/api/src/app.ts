@@ -13,11 +13,19 @@ import { cacheInvalidationService } from "./services/cache-invalidation";
 const app = new Hono<AuthEnv>();
 registerHttpMiddleware(app);
 
-/** Drains committed public-output intents before returning a mutation response. Failures remain durable. */
+/**
+ * Drains committed public-output intents before returning a mutation response. The mutation has
+ * already committed, so a flush failure must not turn its response into an error: the intent stays
+ * in the durable outbox for the retry and the daily backstop.
+ */
 app.use("*", async (c, next) => {
 	await next();
-	if (!["GET", "HEAD", "OPTIONS"].includes(c.req.method))
+	if (["GET", "HEAD", "OPTIONS"].includes(c.req.method)) return;
+	try {
 		await cacheInvalidationService.flushAffected();
+	} catch {
+		console.error(JSON.stringify({ event: "cache_flush_failed" }));
+	}
 });
 
 /** Delegates authentication protocol responses directly to Better Auth. */

@@ -6,7 +6,7 @@ export type WorkerName = "api" | "web";
 // SDK 11 replaces sendDefaultPii with dataCollection; keep the explicit policy here.
 export const sendDefaultPii = false;
 const versionPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
-const kinds = ["unhandled", "http_5xx", "cron_failed"] as const;
+const kinds = ["unhandled", "http_5xx", "cron_failed", "cache_invalidation_failed"] as const;
 const errorTypes = [
 	"Error",
 	"TypeError",
@@ -74,7 +74,11 @@ export function scrubEvent(event: unknown, hint?: unknown) {
 	const name = field(original, "name") ?? field(exception, "type");
 	const errorType = typeof name === "string" && errorTypes.includes(name) ? name : "Error";
 	const message =
-		kind === "cron_failed" ? "Scheduled maintenance failed" : "Server operation failed";
+		kind === "cron_failed"
+			? "Scheduled maintenance failed"
+			: kind === "cache_invalidation_failed"
+				? "Public cache invalidation failed"
+				: "Server operation failed";
 	const eventId = field(event, "event_id");
 	const rawFrames = field(field(exception, "stacktrace"), "frames");
 	const frames: { filename: string; lineno: number; colno: number }[] = [];
