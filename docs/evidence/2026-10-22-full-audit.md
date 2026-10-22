@@ -46,9 +46,9 @@ Four read-only reviewers covered owner/public API surfaces, administration and a
 
 API — administration and authentication
 1. Medium: `POST /api/auth/verify-password` appears reachable over HTTP and is outside the `passwordFailures` budget, so a stolen staff session could guess the password at the generic rate (`lib/auth/index.ts`, `lib/auth/hooks.ts`, `middleware/admin.ts`). Also `/change-password` and `/two-factor/enable|disable` act as slower password oracles. **Fixed** (`0bcdf00`, HTTP returns 404; the slower oracles on change-password and 2FA keep Better Auth defaults — open).
-2. Low: password-verified sensitive actions that fail later write an extra `permission_denied` audit row (`services/admin/request-service.ts`, `notice-service.ts`, `user-service.ts`).
-3. Low: signed-in non-staff users can write unbounded `permission_denied` rows (`services/admin/sensitive-action.ts`, `middleware/admin.ts`).
-4. Low (decision): the email mask shows the first character and the full domain.
+2. Low: password-verified sensitive actions that fail later write an extra `permission_denied` audit row (`services/admin/request-service.ts`, `notice-service.ts`, `user-service.ts`). **Fixed** (`a26d8ef`).
+3. Low: signed-in non-staff users can write unbounded `permission_denied` rows (`services/admin/sensitive-action.ts`, `middleware/admin.ts`). **Fixed** (`a26d8ef`).
+4. Low (decision): the email mask shows the first character and the full domain. Open: a product decision (masking the domain hides more but makes support harder).
 5. Docs: `docs/API.md` says data-request exports exclude drafts; schemaVersion 2 includes them. **Fixed** (`9a26d50`).
 
 API — runtime and data
@@ -60,22 +60,22 @@ API — runtime and data
 API — owner and public surfaces
 10. Medium: one IP can exhaust a site's hourly inquiry budget in 12 minutes (`routes/public/inquiries.ts`). **Fixed** (`57c0688`).
 11. Medium: one actor can exhaust a site's report budget; IPv6 is not bucketed by /64; 429 lacks Retry-After (`services/reports.ts`). **Fixed** (`09dbc89`; the site-wide cap stays as flood protection).
-12. Low-medium (not changed in this audit): upload completion holds the site lock during provider IO (`services/assets.ts` `complete`).
-13. Low: staging copies of completed uploads are never deleted (`services/assets.ts`, `services/maintenance.ts`).
-14. Low: a project's custom slug cannot be removed once set (`draft-service.ts`, `content-service.ts`, contracts).
+12. Low-medium (not changed in this audit): upload completion holds the site lock during provider IO (`services/assets.ts` `complete`). Open by choice: restructuring the completion transaction needs its own careful change and test; impact is limited to one owner's concurrent uploads.
+13. Low: staging copies of completed uploads are never deleted (`services/assets.ts`, `services/maintenance.ts`). **Fixed** (`d6d668f`).
+14. Low: a project's custom slug cannot be removed once set (`draft-service.ts`, `content-service.ts`, contracts). Open: no studio control sets or removes a project slug today; only the API or an imported draft can, so this waits for that feature.
 
 Web
 15. Medium: an upload that finishes during publish or a language switch is dropped while the picker reports success (`use-studio-controller.ts` `update`, `asset-picker.tsx`). **Fixed** (`df3be7d`).
 16. Low: the studio language switch silently does nothing while busy. **Fixed** (`df3be7d`).
-17. Low: on a 404 inside a portfolio the language switch does nothing.
+17. Low: on a 404 inside a portfolio the language switch does nothing. **Fixed** (`288dafd`).
 18. Low: draft export revokes the download URL immediately (WebKit may cancel it). **Fixed** (`df3be7d`).
-19. Low: the asset preview shows "unavailable" while its private URL is still loading.
+19. Low: the asset preview shows "unavailable" while its private URL is still loading. **Fixed** (`af56370`).
 20. Low: some user-content inputs lack `dir="auto"` (profile and project fields). **Fixed** (`b727ba7`).
-21. Low: static assets served directly by Workers Static Assets do not receive `nosniff`/CSP headers (no `public/_headers`).
+21. Low: static assets served directly by Workers Static Assets do not receive `nosniff`/CSP headers (no `public/_headers`). **Fixed** (`782e662`).
 
 ## Gates
 
-Recorded at the end of the work in the final section below.
+Final run on the last commit of this audit (local, `folio_test`): `bun audit` no vulnerabilities; typecheck exit 0; Biome clean; web 58/58; guarded API 93 pass / 12 conditional skips / 0 fail; Playwright 54/54; OpenNext build exit 0 (the `_headers` file is copied into `.open-next/assets`). Each fix commit lists its own checks.
 
 ## Known limits
 

@@ -10,7 +10,7 @@ Updated: 2026-10-22, Asia/Riyadh. This page is the short continuation point. Eve
 
 ## Active work
 
-- Full project audit and cleanup on `claude/modest-davinci-osg31w` (scope in [CHANGELOG.md](CHANGELOG.md)). Done so far: verified-unused admin views, helpers, copy keys, styles and tokens removed; documentation reorganized with history moved to [archive/](archive/). Visual identity unified (fonts, type scale, weights, radii, accent family, page column). A four-part code review found no critical issue; its 21 findings and their status are listed in [evidence/2026-10-22-full-audit.md](evidence/2026-10-22-full-audit.md). Fixes for the verified findings are in progress; anything not fixed in a later commit on this branch is still open.
+- Full project audit and cleanup on `claude/modest-davinci-osg31w`, complete and pushed; next step is the human opening and merging its pull request, then deploying API then web (scope in [CHANGELOG.md](CHANGELOG.md)). Done so far: verified-unused admin views, helpers, copy keys, styles and tokens removed; documentation reorganized with history moved to [archive/](archive/). Visual identity unified (fonts, type scale, weights, radii, accent family, page column). A four-part code review found no critical issue; its 21 findings and their status are listed in [evidence/2026-10-22-full-audit.md](evidence/2026-10-22-full-audit.md). 18 findings are fixed with tests; 3 low items stay open with reasons (project slug removal has no UI yet, email-mask policy is a product decision, upload-completion locking needs its own change). Final gates: audit clean, typecheck 0, Biome clean, web 58/58, API 93/12 skip/0, Playwright 54/54.
 
 ## Blockers
 

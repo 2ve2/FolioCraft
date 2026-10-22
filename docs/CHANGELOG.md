@@ -1,5 +1,11 @@
 # Action log
 
+## 2026-10-22 — Full project audit and cleanup completed
+- Cleanup: about 1,100 lines of verified-unused code, styles and tokens removed; documentation reorganized with history in `docs/archive/` (no content deleted).
+- Visual identity: one font pair, one type scale, one weight per heading level, three radii, one accent family and one page column across every platform screen; measured on 102 screenshots before and after. Rules in DESIGN_SYSTEM.md.
+- Review: four read-only reviewers (human-authorized helpers) reported 21 findings; 18 fixed with tests in separate commits, 3 low items left open with reasons. No IDOR, draft leak, XSS or open redirect was found.
+- Final gates: audit clean, typecheck 0, Biome clean, web 58/58, API 93 pass / 12 skip / 0 fail, Playwright 54/54, OpenNext build 0. Evidence: `docs/evidence/2026-10-22-full-audit.md`. Not deployed.
+
 ## 2026-10-22 — Full project audit and cleanup (scope)
 - Human request after Task 8: check everything, clean the whole project, and review fonts, sizes, layouts, visual identity and logos so the product looks professional.
 - Steps, each in its own commit: (A) remove verified-unused code, files, styles and tokens; (B) documentation cleanup that keeps history in the archive; (C) visual identity review of every platform page in Arabic and English at 390/768/1440 with before/after screenshots; (D) correctness and security review with fixes for verified issues.
