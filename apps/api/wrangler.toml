@@ -20,7 +20,13 @@ binding = "IMAGES"
 
 # Daily housekeeping (services/maintenance.ts): expired auth/rate rows, abandoned uploads, queued R2 deletions.
 [triggers]
-crons = ["17 3 * * *"]
+crons = ["* * * * *", "17 3 * * *"]
+
+# Human-provisioned web named entrypoint; activate only after the cache runbook prerequisites.
+# [[services]]
+# binding = "PORTFOLIO_REVALIDATION"
+# service = "foliocraft-trial"
+# entrypoint = "PortfolioRevalidation"
 
 # Optional, manually provisioned trial only; leave absent for the existing DATABASE_URL path.
 # Read docs/HYPERDRIVE.md first: query caching MUST be disabled on the resource, and the

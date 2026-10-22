@@ -4,6 +4,7 @@
 	"type": "module",
 	"exports": {
 		".": "./src/index.ts",
+		"./public-cache": "./src/public-cache.ts",
 		"./admin-policy": "./src/admin-policy.ts"
 	},
 	"dependencies": {

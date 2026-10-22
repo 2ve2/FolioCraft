@@ -2,6 +2,7 @@ import { isIP } from "node:net";
 import app from "./app";
 import { env } from "./config/env";
 import { pool } from "./db";
+import { revalidationDelivery, withRevalidationDelivery } from "./services/cache-invalidation";
 
 let stopping = false;
 const server = Bun.serve({
@@ -28,7 +29,13 @@ const server = Bun.serve({
 				status: 503,
 				headers: { "content-type": "application/json" },
 			});
-		return app.fetch(new Request(request, { headers }));
+		return withRevalidationDelivery(
+			revalidationDelivery(
+				{ PORTFOLIO_REVALIDATION_SECRET: env.PORTFOLIO_REVALIDATION_SECRET },
+				env.NODE_ENV !== "production" ? env.PORTFOLIO_REVALIDATION_URL : undefined,
+			),
+			() => app.fetch(new Request(request, { headers })),
+		);
 	},
 });
 console.info(JSON.stringify({ event: "server_started", host: env.HOST, port: env.PORT }));

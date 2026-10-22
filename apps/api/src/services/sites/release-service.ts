@@ -4,6 +4,7 @@ import { db } from "../../db";
 import { releases, sites } from "../../db/schema/site";
 import { ApiError } from "../../lib/response-helpers";
 import { validateAssets } from "../assets";
+import { affectPublicSite } from "../cache-invalidation";
 import {
 	type DraftTransaction,
 	lockOwnedSite,
@@ -36,6 +37,7 @@ export const releaseService = {
 	async publish(userId: string, id: string, revision: number) {
 		return db.transaction(async (tx) => {
 			const site = await lockOwnedSite(tx, userId, id);
+			affectPublicSite(site.id);
 			if (site.suspended) throw new ApiError(403, "SITE_SUSPENDED");
 			if (site.revision !== revision) throw new ApiError(409, "REVISION_CONFLICT");
 			const snapshot = publishedDraft(draftSchema.parse(site.draft));
@@ -62,6 +64,7 @@ export const releaseService = {
 	async unpublish(userId: string, id: string) {
 		return db.transaction(async (tx) => {
 			await lockOwnedSite(tx, userId, id);
+			affectPublicSite(id);
 			const [site] = await tx
 				.update(sites)
 				.set({ publishedReleaseId: null, updatedAt: new Date() })
@@ -114,6 +117,7 @@ export const releaseService = {
 	async activate(userId: string, id: string, releaseId: string, expected: string | null) {
 		return db.transaction(async (tx) => {
 			const site = await lockOwnedSite(tx, userId, id);
+			affectPublicSite(site.id);
 			if (site.suspended) throw new ApiError(403, "SITE_SUSPENDED");
 			if (site.publishedReleaseId !== expected) throw new ApiError(409, "PUBLICATION_CONFLICT");
 			const [release] = await tx

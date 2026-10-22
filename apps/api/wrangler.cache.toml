@@ -1,0 +1,54 @@
+# Additive Workers build target. Local Bun execution still uses src/server.ts.
+# Do not deploy until the compatibility gates in docs/CLOUDFLARE.md pass.
+name = "foliocraft-api-trial"
+main = "src/worker.ts"
+compatibility_date = "2026-10-14"
+compatibility_flags = ["nodejs_compat", "nodejs_compat_populate_process_env"]
+workers_dev = true
+
+# Runtime deployment identity; the optional SENTRY_DSN belongs in Workers Secrets only.
+[version_metadata]
+binding = "CF_VERSION_METADATA"
+
+[alias]
+"#image-validation" = "./src/lib/storage/image-validation.worker.ts"
+# Workers has no DOMParser; use the SDK's own non-DOM XML parser without changing Bun/browser defaults.
+"@aws-sdk/xml-builder" = "@aws-sdk/xml-builder/dist-cjs/index.js"
+
+[images]
+binding = "IMAGES"
+
+# Daily housekeeping (services/maintenance.ts): expired auth/rate rows, abandoned uploads, queued R2 deletions.
+[triggers]
+crons = ["* * * * *", "17 3 * * *"]
+
+# Human-provisioned web named entrypoint; activate only after the cache runbook prerequisites.
+[[services]]
+binding = "PORTFOLIO_REVALIDATION"
+service = "foliocraft-trial"
+entrypoint = "PortfolioRevalidation"
+
+# Optional, manually provisioned trial only; leave absent for the existing DATABASE_URL path.
+# Read docs/HYPERDRIVE.md first: query caching MUST be disabled on the resource, and the
+# origin role/database statement_timeout must be bounded before binding it.
+# [[hyperdrive]]
+# binding = "HYPERDRIVE"
+# id = "<human-created-cache-disabled-configuration-id>"
+
+# Trial values for the custom domains attached in the Cloudflare dashboard (lord2ve.tech, a temporary
+# domain). Worker names keep their compatibility identifiers. See docs/CLOUDFLARE.md before deployment.
+[vars]
+NODE_ENV = "production"
+TRIAL_SKIP_EMAIL_VERIFICATION = "true"
+SMTP_HOST = "smtp.resend.com"
+SMTP_PORT = "465"
+SMTP_SECURE = "true"
+SMTP_USER = "resend"
+MAIL_TRANSPORT = "resend_http"
+MAIL_FROM = "no-reply@lord2ve.tech"
+API_URL = "https://api.lord2ve.tech"
+WEB_URL = "https://lord2ve.tech"
+DB_CONNECT_TIMEOUT_MS = "20000"
+# Supply reviewed HTTPS API_URL and WEB_URL before runtime verification.
+# DATABASE_URL, BETTER_AUTH_SECRET and provider credentials are Workers secrets.
+

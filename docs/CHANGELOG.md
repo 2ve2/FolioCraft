@@ -1,5 +1,22 @@
 # Action log
 
+## 2026-10-22 — Published ISR implementation and acceptance
+- Backend step gates: all11 commands exited0;42 web tests,85 API tests/12 existing conditional skips/0 failures,14 database Worker checks,8 storage and15 mail checks. Next/OpenNext builds and API dry run passed. The feature tree is verified before separate step commits.
+- Backend step: additive generation outbox/migration, atomic site/owner/asset invalidation triggers, strict private delivery, affected-site prioritization, minute retry, published-only cache DTO and guarded trigger/concurrency tests. Existing draft/ownership/auth/asset guards remain.
+- Frontend step: default-off internal ISR tree, official filtered R2/sharded SQLite tags, binding-only secret-checked expiration with persisted receipts, failure propagation, monotonic timestamps and late-render provenance; preview/public share the existing renderer.
+- Verification:44/44 browser tests and15 real built-Worker local cache/fault/race checks. Eleven-gate verification is recorded in the dated evidence. Manual resource/migration/deploy/enable/rollback commands are prepared in PUBLIC_CACHE.md; no external mutation was performed.
+
+## 2026-10-22 — Published ISR clarification accepted
+- Human explicitly approved the narrow fail-closed OpenNext patch and preparation of the private R2 Standard bucket/SQLite DO binding for use within the free allowance. This authorizes source/tests/runbooks only, never provisioning/deployment.
+- Continue implementation with a separate internal ISR route tree reached only by the runtime-on Worker rewrite. The existing public dynamic routes remain the runtime-off path, so disabling bypasses existing full-route entries. Public/internal path rejection and local fallback require real runtime proof.
+- Proposed persistence boundary: additive transactional outbox triggers cover publication/settings/moderation/deletion, native account bans/cascades and asset removal; no FK deletes pending invalidation intent. Preserve all existing rows/guards.
+
+## 2026-10-22 — Published portfolio ISR (scope; design verification in progress)
+- Start on `codex/published-isr` from freshly fetched/fast-forwarded main `afac7a3`, only in the independent checkout. Preserve unrelated untracked `docs/ADMIN_CONSOLE_TASK.md`.
+- Verify the human-selected OpenNext R2 incremental cache and sharded Durable Object tag cache against official documentation and installed 1.20.11 source before application changes. Record the design, mutation paths, failure guarantees, free-tier limits and any required clarification in dated evidence.
+- Intended implementation: default-off published-route caching, internal secret-protected Service Binding revalidation, transactional invalidation outbox with minute retries, all public-output mutation triggers, local regression/E2E coverage and cold/warm timing. Preserve dynamic localized unavailable responses, shared rendering, ownership, security headers and robots behavior.
+- Stop for the human if the prescribed design contradicts upstream behavior or requires a new unapproved resource. No deployment, hosted database/provider operation, secret inspection or resource creation. All eleven quality gates precede any pushed commit; an unmerged PR follows completed work.
+
 ## 2026-10-22 — Platform color tokens (scope)
 - Work on `codex/platform-color-tokens` from freshly fetched main `8b49fe2`, only in the independent checkout. Preserve unrelated untracked `docs/ADMIN_CONSOLE_TASK.md`.
 - Inventory platform CSS color literals; extract exact semantic tokens without merging near-equal values, changing layout/behavior, or modifying owner-selected portfolio palettes. Preserve system high-contrast colors as documented exceptions.

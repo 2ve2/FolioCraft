@@ -6,6 +6,7 @@ import { user } from "../../db/schema/auth";
 import { sites } from "../../db/schema/site";
 import { auth } from "../../lib/auth";
 import { ApiError } from "../../lib/response-helpers";
+import { affectPublicSite } from "../cache-invalidation";
 import { enqueueStorageDeletion, sitePrefixes } from "../maintenance";
 import {
 	appendSensitiveOutcome,
@@ -99,10 +100,10 @@ export const adminUserService = {
 		).parse(input);
 		const body = { ...data, userId: id };
 		// Database rows cascade on removal; their private R2 objects are queued afterwards.
-		const ownedSites =
-			operation === "remove"
-				? await db.select({ id: sites.id }).from(sites).where(eq(sites.ownerId, id))
-				: [];
+		const ownedSites = ["remove", "ban", "unban"].includes(operation)
+			? await db.select({ id: sites.id }).from(sites).where(eq(sites.ownerId, id))
+			: [];
+		for (const site of ownedSites) affectPublicSite(site.id);
 		try {
 			if (operation === "remove") {
 				await auth.api.removeUser({ headers, body });

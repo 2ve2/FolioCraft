@@ -8,6 +8,7 @@ import { contentReports } from "../../db/schema/reports";
 import { releases, sites } from "../../db/schema/site";
 import { auth } from "../../lib/auth";
 import { ApiError } from "../../lib/response-helpers";
+import { affectPublicSite } from "../cache-invalidation";
 import { recordAdminAction } from "./audit-service";
 import {
 	appendSensitiveOutcome,
@@ -136,6 +137,7 @@ export const adminService = {
 					.where(eq(sites.id, id))
 					.for("update");
 				if (!site) throw new ApiError(404, "NOT_FOUND");
+				affectPublicSite(site.id);
 				await requireOrdinaryTarget(site.ownerId, tx);
 				if (site.suspended === suspended) throw new ApiError(409, "MODERATION_CONFLICT");
 				const [updated] = await tx
