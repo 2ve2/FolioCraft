@@ -1,5 +1,9 @@
 # Action log
 
+## 2026-10-22 — Deterministic Workers mail log assertions
+- `test:worker-mail` failed intermittently in CI (`server-error` on main run 39629329184, `network` on PR #5 run 39703232423) although the same tree passed elsewhere. Cause: Miniflare delivers structured logs on a separate channel that can trail the HTTP response, and the test searched the logs once, immediately.
+- Proof: delaying every captured log line by 50 ms made the unchanged test fail at its first scenario. `scripts/test-worker-mail.ts` now waits (up to 5 s, polling) for the correlated log line and lets trailing lines arrive before the private-value scan. With the same 50 ms delay the fixed test passes 15/15; an intentionally wrong expected code still fails with "Missing correlated log: server-error".
+
 ## 2026-10-22 — Owner alert runbook and release handoff
 - Implementation completed in2f69306 after all gates and28/28 local monitoring checks. Added MONITORING.md with owner-only data-region/project-IP-scrubbing/new-issue-email settings, two exact300-second no-database uptime monitors and interactive secret/build/deploy commands. No provider/deployment command was executed.
 - Reconciled README, source/dependency maps, Cloudflare/operations notes and evidence. All15 documentation-step commands exit0, including Chromium43/43 (36.1s), workerd28/28 and unchanged raw bundle sizes. [PR5](https://github.com/2ve2/FolioCraft/pull/5) is open and unmerged. Cleaned0 remaining E2E accounts and stopped the owned database; ports4300/4400/55432 are closed. No hosted alert or provisioning success is claimed.
@@ -214,7 +218,6 @@ Date/task/step; files changed; decision reference; exact check + observed result
 - Human explicitly selected Better Auth Admin plugin for account roles/ban/session administration. Platform resource moderation/audit routes will rely on that plugin's role/session authority.
 - Behavior-preservation baseline: 549 assertions passed before refactor; same proof will run after route/service organization. New admin features validated separately.
 
-
 ## 2026-10-13 — expanded backend scope and new-session handoff
 - Human requested official Better Auth Admin, domain route organization, response helpers, English function comments and inspection of reference R2/middleware/IDs/timestamps. Reference read-only observations recorded in BACKEND_STYLE.
 - Domain route separation and helper changes preserve URLs; official admin server/client plugins and schema/middleware/audit foundations added. Platform admin routes, audit integration, public moderation protection and admin-specific tests still pending.
@@ -370,7 +373,6 @@ Human returned and requested continuation. Scope: prove ordinary/expanded previe
 - Evidence: work/preview-parity-20261014.json; screenshots/lord-expanded-{clipped-before,final}.png and qa-parity-*.png. Development web3000/API4000 running (sessions33393/28854); native Lord expanded preview left open for human inspection.
 - Active work/blockers: none for these reported frontend defects. Separate editor/preview scrolling was discussed only; not implemented without a request. Future broader browser/screen-reader matrix and production SMTP/domain/HTTPS/hosting/monitoring remain outside this completed local pass. Next action: human inspect Lord and provide any further specific frontend changes; configure external integrations when authorized.
 
-
 ## Skills spacing correction — 2026-10-14
 Human identified visually crowded skill groups and requested that defects not be missed. Scope: inspect actual skill-group/title/tag spacing, fix the shared renderer narrowly, then visually review adjacent sections at desktop/mobile widths. Current browser shows headings directly touching tag rows despite30px grid gap; previous parity checks only proved two views match, not that the shared design is good. No content/publication changes.
 
@@ -381,7 +383,6 @@ Human identified visually crowded skill groups and requested that defects not be
 - Biome104 files clean; web TypeScript pass. No backend/data change or redundant database suite required. Earlier17-test/build results remain historical prior to this CSS change; no new full build claimed.
 - Screenshots: screenshots/lord-skills-spacing-{desktop,mobile,mobile-preview}.png. Temporary public inspection tab closed; viewport override reset; native Lord left open at desktop skills in expanded preview.
 - Next action: continue any newly reported visual defect with actual screenshots and width-specific evidence. Broader cross-browser/screen-reader checks and external launch configuration remain pending.
-
 
 ## Independent workspace scrolling trial — 2026-10-14
 Human requests a visible prototype before deciding whether to adopt independent Workspace/preview scrolling. Scope: opt-in development-only reversible toggle, contained desktop editor/preview scroll surfaces and fixed action chrome; leave default layout and mobile flow intact. Verify actual wheel/anchor/modal behavior and show screenshots; no publication or saved preference/content changes. Pending human adoption decision.
@@ -398,7 +399,6 @@ Human liked the split-scroll trial and requested scrollbar styling consistent wi
 - Runtime interrupted: web/API stopped; prior native tab7 is blocked internal error page and was not manipulated. Fresh allowed HTTP tab12 loaded actual Lord. Read-only DB select1 took7857ms versus5000ms configured connection deadline; current local API runs with DB_CONNECT_TIMEOUT_MS=20000 as runtime-only override. Source/env/production settings unchanged. API session97329 and web6594 current; recheck rather than assume persistence. Fresh tab12 marked deliverable, trial enabled. Old internal error tab may remain user-owned.
 - Active/pending: human inspect branded trial and decide final adoption. Keep defaultfalse/development-only until clear adoption request. No external integration/deployment changes.
 
-
 ## Adopt split scrolling — 2026-10-14
 Human answered "Yes, done" (translated) to adopting the branded scrollbar and independent desktop scrolling. Scope: make accepted layout the default, remove prototype state/button/CSS, retain mobile flow, verify browser behavior and web checks/build. No account content or publication changes.
 
@@ -407,7 +407,6 @@ Human explicitly approved branded scrollbars and independent desktop scrolling (
 
 ## Active source organization — 2026-10-14
 Human requests updating Markdown and organizing both backend/frontend so responsibilities are clear and extensible. Boundary: preserve HTTP contracts, ownership/auth checks, transactional publishing, persisted draft/public separation, UI text/markup/styles/navigation and existing package exports. No migrations/dependency/provider/production policy changes. Baseline web check/typecheck/build passed immediately before refactor; isolated backend suite is running. Audit existing responsibilities before moving them; no subagents. Next action: extract cohesive backend service/auth boundaries, group frontend features and split oversized UI/copy/CSS modules, run same gates and real browser checks, then document actual source map and remaining limits.
-
 
 ### Source organization checkpoint
 Backend: extracted siteDraftService/releaseService/publicSiteService behind the existing siteService entry point, native authHooks, and account route; same17 isolated tests/788 assertions passed in3.76s (baseline4.03s). Web components grouped by feature; Studio now280 lines, section views separate,604-line controller intentionally owns shared save/recovery/publication concurrency. Content collections, rich input/reordering, management/admin UI, asset URL renewal and UI primitives separated. Portfolio package exports unchanged; copy/appearance/render/detail/rich/format/styles separated. Original CSS cascade concatenation matched before extraction. Same React server-render output passed56 old-vs-new cases covering bilingual themes/sizes/main/detail/empty preview. Current check164 files/typecheck/build pass before the last fixture/comment move. Final live browser and documentation map pending.
@@ -440,7 +439,6 @@ Human requests an internet-hosted trial that continues with their computer off, 
 
 ## Personal English portfolio from supplied CV — 2026-10-14
 Human requests their own website from an attached CV and explicitly selects English content. Read the PDF visually because its text layer is empty; the second page is blank. Use only supplied facts, four actual projects, technical/soft skills, education, certifications and contact links. Dates/project URLs/images not supplied must not be fabricated. Populate the authenticated owner's blank portfolio through the actual UI, retain private draft/public separation, verify saved output and show the result. Source document, screenshots, exports and personal account evidence stay in ignored work/; no personal identifiers are added to versioned documentation.
-
 
 ## 2026-10-14 — verbatim biography correction scope
 - Human requires About you to reproduce only the professional summary from the supplied CV verbatim, without assistant additions.
@@ -782,7 +780,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Human requested GitHub upload, Markdown update if needed, then a new project session waiting for the next command. Disclosed2fc0a82/a4d9a26 and documentation checkpoint before upload. Fetch shows0 remote-only/2 local-only; ordinary push succeeds origin/main7922f02→a4d9a26. No force push/deployment/production mutation.
 - STATUS updated with actual upload evidence, unchanged verification limits and idle handoff instructions. This documentation-only checkpoint is included in the authorized upload; no new runtime test or remote CI result claimed. New session must wait for the human rather than resume any launch blocker.
 
-
 ## 2026-10-18 — Admin Console P0 documentation completed
 - Added docs/ADMIN_CONSOLE.md: source-backed baseline/discrepancies, fixed architecture, all 25 product permission actions with native defaultStatements mapping, legacy-admin alternatives, internal single-use wrapper capability, reason/password/freshAge design, enrollment and impersonation escape exceptions, concurrent last-owner proposal, append-only audit transition, privacy/data/deletion limits and P0–P7 acceptance plan. Approval items A1–A6 remain proposals.
 - Updated docs/DECISIONS.md and docs/STATUS.md with the P0-only authorization, evidence limits and next action: Arabic summary followed by waiting for the human. Existing task input was read in full, preserved and excluded from this commit. No ROADMAP acceptance box changed for unimplemented behavior.
@@ -814,7 +811,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Human explicitly requests uploading the completed local commits. Fetch the existing origin, verify remote ancestry, disclose the pending commits and push main normally without rewriting history. P0/P1 commits form one linear history; no P2, deployment, provider or account operation is authorized.
 - Preserve generated apps/web/next-env.d.ts unstaged and use work/github-upload exclusively. Record actual push results and synchronize this documentation checkpoint under the same upload authorization; no new runtime validation is required for upload-only work.
 
-
 ### Authorized P0/P1 upload result
 - Fetch exit 0; comparison 0 remote-only/3 local-only. Disclosed 14e9882 (P0), 758ace2 (approved amendment), 49e5701 (P1). Ordinary git push origin main exit 0; remote main advanced ce32242 to 49e5701. No force push or deployment.
 - Updated STATUS with actual upload evidence, unchanged P2 stop boundary and verification limits. Synchronize/commit this documentation checkpoint separately and include it in the same authorized upload. No new runtime acceptance or remote CI success claimed; generated next-env.d.ts remains excluded.
@@ -823,7 +819,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Human accepts P1 and authorizes P2a only: append the simplified P2 design to ADMIN_CONSOLE.md, document a reviewed manual staff-role procedure in OPERATIONS.md, and prepare an additive SQL draft outside executable migration discovery. Show the entire draft to the human and stop for approval.
 - Scope is documentation and draft SQL only. No application/config/schema/test code, migrations journal, dependency, database connection or migration execution; not even local folio_test. No role change, push or deployment. Root bun run test is prohibited in this batch because it runs db:migrate.
 - Simplified P2: TOTP with trusted-device bypass disabled; enrollment-only security routes; password-per-sensitive ordinary-target operations; staff-target and all role changes unavailable; no advisory/last-owner implementation; separate audit attempt/outcome and bounded denial logging; masked email with audited reveal. No reports/requests/notices or non-two-factor new tables. Inspect installed Better Auth 1.7.7 before proposing exact standard fields and future test changes.
-
 
 ## 2026-10-18 — P2a design and unapplied SQL completed
 - Added ADMIN_CONSOLE.md appendix 13 and docs/sql/P2A_TWO_FACTOR_DRAFT.sql; updated OPERATIONS with an unexecuted reviewed manual staff-role procedure, plus DECISIONS and STATUS. P1 is human-accepted. Simplified P2 leaves staff-target/role changes unavailable and removes advisory/last-owner implementation from scope. MFA provenance/trusted-device handling, native per-invocation password/reason hooks, audit inserts, finite denial buckets and future test effects are explicitly designed, not implemented.
@@ -837,13 +832,11 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Implement TOTP-only/trusted-device denial, validated ADMIN_REQUIRE_MFA, administrative MFA gates and isolated enrollment/challenge pages. Extend restore coverage to twelve tables. Prove encryption/key rotation using synthetic keys/native fixtures and document actual results. No sensitive-action password/reason/audit pipeline (P2b-2), advisory lock, role change, push, deployment or production database connection.
 - Separate completed schema/design and application/verification commits in work/github-upload; keep generated next-env.d.ts excluded. Existing P1 role fixtures remain disposable local-only. Record actual outcomes before completion and stop after evidence.
 
-
 ## 2026-10-19 — P2b-1 MFA completed locally
 - Schema/design step committed separately as8c902a6: standard twoFactor/user flag, one hidden session-proof column and drizzle-kit migration0004/meta. Approved P2a draft unchanged; generated difference documented in ADMIN_CONSOLE appendix14. Migration applied only via the guarded local folio_test test wrapper.
 - Application step: API env/auth hooks/MFA helper/admin gates; web native client/sign-in challenge/shell/security pages/bilingual copy; backup helper twelve-table coverage; guarded enforced test child and optional MFA browser mode. Existing role fixture invalid-signup request now uses its own loopback IP to avoid repeated-run rate-limit interference, and browser fixture cleanup tolerates missing credential files without masking setup errors. No dependency/version/lockfile or P2b-2 change.
 - Checks: typecheck0; Biome0/292 files; default QA build0/page generation20/20 plus dynamic admin routes; guarded API outer25 pass/7 child-only skips/1,239 assertions with enforced child7 pass/183 assertions; web17 pass/289 assertions. Real isolated Chromium native enrollment/sign-out/password/TOTP/admin flow passes with zero page errors; four signed-in locale/width cases and eight logged-out route/locale/width checks show no management fetches on security pages. Logs/evidence under work/admin-p2b1. Initial authenticator test-code representation, internal rejection assertion, repeated-run rate-limit and browser page-transition failures were corrected before final results.
 - Updated ADMIN_CONSOLE, API, OPERATIONS, DECISIONS and STATUS with actual schema/config/proof/key evidence and remaining scope. Temporary QA services stopped; two browser fixture users deleted/zero remaining and private fixture credentials removed. No backup/restore, real key/role/account change, production connection, push or deployment. P2b-2 remains unimplemented; stop for human review.
-
 
 ## 2026-10-19 — authorized P2a/P2b-1 upload
 - Human authorized uploading the local commits. Fetch showed0 remote-only/3 local-only; ordinary push succeeded, origin/main063d73a to f273584, including96cf08a,8c902a6 and f273584. Tracking comparison then0/0. No force push/history rewrite. STATUS updated with actual upload evidence; this documentation checkpoint is included in the same authorization.
@@ -853,7 +846,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 - Human accepts P2b-1 and authorizes only ordinary-target ban/unban, one/all session revocation and site suspend/resume: per-action operator password, existing TOTP-session gate, trimmed 10–500 reason, durable attempt followed by separate outcome and bounded authenticated actor/action permission_denied writes (10/60 seconds).
 - Compare expanded native before-hook bodies versus a direct shared complete pipeline before application edits. Preserve native HTTP interception, closed undeclared/staff/set-role/impersonation/password-setting paths, MFA isolation and unchanged freshAge. No new tables/migration, advisory/last-owner work, reveal-email, remove-user or general denial limits.
 - Use guarded local folio_test only through root runner; no production connection, real role/key change, push or deployment. Record actual checks, synchronize to work/github-upload and commit completed steps separately; preserve its generated next-env.d.ts unstaged. Stop for human review after local evidence.
-
 
 ## 2026-10-19 — P2b-2a completed locally
 - Design comparison/scope committed first as c1d7963. Selected A under the human's choice authorization; documented why a wrapper-only B would need duplicate verification, a trusted invocation mechanism or replacement native mutations under the existing hook boundary. No application code preceded that comparison.
@@ -866,7 +858,6 @@ Human requests their own website from an attached CV and explicitly selects Engl
 ## 2026-10-19 — authorized P2b-2a upload scope
 - Human explicitly requests uploading the completed commits. Fetch the existing GitHub origin, verify ancestry, disclose pending commits and push main normally. Synchronize and commit this documentation checkpoint in work/github-upload and include it in the same authorized upload.
 - Preserve the preexisting generated apps/web/next-env.d.ts unstaged. No force push, deployment, further implementation, production connection or real role/key change. Runtime acceptance remains the recorded P2b-2a evidence; uploading does not establish remote CI success.
-
 
 ### Authorized P2b-2a upload result
 - Fetch exit0; comparison0 remote-only/2 local-only; origin/main ancestor check passed. Disclosed c1d7963 and0c922cc. Ordinary push exit0 advanced main52db4a7 to0c922cc. No force push/history rewrite.

@@ -149,6 +149,14 @@ const mf = new Miniflare(
 		},
 	}),
 );
+/** Structured logs reach the host on their own channel and can trail the HTTP response. */
+async function waitForLog(match: (line: string) => boolean, label: string) {
+	const deadline = Date.now() + 5000;
+	while (!logs.some(match)) {
+		if (Date.now() > deadline) assert.fail(`Missing correlated log: ${label}`);
+		await new Promise((resolve) => setTimeout(resolve, 20));
+	}
+}
 let passed = 0;
 try {
 	const origin = await mf.ready;
@@ -182,12 +190,14 @@ try {
 			scenario === "invalid-link" ? 0 : 1,
 			"No retries or invalid-origin sends",
 		);
-		const correlated = logs.filter((line) => line.includes(result.requestId)).join("\n");
-		assert.ok(
-			correlated.includes(code === null ? "auth_mail_accepted" : "auth_mail_failed"),
+		const event = code === null ? "auth_mail_accepted" : "auth_mail_failed";
+		await waitForLog(
+			(line) =>
+				line.includes(result.requestId) &&
+				line.includes(event) &&
+				(!code || line.includes(`"code":"${code}"`)),
 			scenario,
 		);
-		if (code) assert.ok(correlated.includes(`"code":"${code}"`), scenario);
 		passed++;
 	}
 	let completed = false;
@@ -213,14 +223,17 @@ try {
 		true,
 		"Native helper preserves generic success after callback failure",
 	);
-	assert.ok(
-		logs.some((line) => line.includes(failed.requestId) && line.includes('"code":"HTTP_403"')),
+	await waitForLog(
+		(line) => line.includes(failed.requestId) && line.includes('"code":"HTTP_403"'),
+		"native-failure",
 	);
 	passed++;
 	const unknown = await run("native-unknown");
 	assert.equal(unknown.body?.status, true);
 	assert.equal(counts.has("native-unknown"), false, "Unknown recipient does not invoke transport");
 	passed++;
+	// Let any trailing log lines arrive before checking that none of them leak private values.
+	await new Promise((resolve) => setTimeout(resolve, 500));
 	const combined = logs.join("\n");
 	for (const privateValue of [
 		key,
