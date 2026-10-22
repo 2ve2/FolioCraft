@@ -101,6 +101,9 @@ export const copy = {
 		createLanguage: "لغة البورتفوليو",
 		loading: "جارٍ تحميل مساحتك…",
 		loadError: "تعذر تحميل بياناتك. حاول مجدداً بعد قليل.",
+		emailUnverified:
+			"أكّد بريدك الإلكتروني أولاً: افتح رسالة التحقق في بريدك أو اطلب رسالة جديدة، ثم ارجع هنا وأعد التحميل.",
+		resendVerification: "إعادة إرسال رسالة التحقق",
 		loadRetry: "إعادة التحميل",
 		error: "تعذر إتمام العملية. حاول مجددًا.",
 		unavailable: "تعذر الاتصال بخدمة الموقع. تحقق من اتصالك وتشغيل الخدمة ثم أعد المحاولة.",
@@ -266,6 +269,9 @@ export const copy = {
 		createLanguage: "Portfolio language",
 		loading: "Loading your workspace…",
 		loadError: "We couldn’t load your data. Please try again in a moment.",
+		emailUnverified:
+			"Confirm your email first: open the verification message in your inbox or request a new one, then come back and try again.",
+		resendVerification: "Resend verification email",
 		loadRetry: "Try again",
 		error: "The operation failed. Please try again.",
 		unavailable:

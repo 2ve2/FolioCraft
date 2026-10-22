@@ -37,7 +37,7 @@ In a separate process:
 bun run dev:web
 ```
 
-`db:migrate` applies pending SQL to the **current DATABASE_URL**; verify its target before execution. It does not replace a backup or approval of a production upgrade. `db:generate` produces reviewable schema migration files; do not use `drizzle-kit push` or reset/truncate for operation.
+`db:migrate` applies pending SQL to the **current DATABASE_URL** and needs no other variable (since 2026-10-22 it does not load the API's auth secrets or origins). It prints the target host and database name, never the credentials; verify that target before anything changes. For a hosted database, supply the URL privately for one shell, for example `read -rs DATABASE_URL && export DATABASE_URL`, run the command, then `unset DATABASE_URL`; never put it on a visible command line, in a file in the repository or in chat. It does not replace a backup or approval of a production upgrade. `db:generate` produces reviewable schema migration files; do not use `drizzle-kit push` or reset/truncate for operation.
 
 To verify the build:
 
@@ -111,7 +111,7 @@ MAIL_FROM=hello@example.com
 
 Examples are placeholders. No SMTP account or sender domain is currently configured. `SMTP_SECURE=true` uses TLS from connection start, commonly on465; `false` enforces STARTTLS in the current transport. Connection/greeting deadlines are10 seconds and socket deadline15 seconds; Nodemailer file/URL access is disabled.
 
-Normal production: `requireEmailVerification=true`, send on registration/sign-in, and `autoSignInAfterVerification=false`. The human explicitly approved TRIAL_SKIP_EMAIL_VERIFICATION=true for this hosted friends trial; it suppresses the signup/sign-in verification requirement but does not simulate mail. Restore false and prove delivery before general launch. The frontend should prompt users to check their inbox after registration and sign in after verification; this required UI integration is not proven in production. Development permits the unverified local flow, which is not a launch policy.
+Normal production: `requireEmailVerification=true`, send on registration/sign-in, and `autoSignInAfterVerification=false`. On 2026-10-22 the human asked to turn signup email verification on, so both API manifests now set `TRIAL_SKIP_EMAIL_VERIFICATION=false` (the earlier friends-trial exception set true). The flag only takes effect when the API is redeployed. Confirm mailbox delivery with one password-reset email first. After registration the web app shows the check-your-inbox state; sign-in before verification returns `EMAIL_NOT_VERIFIED` and sends a fresh link; an existing session of an unverified account sees a confirm-your-email screen in the studio with a resend link. The full sequence is proven locally with production settings and intercepted mail delivery (see the 2026-10-22 evidence); hosted mailbox delivery is not. Development permits the unverified local flow, which is not a launch policy.
 
 Password reset and verification resend with unconfigured SMTP return `503 MAIL_UNAVAILABLE`; transport failure returns `MAIL_DELIVERY_FAILED`. Successful reset revokes previous sessions. Messages contain Arabic/English text; the message URL must match the API origin. Never print token links or claim delivery without provider evidence. Inquiry mail is not implemented; inquiries are stored only in the site inbox.
 

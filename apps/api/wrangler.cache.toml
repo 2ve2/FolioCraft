@@ -45,7 +45,7 @@ bucket_name = "ichnara-portfolio-cache"
 # domain). Worker names keep their compatibility identifiers. See docs/CLOUDFLARE.md before deployment.
 [vars]
 NODE_ENV = "production"
-TRIAL_SKIP_EMAIL_VERIFICATION = "true"
+TRIAL_SKIP_EMAIL_VERIFICATION = "false"
 SMTP_HOST = "smtp.resend.com"
 SMTP_PORT = "465"
 SMTP_SECURE = "true"

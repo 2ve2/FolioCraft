@@ -53,7 +53,7 @@ Image upload journeys are excluded because no R2 credentials are used; there is 
 
 ## CI evidence
 
-The `e2e` job in `.github/workflows/check.yml` runs on PostgreSQL 18, installs the matching Chromium and has a ten-minute limit. On failure it uploads `work/e2e-report/` and `work/e2e-results/` (HTML, screenshots and retained traces) for seven days. Open the local report with:
+The `e2e` job in `.github/workflows/check.yml` runs on PostgreSQL 18, installs the matching Chromium (bounded at 15 minutes, because its system-package mirror has taken over nine) and gives the browser journeys their own ten-minute limit; the whole job is capped at 25 minutes. On failure it uploads `work/e2e-report/` and `work/e2e-results/` (HTML, screenshots and retained traces) for seven days. Open the local report with:
 
 ```sh
 bunx --no-install playwright show-report work/e2e-report

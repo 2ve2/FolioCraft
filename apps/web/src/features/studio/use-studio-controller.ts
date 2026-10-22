@@ -45,6 +45,7 @@ export function useStudioController() {
 	const [loaded, setLoaded] = useState(false);
 	const [loadedIdentity, setLoadedIdentity] = useState("");
 	const [loadError, setLoadError] = useState(false);
+	const [emailUnverified, setEmailUnverified] = useState(false);
 	const [section, setSection] = useState<Section>("content");
 	const [saveState, setSaveState] = useState<SaveState>("saved");
 	const [error, setError] = useState("");
@@ -80,6 +81,7 @@ export function useStudioController() {
 		const c = textRef.current;
 		if (e instanceof ApiError) {
 			if (e.status === 401) return c.sessionExpired;
+			if (e.code === "EMAIL_NOT_VERIFIED") return c.emailUnverified;
 			if (e.status === 409) return c.conflict;
 			if (e.status === 0) return c.unavailable;
 			if (e.status === 400 || e.status === 422) return c.invalid;
@@ -142,6 +144,7 @@ export function useStudioController() {
 				mounted.current;
 
 			setLoadError(false);
+			setEmailUnverified(false);
 			setLoaded(false);
 			try {
 				const prefetched = await startupRead.current?.take(identity, startupSession);
@@ -181,8 +184,10 @@ export function useStudioController() {
 					}
 				}
 				recoveries.current.delete(owner);
-			} catch {
-				if (current()) setLoadError(true);
+			} catch (e) {
+				if (!current()) return;
+				setEmailUnverified(e instanceof ApiError && e.code === "EMAIL_NOT_VERIFIED");
+				setLoadError(true);
 			} finally {
 				if (current()) setLoaded(true);
 			}
@@ -630,6 +635,7 @@ export function useStudioController() {
 		draft,
 		loaded,
 		loadError,
+		emailUnverified,
 		loadedIdentity,
 		sessionIdentity,
 		loadSite,

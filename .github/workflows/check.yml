@@ -82,7 +82,7 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     services:
       postgres:
         image: postgres:18
@@ -107,9 +107,13 @@ jobs:
         with:
           bun-version: 1.4.2
       - run: bun install --frozen-lockfile
+      # The apt mirror behind --with-deps has taken over nine minutes; bound it separately so a slow
+      # install cannot consume the browser journeys' own time limit.
       - run: bunx --no-install playwright install --with-deps chromium
+        timeout-minutes: 15
       - name: Real API and production Next browser journeys
         run: bun run test:e2e
+        timeout-minutes: 10
       - name: Browser failure report and traces (disposable accounts only)
         if: failure()
         uses: actions/upload-artifact@v4
