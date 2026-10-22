@@ -68,7 +68,7 @@ export const legalCopy: Record<
 						heading: "مزوّدو الخدمة",
 						paragraphs: [
 							"نعتمد على Cloudflare للاستضافة وتخزين الصور والتحقق منها، وعلى Neon لقاعدة البيانات، وعلى Resend لإرسال رسائل البريد. قد تُعالَج البيانات خارج بلدك.",
-							"عند تفعيل مراقبة الأخطاء، يستقبل Sentry بيانات تشخيصية منقّحة من الخوادم فقط، دون ملفات تعريف الارتباط أو بيانات الدخول أو عناوين البريد أو عناوين الشبكة أو محتوى المستخدمين. لا نسجّل الجلسات ولا نتتبّع سلوك المتصفح. يفحص UptimeRobot توفّر صفحات عامة محددة دون إرسال بيانات المستخدمين إليه. إعداد التنبيهات الخارجية وتفعيلها لم يُتحقَّق منهما بعد.",
+							"عند تفعيل مراقبة الأخطاء، يستقبل Sentry بيانات تشخيصية منقّحة من الخوادم فقط، دون ملفات تعريف الارتباط أو بيانات الدخول أو عناوين البريد أو عناوين الشبكة أو محتوى المستخدمين. لا نسجّل الجلسات ولا نتتبّع سلوك المتصفح. يفحص UptimeRobot توفّر صفحات عامة محددة دون إرسال بيانات المستخدمين إليه.",
 						],
 					},
 					{
@@ -205,7 +205,7 @@ export const legalCopy: Record<
 						heading: "Service providers",
 						paragraphs: [
 							"We rely on Cloudflare for hosting and for storing and checking images, Neon for the database, and Resend for sending email. Data may be processed outside your country.",
-							"When error monitoring is enabled, Sentry receives scrubbed diagnostics from servers only, without cookies, credentials, email addresses, network addresses or user content. We do not record sessions or track browser behavior. UptimeRobot checks the availability of selected public pages without receiving user data. External alert setup and activation have not yet been verified.",
+							"When error monitoring is enabled, Sentry receives scrubbed diagnostics from servers only, without cookies, credentials, email addresses, network addresses or user content. We do not record sessions or track browser behavior. UptimeRobot checks the availability of selected public pages without receiving user data.",
 						],
 					},
 					{
