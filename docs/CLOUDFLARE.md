@@ -165,3 +165,7 @@ Human authorizes SMTP configuration and one API deployment only. Display-name MA
 ## Optional server error monitoring — 2026-10-22
 
 The web manifest now points to `worker.ts`, an official Sentry Next.js Cloudflare wrapper around generated `.open-next/worker.js`. API and web bind `CF_VERSION_METADATA` for actual deployed version tags. `SENTRY_DSN` is optional and belongs only in each Worker secret store; without it both application handlers run without a monitoring client or ingestion. Existing origin vars, Cron schedule, security policy and resource targets remain unchanged. No rollout was performed. See [MONITORING.md](MONITORING.md) for the human-operated setup, exact no-database monitor URLs, build/release commands and silencing.
+
+## Prepared optional database path — 2026-10-22
+
+[HYPERDRIVE.md](HYPERDRIVE.md) is the manual trial runbook. HTTP/Cron may consume an optional HYPERDRIVE binding, with unchanged DATABASE_URL behavior when absent. Binding comments are inactive; caching must be disabled on the resource and the origin role/database deadline verified first. No resource, deployment, new secret, migration or Service Binding was created. Real edge gains remain unverified; the human measures before retaining activation.

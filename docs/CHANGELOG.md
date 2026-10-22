@@ -1,5 +1,10 @@
 # Action log
 
+## 2026-10-22 — Hyperdrive operational handoff complete
+- Added HYPERDRIVE.md with exact secret-safe stdin/in-process-argv creation (query caching disabled), origin deadline preservation/restoration, separate unbound/bound API deployments, trial curl/timing projection and rollback for every step. README/Cloudflare/operations/source map link to it. No provisioning/deployment/hosted operation performed.
+- Final password-authenticated acceptance14/14 commands exit0:all eleven gates, monitoring28/28 and both benchmark harnesses. Counts remain API79/0/5297 plus MFA11/0/308, database14/14, web37/0/685, storage8/8, mail15/15, Biome425, Next/OpenNext50/50. Initial two Service Binding runs had0ms median gain; final SCRAM run differs by1ms at coarse resolution. No repeatable edge benefit or production Service Binding is claimed.
+- PR7 is open/unmerged. Corrected remote run39709019010 on194d189 passes all four jobs, including Chromium43 passed. Final documentation-head checks are not preclaimed. Cleanup:0 fixture accounts,0 residual deadline overrides, owned PostgreSQL stopped/55434 closed. Unrelated untracked ADMIN_CONSOLE_TASK.md preserved. Source work complete; human review and measured optional trial activation are next.
+
 ## 2026-10-22 — Local fixture password preservation verified
 - `scripts/test-worker-database.ts` and `scripts/measure-worker-database.ts` now keep supplied local fixture passwords, generating a Miniflare placeholder only when absent. Initial PR7 integration run39708626819 independently reproduced the original bound-path authentication failure after unbound checks passed.
 - Full verification against disposable local SCRAM-authenticated folio_test passes all eleven gates plus monitoring: API79/0/5297 and MFA11/0/308, workerd database14/14, web37/0/685, Biome425, storage8/8, mail15/15, Next/OpenNext50/50 and monitoring28/28. This correction changes test harnesses only; no product/provider authentication policy changed.
