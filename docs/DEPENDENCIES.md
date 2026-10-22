@@ -33,3 +33,9 @@ Root overrides target only these parents: @node-minify/core → glob10.5.0; @esb
 ## 2026-10-21 — Browser E2E tooling
 
 `bun info @playwright/test --json`, `bun info @playwright/test engines --json` and `bun info @playwright/test dist-tags --json` confirm maintained Microsoft Playwright stable/latest1.64.1, Node>=20. Pinned exactly in root devDependencies with its matching playwright/playwright-core1.64.1 and frozen Bun lockfile. CI uses Node22, Bun1.4.2 and matching Chromium revision1248. This is development tooling only; no application runtime dependency was added. Actual checks are recorded in the dated E2E evidence.
+
+## 2026-10-21/22 — Server-only Sentry 11.8.0
+
+`bun info @sentry/cloudflare --json`, `bun info @sentry/cloudflare engines --json`, `bun info @sentry/cloudflare dist-tags --json`, `bun info @sentry/nextjs --json` and `bun info @sentry/nextjs peerDependencies --json` confirmed stable/latest11.8.0, supported Node22.12+ (local22.22.2), Wrangler4 and Next14/15/16. Both packages are pinned exactly with Bun lockfile; no version was copied blindly from a reference. The small shared monitoring package declares the same pinned Cloudflare SDK for its public per-event client.
+
+Official [Next.js-on-Cloudflare instructions](https://docs.sentry.io/platforms/javascript/guides/cloudflare/frameworks/nextjs/) document the `@sentry/nextjs/cloudflare` wrapper since11.6.0 and the server onRequestError hook. Existing compatibility date2026-10-14 and nodejs_compat satisfy the documented minimum2025-08-16. Installed SDK11 uses dataCollection in place of legacy sendDefaultPii; all sensitive categories are explicitly disabled and beforeSend reconstructs a strict allowlist. Runtime proof and final actual audit/bundle results are recorded in the dated owner-monitoring evidence. No browser initialization, withSentryConfig, replay, profiling, source-map upload or vendor patch is introduced.

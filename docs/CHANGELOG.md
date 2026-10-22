@@ -1,5 +1,9 @@
 # Action log
 
+## 2026-10-22 — Owner alert runbook and release handoff
+- Implementation completed in2f69306 after all gates and28/28 local monitoring checks. Added MONITORING.md with owner-only data-region/project-IP-scrubbing/new-issue-email settings, two exact300-second no-database uptime monitors and interactive secret/build/deploy commands. No provider/deployment command was executed.
+- Reconciled README, source/dependency maps, Cloudflare/operations notes and evidence. All15 documentation-step commands exit0, including Chromium43/43 (36.1s), workerd28/28 and unchanged raw bundle sizes. [PR5](https://github.com/2ve2/FolioCraft/pull/5) is open and unmerged. Cleaned0 remaining E2E accounts and stopped the owned database; ports4300/4400/55432 are closed. No hosted alert or provisioning success is claimed.
+
 ## 2026-10-22 — Server monitoring implementation and final verification
 - Added exact Sentry 11.8.0 API and supported OpenNext server capture, shared beforeSend privacy/collection policy, real deployment-version binding, no-DSN bypass and no browser SDK/CSP change. Expected 4xx are excluded; API/Web 5xx, exceptions and Cron failures are captured.
 - Added isolated SDK event capture for HEAD/OPTIONS after confirming automatic wrappers skip them. The regression exposed inherited last-event identity suppressing a later web failure; per-request identity comparison and isolated per-event scope correct it. Final focused workerd run28/28 passes, including ingestion failure preserving the application response.
