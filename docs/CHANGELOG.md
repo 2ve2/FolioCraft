@@ -1,10 +1,9 @@
-# Studio startup — scope, 2026-10-22
-
-- Measure production Next/Bun/local PostgreSQL startup before and after, Arabic/English at 1440/390, ten runs per delay/viewport/locale cell.
-- Render neutral accessible workspace chrome immediately; safely overlap hinted site reads with session verification, preserving authentication, ownership and in-memory-only data.
-- Add focused regression coverage, run every required quality gate, record evidence and open an unmerged PR. No hosted operations or secret access. The later human approval permits only the private double-ID envelope extension; the reproduced main audit failure required compatible updates of existing dependencies.
-
 # Action log
+
+## 2026-10-22 — Full project audit and cleanup (scope)
+- Human request after Task 8: check everything, clean the whole project, and review fonts, sizes, layouts, visual identity and logos so the product looks professional.
+- Steps, each in its own commit: (A) remove verified-unused code, files, styles and tokens; (B) documentation cleanup that keeps history in the archive; (C) visual identity review of every platform page in Arabic and English at 390/768/1440 with before/after screenshots; (D) correctness and security review with fixes for verified issues.
+- Boundaries: no deployment, no hosted database or provider access, no secret inspection, no schema change. Tooling used only for analysis (for example knip through bunx) is not added to the project.
 
 ## 2026-10-22 — Studio startup evidence and handoff
 - Published `9f2f92f` and `c69cd20` on `codex/studio-startup`, opened unmerged PR11 against main and attached it to this chat. No deployment.
@@ -19,6 +18,12 @@
 - Verification before final preview-scale correction: all13 commands passed (web58, API90/12 existing conditional skips plus MFA11, database Workers14, storage8, mail15, Chromium54, cache runtime16); a stronger subsequent assertion found Arabic preview-scale CLS0.02234. Four corrected locale/viewport transition tests now pass with CLS0. Final corrected source passed all13 gates again: frozen install439; audit539 clean; types; Biome463; web58/0/769; API90/12 unchanged conditional skips/0/5444, native MFA11/0/308 and database Workers14; storage8; mail15; Next/OpenNext50 routes; API dry run; Chromium54/54, all four transition CLS0; real local cache runtime16. Accepted remeasurement:80 after/80 formal before, overlap80/80, loading screens0/80, delayed editable medians1665–1685ms versus3185–3216ms. Detailed evidence/handoff is the next separate step.
 - Affected source: studio components/styles/controller/startup read, portfolio preview measurement, API response/site route, contracts, web auth/API helpers and focused tests. API.md/DECISIONS.md/SOURCE_STRUCTURE.md describe the binding and responsibilities. No deployment or provider operation.
 
+
+## 2026-10-22 — Studio startup (scope)
+
+- Measure production Next/Bun/local PostgreSQL startup before and after, Arabic/English at 1440/390, ten runs per delay/viewport/locale cell.
+- Render neutral accessible workspace chrome immediately; safely overlap hinted site reads with session verification, preserving authentication, ownership and in-memory-only data.
+- Add focused regression coverage, run every required quality gate, record evidence and open an unmerged PR. No hosted operations or secret access. The later human approval permits only the private double-ID envelope extension; the reproduced main audit failure required compatible updates of existing dependencies.
 
 ## 2026-10-22 — Signed-in entry and tab-return session checks
 - Scope: three human reports from the trial (loading page before the product page, loading page after returning to the tab, bare address not opening the studio while signed in). Branch `claude/modest-davinci-osg31w` restarted from `main` `1ec5337` after PR #2 merged.
