@@ -6,6 +6,7 @@ import { user } from "../db/schema/auth";
 import { releases, sites } from "../db/schema/site";
 import { ApiError } from "../lib/response-helpers";
 import { storage, UPLOAD_EXPIRY_SECONDS } from "../lib/storage";
+import { affectPublicSite } from "./cache-invalidation";
 import { publicAccessPredicate } from "./sites/public-access";
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
@@ -173,6 +174,7 @@ export const assetService = {
 
 	/** Records durable deletion intent while protecting draft and historical references. */
 	async delete(userId: string, siteId: string, id: string) {
+		affectPublicSite(siteId);
 		// Durable intent is committed before provider IO. Provider failure keeps deleting for an explicit retry.
 		const asset = await db.transaction(async (tx) => {
 			const site = await lockSite(tx, siteId, userId);

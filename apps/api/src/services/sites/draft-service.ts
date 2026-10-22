@@ -4,6 +4,7 @@ import { db } from "../../db";
 import { sites } from "../../db/schema/site";
 import { ApiError } from "../../lib/response-helpers";
 import { validateAssets } from "../assets";
+import { affectPublicSite } from "../cache-invalidation";
 
 export type DraftTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
@@ -108,6 +109,7 @@ export const siteDraftService = {
 	) {
 		return db.transaction(async (tx) => {
 			const site = await lockOwnedSite(tx, userId, id);
+			if (patch.slug && patch.slug !== site.slug) affectPublicSite(site.id);
 			if (site.revision !== revision) throw new ApiError(409, "REVISION_CONFLICT");
 			const [updated] = await tx
 				.update(sites)

@@ -1,3 +1,87 @@
+diff --git a/dist/api/durable-objects/sharded-tag-cache.js b/dist/api/durable-objects/sharded-tag-cache.js
+index 80795f36c418499aab55090d3e07940736e3362c..918453be93c87981f645b10441a1852b48b06cad 100644
+--- a/dist/api/durable-objects/sharded-tag-cache.js
++++ b/dist/api/durable-objects/sharded-tag-cache.js
+@@ -42,7 +42,7 @@ export class DOShardedTagCache extends DurableObject {
+         }
+         catch (e) {
+             console.error(e);
+-            return {};
++            throw e;
+         }
+     }
+     /**
+@@ -103,7 +103,7 @@ export class DOShardedTagCache extends DurableObject {
+             // New call format: writeTags(tags: Array<{ tag, stale?, expire? }>)
+             for (const entry of tags) {
+                 const staleValue = entry.stale ?? nowMs;
+-                this.sql.exec(`INSERT OR REPLACE INTO revalidations (tag, revalidatedAt, stale, expire) VALUES (?, ?, ?, ?)`, entry.tag, staleValue, staleValue, entry.expire ?? null);
++                this.sql.exec(`INSERT INTO revalidations (tag, revalidatedAt, stale, expire) VALUES (?, ?, ?, ?) ON CONFLICT(tag) DO UPDATE SET revalidatedAt = MAX(revalidations.revalidatedAt, excluded.revalidatedAt), stale = MAX(COALESCE(revalidations.stale, 0), COALESCE(excluded.stale, 0)), expire = CASE WHEN revalidations.expire IS NULL THEN excluded.expire WHEN excluded.expire IS NULL THEN revalidations.expire ELSE MAX(revalidations.expire, excluded.expire) END`, entry.tag, staleValue, staleValue, entry.expire ?? null);
+             }
+         }
+     }
+diff --git a/dist/api/overrides/tag-cache/do-sharded-tag-cache.js b/dist/api/overrides/tag-cache/do-sharded-tag-cache.js
+index e754584740b8a8a8390bddc0c9f0d4fbc6b95302..bc4787646c1ebec234664f2f39bfd46df373e4a8 100644
+--- a/dist/api/overrides/tag-cache/do-sharded-tag-cache.js
++++ b/dist/api/overrides/tag-cache/do-sharded-tag-cache.js
+@@ -44,12 +44,12 @@ class ShardedDOTagCache {
+         }
+         catch (e) {
+             error("Error while checking revalidation", e);
+-            return 0;
++            throw e;
+         }
+     }
+     /**
+      * This function checks if the tags have been revalidated
+-     * It is never supposed to throw and in case of error, it will return false
++     * Throws on tag-check failure so the caller cannot serve an unchecked cache hit
+      * @param tags
+      * @param lastModified default to `Date.now()`
+      * @returns
+@@ -67,15 +67,15 @@ class ShardedDOTagCache {
+                     return false;
+                 const { revalidatedAt, expire } = data;
+                 if (expire != null)
+-                    return expire <= now && expire > (lastModified ?? 0);
+-                return revalidatedAt > (lastModified ?? now);
++                    return expire <= now && expire >= (lastModified ?? 0);
++                return revalidatedAt >= (lastModified ?? now);
+             });
+             debugCache("ShardedDOTagCache", `hasBeenRevalidated tags=${tags} at=${lastModified} -> ${result}`);
+             return result;
+         }
+         catch (e) {
+             error("Error while checking revalidation", e);
+-            return false;
++            throw e;
+         }
+     }
+     async isStale(tags, lastModified) {
+@@ -104,7 +104,7 @@ class ShardedDOTagCache {
+         }
+         catch (e) {
+             error("Error while checking stale", e);
+-            return false;
++            throw e;
+         }
+     }
+     /**
+@@ -149,12 +149,12 @@ class ShardedDOTagCache {
+             error("Error while writing tags", e);
+             if (retryNumber >= this.maxWriteRetries) {
+                 error("Error while writing tags, too many retries");
+-                // Do we want to throw an error here ?
++                // The caller must not acknowledge an invalidation that was never persisted.
+                 await getCloudflareContext().env.NEXT_TAG_CACHE_DO_SHARDED_DLQ?.send({
+                     failingShardId: doId.key,
+                     failingTags: tags,
+                 });
+-                return;
++                throw e;
+             }
+             await this.performWriteTagsWithRetry(doId, tags, retryNumber + 1);
+         }
 diff --git a/dist/cli/build/patches/plugins/load-manifest.js b/dist/cli/build/patches/plugins/load-manifest.js
 index bff72bd613f34fc7e2f785f0961c15678d524a71..c6758d696e908fbdbcd824783f8c3a085319d4fa 100644
 --- a/dist/cli/build/patches/plugins/load-manifest.js

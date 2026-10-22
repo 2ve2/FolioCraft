@@ -62,6 +62,20 @@ export const envSchema = z
 			.regex(/^[A-Za-z0-9._-]+$/)
 			.default("unknown"),
 		REPORT_IP_SALT: optional(z.string().min(32).max(1024)),
+		PORTFOLIO_REVALIDATION_SECRET: optional(z.string().min(32).max(1024)),
+		PORTFOLIO_REVALIDATION_URL: optional(
+			z.url().refine((value) => {
+				const url = new URL(value);
+				return (
+					url.protocol === "http:" &&
+					["127.0.0.1", "localhost", "[::1]"].includes(url.hostname) &&
+					!url.username &&
+					!url.password &&
+					!url.search &&
+					!url.hash
+				);
+			}, "Revalidation URL must be a plain loopback HTTP URL"),
+		),
 		API_URL: origin,
 		WEB_URL: origin,
 		PORT: z.coerce.number().int().min(1).max(65535).default(4000),

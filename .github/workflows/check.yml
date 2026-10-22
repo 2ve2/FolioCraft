@@ -75,6 +75,10 @@ jobs:
           bun-version: 1.4.2
       - run: bun install --frozen-lockfile
       - run: bun run test
+      - name: Build production portfolio cache runtime
+        run: bun run --cwd apps/web build:cloudflare
+      - name: Real R2, SQLite tag cache, private binding and invalidation fault journey
+        run: bun run test --public-cache-runtime
 
   e2e:
     runs-on: ubuntu-latest

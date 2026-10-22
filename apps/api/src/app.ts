@@ -8,9 +8,17 @@ import { adminRoutes } from "./routes/admin";
 import { publicRoutes } from "./routes/public";
 import { runtimeRoutes } from "./routes/runtime";
 import { siteRoutes } from "./routes/sites";
+import { cacheInvalidationService } from "./services/cache-invalidation";
 
 const app = new Hono<AuthEnv>();
 registerHttpMiddleware(app);
+
+/** Drains committed public-output intents before returning a mutation response. Failures remain durable. */
+app.use("*", async (c, next) => {
+	await next();
+	if (!["GET", "HEAD", "OPTIONS"].includes(c.req.method))
+		await cacheInvalidationService.flushAffected();
+});
 
 /** Delegates authentication protocol responses directly to Better Auth. */
 app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw));

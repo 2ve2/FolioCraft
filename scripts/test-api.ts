@@ -13,6 +13,7 @@ if (
 	);
 }
 const mfaBrowser = process.argv.includes("--mfa-browser");
+const publicCacheRuntime = process.argv.includes("--public-cache-runtime");
 const adminBrowser = process.argv.includes("--admin-browser") || mfaBrowser;
 const environment = {
 	...process.env,
@@ -35,10 +36,16 @@ const environment = {
 	R2_ACCESS_KEY_ID: "",
 	R2_SECRET_ACCESS_KEY: "",
 	R2_BUCKET: "",
+	PORTFOLIO_REVALIDATION_SECRET: "",
+	PORTFOLIO_REVALIDATION_URL: "",
 };
 for (const command of [
 	["bun", "run", "db:migrate"],
-	adminBrowser ? ["bun", "../../scripts/admin-browser-fixture.ts"] : ["bun", "test", "tests"],
+	publicCacheRuntime
+		? ["bun", "--no-env-file", "tests/fixtures/public-cache-runtime.ts"]
+		: adminBrowser
+			? ["bun", "../../scripts/admin-browser-fixture.ts"]
+			: ["bun", "test", "tests"],
 ]) {
 	const child = Bun.spawn(command, {
 		cwd: new URL("../apps/api", import.meta.url).pathname,
@@ -63,7 +70,7 @@ for (const command of [
 }
 
 // Worker socket lifecycle needs actual workerd, after the same guarded local migrations/tests.
-if (!adminBrowser) {
+if (!adminBrowser && !publicCacheRuntime) {
 	const worker = Bun.spawn(["bun", "scripts/test-worker-database.ts"], {
 		cwd: new URL("../", import.meta.url).pathname,
 		env: environment,

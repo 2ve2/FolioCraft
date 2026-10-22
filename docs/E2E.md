@@ -20,11 +20,17 @@ bunx --no-install playwright install --with-deps chromium
 TEST_DATABASE_URL=postgresql://folio:local-e2e-only@127.0.0.1:55432/folio_test bun run test:e2e
 ```
 
-A local PostgreSQL installation works equally well. The default is `postgresql://folio@127.0.0.1:55432/folio_test`. The runner rejects non-loopback hosts, any other database name and URL query overrides before applying migrations. Ports 4300 and 4400 must be free; an unrelated server is never reused. Each invocation reapplies the explicit migrations, waits for any existing local native authentication budgets to expire without clearing or disabling them, builds in ignored `work/e2e-runtime/`, starts owned API/web processes and stops them even on failure. It never resets or truncates a database.
+A local PostgreSQL installation works equally well. The default is `postgresql://folio@127.0.0.1:55432/folio_test`. The runner rejects non-loopback hosts, any other database name and URL query overrides before applying migrations. Ports 4300, 4301 and 4400 must be free; an unrelated server is never reused. Each invocation reapplies the explicit migrations, waits for any existing local native authentication budgets to expire without clearing or disabling them, builds in ignored `work/e2e-runtime/`, starts owned API/web processes and stops them even on failure. It never resets or truncates a database.
 
 The runner constructs a small environment from scratch. Bun children use `--no-env-file`. Next builds a source-only copy without environment files so Next's own environment loader cannot import local provider configuration. Dependencies are linked from this same installed checkout; the staged build is for local Next execution only, never OpenNext packaging or deployment. Original source and production build output are preserved.
 
 Every invocation rebuilds. For a repeatability check, run the same command three times consecutively. Arguments pass through to Playwright, for example `bun run test:e2e --grep "another account"`, `--headed` or `--list`. CI deliberately uses one worker and zero retries so failures remain visible; tests create unique per-test accounts and sites and do not depend on order. The account helper belongs to apps/api/tests/fixtures/e2e-account.ts so it resolves API dependencies in their declaring workspace; e2e/seed.ts only imports that helper. Root E2E typing uses the declared Bun types, which include Node definitions. Fixture teardown deletes only generated fixture accounts, with database cascades removing their site data. An interrupted/killed process can leave disposable records in this local database; no global cleanup or production cleanup command is provided.
+
+## Published cache coverage
+
+The browser runner enables the production portfolio rewrite/fallback policy through a local proxy on4300, backed by the production Next server on4301 and real API on4400. Both language journeys publish A, edit draft B while A remains public, publish B, and unpublish with the next request unavailable. Missing output is compared directly with the unchanged dynamic server, then the same slug is published and reaches a real Next HIT. This Node filesystem-cache approximation does not prove R2/DO behavior.
+
+After `bun run --cwd apps/web build:cloudflare`, run `TEST_DATABASE_URL=postgresql://folio@127.0.0.1:55432/folio_test bun run test --public-cache-runtime` for the separate real workerd/OpenNext/R2/SQLite/private Service Binding fixture. It checks root/project/article hits, absence of drafts and negative entries, actual SQLite write/read faults and durable retry, plus local HTTP TTFB samples. All storage and provider traffic are local; hosted account allowance and trial latency remain unverified.
 
 ## Covered contracts
 

@@ -1,5 +1,28 @@
 # Action log
 
+## 2026-10-22 — Public cache review fix: the minute retry no longer wakes the database
+- Review finding: once the revalidation binding was configured, the `* * * * *` Cron queried PostgreSQL every minute even with nothing pending, which would keep Neon compute from scaling to zero (free compute allowance). The runbook did not mention it.
+- Fix: a failed delivery writes a unique `pending` R2 object through the new API binding `PUBLIC_CACHE_SIGNAL` (same private `ichnara-portfolio-cache` bucket, no new resource). `cacheInvalidationService.retryPending` reads only that object; it opens a database scope only when pending, drains, and clears with an etag precondition so a concurrent new failure is never lost. Daily maintenance still drains everything as a backstop.
+- Found by the real R2 runtime check, not the in-memory fake: R2 etags hash content, so identical empty marks shared one etag and an older read could clear a newer failure. Marks now carry unique content; the fake bucket now derives etags from content and a unit test asserts consecutive marks differ.
+- Evidence: guarded API 88 pass / 12 skip / 0 fail (three new retry tests); cache test file 7/7; runtime (real workerd R2 + SQLite DO) 16 checks; four mutations (always open the database, unconditional clear, no mark on failure, constant mark content) each fail their test.
+
+## 2026-10-22 — Published ISR implementation and acceptance
+- Backend step gates: all11 commands exited0;42 web tests,85 API tests/12 existing conditional skips/0 failures,14 database Worker checks,8 storage and15 mail checks. Next/OpenNext builds and API dry run passed. The feature tree is verified before separate step commits.
+- Backend step: additive generation outbox/migration, atomic site/owner/asset invalidation triggers, strict private delivery, affected-site prioritization, minute retry, published-only cache DTO and guarded trigger/concurrency tests. Existing draft/ownership/auth/asset guards remain.
+- Frontend step: default-off internal ISR tree, official filtered R2/sharded SQLite tags, binding-only secret-checked expiration with persisted receipts, failure propagation, monotonic timestamps and late-render provenance; preview/public share the existing renderer.
+- Verification: two complete11-gate sets passed before separate step commits;44/44 browser tests and15 real built-Worker local cache/fault/race checks, repeated successfully against the final build. PR#9 targets main and remains unmerged. Eleven-gate verification is recorded in the dated evidence. Manual resource/migration/deploy/enable/rollback commands are prepared in PUBLIC_CACHE.md; no external mutation was performed.
+
+## 2026-10-22 — Published ISR clarification accepted
+- Human explicitly approved the narrow fail-closed OpenNext patch and preparation of the private R2 Standard bucket/SQLite DO binding for use within the free allowance. This authorizes source/tests/runbooks only, never provisioning/deployment.
+- Continue implementation with a separate internal ISR route tree reached only by the runtime-on Worker rewrite. The existing public dynamic routes remain the runtime-off path, so disabling bypasses existing full-route entries. Public/internal path rejection and local fallback require real runtime proof.
+- Proposed persistence boundary: additive transactional outbox triggers cover publication/settings/moderation/deletion, native account bans/cascades and asset removal; no FK deletes pending invalidation intent. Preserve all existing rows/guards.
+
+## 2026-10-22 — Published portfolio ISR (scope; design verification in progress)
+- Start on `codex/published-isr` from freshly fetched/fast-forwarded main `afac7a3`, only in the independent checkout. Preserve unrelated untracked `docs/ADMIN_CONSOLE_TASK.md`.
+- Verify the human-selected OpenNext R2 incremental cache and sharded Durable Object tag cache against official documentation and installed 1.20.11 source before application changes. Record the design, mutation paths, failure guarantees, free-tier limits and any required clarification in dated evidence.
+- Intended implementation: default-off published-route caching, internal secret-protected Service Binding revalidation, transactional invalidation outbox with minute retries, all public-output mutation triggers, local regression/E2E coverage and cold/warm timing. Preserve dynamic localized unavailable responses, shared rendering, ownership, security headers and robots behavior.
+- Stop for the human if the prescribed design contradicts upstream behavior or requires a new unapproved resource. No deployment, hosted database/provider operation, secret inspection or resource creation. All eleven quality gates precede any pushed commit; an unmerged PR follows completed work.
+
 ## 2026-10-22 — Platform color tokens (scope)
 - Work on `codex/platform-color-tokens` from freshly fetched main `8b49fe2`, only in the independent checkout. Preserve unrelated untracked `docs/ADMIN_CONSOLE_TASK.md`.
 - Inventory platform CSS color literals; extract exact semantic tokens without merging near-equal values, changing layout/behavior, or modifying owner-selected portfolio palettes. Preserve system high-contrast colors as documented exceptions.

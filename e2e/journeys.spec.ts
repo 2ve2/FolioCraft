@@ -115,6 +115,16 @@ for (const locale of ["ar", "en"] as const) {
 		expect(publicResponse.status()).toBe(200);
 		expect(await publicResponse.text()).not.toContain(draftName);
 
+		const republished = page.waitForResponse(
+			(response) => response.request().method() === "POST" && response.url().endsWith("/releases"),
+		);
+		await page
+			.getByRole("button", { name: other === "ar" ? "نشر الموقع" : "Publish website", exact: true })
+			.click();
+		expect((await republished).status()).toBe(200);
+		await publicPage.reload();
+		await expect(publicPage.getByRole("heading", { level: 1 })).toHaveText(`${draftName}.`);
+
 		await page
 			.getByRole("button", { name: other === "ar" ? "الإعدادات" : "Settings", exact: true })
 			.click();

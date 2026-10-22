@@ -7,6 +7,7 @@ import { type PoolStage, poolErrorDiagnostic } from "./pool-diagnostics";
 import * as adminSchema from "./schema/admin";
 import * as assetSchema from "./schema/asset";
 import * as authSchema from "./schema/auth";
+import * as cacheSchema from "./schema/cache";
 import * as requestSchema from "./schema/data-requests";
 import * as noticeSchema from "./schema/notices";
 import * as operationsSchema from "./schema/operations";
@@ -24,6 +25,7 @@ const poolConfig = {
 	query_timeout: env.DB_STATEMENT_TIMEOUT_MS + 1000,
 };
 const schema = {
+	...cacheSchema,
 	...adminSchema,
 	...requestSchema,
 	...noticeSchema,

@@ -12,6 +12,13 @@ publicSites.get("/:slug", async (c) => {
 	return successResponse(c, await publicSiteService.public(slug.data));
 });
 
+/** Supplies the published projection and stable cache identity without any private account fields. */
+publicSites.get("/:slug/cache", async (c) => {
+	const slug = slugSchema.safeParse(c.req.param("slug"));
+	if (!slug.success) throw new ApiError(404, "NOT_FOUND");
+	return successResponse(c, await publicSiteService.cacheable(slug.data));
+});
+
 /** Reads a project belonging to the accessible published release. */
 publicSites.get("/:slug/projects/:projectId", async (c) => {
 	const site = await publicSiteService.public(slugSchema.parse(c.req.param("slug")));
