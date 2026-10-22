@@ -37,6 +37,8 @@ const environment: Record<string, string> = {
 	NEXT_PUBLIC_API_URL: api,
 	NEXT_PUBLIC_WEB_URL: web,
 	NEXT_TELEMETRY_DISABLED: "1",
+	PORTFOLIO_REVALIDATION_SECRET: "isolated-public-cache-e2e-at-least-32-characters",
+	PORTFOLIO_REVALIDATION_URL: "http://127.0.0.1:4301/api/internal/revalidate-portfolio",
 	PORT: "4400",
 	HOST: "127.0.0.1",
 };
@@ -91,6 +93,7 @@ for (const signal of ["SIGTERM", "SIGINT"] as const)
 try {
 	await assertFree(4300);
 	await assertFree(4400);
+	await assertFree(4301);
 	await run(["bun", "--no-env-file", "src/db/migrate.ts"], resolve(root, "apps/api"));
 	// Next loads .env files itself. Build a source-only web copy with no ignored environment files.
 	await rm(runtime, { recursive: true, force: true });
@@ -140,13 +143,21 @@ try {
 	});
 	services.push(backend);
 	await ready(`${api}/ready`, backend);
-	const frontend = Bun.spawn(["node", next, "start", "--hostname", "127.0.0.1", "--port", "4300"], {
+	const frontend = Bun.spawn(["node", next, "start", "--hostname", "127.0.0.1", "--port", "4301"], {
 		cwd: webDirectory,
 		env: production,
 		stdout: "inherit",
 		stderr: "inherit",
 	});
 	services.push(frontend);
+	await ready("http://127.0.0.1:4301/en/login", frontend);
+	const proxy = Bun.spawn(["bun", "--no-env-file", "scripts/local-public-cache-proxy.ts"], {
+		cwd: root,
+		env: environment,
+		stdout: "inherit",
+		stderr: "inherit",
+	});
+	services.push(proxy);
 	await ready(`${web}/en/login`, frontend);
 	await run([
 		"node",

@@ -6,6 +6,8 @@ const config: NextConfig = {
 	distDir: process.env.FOLIO_QA_BUILD === "1" ? ".next-qa" : ".next",
 	transpilePackages: ["@ichnara/contracts", "@ichnara/portfolio"],
 	poweredByHeader: false,
+	// Every cached public read must check the shared tag store, never an isolate's memory cache.
+	cacheMaxMemorySize: 0,
 	// Two root layouts (platform and published portfolio) need one branded page for unmatched URLs.
 	experimental: { globalNotFound: true },
 	/** Applies the shared security policy to every route, including static and public pages. */

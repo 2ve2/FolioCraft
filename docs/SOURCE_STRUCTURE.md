@@ -1,5 +1,15 @@
 # Source structure guide
 
+## Published portfolio ISR — 2026-10-22
+
+- `packages/contracts/src/public-cache.ts`: bounded private protocol, reserved paths, site/slug tags and delivery receipts.
+- `apps/api/src/db/schema/cache.ts` and migration0010 plus snapshot/journal: generation outbox and transactional site/owner/asset triggers. `services/cache-invalidation.ts` owns bounded delivery, acknowledgement, request target tracking and retries; `worker.ts` owns minute scheduling. Existing mutation services register authorized targets. `routes/public/sites.ts` exposes only the published cache DTO.
+- `apps/web/portfolio-worker.ts`, `cache-scope.ts`, `portfolio-incremental-cache.ts`: runtime switch, reserved-path guard, private completion receipt, render-start provenance and filtering around official R2. `worker.ts` exports the private named entrypoint and generated DO; `cloudflare-runtime.d.ts` declares generated/runtime imports.
+- `apps/web/src/app/(cached-portfolio)/ichnara-isr/p/[slug]`: internal root/project/article ISR composition; `src/lib/cached-portfolio.ts` validates immutable published DTOs and collects tags. `src/app/api/internal/revalidate-portfolio/route.ts` and `src/lib/revalidate-portfolio.ts` own strict secret-checked tag expiration. Original dynamic portfolio routes remain unchanged. Shared renderer stays in `packages/portfolio`.
+- `apps/{api,web}/wrangler.cache.toml`: optional human-operated binding/resource manifests, separate from default-off normal deployment. Existing Bun patch adds observable faults, inclusive expiration and monotonic tag writes.
+- `apps/api/tests/cache-invalidation.integration.test.ts`, `tests/fixtures/public-cache-runtime.ts`, `apps/web/tests/public-cache.test.ts`, `e2e/public-cache.spec.ts`: persistence, generated Worker faults/cache/races/timing, storage/auth policy and browser coverage. `scripts/local-public-cache-proxy.ts` is the local Node E2E boundary; `scripts/test-api.ts --public-cache-runtime` is the guarded generated-Worker runner. CI runs both browser and R2/DO acceptance.
+- [PUBLIC_CACHE.md](PUBLIC_CACHE.md), [E2E.md](E2E.md) and dated evidence contain manual operations and actual verification. Ignored raw artifacts remain under `work/published-isr/`.
+
 Last updated: 2026-10-16. This is the current source map; dated CHANGELOG entries describe earlier layouts.
 
 ## Independent applications

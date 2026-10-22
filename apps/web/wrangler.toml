@@ -14,6 +14,20 @@ binding = "CF_VERSION_METADATA"
 # domain). Worker names keep their compatibility identifiers. See docs/CLOUDFLARE.md before deployment.
 [vars]
 API_URL = "https://api.lord2ve.tech"
+PORTFOLIO_CACHE_ENABLED = "false"
+
+# Provision manually and uncomment only after reviewing docs/PUBLIC_CACHE.md.
+# [[r2_buckets]]
+# binding = "NEXT_INC_CACHE_R2_BUCKET"
+# bucket_name = "ichnara-portfolio-cache"
+#
+# [[durable_objects.bindings]]
+# name = "NEXT_TAG_CACHE_DO_SHARDED"
+# class_name = "DOShardedTagCache"
+#
+# [[migrations]]
+# tag = "portfolio-cache-v1"
+# new_sqlite_classes = ["DOShardedTagCache"]
 
 [assets]
 directory = ".open-next/assets"

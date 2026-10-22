@@ -51,4 +51,3 @@ WEB_URL = "https://lord2ve.tech"
 DB_CONNECT_TIMEOUT_MS = "20000"
 # Supply reviewed HTTPS API_URL and WEB_URL before runtime verification.
 # DATABASE_URL, BETTER_AUTH_SECRET and provider credentials are Workers secrets.
-
