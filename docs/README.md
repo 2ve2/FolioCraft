@@ -53,3 +53,7 @@ See [SOURCE_STRUCTURE.md](SOURCE_STRUCTURE.md) for responsibility placement afte
 ## Browser regression tests
 
 Run the committed production-build Playwright journeys locally with `bun run test:e2e` against disposable loopback `folio_test`. [E2E.md](E2E.md) documents setup, Arabic/English coverage, isolation, CI reports and explicit provider/browser limits.
+
+## Owner monitoring
+
+[MONITORING.md](MONITORING.md) documents optional server-only Sentry capture, privacy/sampling, owner email settings and the two no-database UptimeRobot checks. This is prepared source and local verification, not proof of hosted alert activation.

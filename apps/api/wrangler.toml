@@ -6,6 +6,10 @@ compatibility_date = "2026-10-14"
 compatibility_flags = ["nodejs_compat", "nodejs_compat_populate_process_env"]
 workers_dev = true
 
+# Runtime deployment identity; the optional SENTRY_DSN belongs in Workers Secrets only.
+[version_metadata]
+binding = "CF_VERSION_METADATA"
+
 [alias]
 "#image-validation" = "./src/lib/storage/image-validation.worker.ts"
 # Workers has no DOMParser; use the SDK's own non-DOM XML parser without changing Bun/browser defaults.

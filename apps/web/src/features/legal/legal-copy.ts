@@ -5,7 +5,7 @@ type Section = { heading: string; paragraphs?: string[]; items?: string[] };
 type LegalText = { title: string; summary: string; sections: Section[] };
 
 /** Date of the current draft wording; update together with any substantive change. */
-export const legalDraftDate = "2026-10-20";
+export const legalDraftDate = "2026-10-21";
 
 /**
  * Draft legal texts. They describe only what the code does today and are not reviewed
@@ -33,7 +33,7 @@ export const legalCopy: Record<
 			privacy: {
 				title: "إشعار الخصوصية",
 				summary:
-					"نجمع ما يلزم فقط لتشغيل حسابك ونشر ما تختاره. لا إعلانات، ولا بيع للبيانات، ولا أدوات تتبّع.",
+					"نجمع ما يلزم فقط لتشغيل حسابك ونشر ما تختاره. لا إعلانات، ولا بيع للبيانات، ولا تتبّع سلوكي.",
 				sections: [
 					{
 						heading: "ما الذي نحفظه",
@@ -68,6 +68,7 @@ export const legalCopy: Record<
 						heading: "مزوّدو الخدمة",
 						paragraphs: [
 							"نعتمد على Cloudflare للاستضافة وتخزين الصور والتحقق منها، وعلى Neon لقاعدة البيانات، وعلى Resend لإرسال رسائل البريد. قد تُعالَج البيانات خارج بلدك.",
+							"عند تفعيل مراقبة الأخطاء، يستقبل Sentry بيانات تشخيصية منقّحة من الخوادم فقط، دون ملفات تعريف الارتباط أو بيانات الدخول أو عناوين البريد أو عناوين الشبكة أو محتوى المستخدمين. لا نسجّل الجلسات ولا نتتبّع سلوك المتصفح. يفحص UptimeRobot توفّر صفحات عامة محددة دون إرسال بيانات المستخدمين إليه.",
 						],
 					},
 					{
@@ -169,7 +170,7 @@ export const legalCopy: Record<
 			privacy: {
 				title: "Privacy notice",
 				summary:
-					"We keep only what is needed to run your account and publish what you choose. No ads, no data sales, no trackers.",
+					"We keep only what is needed to run your account and publish what you choose. No ads, no data sales, no behavioral tracking.",
 				sections: [
 					{
 						heading: "What we store",
@@ -204,6 +205,7 @@ export const legalCopy: Record<
 						heading: "Service providers",
 						paragraphs: [
 							"We rely on Cloudflare for hosting and for storing and checking images, Neon for the database, and Resend for sending email. Data may be processed outside your country.",
+							"When error monitoring is enabled, Sentry receives scrubbed diagnostics from servers only, without cookies, credentials, email addresses, network addresses or user content. We do not record sessions or track browser behavior. UptimeRobot checks the availability of selected public pages without receiving user data.",
 						],
 					},
 					{

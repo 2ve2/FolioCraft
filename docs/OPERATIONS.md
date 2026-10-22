@@ -373,3 +373,7 @@ CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false WRANGLER_WRITE_LOGS=false WRANGLER_S
 ```
 
 Exercise normal sign-in/save/publish and one intended reset/upload operation through the existing UI; observe the normal scheduled run without triggering arbitrary maintenance on hosted data. Keep only the projected event, approximate operation/time and deployed version identifier. A real 57P01 with ending=false indicates server termination, not proof of Neon autosuspension; correlate provider lifecycle separately. Unknown/request/ended=true needs investigation if it recurs; the patch is not blanket error suppression. A quiet tail alone does not prove all hosted flows, TLS, mail or storage acceptance.
+
+## Prepared owner monitoring — 2026-10-22
+
+[MONITORING.md](MONITORING.md) is the operational source for Sentry project privacy/email configuration and UptimeRobot Free monitors. Probe only API `/health` and prerendered web `/en`, never `/ready` or a portfolio, to avoid keeping Neon compute awake. The source remains disabled without a valid Worker-secret DSN and actual version binding; provider account setup and hosted delivery remain unverified. No deployment, production migration or provider action has been executed for this scope.

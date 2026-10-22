@@ -1,5 +1,13 @@
 # Current status
 
+## Latest completed work — owner monitoring, 2026-10-22
+- The human selected Sentry Developer + UptimeRobot Free. Staging is cancelled; no staging resources or changes are part of this branch. Branch `codex/owner-monitoring` starts at fetched main `97bfd30`.
+- Implemented optional server-only API/OpenNext capture, actual Worker-version tags, strict outgoing privacy allowlist, handled 5xx/unhandled/Cron failure capture, HEAD/OPTIONS coverage, web liveness and bilingual privacy updates retaining the draft notice. DSN is a Worker secret only; absent/invalid DSN or version disables capture. No browser SDK/CSP change.
+- Final local acceptance repeated before the documentation commit: all15 commands exit0; API75 pass/12 existing conditional skips/0 fail/5264 assertions plus MFA11/0/308, web37/0/685, Biome419, storage8/8, mail15/15, Next/OpenNext50/50 and both dry runs exit0. Workerd28/28, database runtime7/7, Chromium43/43 (36.1s). Actual built web /health and /en make zero API/database requests; one deliberate render failure yields one scrubbed event. Source/config parity491 files, zero mismatches.
+- Implementation committed as `2f69306` (`feat(monitoring): capture private server errors`); operational documentation is a separate completed step. [PR5](https://github.com/2ve2/FolioCraft/pull/5) is open and unmerged. Final bundles: API5130.08 KiB/gzip938.15; web9695.11 KiB/gzip1996.48, approximately14.8% of the current official64MiB raw Free limit. No deployment, hosted database/provider operation, account/secret creation or live alert acceptance.
+- Temporary approval-service quota blocker resolved after the human requested continuation. Cleanup:0 generated E2E accounts remain; owned PostgreSQL stopped; local ports4300/4400/55432 closed. No reset or hosted database access occurred. Unrelated untracked docs/ADMIN_CONSOLE_TASK.md is preserved and excluded.
+- Active source work:none. Local blockers:none. Remote PR checks are running and are not claimed successful. Next action: human review/merge, then the explicit [setup/release checklist](MONITORING.md). [Comparison and evidence](evidence/2026-10-21-owner-monitoring.md).
+
 ## Latest completed work — deterministic browser E2E, 2026-10-21
 - Branch codex/playwright-e2e starts from freshly fetched main ba37ac6. [PR4](https://github.com/2ve2/FolioCraft/pull/4) is open and unmerged. Application runtime, security settings and schema are unchanged.
 - Implemented43 Chromium checks against real Bun/Hono, guarded local folio_test and production Next build/start: bilingual routing/auth/studio, serialized save before locale change, public/draft isolation, unpublish, ownership/admin denials, script checks with negative controls and harness safety. [Setup/limits](E2E.md).
@@ -16,7 +24,7 @@
 - Active source work: none. Code blockers: none. Hosted historical-event attribution, Neon autosuspension/TLS, real reset/upload delivery and browser UI acceptance remain unverified. No pool-size, deadline, transaction, security or schema change. Local accounts cleaned; all investigation servers stopped.
 - Next action: human reviews/merges the PR, installs the frozen lockfile and deploys the API only, then captures projected events if any recur. No migration/new secret/web deployment is required. [Evidence](evidence/2026-10-21-pool-error-investigation.md), [ordered rollout/capture](OPERATIONS.md#database-pool-error-capture--2026-10-21).
 
-Updated: 2026-10-21, Asia/Riyadh. This page is the short continuation point. Older detail is in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md); step evidence is in [evidence/2026-10-20-audit-fixes.md](evidence/2026-10-20-audit-fixes.md) and [evidence/2026-10-20-locale-routing.md](evidence/2026-10-20-locale-routing.md).
+Updated: 2026-10-22, Asia/Riyadh. This page is the short continuation point. Older detail is in [STATUS-ARCHIVE.md](STATUS-ARCHIVE.md); step evidence is in [evidence/2026-10-20-audit-fixes.md](evidence/2026-10-20-audit-fixes.md) and [evidence/2026-10-20-locale-routing.md](evidence/2026-10-20-locale-routing.md).
 
 ## Deployed friends-only trial
 
@@ -44,4 +52,4 @@ Typecheck exit 0; Biome 392 files, 0 issues; web 37 pass / 0 fail / 685 assertio
 2. Human: if not done yet, deploy the API from main for the merged pool fix (PR #3) and capture any pool-error recurrence. No database migration, web deployment or new secret is required.
 3. Human: send one password-reset email to a private mailbox to confirm delivery and the new single-language template.
 4. Human: decide the legal page contact address, retention periods and governing law; then set `TRIAL_SKIP_EMAIL_VERIFICATION=false` once mail delivery is confirmed.
-5. Engineering backlog not started: error tracking/uptime alerts, Hyperdrive, public response caching, a staging environment, platform color tokens, and hosted follow-up for `database_pool_error` if it recurs after the fix.
+5. Human: review/merge PR5 and configure monitoring using MONITORING.md. Further infrastructure work (Hyperdrive, public response caching), platform color tokens and hosted pool-error follow-up remain outside this task. Staging was cancelled by the human.

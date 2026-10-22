@@ -1,0 +1,12 @@
+{
+	"name": "@ichnara/monitoring",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./head": "./src/head.ts"
+	},
+	"dependencies": {
+		"@sentry/cloudflare": "11.8.0"
+	}
+}

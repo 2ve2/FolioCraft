@@ -7,6 +7,8 @@ const allowedTokens = [
 	"Cloudflare",
 	"Neon",
 	"Resend",
+	"Sentry",
+	"UptimeRobot",
 	"IP",
 	"English",
 	"العربية",

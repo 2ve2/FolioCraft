@@ -1,13 +1,15 @@
 import { isIP } from "node:net";
+import { deployedVersion, type MonitoringBindings } from "@ichnara/monitoring";
 import app from "./app";
 import { withRequestDatabase } from "./db";
+import { monitorApi } from "./lib/monitoring";
 import { type ImagesBinding, withImagesBinding } from "./lib/storage/worker-images-context";
 import { maintenanceService } from "./services/maintenance";
 
-type Bindings = { IMAGES?: ImagesBinding };
+type Bindings = MonitoringBindings & { IMAGES?: ImagesBinding };
 
 /** Derives the edge client address without trusting application-supplied proxy headers. */
-export default {
+export default monitorApi({
 	/** Runs the Hono request inside isolated database and image-binding contexts. */
 	fetch(request: Request, bindings: Bindings) {
 		const headers = new Headers(request.headers);
@@ -21,24 +23,32 @@ export default {
 	/** Runs bounded housekeeping from the Cron Trigger in its own database scope. */
 	scheduled(
 		_controller: unknown,
-		_bindings: Bindings,
+		bindings: Bindings,
 		context: { waitUntil(task: Promise<unknown>): void },
 	) {
-		context.waitUntil(
-			withRequestDatabase(async () => {
-				try {
-					const report = await maintenanceService.run();
-					console.info(JSON.stringify({ event: "maintenance_completed", ...report }));
-				} catch (error) {
-					console.error(
-						JSON.stringify({
-							event: "maintenance_failed",
-							name: error instanceof Error ? error.name : "unknown",
-						}),
-					);
-					throw error;
-				}
-			}, "scheduled"),
-		);
+		const task = withRequestDatabase(async () => {
+			try {
+				const report = await maintenanceService.run();
+				console.info(
+					JSON.stringify({
+						event: "maintenance_completed",
+						environment: "trial",
+						release: deployedVersion(bindings),
+						...report,
+					}),
+				);
+			} catch (error) {
+				console.error(
+					JSON.stringify({
+						event: "maintenance_failed",
+						environment: "trial",
+						release: deployedVersion(bindings),
+					}),
+				);
+				throw error;
+			}
+		}, "scheduled");
+		context.waitUntil(task);
+		return task;
 	},
-};
+});
