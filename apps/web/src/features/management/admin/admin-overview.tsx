@@ -157,7 +157,7 @@ export function AdminOverview({
 								] as const
 							).map(({ key, icon: Icon }) => (
 								<div key={key}>
-									<Icon size={18} color="#9b85b5" aria-hidden="true" />
+									<Icon size={18} color="var(--color-admin-resource-icon)" aria-hidden="true" />
 									<dt>{shared.counts[key]}</dt>
 									<dd>{counts ? new Intl.NumberFormat(locale).format(counts[key]) : "—"}</dd>
 								</div>

@@ -14,7 +14,7 @@
 	overflow: hidden;
 }
 .expanded-preview::backdrop {
-	background: #242137a6;
+	background: var(--color-preview-backdrop);
 }
 .expanded-preview > header {
 	flex-shrink: 0;

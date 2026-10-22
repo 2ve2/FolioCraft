@@ -1,5 +1,12 @@
 # Action log
 
+## 2026-10-22 — Platform color tokens (scope)
+- Work on `codex/platform-color-tokens` from freshly fetched main `8b49fe2`, only in the independent checkout. Preserve unrelated untracked `docs/ADMIN_CONSOLE_TASK.md`.
+- Inventory platform CSS color literals; extract exact semantic tokens without merging near-equal values, changing layout/behavior, or modifying owner-selected portfolio palettes. Preserve system high-contrast colors as documented exceptions.
+- Capture real local before/after Playwright screenshots for landing, login, signup, privacy, terms, seeded Studio, native-MFA administration overview and localized 404, in both locales at390/768/1440. Require exact decoded-pixel equality; record contrast and every quality gate.
+- Separate stylesheet-group commits, push branch and open an unmerged PR. No deployment, hosted database/provider operation, secret inspection, schema change or new dependency.
+
+
 ## 2026-10-22 — Hyperdrive review fixes (once-per-isolate check, direct fallback)
 - Review finding 1: the origin `statement_timeout` guard ran as an `onConnect` query on every request's new client, adding one origin round trip per request to the path meant to remove round trips. It now runs once per Worker isolate through a separate short-lived client (`useHyperdrive` in `apps/api/src/db/hyperdrive.ts`); only plain values are kept across requests.
 - Review finding 2: a failed guard rejected every database request (fail closed), an outage UptimeRobot's DB-free `/health` would not see. A missing/unsafe default or an unreachable Hyperdrive now keeps the request on the bounded direct `DATABASE_URL` path, logs `hyperdrive_unverified` (reason only, no connection data) and retries after 60 s.
@@ -1095,3 +1102,29 @@ Human explicitly selected bare MAIL_FROM=no-reply@lord2ve.tech rather than chang
 - Active8cb69cb5-1270-4e27-b3a0-e0b65b07e9d4,deploymentbc20522d-e9a4-4ad0-9bfc-66d85a9f691c,100%; correct transport/origins/sender/trial flag and all eight existing secret names verified. /health200 true,/ready200 true/mail configured. No startup failure or rollback.
 - Exactly one new-version browser reset request produces correlated auth_mail_attempt/auth_mail_accepted/reset/resend_http and POST200,requestId11ea611f-f12e-472d-90ff-479b0f1b12d1. Provider acceptance is now verified; recipient delivery is not. Private recipient and provider ID are never versioned/logged. Prior old-version test remains generic browser acceptance only. Native reset can write its temporary verification record; no password/account/role modification or direct DB access.
 - Code/tests/runbook02c8819 pushed normally. Documentation now records actual rollout and provider proof. No web/R2/migration/secret rotation; final read-only control-plane confirms repaired API and expected unchanged web. Stop after this docs-only commit/push; human checks Inbox/Spam.
+
+## 2026-10-22 — Platform palette and entry styles completed
+- Added310 exact semantic/component color roles, preserving near-equal shades and legacy aliases. Tokenized reset/foundation/entry/loading/select, shared footer/notices/tooltip, legal and404 styles. Public portfolio modules remain unchanged.
+- Baseline and entry-only intermediate state each passed all11 gates: API81/12 unchanged conditional skips/0 fail/5311 assertions, web37/0/685, workerd database14/14, storage8/8, mail15/15, Next/OpenNext50/50; audit clean. Baseline comparison proves the skip count is unchanged.
+- Full candidate captured with one real local saved workspace and native-MFA staff session:48 before/after pairs,0 changed pixels each,0 page errors; fixture removed with0 remaining. Exact expansion matches29 stylesheets;80 contrast pairs retain their values, including explicitly reported existing low contrast. Detailed inventory/map/hashes/ratios accompany the evidence file.
+- Workspace/admin group changes are prepared and awaiting their own gate/commit checkpoints. No deployment, provider access, dependency, schema or security-policy change.
+
+
+## 2026-10-22 — Workspace palette consumers completed
+- Tokenized workspace/editor/readability/responsive/native scrollbars/preview chrome, asset-picker and shared-management styles. Existing swatch colors and owner theme settings retain their exact values; shared portfolio source remains unchanged.
+- All11 gates pass on the entry+workspace intermediate state: Biome429, web37/0/685, API81/12 baseline skips/0/5311 plus native MFA11/0/308, workerd database14/14, storage8/8, mail15/15, Next/OpenNext50/50, audit clean and API dry run exit0. Final-candidate48-pair0-pixel evidence remains valid.
+- Administration consumers are prepared but awaiting their separate gate/commit. No provider, deployment, dependency, schema or behavioral change.
+
+
+## 2026-10-22 — Administration palette consumers completed
+- Tokenized administrative shell/records/operations/reports styles and the decorative resource icon. Scoped aliases and fallback semantics retain exact colors; no administrative behavior/authentication/policy change.
+- All11 final-candidate gates pass, matching baseline counts: web37/0/685; API81/12 baseline skips/0/5311 plus native MFA11/0/308 and workerd database14/14; storage8/8; mail15/15; Biome429; audit539 clean; Next/OpenNext50/50; API dry run5135.16KiB/gzip939.35KiB. Four checkpoints total44/44 successful command executions.
+- Final literal audit:0 platform palette declarations outside tokens;8 system-color declarations and2 capability-query red literals are documented exceptions. Both public portfolio CSS modules and packages/portfolio are unchanged. Exact expansion and48/48 zero-pixel comparisons pass;80 contrast ratios are identical.
+- Active handoff: push branch/open PR, record final cleanup and remote status. No deployment/provider/schema/dependency/configuration changes.
+
+
+## 2026-10-22 — Platform palette GitHub handoff and cleanup
+- Source commits6bcd8e8/3939be4/04320c2 are pushed on `codex/platform-color-tokens`; PR8 is open against main, attached and unmerged. Final handoff documentation records the exact verification/cleanup boundaries.
+- Repeated all11 gates before this documentation commit:all exit0, preserving final counts in the evidence. Baseline plus three source states plus handoff totals55 successful command executions.48 screenshot pairs remain0 pixels;80 contrast pairs remain identical.
+- Exact local fixture cleanup0 remaining; final local folio_test0 users; all owned servers stopped and4300/4400/55435 closed. Unrelated untracked ADMIN_CONSOLE_TASK.md remains untouched. No hosted/provider/deployment operation occurred.
+- At the recorded source-CI snapshot validate/integration succeeded while workers/e2e ran; the final documentation-head checks are not preclaimed. No required human provisioning/secret/migration/deployment command. Next action:human PR review/current checks.

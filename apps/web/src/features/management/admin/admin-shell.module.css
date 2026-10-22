@@ -1,13 +1,13 @@
 /* Administration navigation, session gate and document layout. */
 .shell {
-	--admin-accent: #7045ce;
-	--admin-muted: #746d83;
-	--admin-line: #e9e5ef;
-	--admin-ink: #2d253e;
+	--admin-accent: var(--color-admin-accent);
+	--admin-muted: var(--color-admin-text-muted);
+	--admin-line: var(--color-admin-border);
+	--admin-ink: var(--color-admin-text);
 	display: grid;
 	grid-template-columns: 236px minmax(0, 1fr);
 	min-height: 100dvh;
-	background: #f7f7fb;
+	background: var(--color-admin-page);
 	color: var(--admin-ink);
 }
 .shell button,
@@ -21,7 +21,7 @@
 }
 .shell :is(button, a, input, textarea):focus-visible,
 .gate :is(button, a):focus-visible {
-	outline: 3px solid #ab91e8;
+	outline: 3px solid var(--color-admin-focus-ring);
 	outline-offset: 3px;
 }
 .skip {
@@ -29,7 +29,7 @@
 	inset-block-start: -100px;
 	inset-inline-start: 20px;
 	z-index: 50;
-	background: #fff;
+	background: var(--color-surface);
 	padding: 12px;
 	border-radius: 8px;
 }
@@ -41,7 +41,7 @@
 	top: 0;
 	height: 100dvh;
 	padding: 32px 20px 20px;
-	background: #fff;
+	background: var(--color-surface);
 	border-inline-end: 1px solid var(--admin-line);
 	display: flex;
 	flex-direction: column;
@@ -55,7 +55,7 @@
 	font-size: 13px;
 	font-weight: 650;
 	letter-spacing: 0.09em;
-	color: #9b92aa;
+	color: var(--color-admin-nav-label-text);
 	margin: 0 14px 14px;
 }
 .nav {
@@ -71,15 +71,15 @@
 	padding: 12px 14px;
 	min-height: 48px;
 	border-radius: 10px;
-	color: #777083;
+	color: var(--color-admin-nav-link-text);
 	font-size: 14px;
 	font-weight: 550;
 }
 .navLink:hover {
-	background: #f8f6fc;
+	background: var(--color-admin-nav-link-hover-surface);
 }
 .navLink[aria-current="page"] {
-	background: #f0eafa;
+	background: var(--color-admin-nav-active-surface);
 	color: var(--admin-accent);
 }
 .navLink i {
@@ -99,7 +99,7 @@
 	justify-content: space-between;
 	min-height: 44px;
 	padding: 8px 12px;
-	color: #6d617f;
+	color: var(--color-admin-studio-link-text);
 	font-size: 13px;
 }
 .adminIdentity {
@@ -133,8 +133,8 @@
 	height: 36px;
 	flex: 0 0 auto;
 	border-radius: 11px;
-	background: #eee7f9;
-	color: #7955bd;
+	background: var(--color-admin-avatar-surface);
+	color: var(--color-admin-avatar-text);
 }
 .workspace {
 	min-width: 0;
@@ -143,7 +143,7 @@
 	min-height: 85px;
 	padding: 18px 36px;
 	border-bottom: 1px solid var(--admin-line);
-	background: #ffffffd9;
+	background: var(--color-admin-topbar-surface);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -157,11 +157,11 @@
 	color: var(--admin-muted);
 }
 .topbar strong {
-	color: #4b3f5e;
+	color: var(--color-admin-topbar-strong-text);
 	font-weight: 550;
 }
 .breadcrumb {
-	color: #c5becf;
+	color: var(--color-admin-breadcrumb-text);
 }
 .main {
 	padding: 36px;
@@ -171,7 +171,7 @@
 }
 .gate {
 	min-height: 100dvh;
-	background: #f7f5fb;
+	background: var(--color-admin-gate-surface);
 	padding: 28px;
 }
 .gate > header {
@@ -185,12 +185,12 @@
 	width: min(100%, 520px);
 	margin: 90px auto;
 	padding: 36px;
-	background: #fff;
-	border: 1px solid #e6dfef;
+	background: var(--color-surface);
+	border: 1px solid var(--color-popup-border);
 	border-radius: 18px;
 }
 .gateCard > svg {
-	color: #9d83bf;
+	color: var(--color-admin-gate-card-svg-text);
 }
 .gateCard h1 {
 	font-size: 24px;
@@ -200,7 +200,7 @@
 .gateCard p {
 	font-size: 14px;
 	line-height: 1.9;
-	color: #7d718b;
+	color: var(--color-admin-gate-card-p-text);
 	margin-bottom: 24px;
 }
 @media (max-width: 970px) {

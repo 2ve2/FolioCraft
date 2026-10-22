@@ -2,10 +2,10 @@
 	flex-shrink: 0;
 	max-height: 30dvh;
 	overflow: auto;
-	background: #f1edff;
-	border-block: 1px solid #d6cdf7;
+	background: var(--color-notice-banner-surface);
+	border-block: 1px solid var(--color-notice-banner-border);
 	padding: 0.75rem 1.5rem;
-	color: #34285c;
+	color: var(--color-notice-banner-text);
 	overflow-wrap: anywhere;
 }
 .banner p {

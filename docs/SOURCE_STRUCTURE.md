@@ -274,3 +274,10 @@ Worker HTTP/Cron pass the optional HYPERDRIVE binding into the existing request 
 `tests/hyperdrive.integration.test.ts` verifies selection/deadlines, real native publication and an explicit same-connection serializable release/pointer rollback. The existing workerd fixture runs in bound and unbound modes, including Cron and real idle disconnects. `scripts/local-statement-timeout.ts` guards/restores the disposable local role/database setting for native binding tests; run database suites sequentially. `scripts/measure-worker-database.ts` and `scripts/measure-service-binding.ts` create/clean exact synthetic local accounts and save numeric-only latency evidence. Neither accepts hosted targets. See [latency evidence](evidence/2026-10-22-hyperdrive-latency.md).
 
 `docs/HYPERDRIVE.md` owns the manual, secret-safe trial provisioning/deadline/binding/timing and rollback instructions; OPERATIONS/CLOUDFLARE/README link to it. Numeric benchmarks and official-source rationale stay in the dated evidence file.
+
+
+## Platform palette ownership — 2026-10-22
+
+`apps/web/src/styles/tokens.css` owns exact platform `--color-*` semantic values; global and feature/module styles consume them without changing import order. Legacy base and scoped admin variables remain aliases. `features/management/admin/admin-overview.tsx` uses the same palette for its decorative resource icons. Public portfolio modules and shared renderer palettes are deliberately separate and unchanged.
+
+`docs/evidence/2026-10-22-platform-color-tokens.md` records the extraction, checks and limits. Its adjacent directory contains `inventory.json` (baseline CSS occurrences/counts), `palette.json` (exact literal-to-role map and first use), `visual.json` (all48 screenshot dimensions/decoded hashes/pixel counts) and `contrast.json` (identical before/after WCAG ratios). Generated captures and session-local measurement scripts stay under ignored `work/platform-color-tokens/`; no credentials or browser state are included in committed evidence.

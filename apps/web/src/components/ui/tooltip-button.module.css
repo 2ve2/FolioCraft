@@ -4,11 +4,11 @@
 	width: max-content;
 	max-width: min(260px, calc(100vw - 24px));
 	padding: 9px 13px;
-	border: 1px solid #725694;
+	border: 1px solid var(--color-tooltip-bubble-border);
 	border-radius: 9px;
-	background: #30213f;
-	color: #fff;
-	box-shadow: 0 6px 20px #35214526;
+	background: var(--color-tooltip-bubble-surface);
+	color: var(--color-surface);
+	box-shadow: 0 6px 20px var(--color-tooltip-bubble-shadow);
 	font-family: "Noto Sans Arabic Variable", sans-serif;
 	font-size: 13px;
 	font-weight: 500;
@@ -24,18 +24,18 @@
 	left: var(--tip-arrow);
 	width: 7px;
 	height: 7px;
-	background: #30213f;
+	background: var(--color-tooltip-bubble-surface);
 	transform: translateX(-50%) rotate(45deg);
 }
 .bubble[data-side="top"]::after {
 	bottom: -4px;
-	border-right: 1px solid #725694;
-	border-bottom: 1px solid #725694;
+	border-right: 1px solid var(--color-tooltip-bubble-border);
+	border-bottom: 1px solid var(--color-tooltip-bubble-border);
 }
 .bubble[data-side="bottom"]::after {
 	top: -4px;
-	border-left: 1px solid #725694;
-	border-top: 1px solid #725694;
+	border-left: 1px solid var(--color-tooltip-bubble-border);
+	border-top: 1px solid var(--color-tooltip-bubble-border);
 }
 @keyframes appear {
 	from {
