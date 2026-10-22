@@ -1,5 +1,12 @@
 # Action log
 
+## 2026-10-22 — Hyperdrive review fixes (once-per-isolate check, direct fallback)
+- Review finding 1: the origin `statement_timeout` guard ran as an `onConnect` query on every request's new client, adding one origin round trip per request to the path meant to remove round trips. It now runs once per Worker isolate through a separate short-lived client (`useHyperdrive` in `apps/api/src/db/hyperdrive.ts`); only plain values are kept across requests.
+- Review finding 2: a failed guard rejected every database request (fail closed), an outage UptimeRobot's DB-free `/health` would not see. A missing/unsafe default or an unreachable Hyperdrive now keeps the request on the bounded direct `DATABASE_URL` path, logs `hyperdrive_unverified` (reason only, no connection data) and retries after 60 s.
+- Tests (`hyperdrive.integration.test.ts`): once-per-isolate check proven with a 10 s origin default served on three requests and one check; unsafe (0, 16 s) and unreachable bindings fall back to the direct 15 s path with the warning and no connection data; no recheck inside the retry window. Mutations (per-request check; ignoring the check result) each fail their test. Guarded API 81 pass/12 skip/0 fail; Workers database 7/7 unbound and 7/7 bound.
+- Pre-existing, unrelated: running the guarded suite twice back to back can fail auth tests (shared local rate budgets); the unmodified branch shows the same failures. Single runs and CI are unaffected.
+- HYPERDRIVE.md: recommends creating the configuration in the Cloudflare dashboard (caching off) instead of the CLI stdin script, and documents the fallback event to watch.
+
 ## 2026-10-22 — Hyperdrive operational handoff complete
 - Added HYPERDRIVE.md with exact secret-safe stdin/in-process-argv creation (query caching disabled), origin deadline preservation/restoration, separate unbound/bound API deployments, trial curl/timing projection and rollback for every step. README/Cloudflare/operations/source map link to it. No provisioning/deployment/hosted operation performed.
 - Final password-authenticated acceptance14/14 commands exit0:all eleven gates, monitoring28/28 and both benchmark harnesses. Counts remain API79/0/5297 plus MFA11/0/308, database14/14, web37/0/685, storage8/8, mail15/15, Biome425, Next/OpenNext50/50. Initial two Service Binding runs had0ms median gain; final SCRAM run differs by1ms at coarse resolution. No repeatable edge benefit or production Service Binding is claimed.
