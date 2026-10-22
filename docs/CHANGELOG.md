@@ -1121,3 +1121,10 @@ Human explicitly selected bare MAIL_FROM=no-reply@lord2ve.tech rather than chang
 - All11 final-candidate gates pass, matching baseline counts: web37/0/685; API81/12 baseline skips/0/5311 plus native MFA11/0/308 and workerd database14/14; storage8/8; mail15/15; Biome429; audit539 clean; Next/OpenNext50/50; API dry run5135.16KiB/gzip939.35KiB. Four checkpoints total44/44 successful command executions.
 - Final literal audit:0 platform palette declarations outside tokens;8 system-color declarations and2 capability-query red literals are documented exceptions. Both public portfolio CSS modules and packages/portfolio are unchanged. Exact expansion and48/48 zero-pixel comparisons pass;80 contrast ratios are identical.
 - Active handoff: push branch/open PR, record final cleanup and remote status. No deployment/provider/schema/dependency/configuration changes.
+
+
+## 2026-10-22 — Platform palette GitHub handoff and cleanup
+- Source commits6bcd8e8/3939be4/04320c2 are pushed on `codex/platform-color-tokens`; PR8 is open against main, attached and unmerged. Final handoff documentation records the exact verification/cleanup boundaries.
+- Repeated all11 gates before this documentation commit:all exit0, preserving final counts in the evidence. Baseline plus three source states plus handoff totals55 successful command executions.48 screenshot pairs remain0 pixels;80 contrast pairs remain identical.
+- Exact local fixture cleanup0 remaining; final local folio_test0 users; all owned servers stopped and4300/4400/55435 closed. Unrelated untracked ADMIN_CONSOLE_TASK.md remains untouched. No hosted/provider/deployment operation occurred.
+- At the recorded source-CI snapshot validate/integration succeeded while workers/e2e ran; the final documentation-head checks are not preclaimed. No required human provisioning/secret/migration/deployment command. Next action:human PR review/current checks.

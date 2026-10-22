@@ -149,7 +149,7 @@ The12 conditional skips are unchanged on baseline main; none was introduced or d
 
 No provisioning, new secret, migration or deployment is required to review/merge this CSS-only web change. Required human operational commands for this task: none. Any later deployment is a separate human decision; it was not executed here. No Neon, R2, Resend or Cloudflare resource/account was accessed or changed. No actual credentials or runtime environment files were opened, copied, printed or committed.
 
-Not verified: physical devices, Firefox/WebKit, hosted cookies/persistence/provider delivery, every interactive control state in screenshots, actual dark mode, remote PR checks or a deployed-trial comparison. Local integration/runtime gates are evidence only for their stated local coverage. Branch push, PR and final server cleanup are pending at this checkpoint.
+Not verified: physical devices, Firefox/WebKit, hosted cookies/persistence/provider delivery, every interactive control state in screenshots, actual dark mode or a deployed-trial comparison. Remote CI status is recorded in the final checkpoint below. Local integration/runtime gates are evidence only for their stated local coverage. Branch push, PR and final server cleanup are completed in the final checkpoint below.
 
 
 ### Workspace checkpoint
@@ -164,3 +164,14 @@ Workspace committed as `3939be4` (`refactor(web): tokenize workspace colors`). A
 All11 final-candidate gates exit0 with the result lines above: frozen install448/601, audit539 clean, Biome429, web37/0/685, API81/12 baseline skips/0/5311 plus native MFA11/0/308, actual workerd database14/14, storage8/8, mail15/15, Next/OpenNext50/50 and API dry run5135.16KiB/gzip939.35KiB. No gate failed; the initial sandbox-only local PostgreSQL socket restriction was resolved by an authorized local-runtime retry before tests. The literal audit excludes custom-property identifier words and verifies0 remaining platform palette declarations outside tokens, with exactly8 documented system-color declarations.
 
 All48 decoded screenshot pairs remain identical.80 recorded contrast pairs remain identical. All edited Markdown is English; `git diff --check` and the source Biome check pass. API/shared portfolio files, package manifests, lockfile, migrations and runtime configuration are unchanged. PR creation and PostgreSQL shutdown follow this implementation commit; those actions are not preclaimed here.
+
+
+### Final GitHub handoff and cleanup
+
+Source groups are committed as `6bcd8e8` (entry), `3939be4` (workspace), `04320c2` (administration). The branch is pushed; [PR8](https://github.com/2ve2/FolioCraft/pull/8) is open against main, attached to the chat, unmerged and conflict-free at the observed source head. No force-push or merge was performed. The final documentation handoff is a separate commit in the same branch.
+
+All11 gates were repeated before that handoff commit and again exit0 with unchanged counts: install448/601; audit539 clean; API/web/E2E typing; Biome429; web37/0/685; API81/12 unchanged baseline skips/0/5311; native MFA11/0/308; workerd database14/14; storage8/8; mail15/15; Next/OpenNext50/50; API dry run5135.16KiB/gzip939.35KiB. Baseline, three source-group states and handoff total55/55 successful gate commands. There was no skipped/quarantined test added and no dependency/lockfile difference. Final documentation changes are separately checked with Biome and `git diff --check`; these are not claimed to change or retest hosted behavior.
+
+The exact local account cleanup reports1 removed/0 remaining. A final count in this newly initialized disposable database reports0 users. Owned API/web servers were already stopped; owned PostgreSQL was then stopped. Connection probes confirm4300/4400/55435 are closed. No existing server or hosted resource was stopped. Raw screenshots and safe local logs remain under ignored work; no browser storage-state/credential file was created. Unrelated untracked `docs/ADMIN_CONSOLE_TASK.md` is preserved; tracked source is clean after the handoff commit.
+
+Initial [source-head CI run39776686201](https://github.com/2ve2/FolioCraft/actions/runs/39776686201) was observed with validate/integration successful and workers/e2e still running. This is a dated observation, not a failure or a claim of final remote acceptance. The documentation push triggers its own checks; their completion is not preclaimed. Review the PR's current checks before merging. No extra human provisioning, secret, migration or deployment command is required for this task. Active source work:none; local blockers:none; next action:human review of the open PR.
