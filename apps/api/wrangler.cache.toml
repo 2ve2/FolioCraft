@@ -28,6 +28,12 @@ binding = "PORTFOLIO_REVALIDATION"
 service = "foliocraft-trial"
 entrypoint = "PortfolioRevalidation"
 
+# Retry signal in the same private bucket as the web cache (no new resource). The minute Cron reads
+# only this object and opens no database connection unless a delivery failed.
+[[r2_buckets]]
+binding = "PUBLIC_CACHE_SIGNAL"
+bucket_name = "ichnara-portfolio-cache"
+
 # Optional, manually provisioned trial only; leave absent for the existing DATABASE_URL path.
 # Read docs/HYPERDRIVE.md first: query caching MUST be disabled on the resource, and the
 # origin role/database statement_timeout must be bounded before binding it.

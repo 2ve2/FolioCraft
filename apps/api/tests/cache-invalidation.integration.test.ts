@@ -1,7 +1,7 @@
 import "./test-guard";
 import { afterAll, expect, spyOn, test } from "bun:test";
 import { newId, type Site } from "@ichnara/contracts";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import { db } from "../src/db";
 import { adminAudit } from "../src/db/schema/admin";
 import { assets } from "../src/db/schema/asset";
@@ -12,6 +12,7 @@ import { storage } from "../src/lib/storage";
 import { assetService } from "../src/services/assets";
 import {
 	cacheInvalidationService,
+	PENDING_SIGNAL_KEY,
 	revalidationDelivery,
 	withRevalidationDelivery,
 } from "../src/services/cache-invalidation";
@@ -257,4 +258,130 @@ test("sender accepts only a completed 204 and uses the binding without exposing 
 		},
 	});
 	await deliver?.(item);
+});
+
+/** In-memory stand-in with R2's etag semantics: the etag follows the content, and a failed
+ * onlyIf precondition writes nothing. */
+function signalBucket() {
+	const objects = new Map<string, { etag: string; customMetadata?: Record<string, string> }>();
+	return {
+		objects,
+		async head(key: string) {
+			return objects.get(key) ?? null;
+		},
+		async put(
+			key: string,
+			value: string,
+			options?: { customMetadata?: Record<string, string>; onlyIf?: { etagMatches: string } },
+		) {
+			if (options?.onlyIf && objects.get(key)?.etag !== options.onlyIf.etagMatches) return null;
+			const object = { etag: `content:${value}`, customMetadata: options?.customMetadata };
+			objects.set(key, object);
+			return object;
+		},
+	};
+}
+const secret = "synthetic-only-at-least-32-characters";
+const accepting = {
+	async fetch() {
+		return new Response(null, { status: 204 });
+	},
+};
+const state = (bucket: ReturnType<typeof signalBucket>) =>
+	bucket.objects.get(PENDING_SIGNAL_KEY)?.customMetadata?.state;
+
+test("minute retry reads only the R2 signal and opens no database scope while nothing failed", async () => {
+	const bucket = signalBucket();
+	let scopes = 0;
+	const withDatabase = async <T>(operation: () => Promise<T>) => {
+		scopes++;
+		return operation();
+	};
+	const bindings = {
+		PORTFOLIO_REVALIDATION_SECRET: secret,
+		PORTFOLIO_REVALIDATION: accepting,
+		PUBLIC_CACHE_SIGNAL: bucket,
+	};
+	expect(await cacheInvalidationService.retryPending(bindings, withDatabase)).toEqual({
+		skipped: true,
+	});
+	await bucket.put(PENDING_SIGNAL_KEY, "", { customMetadata: { state: "clear" } });
+	expect(await cacheInvalidationService.retryPending(bindings, withDatabase)).toEqual({
+		skipped: true,
+	});
+	// Without the signal binding the minute trigger must not fall back to polling the database.
+	expect(
+		await cacheInvalidationService.retryPending(
+			{ PORTFOLIO_REVALIDATION_SECRET: secret, PORTFOLIO_REVALIDATION: accepting },
+			withDatabase,
+		),
+	).toEqual({ skipped: true });
+	expect(scopes).toBe(0);
+});
+
+test("a failed delivery leaves a pending signal that the minute retry drains and clears", async () => {
+	// Earlier suites leave undelivered rows in the disposable database; settle them first.
+	await db.update(cacheInvalidations).set({ deliveredVersion: sql`${cacheInvalidations.version}` });
+	const { site } = await fixture("signal");
+	await db.update(sites).set({ suspended: true }).where(eq(sites.id, site.id));
+	const bucket = signalBucket();
+	const logs = spyOn(console, "error").mockImplementation(() => {});
+	try {
+		const failing = revalidationDelivery({
+			PORTFOLIO_REVALIDATION_SECRET: secret,
+			PORTFOLIO_REVALIDATION: {
+				async fetch() {
+					return new Response(null, { status: 503 });
+				},
+			},
+			PUBLIC_CACHE_SIGNAL: bucket,
+		});
+		expect(await cacheInvalidationService.flush(failing, 20, [site.id])).toMatchObject({
+			failed: 1,
+		});
+		expect(state(bucket)).toBe("pending");
+		// Each mark must change the etag, or an older read could clear a newer failure.
+		const firstMark = bucket.objects.get(PENDING_SIGNAL_KEY)?.etag;
+		await cacheInvalidationService.flush(failing, 20, [site.id]);
+		expect(bucket.objects.get(PENDING_SIGNAL_KEY)?.etag).not.toBe(firstMark);
+		const retried = await cacheInvalidationService.retryPending(
+			{
+				PORTFOLIO_REVALIDATION_SECRET: secret,
+				PORTFOLIO_REVALIDATION: accepting,
+				PUBLIC_CACHE_SIGNAL: bucket,
+			},
+			(operation) => operation(),
+		);
+		expect(retried).toMatchObject({ skipped: false, delivered: 1, failed: 0, remaining: false });
+		expect((await intent(site.id))[0]).toMatchObject({ version: 1, deliveredVersion: 1 });
+		expect(state(bucket)).toBe("clear");
+	} finally {
+		logs.mockRestore();
+	}
+});
+
+test("a failure recorded while the retry runs keeps the signal pending", async () => {
+	await db.update(cacheInvalidations).set({ deliveredVersion: sql`${cacheInvalidations.version}` });
+	const { site } = await fixture("signal-race");
+	await db.update(sites).set({ suspended: true }).where(eq(sites.id, site.id));
+	const bucket = signalBucket();
+	await bucket.put(PENDING_SIGNAL_KEY, newId(), { customMetadata: { state: "pending" } });
+	const retried = await cacheInvalidationService.retryPending(
+		{
+			PORTFOLIO_REVALIDATION_SECRET: secret,
+			PUBLIC_CACHE_SIGNAL: bucket,
+			PORTFOLIO_REVALIDATION: {
+				async fetch() {
+					// Another request's delivery fails at the same moment and re-marks the signal.
+					await bucket.put(PENDING_SIGNAL_KEY, newId(), {
+						customMetadata: { state: "pending" },
+					});
+					return new Response(null, { status: 204 });
+				},
+			},
+		},
+		(operation) => operation(),
+	);
+	expect(retried).toMatchObject({ skipped: false, delivered: 1, remaining: false });
+	expect(state(bucket)).toBe("pending");
 });

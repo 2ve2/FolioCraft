@@ -27,6 +27,9 @@ crons = ["* * * * *", "17 3 * * *"]
 # binding = "PORTFOLIO_REVALIDATION"
 # service = "foliocraft-trial"
 # entrypoint = "PortfolioRevalidation"
+# [[r2_buckets]]
+# binding = "PUBLIC_CACHE_SIGNAL"
+# bucket_name = "ichnara-portfolio-cache"
 
 # Optional, manually provisioned trial only; leave absent for the existing DATABASE_URL path.
 # Read docs/HYPERDRIVE.md first: query caching MUST be disabled on the resource, and the

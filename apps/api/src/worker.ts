@@ -49,11 +49,23 @@ export default monitorApi({
 		bindings: Bindings,
 		context: { waitUntil(task: Promise<unknown>): void },
 	) {
+		const databaseOptions = {
+			timing: bindings.DB_TIMING_LOGS === "true",
+			hyperdrive: bindings.HYPERDRIVE,
+		};
+		if (controller?.cron === "* * * * *") {
+			// Retry only; without a pending signal this never opens a database connection.
+			const retry = cacheInvalidationService.retryPending(bindings, (operation) =>
+				withRequestDatabase(operation, "scheduled", databaseOptions),
+			);
+			context.waitUntil(retry);
+			return retry.then(() => undefined);
+		}
 		const task = withRequestDatabase(
 			async () => {
 				try {
+					// Daily backstop: drains any backlog even if its retry signal was never written.
 					await cacheInvalidationService.flush(revalidationDelivery(bindings));
-					if (controller?.cron === "* * * * *") return;
 					const report = await maintenanceService.run();
 					console.info(
 						JSON.stringify({
@@ -75,10 +87,7 @@ export default monitorApi({
 				}
 			},
 			"scheduled",
-			{
-				timing: bindings.DB_TIMING_LOGS === "true",
-				hyperdrive: bindings.HYPERDRIVE,
-			},
+			databaseOptions,
 		);
 		context.waitUntil(task);
 		return task;

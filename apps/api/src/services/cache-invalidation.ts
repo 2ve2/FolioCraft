@@ -6,10 +6,38 @@ import { and, asc, desc, eq, inArray, lt, sql } from "drizzle-orm";
 import { db } from "../db";
 import { cacheInvalidations } from "../db/schema/cache";
 
+/** The R2 calls used for the pending-retry signal (a subset of the Workers R2Bucket binding). */
+type SignalBucket = {
+	head(key: string): Promise<{ etag: string; customMetadata?: Record<string, string> } | null>;
+	put(
+		key: string,
+		value: string,
+		options?: {
+			customMetadata?: Record<string, string>;
+			onlyIf?: { etagMatches: string };
+		},
+	): Promise<unknown>;
+};
 export type RevalidationBindings = {
 	PORTFOLIO_REVALIDATION?: { fetch(request: Request): Promise<Response> };
 	PORTFOLIO_REVALIDATION_SECRET?: string;
+	PUBLIC_CACHE_SIGNAL?: SignalBucket;
 };
+
+/** Lives beside, never inside, the web Worker's incremental-cache keys in the same bucket. */
+export const PENDING_SIGNAL_KEY = "ichnara-signals/cache-invalidation-pending";
+
+/** Records that a delivery failed, so the minute retry knows the database has work for it. */
+async function markPending(signal: SignalBucket | undefined) {
+	if (!signal) return;
+	try {
+		// R2 etags hash the content, so each mark needs unique content for the conditional clear.
+		await signal.put(PENDING_SIGNAL_KEY, newId(), { customMetadata: { state: "pending" } });
+	} catch {
+		// The daily maintenance flush still drains the backlog without this signal.
+		console.error(JSON.stringify({ event: "cache_signal_failed" }));
+	}
+}
 type Delivery = (intent: { siteId: string; slug: string }) => Promise<void>;
 const deliveryContext = new AsyncLocalStorage<Delivery | undefined>();
 const affectedSites = new AsyncLocalStorage<Set<string>>();
@@ -28,16 +56,21 @@ export function revalidationDelivery(
 	const binding = bindings.PORTFOLIO_REVALIDATION;
 	if (!binding && !localUrl) return undefined;
 	return async (intent) => {
-		if (!secret || secret.length < 32) throw new Error("CACHE_REVALIDATION_UNCONFIGURED");
-		const request = new Request(localUrl ?? `https://portfolio.internal${REVALIDATION_PATH}`, {
-			method: "POST",
-			headers: { "content-type": "application/json", authorization: `Bearer ${secret}` },
-			body: JSON.stringify({ ...intent, deliveryId: newId() }),
-			signal: AbortSignal.timeout(5000),
-			redirect: "manual",
-		});
-		const response = await (binding ? binding.fetch(request) : fetch(request));
-		if (response.status !== 204) throw new Error("CACHE_REVALIDATION_REJECTED");
+		try {
+			if (!secret || secret.length < 32) throw new Error("CACHE_REVALIDATION_UNCONFIGURED");
+			const request = new Request(localUrl ?? `https://portfolio.internal${REVALIDATION_PATH}`, {
+				method: "POST",
+				headers: { "content-type": "application/json", authorization: `Bearer ${secret}` },
+				body: JSON.stringify({ ...intent, deliveryId: newId() }),
+				signal: AbortSignal.timeout(5000),
+				redirect: "manual",
+			});
+			const response = await (binding ? binding.fetch(request) : fetch(request));
+			if (response.status !== 204) throw new Error("CACHE_REVALIDATION_REJECTED");
+		} catch (error) {
+			await markPending(bindings.PUBLIC_CACHE_SIGNAL);
+			throw error;
+		}
 	};
 }
 
@@ -98,6 +131,36 @@ export const cacheInvalidationService = {
 			}
 		}
 		return { delivered, failed, disabled: false };
+	},
+
+	/**
+	 * Minute retry. Reads only the R2 signal, so the database (and Neon compute) is touched only
+	 * after a failed delivery. The signal is cleared only when the backlog is empty and nobody
+	 * re-marked it meanwhile (conditional on the etag read before draining).
+	 */
+	async retryPending(
+		bindings: RevalidationBindings,
+		withDatabase: <T>(operation: () => Promise<T>) => Promise<T>,
+	) {
+		const signal = bindings.PUBLIC_CACHE_SIGNAL;
+		const deliver = revalidationDelivery(bindings);
+		if (!signal || !deliver) return { skipped: true };
+		const marker = await signal.head(PENDING_SIGNAL_KEY);
+		if (marker?.customMetadata?.state !== "pending") return { skipped: true };
+		return withDatabase(async () => {
+			const report = await this.flush(deliver);
+			const [remaining] = await db
+				.select({ siteId: cacheInvalidations.siteId })
+				.from(cacheInvalidations)
+				.where(lt(cacheInvalidations.deliveredVersion, cacheInvalidations.version))
+				.limit(1);
+			if (!remaining)
+				await signal.put(PENDING_SIGNAL_KEY, "", {
+					customMetadata: { state: "clear" },
+					onlyIf: { etagMatches: marker.etag },
+				});
+			return { ...report, skipped: false, remaining: Boolean(remaining) };
+		});
 	},
 
 	/** Gives a just-committed mutation priority over the bounded Cron backlog. */

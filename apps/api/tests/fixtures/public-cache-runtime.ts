@@ -13,6 +13,7 @@ import { user } from "../../src/db/schema/auth";
 import { cacheInvalidations } from "../../src/db/schema/cache";
 import {
 	cacheInvalidationService,
+	PENDING_SIGNAL_KEY,
 	revalidationDelivery,
 	withRevalidationDelivery,
 } from "../../src/services/cache-invalidation";
@@ -416,6 +417,42 @@ try {
 			await db.select().from(cacheInvalidations).where(eq(cacheInvalidations.siteId, site.id))
 		).every((row) => row.version === row.deliveredVersion),
 	);
+	passed++;
+	// The minute retry signal lives in the same real R2 bucket and relies on its etag preconditions.
+	const signal = await miniflare.getR2Bucket("NEXT_INC_CACHE_R2_BUCKET", "web");
+	const signalBindings = {
+		PORTFOLIO_REVALIDATION_SECRET: secret,
+		PORTFOLIO_REVALIDATION: { fetch: async () => new Response(null, { status: 204 }) },
+		PUBLIC_CACHE_SIGNAL: signal,
+	};
+	let databaseScopes = 0;
+	const countedScope = async <T>(operation: () => Promise<T>) => {
+		databaseScopes++;
+		return operation();
+	};
+	assert.deepEqual(await cacheInvalidationService.retryPending(signalBindings, countedScope), {
+		skipped: true,
+	});
+	assert.equal(databaseScopes, 0, "Without a pending signal the minute retry opens no database");
+	// Marks carry unique content exactly as the service writes them (R2 etags hash content).
+	await signal.put(PENDING_SIGNAL_KEY, newId(), { customMetadata: { state: "pending" } });
+	const earlierRead = await signal.head(PENDING_SIGNAL_KEY);
+	await signal.put(PENDING_SIGNAL_KEY, newId(), { customMetadata: { state: "pending" } });
+	assert.equal(
+		await signal.put(PENDING_SIGNAL_KEY, "", {
+			customMetadata: { state: "clear" },
+			onlyIf: { etagMatches: earlierRead.etag },
+		}),
+		null,
+		"An older read must not clear a signal that was re-marked afterwards",
+	);
+	let remaining = true;
+	for (let round = 0; round < 50 && remaining; round++) {
+		const drained = await cacheInvalidationService.retryPending(signalBindings, countedScope);
+		remaining = "remaining" in drained && drained.remaining;
+	}
+	assert.equal(remaining, false);
+	assert.equal((await signal.head(PENDING_SIGNAL_KEY))?.customMetadata?.state, "clear");
 	passed++;
 	report.runtimeChecks = passed;
 	report.coldCachedTtfbMs = Number(cold.ttfb.toFixed(2));
