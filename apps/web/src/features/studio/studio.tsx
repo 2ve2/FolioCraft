@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { LanguageSwitch } from "../../components/ui/language-switch";
@@ -31,6 +32,7 @@ function StudioWorkspace() {
 		draft,
 		loaded,
 		loadError,
+		emailUnverified,
 		loadedIdentity,
 		sessionIdentity,
 		loadSite,
@@ -85,24 +87,20 @@ function StudioWorkspace() {
 		return (
 			<LoadingScreen
 				locale={locale}
-				message={loadError ? t.loadError : t.loading}
-				error={loadError}
+				message={emailUnverified ? t.emailUnverified : t.loadError}
+				error
 			>
-				{loadError && (
-					<>
-						<button type="button" className="primary" onClick={() => void loadSite(true)}>
-							{t.loadRetry}
-						</button>
-						<button
-							type="button"
-							className="text-button"
-							disabled={busy}
-							onClick={() => void logout()}
-						>
-							{t.logout}
-						</button>
-					</>
+				{emailUnverified && (
+					<Link className="secondary" href={localeHref(locale, "/verify-email")}>
+						{t.resendVerification}
+					</Link>
 				)}
+				<button type="button" className="primary" onClick={() => void loadSite(true)}>
+					{t.loadRetry}
+				</button>
+				<button type="button" className="text-button" disabled={busy} onClick={() => void logout()}>
+					{t.logout}
+				</button>
 			</LoadingScreen>
 		);
 
