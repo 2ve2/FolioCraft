@@ -33,6 +33,8 @@ Verification environment: Bun 1.4.2; local PostgreSQL 16 `folio_test`; local pro
 - New `e2e/session.spec.ts` (3 tests) passes; reverting the error masking makes the tab-return test fail (mutation check), then restored.
 - Gates: typecheck exit 0; Biome 453 files, 0 issues; web 43 pass / 0 fail; full Playwright suite 44/44 before the new spec and the new spec 3/3. Local Playwright used the installed Chromium 1194 mapped to the build name expected by `@playwright/test` 1.64.1.
 
+- CI follow-up: the first CI run failed the tab-return test at sign-in because the full suite exhausts the native sign-in budget (10 per minute per address, all local requests share one loopback address). The spec now signs in through the real API and, on 429, waits for Better Auth's `X-Retry-After` window; the limit is not weakened. Full local suite afterwards: 47/47 passed (2.4 min, including the wait).
+
 ## 5. Known limits
 
 - Not verified on the hosted trial. The first visit after signing in on a new device still shows the product page once until a screen confirms the session and stores the hint.
