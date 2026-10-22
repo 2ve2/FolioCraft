@@ -64,7 +64,7 @@ assert.equal(await child.exited, 0, `Local bundle failed: ${stdout}\n${stderr}`)
 await withLocalStatementTimeout(database, async () => {
 	for (const bound of [false, true]) {
 		const bindingDatabase = new URL(database);
-		bindingDatabase.password = "synthetic-local-only";
+		if (!bindingDatabase.password) bindingDatabase.password = "synthetic-local-only";
 		bindingDatabase.searchParams.set("options", "-c statement_timeout=15000");
 		logs.length = 0;
 		const mf = new Miniflare(

@@ -1,5 +1,16 @@
 # Action log
 
+## 2026-10-22 — Local fixture password preservation verified
+- `scripts/test-worker-database.ts` and `scripts/measure-worker-database.ts` now keep supplied local fixture passwords, generating a Miniflare placeholder only when absent. Initial PR7 integration run39708626819 independently reproduced the original bound-path authentication failure after unbound checks passed.
+- Full verification against disposable local SCRAM-authenticated folio_test passes all eleven gates plus monitoring: API79/0/5297 and MFA11/0/308, workerd database14/14, web37/0/685, Biome425, storage8/8, mail15/15, Next/OpenNext50/50 and monitoring28/28. This correction changes test harnesses only; no product/provider authentication policy changed.
+
+## 2026-10-22 — Password-authenticated local binding acceptance (scope)
+- Final source review found that native-binding harnesses replaced an explicitly supplied local password with the trust-authentication placeholder. Preserve provided passwords and synthesize one only when absent; production source is unaffected. Verify all gates again against disposable local folio_test using SCRAM authentication before completing the operational handoff. No real/hosted password is read or changed.
+
+## 2026-10-22 — Hyperdrive operational handoff (scope)
+- Implementation completed in `ae1749f` after all eleven gates plus actual monitoring checks. Prepare exact manual stdin-only provisioning, origin deadline preservation/restoration, separate unbound/bound API deployments, public trial timing and safe-tail commands with per-step rollback. No external command is executed.
+- Reconcile source/operations/Cloudflare/README/STATUS/evidence and rerun every gate before the documentation commit/push/PR. Preserve cancelled staging, disabled query caching and the no-Service-Binding decision.
+
 ## 2026-10-22 — Optional database path implementation verified
 - Added optional HTTP/Cron Hyperdrive selection, fail-closed origin deadline verification and opt-in numeric pg timings; no active binding, query caching, dependency, schema or web routing change. Added explicit publication/rollback/deadline tests and doubled actual workerd database checks to both modes. Local-only harness restores the caller role/database deadline.
 - Baseline and after measurements recorded in evidence/2026-10-22-hyperdrive-latency.md. Local binding cannot prove distributed pooling gains; HTTP/Service Binding have identical6ms medians, so no Service Binding ships. Synthetic accounts were cleaned after each run.

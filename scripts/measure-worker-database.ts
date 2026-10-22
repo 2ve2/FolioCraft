@@ -19,7 +19,7 @@ const label = process.argv.find((arg) => arg.startsWith("--label="))?.slice(8) ?
 assert.match(label, /^[a-z-]{1,32}$/);
 const bound = process.argv.includes("--binding");
 const bindingDatabase = new URL(database);
-bindingDatabase.password = "synthetic-local-only";
+if (!bindingDatabase.password) bindingDatabase.password = "synthetic-local-only";
 bindingDatabase.searchParams.set("options", "-c statement_timeout=15000");
 const output = new URL(`work/database-latency/${label}/`, root);
 const require = createRequire(import.meta.resolve("wrangler"));
