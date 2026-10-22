@@ -18,7 +18,7 @@ Updated: 2026-10-22, Asia/Riyadh. This page is the short continuation point. Eve
 
 ## Next actions (human)
 
-1. Deploy the API, then the web, from the independent checkout after `bun install --frozen-lockfile`; this ships PRs #10 and #11 including the Next.js security update. No migration or new secret.
+1. The human reported (2026-10-22) that the trial may not have been deployed or migrated since PR #3, so the next deployment carries everything since then. Order: `bun install --frozen-lockfile` in the independent checkout; verified backup; apply the additive migration `0010_volatile_daimon_hellstrom.sql` (from PR #9; unknown whether it was ever applied — `db:migrate` skips migrations already recorded) with `bun run db:migrate` and the Neon `DATABASE_URL` supplied privately; deploy the API; deploy the web; check `/health`, sign-in and a published portfolio. No new required secret (the revalidation secret and URL stay optional while caching is off).
 2. Configure Sentry following [MONITORING.md](MONITORING.md). UptimeRobot is reported done by the human (not verified here).
 3. Administration access: the trial account still has the legacy `admin` role, which the console no longer accepts. Converting it to `owner` follows the reviewed manual procedure in [OPERATIONS.md](OPERATIONS.md) and needs explicit authorization; then enroll TOTP.
 4. Send one password-reset email to a private mailbox to confirm delivery; decide the legal contact address, retention periods and governing law; then set `TRIAL_SKIP_EMAIL_VERIFICATION=false`.
