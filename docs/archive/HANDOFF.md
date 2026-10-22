@@ -1,6 +1,6 @@
 # Project handoff
 
-Current continuation is [STATUS.md](STATUS.md); older checkpoints below are historical and do not override its latest scope, evidence or human decisions.
+Current continuation is [STATUS.md](../STATUS.md); older checkpoints below are historical and do not override its latest scope, evidence or human decisions.
 
 ## Independent administration dashboard completed — 2026-10-16
 - Administration is a separate application area at /admin with /admin/sites, /admin/accounts and /admin/activity. Added responsive sidebar/top navigation, truthful database totals/resource cards, recent sites/actions, readable bounded tables, server-side site-access filters and native focused management dialogs. Refresh is an accessible compact icon with actual request invalidation. Status text distinguishes retained releases from public availability; there are no invented charts, trends or health claims.
