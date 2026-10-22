@@ -42,35 +42,35 @@ Comparisons: [sign-in 1440](../screenshots/audit-login-ar-1440.png), [sign-in 39
 
 ## D. Correctness and security review
 
-Four read-only reviewers covered owner/public API surfaces, administration and authentication, runtime and data integrity, and the web app. They found no IDOR, no draft leak to public output, no XSS or open redirect and no permission-matrix gap. Reported findings, each to be verified before fixing (file:line approximate). Fixes are in progress; any item not marked fixed in a later commit is still open:
+Four read-only reviewers covered owner/public API surfaces, administration and authentication, runtime and data integrity, and the web app. They found no IDOR, no draft leak to public output, no XSS or open redirect and no permission-matrix gap. Reported findings, each to be verified before fixing (file:line approximate). Status as of the last update; any item without **Fixed** is still open:
 
 API — administration and authentication
-1. Medium: `POST /api/auth/verify-password` appears reachable over HTTP and is outside the `passwordFailures` budget, so a stolen staff session could guess the password at the generic rate (`lib/auth/index.ts`, `lib/auth/hooks.ts`, `middleware/admin.ts`). Also `/change-password` and `/two-factor/enable|disable` act as slower password oracles.
+1. Medium: `POST /api/auth/verify-password` appears reachable over HTTP and is outside the `passwordFailures` budget, so a stolen staff session could guess the password at the generic rate (`lib/auth/index.ts`, `lib/auth/hooks.ts`, `middleware/admin.ts`). Also `/change-password` and `/two-factor/enable|disable` act as slower password oracles. **Fixed** (`0bcdf00`, HTTP returns 404; the slower oracles on change-password and 2FA keep Better Auth defaults — open).
 2. Low: password-verified sensitive actions that fail later write an extra `permission_denied` audit row (`services/admin/request-service.ts`, `notice-service.ts`, `user-service.ts`).
 3. Low: signed-in non-staff users can write unbounded `permission_denied` rows (`services/admin/sensitive-action.ts`, `middleware/admin.ts`).
 4. Low (decision): the email mask shows the first character and the full domain.
-5. Docs: `docs/API.md` says data-request exports exclude drafts; schemaVersion 2 includes them.
+5. Docs: `docs/API.md` says data-request exports exclude drafts; schemaVersion 2 includes them. **Fixed** (`9a26d50`).
 
 API — runtime and data
-6. Medium: cache-invalidation retry has no backoff; a missing revalidation secret is treated as a failure, not as disabled (`services/cache-invalidation.ts`).
-7. Medium: `cache_invalidation_failed` events are dropped by the monitoring allowlist (`packages/monitoring/src/index.ts`).
-8. Low-medium: a failing post-response cache flush turns a committed mutation into a 5xx (`app.ts`).
-9. Low: the daily backstop delivers at most 20 pending invalidations (`worker.ts`).
+6. Medium: cache-invalidation retry has no backoff; a missing revalidation secret is treated as a failure, not as disabled (`services/cache-invalidation.ts`). **Fixed** (`3347492`). Note: in the default `wrangler.toml` the revalidation binding is commented out, so delivery is a no-op unless the cache is enabled.
+7. Medium: `cache_invalidation_failed` events are dropped by the monitoring allowlist (`packages/monitoring/src/index.ts`). **Fixed** (`7a43869`).
+8. Low-medium: a failing post-response cache flush turns a committed mutation into a 5xx (`app.ts`). **Fixed** (`7a43869`).
+9. Low: the daily backstop delivers at most 20 pending invalidations (`worker.ts`). **Fixed** (`7a43869`).
 
 API — owner and public surfaces
-10. Medium: one IP can exhaust a site's hourly inquiry budget in 12 minutes (`routes/public/inquiries.ts`).
-11. Medium: one actor can exhaust a site's report budget; IPv6 is not bucketed by /64; 429 lacks Retry-After (`services/reports.ts`).
+10. Medium: one IP can exhaust a site's hourly inquiry budget in 12 minutes (`routes/public/inquiries.ts`). **Fixed** (`57c0688`).
+11. Medium: one actor can exhaust a site's report budget; IPv6 is not bucketed by /64; 429 lacks Retry-After (`services/reports.ts`). **Fixed** (`09dbc89`; the site-wide cap stays as flood protection).
 12. Low-medium (not changed in this audit): upload completion holds the site lock during provider IO (`services/assets.ts` `complete`).
 13. Low: staging copies of completed uploads are never deleted (`services/assets.ts`, `services/maintenance.ts`).
 14. Low: a project's custom slug cannot be removed once set (`draft-service.ts`, `content-service.ts`, contracts).
 
 Web
-15. Medium: an upload that finishes during publish or a language switch is dropped while the picker reports success (`use-studio-controller.ts` `update`, `asset-picker.tsx`).
-16. Low: the studio language switch silently does nothing while busy.
+15. Medium: an upload that finishes during publish or a language switch is dropped while the picker reports success (`use-studio-controller.ts` `update`, `asset-picker.tsx`). **Fixed** (`df3be7d`).
+16. Low: the studio language switch silently does nothing while busy. **Fixed** (`df3be7d`).
 17. Low: on a 404 inside a portfolio the language switch does nothing.
-18. Low: draft export revokes the download URL immediately (WebKit may cancel it).
+18. Low: draft export revokes the download URL immediately (WebKit may cancel it). **Fixed** (`df3be7d`).
 19. Low: the asset preview shows "unavailable" while its private URL is still loading.
-20. Low: some user-content inputs lack `dir="auto"` (profile and project fields).
+20. Low: some user-content inputs lack `dir="auto"` (profile and project fields). **Fixed** (`b727ba7`).
 21. Low: static assets served directly by Workers Static Assets do not receive `nosniff`/CSP headers (no `public/_headers`).
 
 ## Gates
