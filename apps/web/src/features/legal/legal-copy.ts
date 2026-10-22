@@ -5,7 +5,7 @@ type Section = { heading: string; paragraphs?: string[]; items?: string[] };
 type LegalText = { title: string; summary: string; sections: Section[] };
 
 /** Date of the current draft wording; update together with any substantive change. */
-export const legalDraftDate = "2026-10-21";
+export const legalDraftDate = "2026-10-22";
 
 /**
  * Draft legal texts. They describe only what the code does today and are not reviewed
@@ -55,7 +55,7 @@ export const legalCopy: Record<
 					{
 						heading: "ملفات تعريف الارتباط والتتبّع",
 						paragraphs: [
-							"نستخدم ملفات تعريف ارتباط ضرورية لتسجيل الدخول فقط. لا توجد ملفات تتبّع أو تحليلات أو إعلانات. لغة الواجهة تُحفظ في رابط الصفحة.",
+							"نستخدم ملفات تعريف ارتباط ضرورية فقط: ملف يُبقيك مسجّلاً للدخول، وملف يتذكّر لغة الواجهة التي اخترتها، وملف يشير إلى أن هذا المتصفح مسجّل الدخول ليفتح العنوان الرئيسي الاستوديو مباشرة ولا يحمل أي بيانات تعرّف بك. لا توجد ملفات تتبّع أو تحليلات أو إعلانات.",
 						],
 					},
 					{
@@ -192,7 +192,7 @@ export const legalCopy: Record<
 					{
 						heading: "Cookies and tracking",
 						paragraphs: [
-							"We use only the essential cookies needed to keep you signed in. There are no tracking, analytics or advertising cookies. The interface language is kept in the page address.",
+							"We use only essential cookies: one keeps you signed in, one remembers the interface language you chose, and one notes that this browser is signed in so the main address opens your studio directly; it holds nothing that identifies you. There are no tracking, analytics or advertising cookies.",
 						],
 					},
 					{

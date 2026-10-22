@@ -1,6 +1,7 @@
 import { expect, test } from "bun:test";
 import { localeHref, negotiateLocale, splitLocalePath } from "../src/lib/locale";
 import { localeRedirects, localizedPages } from "../src/lib/locale-redirects";
+import { signedInCookie } from "../src/lib/signed-in-hint";
 
 test("locale helpers build and split prefixed app paths", () => {
 	expect(localeHref("ar", "/")).toBe("/ar");
@@ -25,7 +26,9 @@ test("Accept-Language negotiation honours quality order and falls back to Englis
 });
 
 test("redirect rules check legacy ?lang, then the cookie, then an Arabic-first browser, then English", () => {
-	const rules = localeRedirects();
+	const rules = localeRedirects().filter(
+		(rule) => !rule.has?.some((condition) => condition.key === signedInCookie),
+	);
 	for (const source of ["/", `/:page(${localizedPages.join("|")})/:rest*`]) {
 		const group = rules.filter((rule) => rule.source === source);
 		expect(group.map((rule) => rule.has?.[0]?.type ?? "fallback")).toEqual([
@@ -46,4 +49,36 @@ test("redirect rules check legacy ?lang, then the cookie, then an Arabic-first b
 		expect(arabicFirst.test(value)).toBe(false);
 	const language = new RegExp(`^${rules[0].has?.[0]?.value}$`);
 	expect(language.test("ar") && language.test("en") && !language.test("fr")).toBe(true);
+});
+
+test("the bare address opens the studio for a signed-in browser, in the same language order", () => {
+	const rules = localeRedirects();
+	const signedIn = rules.filter((rule) =>
+		rule.has?.some((condition) => condition.key === signedInCookie),
+	);
+	expect(signedIn.every((rule) => rule.source === "/")).toBe(true);
+	expect(signedIn.map((rule) => rule.has?.map((condition) => condition.type))).toEqual([
+		["cookie", "query"],
+		["cookie", "cookie"],
+		["cookie", "header"],
+		["cookie"],
+	]);
+	expect(signedIn.map((rule) => rule.destination)).toEqual([
+		"/:locale/studio",
+		"/:locale/studio",
+		"/ar/studio",
+		"/en/studio",
+	]);
+	expect(signedIn.every((rule) => rule.permanent === false && rule.has?.[0]?.value === "1")).toBe(
+		true,
+	);
+	// First match wins, so the signed-in rules must precede the product-page rules for "/".
+	const firstProductRule = rules.findIndex(
+		(rule) => rule.source === "/" && rule.destination === "/:locale" && rule.has?.length === 1,
+	);
+	expect(rules.indexOf(signedIn[3])).toBeLessThan(firstProductRule);
+	// Language prefixes keep showing the product page.
+	expect(
+		rules.some((rule) => rule.source === "/:locale" || rule.source.startsWith("/(ar|en)")),
+	).toBe(false);
 });
