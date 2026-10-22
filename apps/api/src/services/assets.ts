@@ -112,7 +112,8 @@ export const assetService = {
 
 	/** Verifies and copies immutable bytes before marking an owned asset ready. */
 	async complete(userId: string, siteId: string, id: string) {
-		return db.transaction(async (tx) => {
+		let verifiedStaging: string | undefined;
+		const result = await db.transaction(async (tx) => {
 			await lockSite(tx, siteId, userId);
 			const [asset] = await tx
 				.select()
@@ -135,8 +136,18 @@ export const assetService = {
 				.set({ status: "ready", ...dimensions, updatedAt: new Date() })
 				.where(eq(assets.id, id))
 				.returning();
+			verifiedStaging = asset.stagingKey;
 			return dto(saved);
 		});
+		// The verified copy is committed, so the staging upload is no longer needed. Best effort: a
+		// leftover object is only storage, and the owner cleanup route still removes it.
+		if (verifiedStaging)
+			try {
+				await storage.delete(verifiedStaging);
+			} catch {
+				console.error(JSON.stringify({ event: "asset_staging_cleanup_failed" }));
+			}
+		return result;
 	},
 
 	/** Issues a short-lived private download for an owned ready asset. */
