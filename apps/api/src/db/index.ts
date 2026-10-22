@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { env } from "../config/env";
-import { type DatabaseBindings, hyperdriveConfig } from "./hyperdrive";
+import { type DatabaseBindings, hyperdriveConfig, useHyperdrive } from "./hyperdrive";
 import { type PoolStage, poolErrorDiagnostic } from "./pool-diagnostics";
 import * as adminSchema from "./schema/admin";
 import * as assetSchema from "./schema/asset";
@@ -60,9 +60,18 @@ export async function withRequestDatabase<T>(
 ): Promise<T> {
 	const timing = options.timing ? databaseTiming() : undefined;
 	const started = performance.now();
+	const hyperdrive =
+		options.hyperdrive &&
+		(await useHyperdrive(options.hyperdrive, {
+			statementTimeoutMs: env.DB_STATEMENT_TIMEOUT_MS,
+			connectionTimeoutMillis: poolConfig.connectionTimeoutMillis,
+			queryTimeoutMs: poolConfig.query_timeout,
+		}))
+			? options.hyperdrive
+			: undefined;
 	const requestPool = new Pool({
 		...poolConfig,
-		...hyperdriveConfig(options.hyperdrive, env.DB_STATEMENT_TIMEOUT_MS),
+		...(hyperdrive && hyperdriveConfig(hyperdrive)),
 		max: 1,
 		...(timing && { Client: timing.Client }),
 	});
@@ -77,7 +86,7 @@ export async function withRequestDatabase<T>(
 			console.info(
 				JSON.stringify({
 					event: "database_timing",
-					transport: options.hyperdrive ? "hyperdrive" : "direct",
+					transport: hyperdrive ? "hyperdrive" : "direct",
 					stage,
 					requestId: options.requestId,
 					...timing.totals,

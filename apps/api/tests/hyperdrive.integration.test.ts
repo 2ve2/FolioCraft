@@ -1,10 +1,10 @@
 import "./test-guard";
-import { afterAll, expect, test } from "bun:test";
+import { afterAll, beforeEach, expect, spyOn, test } from "bun:test";
 import { newId, type PublicSite, type Site } from "@ichnara/contracts";
 import { eq, inArray, sql } from "drizzle-orm";
 import { env } from "../src/config/env";
 import { db, withRequestDatabase } from "../src/db";
-import { hyperdriveConfig } from "../src/db/hyperdrive";
+import { hyperdriveConfig, hyperdriveVerification, useHyperdrive } from "../src/db/hyperdrive";
 import { user } from "../src/db/schema/auth";
 import { releases, sites } from "../src/db/schema/site";
 import { databaseTiming } from "../src/db/timing";
@@ -20,18 +20,78 @@ function binding(timeout: number) {
 afterAll(async () => {
 	if (ids.length) await db.delete(user).where(inArray(user.id, ids));
 });
+// Verification is isolate-wide; start each test from a fresh isolate's state.
+beforeEach(() => {
+	Object.assign(hyperdriveVerification, { verified: undefined, retryAfter: 0, checks: 0 });
+});
+const verifyOptions = {
+	statementTimeoutMs: 15000,
+	connectionTimeoutMillis: 5000,
+	queryTimeoutMs: 16000,
+};
 
-test("absent Hyperdrive preserves the exact pool configuration; unsafe origin deadlines fail closed", async () => {
-	expect(hyperdriveConfig(undefined, 15000)).toEqual({});
-	for (const timeout of [0, 16000]) {
-		await expect(
-			withRequestDatabase(() => db.execute(sql`select 1`), "request", {
-				hyperdrive: binding(timeout),
-			}),
-		).rejects.toThrow();
-	}
+test("absent Hyperdrive keeps the direct path; a verified binding sets only pooled origin settings", async () => {
+	expect(await useHyperdrive(undefined, verifyOptions)).toBe(false);
+	expect(hyperdriveVerification.checks).toBe(0);
+	expect(hyperdriveConfig({ connectionString: "postgresql://pooled.invalid/db" })).toEqual({
+		connectionString: "postgresql://pooled.invalid/db",
+		statement_timeout: false,
+	});
 	const direct = await withRequestDatabase(() => db.execute(sql`show statement_timeout`));
 	expect(direct.rows[0].statement_timeout).toBe("15s");
+});
+
+test("the origin deadline is checked once per isolate, not on every request", async () => {
+	// 10s differs from the direct 15s, so the result proves which path served each request.
+	const bound = binding(10000);
+	for (let index = 0; index < 3; index++) {
+		const shown = await withRequestDatabase(
+			() => db.execute(sql`show statement_timeout`),
+			"request",
+			{
+				hyperdrive: bound,
+			},
+		);
+		expect(shown.rows[0].statement_timeout).toBe("10s");
+	}
+	expect(hyperdriveVerification.checks).toBe(1);
+});
+
+test("unsafe or unreachable bindings fall back to the bounded direct path with a warning", async () => {
+	const warnings = spyOn(console, "error");
+	try {
+		const unreachable = new URL(env.DATABASE_URL);
+		unreachable.port = "1";
+		for (const [bound, reason] of [
+			[binding(0), "statement_timeout"],
+			[binding(16000), "statement_timeout"],
+			[{ connectionString: unreachable.href }, "unavailable"],
+		] as const) {
+			Object.assign(hyperdriveVerification, { verified: undefined, retryAfter: 0 });
+			warnings.mockClear();
+			const shown = await withRequestDatabase(
+				() => db.execute(sql`show statement_timeout`),
+				"request",
+				{
+					hyperdrive: bound,
+				},
+			);
+			expect(shown.rows[0].statement_timeout).toBe("15s");
+			const logged = warnings.mock.calls.map((call) => String(call[0]));
+			expect(logged).toContain(
+				JSON.stringify({ event: "hyperdrive_unverified", reason, fallback: "direct" }),
+			);
+			expect(logged.join("\n")).not.toContain(env.DATABASE_URL);
+		}
+		// A failed check is not repeated on every request; the next attempt waits for the retry window.
+		const checks = hyperdriveVerification.checks;
+		await withRequestDatabase(() => db.execute(sql`select 1`), "request", {
+			hyperdrive: binding(0),
+		});
+		expect(hyperdriveVerification.checks).toBe(checks);
+	} finally {
+		warnings.mockRestore();
+	}
 });
 
 test("optional binding publishes only the active snapshot and rolls back release and pointer together", async () => {
