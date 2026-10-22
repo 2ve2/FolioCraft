@@ -6,6 +6,12 @@
 
 # Action log
 
+## 2026-10-22 — Studio startup evidence and handoff
+- Published `9f2f92f` and `c69cd20` on `codex/studio-startup`, opened unmerged PR11 against main and attached it to this chat. No deployment.
+- Recorded the formal80-before/80-after production matrix, exact request timing samples, whole-page and settled-transition CLS, fixed-frame geometry, eight real fixture screenshots, gate output and manual API-first/web-second commands in dated evidence. Final corrected implementation passes all13 gates, including54 Chromium journeys; the separate evidence-commit rerun also passed all13 commands (26/26 final command executions exit0).
+- Updated STATUS/README handoff and API/decision/source/dependency/Cloudflare notes. No new resource/secret/migration is required. Cleanup:0 users remain locally; owned PostgreSQL stopped and4300/4301/4400/55436 closed. Source c69cd20 passed validate/workers/integration/e2e in GitHub run39836222837; final documentation-head CI is not preclaimed. Active source work:none; next action is human review/merge/manual deployment. Unrelated ADMIN_CONSOLE_TASK remains untouched.
+
+
 ## 2026-10-22 — Immediate, session-bound studio startup
 - Reused the real workspace chrome, fixed content heading and preview geometry with neutral disabled data areas, a working language switch and one localized live status outside the busy subtree. A pre-paint preview measurement prevents the initial fallback scale from flashing.
 - Added one mount-local hinted site read with cancellation, synchronous native-session checks, exact requester/session envelope matching and authenticated fallback. The human approved the two non-secret identifiers on2026-10-22; Site, cookie/auth/CORS/CSP options and ownership checks remain unchanged. Transient identity-free cross-tab mutation notifications cover native sign-in; unsupported browsers use sequential loading.
