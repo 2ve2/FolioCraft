@@ -4,6 +4,8 @@ import styles from "./asset-picker.module.css";
 /** Replaces failed image downloads with honest feedback and an explicit permission refresh. */
 export function AssetPreview({
 	url,
+	loading = false,
+	loadingLabel,
 	label,
 	unavailable,
 	retryLabel,
@@ -12,6 +14,9 @@ export function AssetPreview({
 	selected = false,
 }: {
 	url?: string;
+	/** True while the private link is still being requested; not a failure. */
+	loading?: boolean;
+	loadingLabel?: string;
 	label: string;
 	unavailable: string;
 	retryLabel: string;
@@ -31,6 +36,12 @@ export function AssetPreview({
 				referrerPolicy="no-referrer"
 				onError={() => setFailedSource(url)}
 			/>
+		);
+	if (loading)
+		return (
+			<div className={styles.placeholder} role="status" aria-busy="true">
+				{loadingLabel}
+			</div>
 		);
 	return (
 		<div className={styles.previewFailure}>

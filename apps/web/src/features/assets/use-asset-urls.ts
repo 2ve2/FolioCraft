@@ -3,11 +3,16 @@ import { useEffect, useState } from "react";
 import { ApiError, api, authClient } from "../../lib/api";
 
 /** Resolves private URLs in bounded batches and renews their short-lived permission while mounted. */
-export function useAssetUrls(
+export function useAssetUrls(siteId: string | undefined, ids: string[], refresh = 0) {
+	return useAssetUrlState(siteId, ids, refresh).urls;
+}
+
+/** Also reports whether the current links are still being requested, so loading is not failure. */
+export function useAssetUrlState(
 	siteId: string | undefined,
 	ids: string[],
 	refresh = 0,
-): Record<string, string> {
+): { urls: Record<string, string>; loading: boolean } {
 	const { data: session, isPending } = authClient.useSession();
 	const owner = session?.user.id;
 	const sessionId = session?.session.id;
@@ -98,5 +103,9 @@ export function useAssetUrls(
 			document.removeEventListener("visibilitychange", onVisible);
 		};
 	}, [siteId, owner, isPending, idKey, context]);
-	return !isPending && owner && state.context === context ? state.urls : {};
+	const ready = !isPending && owner && state.context === context;
+	return {
+		urls: ready ? state.urls : {},
+		loading: Boolean(siteId && ids.length) && !ready,
+	};
 }
