@@ -14,14 +14,14 @@
 	min-height: 42px;
 	width: 100%;
 	padding: 10px 12px;
-	border: 1px solid #e4dfed;
-	background: #fff;
+	border: 1px solid var(--color-select-root-select-trigger-border);
+	background: var(--color-surface);
 	border-radius: 9px;
-	color: #514663;
+	color: var(--color-select-root-select-trigger-text);
 	font-size: var(--text-caption);
 	font-weight: 500;
 	text-align: start;
-	box-shadow: 0 1px 2px #30204005;
+	box-shadow: 0 1px 2px var(--color-select-root-select-trigger-shadow);
 }
 .select-root--compact .select-trigger {
 	min-height: 40px;
@@ -31,8 +31,8 @@
 }
 .select-root .select-trigger:hover,
 .select-root .select-trigger[aria-expanded="true"] {
-	border-color: #b5a1df;
-	background: #f9f6ff;
+	border-color: var(--color-select-root-select-trigger-hover-border);
+	background: var(--color-select-root-select-trigger-hover-surface);
 }
 .select-trigger:focus-visible {
 	outline: 3px solid var(--focus-ring);
@@ -46,11 +46,11 @@
 	white-space: nowrap;
 }
 .select-trigger > svg:first-child {
-	color: #8a6ab8;
+	color: var(--color-select-trigger-svg-first-child-text);
 	flex-shrink: 0;
 }
 .select-chevron {
-	color: #96899f;
+	color: var(--color-select-chevron-text);
 	flex-shrink: 0;
 	transition: transform 0.15s;
 }
@@ -61,15 +61,15 @@
 	z-index: 1000;
 	overflow: auto;
 	padding: 8px;
-	border: 1px solid #e6dfef;
+	border: 1px solid var(--color-popup-border);
 	border-radius: 14px;
-	background: #fff;
-	box-shadow: 0 12px 36px #38264e20;
+	background: var(--color-surface);
+	box-shadow: 0 12px 36px var(--color-select-popup-shadow);
 	scrollbar-width: thin;
 }
 .select-popup-title {
 	padding: 8px 10px 10px;
-	color: #9c8da9;
+	color: var(--color-select-popup-title-text);
 	font-size: var(--text-caption);
 	font-weight: 600;
 }
@@ -83,8 +83,8 @@
 	border: 0;
 	border-radius: 9px;
 	text-align: start;
-	background: transparent;
-	color: #43344f;
+	background: var(--color-transparent);
+	color: var(--color-select-option-text);
 	cursor: pointer;
 }
 .select-popup .select-option + .select-option {
@@ -92,15 +92,15 @@
 }
 .select-popup .select-option:hover,
 .select-popup .select-option:focus-visible {
-	background: #f7f3fc;
-	outline: 2px solid #b9a3e3;
+	background: var(--color-scrollbar-track-start);
+	outline: 2px solid var(--color-select-option-focus);
 	outline-offset: -2px;
 }
 .select-popup .select-option:focus-visible {
 	outline-color: var(--focus-ring);
 }
 .select-popup .select-option[aria-selected="true"] {
-	background: #f0e9fb;
+	background: var(--color-selection-surface);
 }
 .select-code {
 	display: grid;
@@ -108,13 +108,13 @@
 	width: 32px;
 	height: 32px;
 	flex: 0 0 32px;
-	background: #f5f2f8;
-	border: 1px solid #e8e1ef;
+	background: var(--color-select-code-surface);
+	border: 1px solid var(--color-select-code-border);
 	border-radius: 8px;
 	font-family: "Segoe UI", sans-serif;
 	font-size: var(--text-caption);
 	font-weight: 700;
-	color: #8b739f;
+	color: var(--color-select-code-text);
 }
 .select-option-copy {
 	display: flex;
@@ -131,7 +131,7 @@
 .select-popup .select-option-copy small {
 	font-size: var(--text-caption);
 	font-weight: 400;
-	color: #9988a8;
+	color: var(--color-select-option-description);
 }
 .select-check {
 	color: var(--purple);

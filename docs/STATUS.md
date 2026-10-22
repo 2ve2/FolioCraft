@@ -1,5 +1,11 @@
 # Current status
 
+## Active work — platform color tokens, 2026-10-22
+- Branch `codex/platform-color-tokens` starts from freshly fetched main `8b49fe2`. Exact extraction implemented across platform styles and one decorative admin icon; public portfolio code and owner appearance remain unchanged. No dependency/schema/provider/deployment changes.
+- Baseline: all11 required gates exit0. Real local Chromium captures:48 before/48 after, Arabic/English,390/768/1440, landing/login/signup/privacy/terms/404/seeded Studio/native-MFA admin overview; every pair has0 changed decoded pixels and no page errors. The exact fixture was removed with0 users remaining. Expansion comparison matches29 original stylesheets.
+- Active: run all11 gates for each stylesheet-group state, commit separately, finish evidence and open an unmerged PR. No local blockers; no hosted/browser-provider acceptance is claimed. Evidence: `docs/evidence/2026-10-22-platform-color-tokens.md` and adjacent JSON; ignored runtime captures/logs in `work/platform-color-tokens/`. Next action: complete group gates and commits.
+
+
 ## Latest work — optional Hyperdrive latency, 2026-10-22
 - Branch `codex/hyperdrive-latency` starts at fetched main `3f85e37`. Optional Worker HTTP/Cron binding selection, bounded-origin deadline guard and opt-in numeric connection/query timings are implemented; existing Bun/unbound configuration and publication transactions remain. No active binding, caching, deployment, dependency or schema change.
 - Local baseline public/session/studio medians5.87/7.21/6.79ms; after-unbound7.08/9.71/8.55ms; local binding6.95/9.89/7.85ms. Native local binding forwards directly to PostgreSQL and cannot establish real Hyperdrive gains. Prepare only the inactive candidate; trial activation must earn retention with measurements. Service Binding local median6ms for both paths; production web routing is unchanged.

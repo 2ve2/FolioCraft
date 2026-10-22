@@ -42,7 +42,7 @@
 		);
 		font-feature-settings: var(--default-font-feature-settings, normal);
 		font-variation-settings: var(--default-font-variation-settings, normal);
-		-webkit-tap-highlight-color: transparent;
+		-webkit-tap-highlight-color: var(--color-transparent);
 	}
 	hr {
 		height: 0;
@@ -152,7 +152,7 @@
 		letter-spacing: inherit;
 		color: inherit;
 		opacity: 1;
-		background-color: #0000;
+		background-color: var(--color-reset-transparent);
 		border-radius: 0;
 	}
 	::file-selector-button {
@@ -162,7 +162,7 @@
 		letter-spacing: inherit;
 		color: inherit;
 		opacity: 1;
-		background-color: #0000;
+		background-color: var(--color-reset-transparent);
 		border-radius: 0;
 	}
 	:where(select:is([multiple], [size])) optgroup {
@@ -183,7 +183,7 @@
 		}
 		@supports (color: color-mix(in lab, red, red)) {
 			::placeholder {
-				color: color-mix(in oklab, currentcolor 50%, transparent);
+				color: color-mix(in oklab, currentcolor 50%, var(--color-transparent));
 			}
 		}
 	}

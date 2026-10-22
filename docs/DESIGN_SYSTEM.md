@@ -41,3 +41,12 @@ The shared auth/recovery/Studio/admin loading screen uses an abstract portfolio-
 ## Published portfolio platform link — 2026-10-18
 - Human-confirmed floating attribution:48px circular C1 indigo surface,26px approved white emblem,16px bottom/inline-end safe-area spacing. RTL left/LTR right. Localized visually hidden link name and native keyboard navigation, visible focus ring, print hiding and forced-colors fallback. Footer clearance80px plus bottom safe-area prevents the final content resting behind the badge.
 - Public page chrome only: portfolio and project/article detail routes share PublishedShell; portfolio content renderer and private previews remain unchanged. Existing configured webOrigin supplies the platform homepage destination. Local evidence/limits are recorded in STATUS.
+
+
+## Exact platform color tokens — 2026-10-22
+
+`apps/web/src/styles/tokens.css` owns the platform palette. Use semantic `--color-*` variables for surfaces, text, borders, accents, danger states, focus, shadows and component-specific legacy roles. The existing `--ink`, `--muted`, `--line`, `--paper`, `--purple`, `--soft` and `--focus-ring` names remain compatibility aliases. Administration keeps its scoped aliases for dialogs and shell inheritance.
+
+The extraction deliberately preserves every existing shade and alpha value. Similar values are separate roles, not a new normalized palette. `--color-surface` retains the original `#fff` spelling; `--color-surface-named` retains `white`; the reset retains its distinct transparent-black token. No near-equal values were merged. Component-qualified roles describe existing visual states and allow later deliberate consolidation. No dark mode is enabled.
+
+Keep system `Canvas`, `CanvasText` and `ButtonText` values in forced-colors rules, and literal colors in static feature queries: these describe browser capabilities or the user's system palette. Published portfolio styles and owner appearance data are outside this platform palette; do not replace them with platform tokens. Exact inventory, decoded-pixel comparison and contrast measurements are in [the dated evidence](evidence/2026-10-22-platform-color-tokens.md). Existing low-contrast pairs are reported honestly; this extraction does not redesign them.

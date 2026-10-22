@@ -1,14 +1,18 @@
 .welcome-page {
-	background: #faf8fc;
+	background: var(--color-entry-surface);
 	min-height: 100vh;
-	background-image: radial-gradient(ellipse at 10% 20%, #f0e9fb, transparent 60%);
+	background-image: radial-gradient(
+		ellipse at 10% 20%,
+		var(--color-selection-surface),
+		var(--color-transparent) 60%
+	);
 }
 .welcome-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	padding: 31px 6vw;
-	border-bottom: 1px solid #ebe6f166;
+	border-bottom: 1px solid var(--color-welcome-header-border);
 }
 .welcome-main {
 	width: min(1140px, 88%);
@@ -31,7 +35,7 @@
 .welcome-story > p {
 	font-size: 16px;
 	line-height: 2;
-	color: #6c637f;
+	color: var(--color-landing-showcase-themes-span-text);
 	max-width: 470px;
 }
 .journey {
@@ -43,7 +47,7 @@
 }
 .journey small {
 	font-size: var(--text-caption);
-	color: #8c7d9f;
+	color: var(--color-welcome-journey-small-text);
 	letter-spacing: 1px;
 	margin-bottom: 7px;
 }
@@ -52,24 +56,24 @@
 	align-items: center;
 	gap: 13px;
 	font-size: var(--text-caption);
-	color: #5c536b;
+	color: var(--color-welcome-journey-span-text);
 }
 .journey b {
 	font-family: monospace;
 	font-size: var(--text-caption);
-	color: #a592c4;
+	color: var(--color-welcome-journey-b-text);
 	font-weight: 500;
 }
 .journey svg {
 	margin-inline-start: auto;
-	color: #9773d0;
+	color: var(--color-welcome-journey-svg-text);
 }
 .auth-card {
 	padding: 35px;
-	background: #fff;
-	border: 1px solid #ebe4f1;
+	background: var(--color-surface);
+	border: 1px solid var(--color-welcome-auth-card-border);
 	border-radius: 21px;
-	box-shadow: 0 24px 70px #4d326610;
+	box-shadow: 0 24px 70px var(--color-welcome-auth-card-shadow);
 	position: relative;
 }
 .auth-card h2 {
@@ -88,21 +92,21 @@
 	width: 62px;
 	height: 62px;
 	border-radius: 17px;
-	background: #f2ecfc;
+	background: var(--color-welcome-large-mark-surface);
 	color: var(--purple);
 	margin-bottom: 18px;
 }
 .auth-privacy {
 	display: block;
 	text-align: center;
-	color: #8b819a;
+	color: var(--color-welcome-auth-privacy-text);
 	font-size: var(--text-caption);
 	line-height: 1.9;
 	margin-top: 24px;
 }
 .auth-consent {
 	margin-top: 0;
-	color: #6b6280;
+	color: var(--color-welcome-auth-consent-text);
 }
 .auth-consent a {
 	color: var(--purple);
@@ -118,7 +122,7 @@
 	padding: 20px 6vw;
 	display: flex;
 	justify-content: space-between;
-	color: #918899;
+	color: var(--color-welcome-footer-text);
 	font-size: var(--text-caption);
 }
 .onboarding {
@@ -146,11 +150,11 @@
 	text-align: start;
 	border-radius: 18px;
 	border: 1px solid var(--line);
-	background: #fff;
-	box-shadow: 0 12px 40px #4d32660a;
+	background: var(--color-surface);
+	box-shadow: 0 12px 40px var(--color-welcome-onboarding-card-shadow);
 }
 .slug-input {
-	border: 1px solid #ddd8e8;
+	border: 1px solid var(--color-control-border);
 	display: flex;
 	align-items: center;
 	border-radius: 10px;
@@ -158,12 +162,12 @@
 }
 .slug-input span {
 	padding: 0 13px;
-	color: #91859e;
-	background: #f7f4fb;
+	color: var(--color-welcome-slug-input-span-text);
+	background: var(--color-welcome-slug-input-span-surface);
 	align-self: stretch;
 	display: flex;
 	align-items: center;
-	border-right: 1px solid #e7e0ef;
+	border-right: 1px solid var(--color-welcome-slug-input-span-border);
 }
 .slug-input input {
 	border: 0;

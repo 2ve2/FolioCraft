@@ -2,7 +2,7 @@
 	min-height: 100svh;
 	display: flex;
 	flex-direction: column;
-	background: #faf8fc;
+	background: var(--color-entry-surface);
 }
 .header {
 	width: min(1280px, 100%);
@@ -27,24 +27,24 @@
 }
 .tabs a {
 	padding: 8px 14px;
-	border: 1px solid #ddd8e8;
+	border: 1px solid var(--color-control-border);
 	border-radius: 999px;
-	background: #fff;
+	background: var(--color-surface);
 	color: var(--ink);
 	font-size: var(--text-caption);
 	text-decoration: none;
 }
 .tabs a[aria-current="page"] {
 	border-color: var(--focus-ring);
-	background: #f1ebfc;
-	color: #4b2f9e;
+	background: var(--color-legal-tab-active-surface);
+	color: var(--color-legal-tab-active-text);
 	font-weight: 600;
 }
 .article {
 	padding: clamp(24px, 5vw, 48px);
-	border: 1px solid #ebe6f2;
+	border: 1px solid var(--color-legal-article-border);
 	border-radius: var(--radius-card);
-	background: #fff;
+	background: var(--color-surface);
 	line-height: var(--leading-body);
 }
 .article h1 {
@@ -57,7 +57,7 @@
 }
 .article p,
 .article li {
-	color: #4a4458;
+	color: var(--color-legal-article-p-text);
 }
 .article ul {
 	display: grid;
@@ -70,10 +70,10 @@
 }
 .article .notice {
 	padding: var(--space-3) var(--space-4);
-	border-inline-start: 3px solid #c79a2b;
+	border-inline-start: 3px solid var(--color-legal-article-notice-border);
 	border-radius: var(--radius-control);
-	background: #fdf7e8;
-	color: #5c4612;
+	background: var(--color-legal-article-notice-surface);
+	color: var(--color-legal-article-notice-text);
 	font-size: var(--text-caption);
 }
 .updated {

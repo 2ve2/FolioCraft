@@ -1,5 +1,11 @@
 # Decision ledger
 
+## 2026-10-22 — Exact platform palette extraction
+- Human-confirmed scope: replace platform UI color literals with tokens, zero visual change, bilingual screenshot matrix and contrast evidence, granular commits and an unmerged PR. Public portfolio rendering and owner-selected appearance are excluded. No deployment/provider/hosted database/secret operation is authorized.
+- Engineering choices, not separately human-confirmed: retain310 literal spellings as semantic/component roles, keep all near-equal shades separate, preserve legacy custom-property aliases and scoped administration inheritance. Centralize one inline administrative resource-icon color as well as CSS declarations. No palette normalization, dependency, theme switch, behavior, schema or content change.
+- Preserve system colors inside forced-colors rules and literal syntax in browser capability queries. Keep both public portfolio CSS modules and packages/portfolio unchanged. Validate substitutions by exact expansion plus48 real local before/after screenshots with native staff MFA and the same disposable fixture. See the dated evidence for actual results and unverified limits.
+
+
 ## 2026-10-22 — Optional Hyperdrive; measurements gate activation
 - Human-confirmed scope: measure locally, prepare optional Hyperdrive with DATABASE_URL fallback when absent, query caching disabled, no staging/provider creation/deployment, manual reversible trial enablement. Service Binding is optional and evidence-led.
 - Engineering choices, not separately human-confirmed: keep request-local max1 pools and existing pg/Drizzle transactions; require a bounded origin role/database statement_timeout instead of relying on reset session state. Retain the independent client read deadline; no whole-request transaction/retry. Revised in review (2026-10-22, engineering choice): the guard runs once per Worker isolate, not per request, and a failed or unreachable check falls back to the bounded direct DATABASE_URL path with a `hyperdrive_unverified` warning (retry after 60 s) instead of rejecting every database request.

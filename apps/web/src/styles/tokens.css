@@ -22,7 +22,363 @@
 	--radius-control: 8px;
 	--radius-card: 12px;
 	/* Keyboard focus indicator: 4.8:1 on white, above the 3:1 non-text contrast minimum. */
-	--focus-ring: #7c5cd6;
+	--focus-ring: var(--color-focus-ring);
+
+	/* Exact platform palette. Keep near-equal legacy shades distinct. */
+
+	/* Shared roles. */
+	--color-surface: #fff;
+	--color-entry-surface: #faf8fc;
+	--color-control-border: #ddd8e8;
+	--color-popup-border: #e6dfef;
+	--color-icon-surface: #f4effb;
+	--color-table-hover-surface: #fcfbfe;
+	--color-transparent: transparent;
+	--color-inset-surface: #f8f6fb;
+	--color-surface-named: white;
+	--color-accent: #3f46c8;
+	--color-accent-soft: #f0eafb;
+	--color-field-label: #514b60;
+	--color-text: #242137;
+	--color-text-muted: #706c80;
+	--color-border: #e9e6ef;
+	--color-page: #faf9fc;
+	--color-control-focus-border: #9a7ae4;
+	--color-accent-shadow-subtle: #3f46c815;
+	--color-control-placeholder: #8b8796;
+	--color-brand-shadow: #3f46c823;
+	--color-brand-caption: #8b839a;
+	--color-accent-hover: #3036a6;
+	--color-secondary-border: #ded8eb;
+	--color-secondary-text: #4c415f;
+	--color-secondary-hover: #f7f4fc;
+	--color-danger-border: #e8cdd0;
+	--color-danger-text: #9d343e;
+	--color-danger-surface: #fff3f3;
+	--color-danger-text-emphasis: #a74049;
+	--color-locale-border: #e9e4ef;
+	--color-status-dot: #8c66dc;
+	--color-error-border: #efcccf;
+	--color-error-text: #93353e;
+	--color-avatar-surface: #eee6f7;
+	--color-selection-surface: #f0e9fb;
+	--color-focus-ring: #7c5cd6;
+
+	/* Footer roles. */
+	--color-footer-surface: #241b38;
+	--color-footer-text: #d6cede;
+	--color-footer-border: #41314f;
+	--color-footer-brand-caption: #beb0d1;
+	--color-footer-signature: #bca1ed;
+	--color-footer-studio-link: #d3b9ff;
+	--color-footer-bottom-border: #493a58;
+	--color-footer-bottom-text: #bcb0cc;
+
+	/* Notice roles. */
+	--color-notice-banner-surface: #f1edff;
+	--color-notice-banner-border: #d6cdf7;
+	--color-notice-banner-text: #34285c;
+
+	/* Tooltip roles. */
+	--color-tooltip-bubble-border: #725694;
+	--color-tooltip-bubble-surface: #30213f;
+	--color-tooltip-bubble-shadow: #35214526;
+
+	/* Asset roles. */
+	--color-asset-picker-border: #e4e2e9;
+	--color-asset-hint-text: #625e72;
+	--color-asset-picker-button-border: #ddd9e6;
+	--color-asset-picker-button-text: #373247;
+	--color-asset-focus-ring: #7458ce;
+	--color-asset-card-img-surface: #f5f3f8;
+	--color-asset-selected-surface: #f1ebff;
+	--color-asset-selected-border: #9274dc;
+	--color-asset-danger: #a62937;
+	--color-asset-error-surface: #fff0f1;
+
+	/* Legal roles. */
+	--color-legal-tab-active-surface: #f1ebfc;
+	--color-legal-tab-active-text: #4b2f9e;
+	--color-legal-article-border: #ebe6f2;
+	--color-legal-article-p-text: #4a4458;
+	--color-legal-article-notice-border: #c79a2b;
+	--color-legal-article-notice-surface: #fdf7e8;
+	--color-legal-article-notice-text: #5c4612;
+
+	/* Admin roles. */
+	--color-admin-accent: #7045ce;
+	--color-admin-text-muted: #746d83;
+	--color-admin-border: #e9e5ef;
+	--color-admin-text: #2d253e;
+	--color-admin-page: #f7f7fb;
+	--color-admin-focus-ring: #ab91e8;
+	--color-admin-nav-label-text: #9b92aa;
+	--color-admin-nav-link-text: #777083;
+	--color-admin-nav-link-hover-surface: #f8f6fc;
+	--color-admin-nav-active-surface: #f0eafa;
+	--color-admin-studio-link-text: #6d617f;
+	--color-admin-avatar-surface: #eee7f9;
+	--color-admin-avatar-text: #7955bd;
+	--color-admin-topbar-surface: #ffffffd9;
+	--color-admin-topbar-strong-text: #4b3f5e;
+	--color-admin-breadcrumb-text: #c5becf;
+	--color-admin-gate-surface: #f7f5fb;
+	--color-admin-gate-card-svg-text: #9d83bf;
+	--color-admin-gate-card-p-text: #7d718b;
+	--color-admin-icon-button-text: #79658f;
+	--color-admin-stat-icon-text: #8b6cbb;
+	--color-admin-stat-small-text: #8a8197;
+	--color-admin-card-header-border: #f0edf4;
+	--color-admin-table-th-text: #8b8298;
+	--color-admin-identity-small-text: #8e859d;
+	--color-admin-row-icon-surface: #f4f1fa;
+	--color-admin-row-icon-text: #977eb7;
+	--color-admin-badge-surface: #f0edf6;
+	--color-admin-badge-text: #81748f;
+	--color-admin-good-surface: #edf7f1;
+	--color-admin-good-text: #3c8060;
+	--color-admin-warning-surface: #fff3e6;
+	--color-admin-warning-text: #9a6a2e;
+	--color-admin-bad-surface: #fff0f0;
+	--color-admin-bad-text: #ac5a61;
+	--color-admin-row-action-border: #e8e1f0;
+	--color-admin-row-action-text: #7958ab;
+	--color-admin-row-action-hover-surface: #f5f0fc;
+	--color-admin-filters-surface: #eceaf2;
+	--color-admin-filters-button-text: #83788f;
+	--color-admin-filters-button-aria-pressed-true-border: #e2dce9;
+	--color-admin-filters-button-aria-pressed-true-text: #594170;
+	--color-admin-filters-button-aria-pressed-true-shadow: #41335608;
+	--color-admin-audit-meta-text: #8b8197;
+	--color-admin-empty-text: #9b8dad;
+	--color-admin-empty-h3-text: #665a78;
+	--color-admin-empty-p-text: #978ba2;
+	--color-admin-error-text: #98505c;
+	--color-admin-notice-surface: #ecf6f0;
+	--color-admin-notice-text: #377357;
+	--color-admin-loading-surface: #eeeaf7;
+	--color-admin-loading-text: #8a77a4;
+	--color-admin-skeleton-text: #9c91ab;
+	--color-admin-dialog-shadow: #24103638;
+	--color-admin-dialog-backdrop-surface: #23193666;
+	--color-admin-secondary-border: #e5ddeb;
+	--color-admin-secondary-text: #705c85;
+	--color-admin-danger-surface: #fff3f1;
+	--color-admin-danger-border: #f1d8d5;
+	--color-admin-danger-text: #ad5b56;
+	--color-admin-table-td-data-label-before-text: #9d92aa;
+	--color-admin-operation-page-input-border: #d7d3e3;
+	--color-admin-operation-page-input-text: #242037;
+	--color-admin-report-queue-li-border: #e4e4ee;
+	--color-admin-report-queue-time-text: #666;
+	--color-admin-report-handling-textarea-border: #ddd;
+	--color-admin-resource-icon: #9b85b5;
+
+	/* Management roles. */
+	--color-management-panel-input-border: #d9d7df;
+	--color-management-panel-input-text: #292735;
+	--color-management-panel-button-text: #393348;
+	--color-management-panel-button-aria-pressed-true-surface: #eee9ff;
+	--color-management-panel-button-aria-pressed-true-border: #b9a5f5;
+	--color-management-panel-button-focus-visible-focus: #7952d8;
+	--color-management-card-border: #e7e3ec;
+
+	/* Not-found roles. */
+	--color-not-found-page-surface: #eee7fb;
+	--color-not-found-orbit-border: #d9cbed;
+	--color-not-found-orbit-surface: #e5d9f8;
+	--color-not-found-number-text: #7048c7;
+	--color-not-found-number-shadow: #e1d4f5;
+	--color-not-found-file-border: #e4daef;
+	--color-not-found-file-shadow: #51308012;
+	--color-not-found-eyebrow-text: #72529a;
+	--color-not-found-description-text: #70677e;
+	--color-not-found-primary-shadow: #3f46c81a;
+	--color-not-found-primary-hover-surface: #5e38bf;
+	--color-not-found-secondary-surface: #ffffffb3;
+	--color-not-found-secondary-border: #ddd3e9;
+	--color-not-found-secondary-text: #574267;
+	--color-not-found-hint-text: #746a81;
+
+	/* Landing roles. */
+	--color-landing-showcase-border: #ded4ec;
+	--color-landing-showcase-shadow: #55347718;
+	--color-landing-showcase-bar-surface: #f2edf7;
+	--color-landing-showcase-bar-text: #675576;
+	--color-landing-showcase-bar-border: #e5dceb;
+	--color-landing-showcase-dots-text: #baa8cd;
+	--color-landing-showcase-themes-span-text: #6c637f;
+	--color-landing-showcase-themes-button-text: #63546f;
+	--color-landing-theme-active-border: #8965bb;
+	--color-landing-theme-active-surface: #f0e8fb;
+	--color-landing-theme-active-text: #59388b;
+	--color-landing-benefits-border: #e6deed;
+	--color-landing-feature-list-article-span-text: #9b80b8;
+
+	/* Loading roles. */
+	--color-loading-sheet-border: #dedff0;
+	--color-loading-sheet-back-surface: #e9eafb;
+	--color-loading-sheet-back-border: #d6d8f4;
+	--color-loading-sheet-top-border: #eeedf5;
+	--color-loading-sheet-top-i-surface: #cccfe9;
+	--color-loading-sheet-line-surface: #e9eaf5;
+	--color-loading-sheet-grid-i-surface: #fafaff;
+	--color-loading-symbol-shadow: #3f46c80a;
+	--color-loading-error-icon: #a13b35;
+
+	/* Readability roles. */
+	--color-readability-content-jump-nav-a-text: #716080;
+	--color-readability-content-jump-nav-a-hover-border: #bba7df;
+	--color-readability-feedback-feedback-operation-notice-border: #d7d2de;
+	--color-readability-feedback-feedback-operation-notice-text: #34705b;
+
+	/* Reset roles. */
+	--color-reset-transparent: #0000;
+
+	/* Mobile roles. */
+	--color-mobile-mobile-tabs-button-text: #8d7b9e;
+	--color-mobile-mobile-tabs-button-active-surface: #f0e9fa;
+	--color-mobile-collection-item-border: #e5e5e5;
+
+	/* Scrollbar roles. */
+	--color-scrollbar-thumb: #9470df;
+	--color-scrollbar-track: #f0eaf9;
+	--color-scrollbar-track-start: #f7f3fc;
+	--color-scrollbar-track-middle: #eee5fa;
+	--color-scrollbar-thumb-start: #b79be8;
+	--color-scrollbar-thumb-middle: #8055d9;
+	--color-scrollbar-thumb-end: #6340b9;
+	--color-scrollbar-thumb-inset: #ffffff38;
+	--color-scrollbar-thumb-hover-start: #c5a8f4;
+	--color-scrollbar-thumb-hover-end: #543298;
+	--color-scrollbar-thumb-hover-inset: #ffffff55;
+	--color-scrollbar-thumb-active-start: #9b78e3;
+	--color-scrollbar-thumb-active-end: #5934b7;
+
+	/* Select roles. */
+	--color-select-root-select-trigger-border: #e4dfed;
+	--color-select-root-select-trigger-text: #514663;
+	--color-select-root-select-trigger-shadow: #30204005;
+	--color-select-root-select-trigger-hover-border: #b5a1df;
+	--color-select-root-select-trigger-hover-surface: #f9f6ff;
+	--color-select-trigger-svg-first-child-text: #8a6ab8;
+	--color-select-chevron-text: #96899f;
+	--color-select-popup-shadow: #38264e20;
+	--color-select-popup-title-text: #9c8da9;
+	--color-select-option-text: #43344f;
+	--color-select-option-focus: #b9a3e3;
+	--color-select-code-surface: #f5f2f8;
+	--color-select-code-border: #e8e1ef;
+	--color-select-code-text: #8b739f;
+	--color-select-option-description: #9988a8;
+
+	/* Welcome roles. */
+	--color-welcome-header-border: #ebe6f166;
+	--color-welcome-journey-small-text: #8c7d9f;
+	--color-welcome-journey-span-text: #5c536b;
+	--color-welcome-journey-b-text: #a592c4;
+	--color-welcome-journey-svg-text: #9773d0;
+	--color-welcome-auth-card-border: #ebe4f1;
+	--color-welcome-auth-card-shadow: #4d326610;
+	--color-welcome-large-mark-surface: #f2ecfc;
+	--color-welcome-auth-privacy-text: #8b819a;
+	--color-welcome-auth-consent-text: #6b6280;
+	--color-welcome-footer-text: #918899;
+	--color-welcome-onboarding-card-shadow: #4d32660a;
+	--color-welcome-slug-input-span-text: #91859e;
+	--color-welcome-slug-input-span-surface: #f7f4fb;
+	--color-welcome-slug-input-span-border: #e7e0ef;
+
+	/* Preview roles. */
+	--color-preview-backdrop: #242137a6;
+	--color-preview-browser-dot: #e0d6e9;
+	--color-preview-browser-dot-close: #eacbce;
+	--color-preview-browser-dot-minimize: #ebdfbc;
+	--color-preview-browser-dot-expand: #ccdcca;
+	--color-preview-scrollbar-thumb: #d8d1e3;
+
+	/* Workspace roles. */
+	--color-workspace-label-text: #a095ac;
+	--color-workspace-nav-item-text: #80758d;
+	--color-workspace-nav-item-hover-surface: #f8f5fc;
+	--color-workspace-sidebar-note-surface: #f9f7fc;
+	--color-workspace-sidebar-note-border: #eeebf2;
+	--color-workspace-sidebar-note-p-text: #8c8199;
+	--color-workspace-avatar-text: #7b58aa;
+	--color-workspace-account-small-text: #9b8fa6;
+	--color-workspace-studio-header-surface: #ffffffba;
+	--color-workspace-page-breadcrumb-span-text: #9b8fa7;
+	--color-workspace-page-breadcrumb-svg-text: #b9afc4;
+	--color-workspace-page-breadcrumb-b-text: #62556f;
+	--color-workspace-save-status-text: #92849d;
+	--color-workspace-feedback-error-surface: #fff2f2;
+	--color-workspace-feedback-error-border: #f1d9dc;
+	--color-workspace-feedback-error-text: #913b45;
+	--color-workspace-feedback-success-surface: #edf7f0;
+	--color-workspace-feedback-success-border: #d4e9db;
+	--color-workspace-feedback-success-text: #326348;
+	--color-workspace-section-heading-eyebrow-text: #9986b3;
+	--color-workspace-section-heading-p-text: #988aa3;
+	--color-workspace-editor-card-shadow: #33214a02;
+	--color-workspace-card-icon-text: #9573c7;
+	--color-workspace-editor-card-input-border: #e6e0ee;
+	--color-workspace-switch-row-border: #eeebf3;
+	--color-workspace-switch-row-text: #776882;
+	--color-workspace-empty-card-border: #d9cfe8;
+	--color-workspace-empty-card-text: #a28cbc;
+	--color-workspace-empty-card-h3-text: #756385;
+	--color-workspace-empty-card-p-text: #a294ae;
+	--color-workspace-project-number-surface: #f3edf9;
+	--color-workspace-project-number-text: #997bba;
+	--color-workspace-editor-bottom-text: #a397af;
+	--color-workspace-preview-panel-surface: #f0edf5;
+	--color-workspace-preview-panel-border: #e6e0ed;
+	--color-workspace-preview-toolbar-text: #8d7e9e;
+	--color-workspace-device-controls-border: #e4ddeb;
+	--color-workspace-device-controls-surface: #e9e3f0;
+	--color-workspace-device-controls-button-text: #9c8bae;
+	--color-workspace-device-controls-button-active-shadow: #5332780d;
+	--color-workspace-status-pill-border: #e1daeb;
+	--color-workspace-status-pill-text: #8b789f;
+	--color-workspace-preview-canvas-shadow: #3920530d;
+	--color-workspace-preview-canvas-border: #ded7e8;
+	--color-workspace-browser-bar-surface: #fcfbfd;
+	--color-workspace-browser-bar-border: #f0ecf4;
+	--color-workspace-browser-bar-text: #ada1b8;
+	--color-workspace-preview-caption-text: #9b8aab;
+	--color-workspace-preview-link-text: #8662b5;
+	--color-workspace-theme-choice-border: #e5deed;
+	--color-workspace-theme-choice-selected-border: #9d7ce1;
+	--color-workspace-theme-choice-selected-shadow: #eee6fb;
+	--color-workspace-theme-choice-span-last-child-text: #796985;
+	--color-workspace-accent-chip-selected-focus: #aa9fb7;
+	--color-workspace-quiet-note-border: #e9e1f1;
+	--color-workspace-quiet-note-surface: #f7f2fc;
+	--color-workspace-quiet-note-text: #9783ad;
+	--color-workspace-address-display-text: #79638d;
+	--color-workspace-muted-text: #8a7c98;
+
+	/* Save roles. */
+	--color-save-success: #687b65;
+	--color-save-error: #b74d58;
+	--color-save-unsaved: #947139;
+
+	/* Theme roles. */
+	--color-theme-swatch-light: #f7f6fa;
+	--color-theme-swatch-dark: #242131;
+	--color-theme-swatch-editorial: #f1e8db;
+	--color-theme-swatch-line: #a392bd;
+	--color-theme-swatch-heading: #70588e;
+	--color-theme-swatch-dark-line: #5c516e;
+	--color-theme-swatch-dark-heading: #c8b3e7;
+	--color-theme-swatch-editorial-line: #c1ae97;
+	--color-theme-swatch-editorial-heading: #786655;
+
+	/* Accent-option roles. */
+	--color-accent-option-violet: #7351bb;
+	--color-accent-option-blue: #246bb1;
+	--color-accent-option-green: #267250;
+	--color-accent-option-rose: #b84f6a;
 }
 
 @media (max-width: 720px) {

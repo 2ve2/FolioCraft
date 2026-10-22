@@ -1,7 +1,7 @@
 .footer {
-	background: #241b38;
-	color: #d6cede;
-	border-top: 1px solid #41314f;
+	background: var(--color-footer-surface);
+	color: var(--color-footer-text);
+	border-top: 1px solid var(--color-footer-border);
 }
 .inner {
 	max-width: 1280px;
@@ -17,10 +17,10 @@
 .identity > a {
 	display: inline-flex;
 	min-height: 44px;
-	color: #fff;
+	color: var(--color-surface);
 }
 .identity :global(.brand small) {
-	color: #beb0d1;
+	color: var(--color-footer-brand-caption);
 }
 .identity p {
 	max-width: 360px;
@@ -29,7 +29,7 @@
 	margin: 22px 0 16px;
 }
 .signature {
-	color: #bca1ed;
+	color: var(--color-footer-signature);
 	font-size: var(--text-caption);
 }
 .group {
@@ -40,7 +40,7 @@
 .group h2 {
 	font-size: var(--text-label);
 	font-weight: 650;
-	color: #fff;
+	color: var(--color-surface);
 	margin: 0 0 16px;
 }
 .group a {
@@ -54,23 +54,23 @@
 	text-underline-offset: 5px;
 }
 .group a:hover {
-	color: #fff;
+	color: var(--color-surface);
 	text-decoration: underline;
 }
 .group .studio {
-	color: #d3b9ff;
+	color: var(--color-footer-studio-link);
 }
 .footer[dir="rtl"] .studio svg {
 	transform: scaleX(-1);
 }
 .bottom {
-	border-top: 1px solid #493a58;
+	border-top: 1px solid var(--color-footer-bottom-border);
 	padding: 24px 0;
 	display: flex;
 	justify-content: space-between;
 	gap: 16px;
 	font-size: var(--text-caption);
-	color: #bcb0cc;
+	color: var(--color-footer-bottom-text);
 }
 @media (max-width: 720px) {
 	.inner {
