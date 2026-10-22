@@ -19,8 +19,9 @@
 	--space-12: 48px;
 	--space-16: 64px;
 	--control-min: 44px;
-	--radius-control: 8px;
+	--radius-control: 10px;
 	--radius-card: 12px;
+	--radius-panel: 20px;
 	/* Shared page gutter: headers, footers and landing sections align to one 1240px column. */
 	--page-gutter: max(5vw, calc((100% - 1240px) / 2));
 	/* Keyboard focus indicator: 5.0:1 on white, above the 3:1 non-text contrast minimum. */

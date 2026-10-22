@@ -41,7 +41,7 @@
 .article {
 	padding: clamp(24px, 5vw, 48px);
 	border: 1px solid var(--color-legal-article-border);
-	border-radius: var(--radius-card);
+	border-radius: var(--radius-panel);
 	background: var(--color-surface);
 	line-height: var(--leading-body);
 }

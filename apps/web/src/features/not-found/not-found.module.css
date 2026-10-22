@@ -81,9 +81,9 @@
 	letter-spacing: 0;
 }
 .content h1 {
-	font-size: clamp(26px, 4vw, 36px);
-	line-height: 1.45;
-	letter-spacing: -0.7px;
+	font-size: var(--text-title);
+	line-height: 1.35;
+	letter-spacing: -0.3px;
 	margin: 0;
 }
 .description {
