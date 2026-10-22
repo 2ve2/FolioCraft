@@ -1,5 +1,8 @@
 # Decision ledger
 
+## 2026-10-22 — Cache invalidation retries are signalled through R2, not polled from PostgreSQL
+- Engineering choice in review (human approved fixing the finding): the minute Cron must not query Neon while nothing is pending. A failed delivery writes a unique R2 `pending` object in the existing cache bucket; the Cron reads only that object and clears it with an etag precondition after draining. Daily maintenance remains the backstop for a signal that could not be written. Alternatives rejected: polling every minute (keeps Neon awake), longer Cron intervals (still frequent wakes, longer staleness), KV (new resource, eventual consistency).
+
 ## 2026-10-22 — Published ISR persistence and acknowledgement
 - Engineering decisions, not separately human-confirmed: SQL row triggers persist generation intent in the mutation transaction, including native bans and account cascades. Retain acknowledged generations to prevent ABA; no cascading FK. Deliver affected sites before the response and retry bounded oldest pending work each minute. Failure emits sanitized logging/Sentry and remains pending; a sustained write-only outage has no finite staleness maximum.
 - Keep the original dynamic public routes for the disabled/fallback path. Store only successful internal portfolio full-route entries through official R2, no data/negative/error/cookie-setting entries and no isolate memory cache. Use site+slug tags, immediate expiration, render-start provenance and monotonic DO timestamps against late rendering/out-of-order delivery.
