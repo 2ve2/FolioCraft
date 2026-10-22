@@ -8,6 +8,7 @@ import { ButtonContent } from "../../../components/ui/button-content";
 import { LanguageSwitch } from "../../../components/ui/language-switch";
 import { authClient } from "../../../lib/auth-client";
 import { localeHref } from "../../../lib/locale";
+import { useAccountSession } from "../../../lib/use-account-session";
 import { useInterfaceLocale } from "../../../lib/use-interface-locale";
 import styles from "../../auth/auth.module.css";
 import { LoadingScreen } from "../../studio/loading-screen";
@@ -19,7 +20,7 @@ export function AdminSecurity() {
 	const [locale, setLocale] = useInterfaceLocale();
 	const t = adminSecurityCopy[locale];
 	const router = useRouter();
-	const { data: session, isPending, error: sessionError, refetch } = authClient.useSession();
+	const { data: session, isPending, error: sessionError, refetch } = useAccountSession();
 	const [challenge, setChallenge] = useState(false);
 	const [setup, setSetup] = useState<{ key: string; codes: string[] } | null>(null);
 	const [complete, setComplete] = useState(false);

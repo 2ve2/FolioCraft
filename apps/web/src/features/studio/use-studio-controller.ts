@@ -9,6 +9,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, api, authClient } from "../../lib/api";
 import { localeHref } from "../../lib/locale";
+import { useAccountSession } from "../../lib/use-account-session";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import { useAssetUrls } from "../assets/use-asset-urls";
 import { copy } from "./copy";
@@ -26,7 +27,7 @@ export function useStudioController() {
 		isPending,
 		error: sessionError,
 		refetch: refetchSession,
-	} = authClient.useSession();
+	} = useAccountSession();
 	const sessionIdentity = `${session?.user.id ?? ""}:${session?.session.id ?? ""}`;
 	const sessionIdentityRef = useRef(sessionIdentity);
 	sessionIdentityRef.current = sessionIdentity;
