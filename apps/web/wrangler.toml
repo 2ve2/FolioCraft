@@ -1,10 +1,14 @@
 # OpenNext output; this is not a static-only export of the portfolio application.
 # Adapter installation/build and Workers preview must pass before deployment.
 name = "foliocraft-trial"
-main = ".open-next/worker.js"
+main = "worker.ts"
 compatibility_date = "2026-10-14"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 workers_dev = true
+
+# Runtime deployment identity; the optional SENTRY_DSN belongs in Workers Secrets only.
+[version_metadata]
+binding = "CF_VERSION_METADATA"
 
 # Trial values for the custom domains attached in the Cloudflare dashboard (lord2ve.tech, a temporary
 # domain). Worker names keep their compatibility identifiers. See docs/CLOUDFLARE.md before deployment.

@@ -43,6 +43,8 @@ jobs:
         run: bunx wrangler deploy --dry-run --outdir ../../work/ci-api-dry-run
       - name: Web Worker build (OpenNext)
         run: bun run --cwd apps/web build:cloudflare
+      - name: Private server monitoring and built OpenNext faults (mocked ingestion)
+        run: bun run test:worker-monitoring --web-built
 
   integration:
     runs-on: ubuntu-latest

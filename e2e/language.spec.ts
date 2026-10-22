@@ -19,6 +19,13 @@ for (const locale of ["ar", "en"] as const) {
 			await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
 			await expect(page.locator("html")).toHaveAttribute("lang", locale);
 			await expectSingleLanguage(page, locale);
+			if (path === "/privacy") {
+				await expect(page.getByText(/Sentry/)).toBeVisible();
+				await expect(page.getByText(/UptimeRobot/)).toBeVisible();
+				await expect(page.getByRole("note")).toContainText(
+					locale === "ar" ? "مسودة قيد المراجعة" : "Draft under review",
+				);
+			}
 		});
 	}
 	test(`single-language onboarding, studio sections and admin denial (${locale})`, async ({

@@ -1,5 +1,18 @@
 # Action log
 
+## 2026-10-22 — Server monitoring implementation and final verification
+- Added exact Sentry 11.8.0 API and supported OpenNext server capture, shared beforeSend privacy/collection policy, real deployment-version binding, no-DSN bypass and no browser SDK/CSP change. Expected 4xx are excluded; API/Web 5xx, exceptions and Cron failures are captured.
+- Added isolated SDK event capture for HEAD/OPTIONS after confirming automatic wrappers skip them. The regression exposed inherited last-event identity suppressing a later web failure; per-request identity comparison and isolated per-event scope correct it. Final focused workerd run28/28 passes, including ingestion failure preserving the application response.
+- Added provider-free web /health, bilingual privacy provider disclosure/draft-notice assertions, and CI mocked-ingestion coverage against actual generated OpenNext. Uptime probes are exactly API /health and prerendered /en; local proof shows zero API/database calls for those paths.
+- Final isolated source passes all eleven required gates plus web dry run,28 mocked workerd checks,7 database runtime checks and43/43 Chromium checks. API75 pass/12 unchanged conditional skips/0 fail/5264 assertions plus native MFA11/0/308; web37/0/685; Biome419 files; Next/OpenNext50/50. API5130.08 KiB/gzip938.15; web9695.11 KiB/gzip1996.45. Source/config parity491 files, zero mismatches. Commit/push/PR and final operational handoff remain active. No deployment/provider action or schema change.
+
+## 2026-10-21 — Owner monitoring (scope; provider selected)
+- The human cancelled the staging task completely. No staging files, commits, provider resources or deployments were created; the unused local staging branch contains no task changes.
+- Prepare structured private error monitoring for both trial Workers, Cron outcomes and release identifiers, plus an independent uptime monitor. Research current official costs/limits/privacy and obtain the human's provider choice before adding any SDK or account.
+- Work in the independent GitHub checkout only, on codex/owner-monitoring from freshly fetched main 97bfd30. Preserve the pre-existing untracked docs/ADMIN_CONSOLE_TASK.md.
+- Human selected Sentry Developer + UptimeRobot Free. Capture is server-side only, disabled without Worker-secret DSN, no browser SDK/CSP changes, no tracing/replay/profiling, trial and deployed-version tags, outgoing allowlist in beforeSend, no 4xx; local workerd ingestion proof, bilingual privacy notice retaining draft warning, web health, bundle measurements and all quality gates before PR. Check official OpenNext support; do not force an unsupported web SDK. Uptime targets only API /health and prerendered web /en, never /ready or portfolios. No deployment, hosted database tests, account creation or provider mutation.
+- Completed locally: official-source comparison, code inspection and isolated unchanged-main baseline (398-package frozen install, OpenNext build and API/web dry runs all exit 0). Compressed API/web bundles are 830.91/1374.16 KiB. Active: awaiting the required provider choice; no SDK/runtime changes or task commits yet. External alert delivery and production acceptance remain unverified.
+
 ## 2026-10-21 — Review hardening of the save-before-language-switch check
 - Review mutation test: changing the studio's `await flush()` before `switchLocale` to a non-awaited save still passed the E2E suite, because the old assertion read the URL at the instant the held save request started, before a premature soft navigation could commit.
 - Fix in `e2e/journeys.spec.ts`: while the save is held, `page.waitForURL` for the other language must time out (2 s window, far longer than one local RSC round trip); then the URL is asserted unchanged.

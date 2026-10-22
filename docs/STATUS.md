@@ -1,5 +1,13 @@
 # Current status
 
+## Active work — owner monitoring, 2026-10-22
+- The human selected Sentry Developer + UptimeRobot Free. Staging is cancelled; no staging resources or changes are part of this branch. Branch `codex/owner-monitoring` starts at fetched main `97bfd30`.
+- Implemented optional server-only API/OpenNext capture, actual Worker-version tags, strict outgoing privacy allowlist, handled 5xx/unhandled/Cron failure capture, HEAD/OPTIONS coverage, web liveness and bilingual privacy updates retaining the draft notice. DSN is a Worker secret only; absent/invalid DSN or version disables capture. No browser SDK/CSP change.
+- Final local acceptance: all required gates pass; API75 pass/12 existing conditional skips/0 fail/5264 assertions plus MFA11/0/308, web37/0/685, Biome419, storage8/8, mail15/15, Next/OpenNext50/50 and both dry runs exit0. Workerd28/28, database runtime7/7, Chromium43/43 (30.4s). Actual built web /health and /en make zero API/database requests; one deliberate render failure yields one scrubbed event. Source/config parity491 files, zero mismatches.
+- Active: save completed implementation and operational documentation in separate commits, push the branch and open an unmerged PR. No task commits/push/PR yet. Final bundles: API5130.08 KiB/gzip938.15; web9695.11 KiB/gzip1996.45, approximately14.8% of the current official64MiB raw Free limit. No deployment, hosted database/provider operation, account/secret creation or live alert acceptance.
+- Temporary blocker resolved: automatic approval service hit its quota on 2026-10-21; the last test command was not executed then. Human requested continuation on 2026-10-22, and the mocked runtime rerun passed. Local test PostgreSQL is still running; sandbox networking cannot observe its host namespace. No reset was needed or performed.
+- Next action: finish gates and source parity, commit completed steps, push/open PR, stop the owned local test database, provide the human [setup/release checklist](MONITORING.md). [Comparison and evidence](evidence/2026-10-21-owner-monitoring.md).
+
 ## Latest completed work — deterministic browser E2E, 2026-10-21
 - Branch codex/playwright-e2e starts from freshly fetched main ba37ac6. [PR4](https://github.com/2ve2/FolioCraft/pull/4) is open and unmerged. Application runtime, security settings and schema are unchanged.
 - Implemented43 Chromium checks against real Bun/Hono, guarded local folio_test and production Next build/start: bilingual routing/auth/studio, serialized save before locale change, public/draft isolation, unpublish, ownership/admin denials, script checks with negative controls and harness safety. [Setup/limits](E2E.md).
