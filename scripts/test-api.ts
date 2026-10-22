@@ -2,6 +2,9 @@
 const database = process.env.TEST_DATABASE_URL ?? "postgresql://folio@127.0.0.1:55432/folio_test";
 const parsed = new URL(database);
 if (
+	parsed.protocol !== "postgresql:" ||
+	parsed.search ||
+	parsed.hash ||
 	!["127.0.0.1", "localhost", "[::1]"].includes(parsed.hostname) ||
 	parsed.pathname !== "/folio_test"
 ) {

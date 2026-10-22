@@ -1,5 +1,11 @@
 # Current status
 
+## Latest implementation — optional Hyperdrive latency, 2026-10-22
+- Branch `codex/hyperdrive-latency` starts at fetched main `3f85e37`. Optional Worker HTTP/Cron binding selection, bounded-origin deadline guard and opt-in numeric connection/query timings are implemented; existing Bun/unbound configuration and publication transactions remain. No active binding, caching, deployment, dependency or schema change.
+- Local baseline public/session/studio medians5.87/7.21/6.79ms; after-unbound7.08/9.71/8.55ms; local binding6.95/9.89/7.85ms. Native local binding forwards directly to PostgreSQL and cannot establish real Hyperdrive gains. Prepare only the inactive candidate; trial activation must earn retention with measurements. Service Binding local median6ms for both paths; production web routing is unchanged.
+- All eleven implementation gates plus monitoring pass: API79/12 unchanged conditional skips/0/5297 assertions; MFA11/0/308; web37/0/685; workerd database14/14; storage8/8; mail15/15; monitoring28/28; Biome425; Next/OpenNext50/50; API dry run5134.08KiB/gzip939.14KiB. No hosted checks/provider operations/browser UI acceptance. [Full evidence](evidence/2026-10-22-hyperdrive-latency.md).
+- Active: manual safe provisioning/rollout/rollback runbook, final verification and PR. Blockers:none for local preparation; real edge improvement/configuration acceptance requires human-operated trial enablement. Next action: finish operational handoff without provisioning or deploying. Local disposable PostgreSQL is owned by this task on55434; stop it before handoff. Unrelated untracked docs/ADMIN_CONSOLE_TASK.md is preserved.
+
 ## Latest completed work — owner monitoring, 2026-10-22
 - The human selected Sentry Developer + UptimeRobot Free. Staging is cancelled; no staging resources or changes are part of this branch. Branch `codex/owner-monitoring` starts at fetched main `97bfd30`.
 - Implemented optional server-only API/OpenNext capture, actual Worker-version tags, strict outgoing privacy allowlist, handled 5xx/unhandled/Cron failure capture, HEAD/OPTIONS coverage, web liveness and bilingual privacy updates retaining the draft notice. DSN is a Worker secret only; absent/invalid DSN or version disables capture. No browser SDK/CSP change.

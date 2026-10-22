@@ -1,5 +1,15 @@
 # Action log
 
+## 2026-10-22 — Optional database path implementation verified
+- Added optional HTTP/Cron Hyperdrive selection, fail-closed origin deadline verification and opt-in numeric pg timings; no active binding, query caching, dependency, schema or web routing change. Added explicit publication/rollback/deadline tests and doubled actual workerd database checks to both modes. Local-only harness restores the caller role/database deadline.
+- Baseline and after measurements recorded in evidence/2026-10-22-hyperdrive-latency.md. Local binding cannot prove distributed pooling gains; HTTP/Service Binding have identical6ms medians, so no Service Binding ships. Synthetic accounts were cleaned after each run.
+- All eleven gates and monitoring pass: API79/0/5297 plus MFA11/0/308, web37/0/685, database14/14, storage8/8, mail15/15, monitoring28/28, Biome425, Next/OpenNext50/50, API dry run exit0. Manual operational handoff and PR remain active. No hosted/provider action or secret inspection.
+
+## 2026-10-22 — Optional Hyperdrive latency evaluation (scope)
+- Start from fetched main `3f85e37` on `codex/hyperdrive-latency`; work only in the independent checkout. Preserve unrelated untracked `docs/ADMIN_CONSOLE_TASK.md`.
+- Measure representative public/session/studio database connection and query time locally before changing routing. Evaluate optional cache-disabled Hyperdrive with unchanged unbound/Bun behavior, transaction/deadline evidence, and Service Binding only if measured latency warrants it.
+- Prepare safe manual trial provisioning, before/after measurements and reversible rollout/rollback instructions. No staging, deployment, hosted database tests, secret inspection or external resource mutation. Run every requested gate before pushed commits and open a PR without merging.
+
 ## 2026-10-22 — Review fixes on the monitoring branch
 - `workers` CI failed on this branch: `test:worker-monitoring` could not resolve the API alias `@aws-sdk/xml-builder/dist-cjs/index.js` from its generated config under `work/` on a clean install. Reproduced locally on a clean install; the harness now resolves the alias from `apps/api/package.json`. Result: 20/20, and 28/28 with `--web-built` after `build:cloudflare`.
 - Removed the operator-status sentence ("external alert setup and activation have not yet been verified") from the Arabic and English privacy notice; rollout status stays in MONITORING.md/STATUS.

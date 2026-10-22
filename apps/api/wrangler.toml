@@ -22,6 +22,13 @@ binding = "IMAGES"
 [triggers]
 crons = ["17 3 * * *"]
 
+# Optional, manually provisioned trial only; leave absent for the existing DATABASE_URL path.
+# Read docs/HYPERDRIVE.md first: query caching MUST be disabled on the resource, and the
+# origin role/database statement_timeout must be bounded before binding it.
+# [[hyperdrive]]
+# binding = "HYPERDRIVE"
+# id = "<human-created-cache-disabled-configuration-id>"
+
 # Trial values for the custom domains attached in the Cloudflare dashboard (lord2ve.tech, a temporary
 # domain). Worker names keep their compatibility identifiers. See docs/CLOUDFLARE.md before deployment.
 [vars]
