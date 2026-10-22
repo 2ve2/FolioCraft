@@ -1,3 +1,9 @@
+# Studio startup — scope, 2026-10-22
+
+- Measure production Next/Bun/local PostgreSQL startup before and after, Arabic/English at 1440/390, ten runs per delay/viewport/locale cell.
+- Render neutral accessible workspace chrome immediately; safely overlap hinted site reads with session verification, preserving authentication, ownership and in-memory-only data.
+- Add focused regression coverage, run every required quality gate, record evidence and open an unmerged PR. No hosted operations, secrets, dependencies or API contract change authorized.
+
 # Action log
 
 ## 2026-10-22 — Signed-in entry and tab-return session checks
@@ -1158,3 +1164,9 @@ Human explicitly selected bare MAIL_FROM=no-reply@lord2ve.tech rather than chang
 - Repeated all11 gates before this documentation commit:all exit0, preserving final counts in the evidence. Baseline plus three source states plus handoff totals55 successful command executions.48 screenshot pairs remain0 pixels;80 contrast pairs remain identical.
 - Exact local fixture cleanup0 remaining; final local folio_test0 users; all owned servers stopped and4300/4400/55435 closed. Unrelated untracked ADMIN_CONSOLE_TASK.md remains untouched. No hosted/provider/deployment operation occurred.
 - At the recorded source-CI snapshot validate/integration succeeded while workers/e2e ran; the final documentation-head checks are not preclaimed. No required human provisioning/secret/migration/deployment command. Next action:human PR review/current checks.
+
+## 2026-10-22 — Studio prerequisite: compatible security releases
+- Updated existing Next16.4.0→16.4.1 and OpenNext1.20.11→1.20.13 after reproducing two audit findings against main's original lockfile. Registry metadata confirms the paired versions' compatibility. No new direct dependency.
+- Preserved the two cache fail-closed/monotonicity patches; removed the manifest hunk now implemented upstream. Changed apps/web/package.json, package.json, bun.lock and the versioned adapter patch.
+- The combined prerequisite/frame snapshot passed all12 requested gates: audit539 clean; web45; API88 plus existing12 conditional skips and separate native MFA11; database Workers14; storage8; mail15; Next/OpenNext50 static routes; API dry run; Chromium51. Check logs are recorded in work/studio-startup/shell3-*. Production behavior remains unverified and no deployment occurred.
+- Temporary-directory quota and shared-dependency-copy failures were harness issues, resolved with project-owned TMPDIR and fresh installation. Session-bound optimization and its final expanded verification are a separate pending step.
