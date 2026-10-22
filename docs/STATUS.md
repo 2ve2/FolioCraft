@@ -1,10 +1,11 @@
 # Current status
 
-## Active work — platform color tokens, 2026-10-22
+## Latest work — platform color tokens, 2026-10-22
 - Branch `codex/platform-color-tokens` starts from freshly fetched main `8b49fe2`. Exact extraction implemented across platform styles and one decorative admin icon; public portfolio code and owner appearance remain unchanged. No dependency/schema/provider/deployment changes.
 - Baseline: all11 required gates exit0. Real local Chromium captures:48 before/48 after, Arabic/English,390/768/1440, landing/login/signup/privacy/terms/404/seeded Studio/native-MFA admin overview; every pair has0 changed decoded pixels and no page errors. The exact fixture was removed with0 users remaining. Expansion comparison matches29 original stylesheets.
 - Entry committed as `6bcd8e8`; workspace state also passed all11 gates (Biome429, web37/0, API81/12 unchanged skips/0, native MFA11/0, database14/14, storage8/8, mail15/15, both builds50/50 and dry run exit0).
-- Active: commit the completed workspace group, then verify/commit administration, finish evidence and open an unmerged PR. No local blockers; no hosted/browser-provider acceptance is claimed. Evidence: `docs/evidence/2026-10-22-platform-color-tokens.md` and adjacent JSON; ignored runtime captures/logs in `work/platform-color-tokens/`. Next action: complete group gates and commits.
+- Workspace committed as `3939be4`. Administration/final candidate also passed all11 gates: Biome429, web37/0/685, API81/12 unchanged skips/0/5311, native MFA11/0/308, workerd database14/14, storage8/8, mail15/15, both builds50/50 and dry run exit0. Baseline plus three group states:44/44 command executions exit0.
+- Active: commit administration, push the branch and open an unmerged PR; record final cleanup and remote status. No local blockers. Next action: GitHub delivery. Evidence: `docs/evidence/2026-10-22-platform-color-tokens.md` and adjacent JSON. No hosted acceptance is claimed.
 
 
 ## Latest work — optional Hyperdrive latency, 2026-10-22

@@ -21,9 +21,9 @@
 	gap: 0.75rem;
 }
 .queue li {
-	border: 1px solid var(--line, #e4e4ee);
+	border: 1px solid var(--line, var(--color-admin-report-queue-li-border));
 	border-radius: 1rem;
-	background: var(--surface, #fff);
+	background: var(--surface, var(--color-surface));
 	min-width: 0;
 }
 .queue a {
@@ -41,7 +41,7 @@
 	white-space: nowrap;
 }
 .queue time {
-	color: var(--muted, #666);
+	color: var(--muted, var(--color-admin-report-queue-time-text));
 }
 .queue strong,
 .message {
@@ -58,14 +58,14 @@
 }
 .handling textarea {
 	width: 100%;
-	background: white;
-	border: 1px solid var(--line, #ddd);
+	background: var(--color-surface-named);
+	border: 1px solid var(--line, var(--color-admin-report-handling-textarea-border));
 	padding: 0.8rem;
 	border-radius: 0.75rem;
 	font: inherit;
 }
 .queue a:focus-visible {
-	outline: 3px solid #3f46c8;
+	outline: 3px solid var(--color-accent);
 	outline-offset: 3px;
 	border-radius: 1rem;
 }

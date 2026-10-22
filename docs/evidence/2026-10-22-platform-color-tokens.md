@@ -109,7 +109,7 @@ Existing limitations are retained, not repaired in a zero-change extraction: inp
 
 ## Quality gates and commit checkpoints
 
-All commands execute in `work/platform-color-tokens/build`, a source-only copy with physically local frozen dependencies and no environment files. Only the explicit disposable local database is supplied. Baseline main, entry and workspace intermediate states each pass11/11 commands. Administration results will be added after execution. No failure is attributed to main without baseline proof.
+All commands execute in `work/platform-color-tokens/build`, a source-only copy with physically local frozen dependencies and no environment files. Only the explicit disposable local database is supplied. Baseline main and all three stylesheet-group states each pass11/11 commands. There are44 successful command executions across these four checkpoints. No failure is attributed to main without baseline proof.
 
 ```text
 bun install --frozen-lockfile
@@ -119,7 +119,7 @@ No vulnerabilities found (checked539 packages); exit0
 bun run typecheck
 API/web/E2E typechecks and Next typegen; exit0
 bun run check
-Checked425 files. No fixes applied.; exit0
+Checked429 files in the completed candidate (425 before JSON evidence additions). No fixes applied.; exit0
 bun run test:web
 37 pass;0 fail;685 expect() calls; exit0
 TEST_DATABASE_URL=postgresql://folio@127.0.0.1:55435/folio_test bun run test
@@ -143,11 +143,11 @@ The12 conditional skips are unchanged on baseline main; none was introduced or d
 
 - Entry/shared group: `styles/tokens.css`, reset/foundation/welcome/landing/loading/select-control; UI footer/notices/tooltip modules; legal and missing-page modules. Documentation: CHANGELOG scope/checkpoints, STATUS, DECISIONS, DESIGN_SYSTEM, SOURCE_STRUCTURE and this evidence with four JSON records.
 - Workspace group (completed and verified): workspace/editor/readability/responsive/scrollbar/preview styles, asset-picker and shared-management modules.
-- Administration group (prepared): shell/admin/operations/reports modules and resource-icon token use in admin-overview.
+- Administration group (completed and verified): shell/admin/operations/reports modules and resource-icon token use in admin-overview.
 
 ## Limits and human operations
 
-No provisioning, new secret, migration or deployment is required to review/merge this CSS-only web change. Required human operational commands for this task: none. Any later deployment is a separate human decision; it was not executed here. No Neon, R2, Resend or Cloudflare resource/account was accessed or changed. No secrets or environment files were opened, copied, printed or committed.
+No provisioning, new secret, migration or deployment is required to review/merge this CSS-only web change. Required human operational commands for this task: none. Any later deployment is a separate human decision; it was not executed here. No Neon, R2, Resend or Cloudflare resource/account was accessed or changed. No actual credentials or runtime environment files were opened, copied, printed or committed.
 
 Not verified: physical devices, Firefox/WebKit, hosted cookies/persistence/provider delivery, every interactive control state in screenshots, actual dark mode, remote PR checks or a deployed-trial comparison. Local integration/runtime gates are evidence only for their stated local coverage. Branch push, PR and final server cleanup are pending at this checkpoint.
 
@@ -155,3 +155,12 @@ Not verified: physical devices, Firefox/WebKit, hosted cookies/persistence/provi
 ### Workspace checkpoint
 
 Entry committed as `6bcd8e8` (`refactor(web): tokenize platform entry colors`). Workspace styles, asset picker and shared management styles consume exact existing palette roles. All11 workspace-state gates exit0: frozen install448/601, audit539 clean, Biome429, web37/0/685, API81/12 unchanged conditional skips/0/5311 plus native MFA11/0/308 and workerd database14/14, storage8/8, mail15/15, Next/OpenNext50/50 and API dry run5135.16KiB/gzip939.35KiB. The source-only gate copy contains the first two groups; administration remains at baseline for this checkpoint. Full-candidate pixel proof remains48/48 identical. Administration is the next separate step.
+
+
+### Administration checkpoint and local acceptance
+
+Workspace committed as `3939be4` (`refactor(web): tokenize workspace colors`). All administration CSS now consumes palette tokens, including fallback values; the decorative resource-icon scalar also resolves to its exact original color. Complete source expansion matches all29 non-token stylesheets and the entire icon component file. The final gate copy matches every current platform source file byte-for-byte.
+
+All11 final-candidate gates exit0 with the result lines above: frozen install448/601, audit539 clean, Biome429, web37/0/685, API81/12 baseline skips/0/5311 plus native MFA11/0/308, actual workerd database14/14, storage8/8, mail15/15, Next/OpenNext50/50 and API dry run5135.16KiB/gzip939.35KiB. No gate failed; the initial sandbox-only local PostgreSQL socket restriction was resolved by an authorized local-runtime retry before tests. The literal audit excludes custom-property identifier words and verifies0 remaining platform palette declarations outside tokens, with exactly8 documented system-color declarations.
+
+All48 decoded screenshot pairs remain identical.80 recorded contrast pairs remain identical. All edited Markdown is English; `git diff --check` and the source Biome check pass. API/shared portfolio files, package manifests, lockfile, migrations and runtime configuration are unchanged. PR creation and PostgreSQL shutdown follow this implementation commit; those actions are not preclaimed here.

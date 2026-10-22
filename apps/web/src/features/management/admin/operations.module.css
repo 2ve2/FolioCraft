@@ -15,10 +15,10 @@
 	width: 100%;
 	min-width: 0;
 	min-height: 44px;
-	border: 1px solid #d7d3e3;
+	border: 1px solid var(--color-admin-operation-page-input-border);
 	border-radius: 8px;
-	background: white;
-	color: #242037;
+	background: var(--color-surface-named);
+	color: var(--color-admin-operation-page-input-text);
 	padding: 0.65rem;
 	font: inherit;
 }
