@@ -156,8 +156,13 @@ test("IP and site budgets are independent; duplicate suppression is concurrent a
 			await intake(siteLimited.path, { ...data, message: `Independent site allowance ${i}` }),
 			201,
 		);
-	await error(await intake(siteLimited.path), 429, "RATE_LIMITED");
+	const limited = await intake(siteLimited.path);
+	expect(Number(limited.headers.get("Retry-After"))).toBeGreaterThan(0);
+	await error(limited, 429, "RATE_LIMITED");
 	expect(reportIpHash("2001:db8::1")).toBe(reportIpHash("2001:0db8:0:0:0:0:0:1"));
+	// Addresses inside one /64 are one reporter; a different /64 is another.
+	expect(reportIpHash("2001:db8:1:2::a")).toBe(reportIpHash("2001:db8:1:2:ffff:1:2:3"));
+	expect(reportIpHash("2001:db8:1:2::a")).not.toBe(reportIpHash("2001:db8:1:3::a"));
 	const previous = env.REPORT_IP_SALT;
 	try {
 		env.REPORT_IP_SALT = undefined;

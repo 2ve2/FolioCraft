@@ -27,7 +27,10 @@ export const errorHandler: ErrorHandler = async (error, c) => {
 			return errorResponse(c, "Audit unavailable", 503, "ADMIN_AUDIT_UNAVAILABLE");
 		}
 	}
-	if (error instanceof ApiError) return errorResponse(c, error.code, error.status, error.code);
+	if (error instanceof ApiError) {
+		if (error.retryAfter !== undefined) c.header("Retry-After", String(error.retryAfter));
+		return errorResponse(c, error.code, error.status, error.code);
+	}
 	if (error instanceof ZodError) return validationErrorResponse(c, error.flatten());
 	if (error instanceof SyntaxError)
 		return errorResponse(c, "Invalid JSON body", 400, "INVALID_JSON");
