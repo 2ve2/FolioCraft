@@ -19,6 +19,7 @@ import { TooltipButton } from "../../../components/ui/tooltip-button";
 import { ApiError, api } from "../../../lib/api";
 import { authClient } from "../../../lib/auth-client";
 import { localeHref } from "../../../lib/locale";
+import { useAccountSession } from "../../../lib/use-account-session";
 import { useInterfaceLocale, useRoutePath } from "../../../lib/use-interface-locale";
 import { LoadingScreen } from "../../studio/loading-screen";
 import ui from "./admin.module.css";
@@ -44,7 +45,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 	const t = adminCopy[locale];
 	const pathname = useRoutePath();
 	const router = useRouter();
-	const { data: session, isPending, error, refetch } = authClient.useSession();
+	const { data: session, isPending, error, refetch } = useAccountSession();
 	const [signingOut, setSigningOut] = useState(false);
 	const [signoutError, setSignoutError] = useState(false);
 	const admin = isStaff(session?.user.role) && !session?.session.impersonatedBy;

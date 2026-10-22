@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { authClient } from "../../lib/auth-client";
 import { localeHref } from "../../lib/locale";
+import { useAccountSession } from "../../lib/use-account-session";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import { copy } from "../studio/copy";
 import { recoveryCopy } from "./recovery-copy";
@@ -15,7 +16,7 @@ export function useAuthController(mode: AuthMode) {
 	const [locale, setLocale] = useInterfaceLocale();
 	const t = copy[locale];
 	const router = useRouter();
-	const { data: session, isPending, error: sessionError, refetch } = authClient.useSession();
+	const { data: session, isPending, error: sessionError, refetch } = useAccountSession();
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState("");
 	const [returnToAdmin, setReturnToAdmin] = useState(false);

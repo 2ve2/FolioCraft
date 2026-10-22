@@ -1,5 +1,12 @@
 # Action log
 
+## 2026-10-22 — Signed-in entry and tab-return session checks
+- Scope: three human reports from the trial (loading page before the product page, loading page after returning to the tab, bare address not opening the studio while signed in). Branch `claude/modest-davinci-osg31w` restarted from `main` `1ec5337` after PR #2 merged.
+- Fixed: a failed background session re-check (Better Auth re-checks on every tab return) no longer replaces an open studio/administration screen; `useAccountSession` reports errors only while no session is known.
+- Added: identity-free `ichnara-signed-in` hint cookie and redirect rules so `/` opens the studio for a signed-in browser; `/ar` and `/en` still show the product page; privacy notice lists the cookies.
+- Not reproduced: the product page has no loading screen on `main`; the trial may run a web build older than PR #2 (unverified).
+- Evidence: `docs/evidence/2026-10-22-session-entry.md` (typecheck, Biome, web 43/43, Playwright 44/44 plus new 3/3, mutation check). Not deployed.
+
 ## 2026-10-22 — Public cache review fix: the minute retry no longer wakes the database
 - Review finding: once the revalidation binding was configured, the `* * * * *` Cron queried PostgreSQL every minute even with nothing pending, which would keep Neon compute from scaling to zero (free compute allowance). The runbook did not mention it.
 - Fix: a failed delivery writes a unique `pending` R2 object through the new API binding `PUBLIC_CACHE_SIGNAL` (same private `ichnara-portfolio-cache` bucket, no new resource). `cacheInvalidationService.retryPending` reads only that object; it opens a database scope only when pending, drains, and clears with an etag precondition so a concurrent new failure is never lost. Daily maintenance still drains everything as a backstop.
