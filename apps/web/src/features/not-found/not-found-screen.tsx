@@ -6,12 +6,14 @@ import { Brand } from "../../components/ui/brand";
 import { LanguageSwitch } from "../../components/ui/language-switch";
 import { ProductFooter } from "../../components/ui/product-footer";
 import { localeHref } from "../../lib/locale";
-import { useInterfaceLocale } from "../../lib/use-interface-locale";
+import { useInterfaceLocale, useLocalePinned } from "../../lib/use-interface-locale";
 import styles from "./not-found.module.css";
 
 /** Offers localized recovery links for unmatched routes and missing public resources. */
 export function NotFoundScreen() {
 	const [locale, setLocale] = useInterfaceLocale();
+	// Inside a published portfolio the language follows the release, so a switch could not apply.
+	const pinned = useLocalePinned();
 	const ar = locale === "ar";
 	const Arrow = ar ? ArrowLeft : ArrowRight;
 
@@ -21,11 +23,13 @@ export function NotFoundScreen() {
 				<Link href={localeHref(locale, "/")} aria-label={ar ? "الصفحة الرئيسية" : "Home"}>
 					<Brand locale={locale} />
 				</Link>
-				<LanguageSwitch
-					locale={locale}
-					onChange={setLocale}
-					label={ar ? "لغة الواجهة" : "Interface language"}
-				/>
+				{!pinned && (
+					<LanguageSwitch
+						locale={locale}
+						onChange={setLocale}
+						label={ar ? "لغة الواجهة" : "Interface language"}
+					/>
+				)}
 			</header>
 			<main className={styles.main}>
 				<div className={styles.art} aria-hidden="true">
