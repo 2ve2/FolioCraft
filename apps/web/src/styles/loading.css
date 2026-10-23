@@ -98,11 +98,8 @@
 	color: var(--ink);
 	flex-shrink: 0;
 }
+/* The alert icon stays inline so it sits beside the first word when the title wraps. */
 .loading-content h1 {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 9px;
 	margin: 28px 0 0;
 	color: var(--ink);
 	font-size: 20px;
@@ -142,8 +139,10 @@
 	animation: none;
 }
 .loading-content[data-state="error"] h1 > svg {
+	display: inline-block;
+	margin-inline-end: 8px;
+	vertical-align: -3px;
 	color: var(--color-loading-error-icon);
-	flex-shrink: 0;
 }
 @keyframes loading-fold {
 	0%,

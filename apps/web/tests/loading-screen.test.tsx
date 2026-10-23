@@ -36,3 +36,16 @@ test("error state announces failure and preserves caller-supplied recovery contr
 	expect(markup).not.toContain("loading-help");
 	expect(markup).toContain('data-state="error"');
 });
+
+/** The signature draws each language's word, not the emblem, inside the word's own bounds. */
+test("loading signature shows the localized wordmark", async () => {
+	const { brandArtwork } = await import("../src/components/ui/brand-artwork");
+	for (const locale of ["ar", "en"] as const) {
+		const markup = renderToStaticMarkup(<LoadingScreen locale={locale} message="…" />);
+		const signature = markup.slice(markup.indexOf('class="loading-signature"'));
+		const word = brandArtwork[locale].groups.find((group) => group.role === "word");
+		expect(word).toBeDefined();
+		for (const path of word?.paths ?? []) expect(signature).toContain(path.d);
+		expect(signature).not.toContain("transform=");
+	}
+});
