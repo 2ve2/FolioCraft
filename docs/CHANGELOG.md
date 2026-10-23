@@ -3,6 +3,7 @@
 ## 2026-10-23 — Branded authentication emails
 - Human request: add the new logo to the platform emails professionally. Verification and reset emails rebuilt (table layout, hosted 2x logo with alt text, title, button, link lifetime, fallback link, footer) in Arabic and English; email logo PNGs added to the kit; auth link lifetimes set explicitly to the 60 minutes the emails state.
 - Checks: mail tests 5/5, API 97 pass / 12 skip / 0 fail, Workers mail 15/15, typecheck 0, Biome clean. Evidence: `docs/evidence/2026-10-23-auth-email.md`. Not deployed; no real email sent.
+- CI follow-up: the MFA fixture now gives every native call a distinct client address; random picks from 254 addresses occasionally put four `/two-factor/*` calls in one Better Auth budget (3 per 10 s) and returned 429. MFA integration 3 consecutive runs passed; API 97 pass / 12 skip / 0 fail.
 
 ## 2026-10-23 — Brand v2: rebuilt folded-band emblem with Readex Pro
 - Human rejected logo v1.3; three new directions were shown, then the human asked to keep the original emblem idea and chose the balanced weight and the Readex Pro wordmark.

@@ -12,6 +12,10 @@ Request: the human asked to add the new logo to the platform's emails profession
 
 Mail template tests 5/5 (logo URL and alt text in both languages, link lifetime, PNG files exactly twice the declared display size); guarded API 97 pass / 12 skip / 0 fail; Workers mail checks 15/15 (mocked transport); typecheck 0; Biome clean. Rendered preview of both languages: [auth-email-v2.png](../screenshots/auth-email-v2.png).
 
+## CI follow-up: MFA fixture addresses
+
+The first CI run of this branch failed one test, `native password reset revokes TOTP proof without disabling the enrolled factor` (`tests/fixtures/mfa.test.ts`): `/two-factor/verify-totp` returned 429. Better Auth's two-factor plugin limits `/two-factor/*` to 3 calls per 10 seconds per client address, and the fixture picked each call's address at random from 254 values, so four calls inside one window occasionally shared an address. The email change does not touch this path. Fix: each fixture call now takes the next distinct address from a random starting point (`127.88.x.y`, 64,516 values), so unrelated calls never share a budget; no product code or limit changed. Checks: `bun test tests/mfa.integration.test.ts` 3 consecutive runs, 1 pass / 0 fail each; guarded API 97 pass / 12 skip / 0 fail; typecheck 0; Biome clean.
+
 ## Not verified
 
 Real mailbox rendering (Gmail, Outlook, Apple Mail, dark modes) and image loading from the hosted origin; this needs one real send after deployment.
