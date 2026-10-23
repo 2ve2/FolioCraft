@@ -46,6 +46,9 @@
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
+	/* Short windows scroll the navigation so the account controls at the bottom stay reachable. */
+	overflow-y: auto;
+	overscroll-behavior: contain;
 }
 .sidebarBar {
 	display: flex;
@@ -225,6 +228,7 @@
 	.sidebar {
 		position: static;
 		height: auto;
+		overflow: visible;
 		padding: 10px 16px;
 		border-inline-end: 0;
 		border-bottom: 1px solid var(--admin-line);
