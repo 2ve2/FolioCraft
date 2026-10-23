@@ -43,6 +43,10 @@ export function AdminSecurity() {
 		setError("");
 		try {
 			const response = await authClient.twoFactor.enable({ password, method: "totp" });
+			if (response.error?.status === 429) {
+				setError(t.limited);
+				return;
+			}
 			if (response.error || !response.data || !("totpURI" in response.data))
 				throw new Error(t.failure);
 			const key = new URL(response.data.totpURI).searchParams.get("secret");

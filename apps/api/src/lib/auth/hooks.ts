@@ -11,6 +11,7 @@ import { z } from "zod";
 import { env, mailConfigured, requireEmailVerification } from "../../config/env";
 import { db } from "../../db";
 import { session as sessionTable } from "../../db/schema/auth";
+import { passwordFailures } from "../../services/admin/password-failures";
 import {
 	appendSensitiveOutcome,
 	banSchema,
@@ -24,6 +25,20 @@ import {
 } from "../../services/admin/sensitive-action";
 import { ApiError } from "../response-helpers";
 import { enrolledFactor, hasTotpSession, totpFingerprint } from "./mfa";
+
+/**
+ * Signed-in endpoints that check the current password. A stolen session must not turn them into an
+ * unlimited password oracle, so wrong passwords count against the account's shared failure budget
+ * (the same one administrative password checks use), whatever IP address they come from.
+ */
+const passwordCheckedPaths = new Set([
+	"/change-password",
+	"/delete-user",
+	"/two-factor/enable",
+	"/two-factor/disable",
+	"/two-factor/get-totp-uri",
+	"/two-factor/generate-backup-codes",
+]);
 
 const nativePermissions: Record<string, Permission> = {
 	"/admin/list-users": "user.read",
@@ -78,6 +93,17 @@ export const authHooks = {
 			);
 			expireCookie(ctx, cookie);
 			return { context: { headers } };
+		}
+		if (passwordCheckedPaths.has(ctx.path)) {
+			const active = await getAuthoritativeSessionFromCtx(ctx);
+			if (active)
+				await passwordFailures.check(active.user.id).catch((error) => {
+					if (!(error instanceof ApiError)) throw error;
+					throw new APIError("TOO_MANY_REQUESTS", {
+						code: "PASSWORD_ATTEMPTS_BLOCKED",
+						message: "Too many wrong passwords. Try again later.",
+					});
+				});
 		}
 		if (ctx.path === "/two-factor/verify-totp") {
 			const active = await getAuthoritativeSessionFromCtx(ctx);
@@ -209,6 +235,15 @@ export const authHooks = {
 	}),
 	/** Appends sensitive outcomes and marks only native TOTP challenge sign-ins as proven sessions. */
 	after: createAuthMiddleware(async (ctx) => {
+		const returned = ctx.context.returned;
+		if (
+			passwordCheckedPaths.has(ctx.path) &&
+			isAPIError(returned) &&
+			returned.body?.code === "INVALID_PASSWORD"
+		) {
+			const active = await getAuthoritativeSessionFromCtx(ctx);
+			if (active) await passwordFailures.fail(active.user.id);
+		}
 		const audit = (ctx.context as typeof ctx.context & TotpHookContext).sensitiveAudit;
 		if (audit && Object.hasOwn(nativeSensitiveActions, ctx.path)) {
 			try {
