@@ -167,3 +167,69 @@ test("images attach, detach and delete while owned drafts and retained releases 
 		remove.mockRestore();
 	}
 });
+
+test("completion copies without holding the site lock and drops a copy whose upload was deleted meanwhile", async () => {
+	const objects = new Map<string, Buffer>();
+	const owner = await account("asset-race", users);
+	const site = await result<Site>(
+		await request(
+			"/api/sites",
+			"POST",
+			{ slug: `assets-race-${crypto.randomUUID()}`, locale: "en" },
+			owner.cookie,
+		),
+	);
+	const base = `/api/sites/${site.id}`;
+	const bytes = await sharp({
+		create: { width: 16, height: 16, channels: 3, background: "#3f46c8" },
+	})
+		.png()
+		.toBuffer();
+	let deletedDuringCopy = 0;
+	const configured = spyOn(storage, "assertConfigured").mockImplementation(() => {});
+	const sign = spyOn(storage, "uploadUrl").mockImplementation(
+		async (key) => `https://fixture.invalid/${key}`,
+	);
+	const copy = spyOn(storage, "verifyAndCopy").mockImplementation(async (staging, key, mime) => {
+		const assetId = key.split("/").pop() as string;
+		// Like the real copy, the staged bytes are read first.
+		const staged = objects.get(staging) as Buffer;
+		const dimensions = await validateImageBytes(staged, mime);
+		// The owner deletes the upload while its bytes are being copied. This request needs the
+		// site lock, so it only completes if completion released the lock before copying.
+		deletedDuringCopy = (
+			await request(`${base}/assets/${assetId}`, "DELETE", undefined, owner.cookie)
+		).status;
+		objects.set(key, Buffer.from(staged));
+		return dimensions;
+	});
+	const remove = spyOn(storage, "delete").mockImplementation(async (key) => {
+		objects.delete(key);
+	});
+	try {
+		const intent = await result<{ id: string }>(
+			await request(
+				`${base}/assets/upload-intent`,
+				"POST",
+				{ mime: "image/png", size: bytes.length },
+				owner.cookie,
+			),
+		);
+		objects.set(`staging/${site.id}/${intent.id}`, bytes);
+		await error(
+			await request(`${base}/assets/${intent.id}/complete`, "POST", undefined, owner.cookie),
+			409,
+			"ASSET_STATE_CONFLICT",
+		);
+		expect(deletedDuringCopy).toBe(200);
+		// The late copy is removed and the asset never becomes ready.
+		expect(objects.has(`verified/${site.id}/${intent.id}`)).toBe(false);
+		const [row] = await db.select().from(assets).where(eq(assets.id, intent.id));
+		expect(row.status).not.toBe("ready");
+	} finally {
+		configured.mockRestore();
+		sign.mockRestore();
+		copy.mockRestore();
+		remove.mockRestore();
+	}
+});
