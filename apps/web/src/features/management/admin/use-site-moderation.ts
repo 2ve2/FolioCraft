@@ -23,10 +23,19 @@ export function useSiteModeration(locale: Locale) {
 	// Focus target and request epochs prevent stale-view completion work.
 	const detailsHeading = useRef<HTMLHeadingElement>(null);
 
-	// Move focus into the newly opened detail panel.
+	// The opener is disabled while the site loads, which drops browser focus before the dialog can
+	// record it, so the opener is remembered here and refocused once the dialog closes and the
+	// controls are enabled again.
+	const opener = useRef<HTMLElement | null>(null);
+
+	// Move focus into the newly opened detail panel, and back to its opener after it closes.
 	useEffect(() => {
 		if (details) detailsHeading.current?.focus();
-	}, [details]);
+		else if (!busy && opener.current) {
+			if (opener.current.isConnected) opener.current.focus();
+			opener.current = null;
+		}
+	}, [details, busy]);
 
 	const mounted = useRef(true);
 	const actionPending = useRef(false);
@@ -72,6 +81,7 @@ export function useSiteModeration(locale: Locale) {
 	function openSiteDetails(row: Pick<AdminSite, "id">, initialReason = "") {
 		if (actionPending.current) return;
 		actionPending.current = true;
+		opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 		const version = ++viewVersion.current;
 
 		/** Rejects completion work from stale requests, sessions or unmounted views. */
