@@ -10,7 +10,21 @@ type PreviewProps = {
 	assetUrls: Record<string, string>;
 	device: "desktop" | "mobile";
 	actualSize?: boolean;
+	/** Overrides the published address used for links, e.g. an in-page fragment for an example. */
+	basePath?: string;
 };
+
+/** Locates a link inside the previewed portfolio: "", "#anchor" or "/projects/…"; null when outside. */
+function withinPortfolio(href: string, base: string): string | null {
+	if (base.startsWith("#"))
+		return href === base || href.startsWith(`${base}/`) || href.startsWith(`${base}#`)
+			? href.slice(base.length)
+			: null;
+	const url = new URL(href, window.location.origin);
+	if (url.origin !== window.location.origin) return null;
+	if (url.pathname === base) return url.hash;
+	return url.pathname.startsWith(`${base}/`) ? url.pathname.slice(base.length) : null;
+}
 
 /** Uses real device layout widths; scaling changes presentation without changing container breakpoints. */
 export function PortfolioPreview({
@@ -19,11 +33,12 @@ export function PortfolioPreview({
 	assetUrls,
 	device,
 	actualSize = false,
+	basePath,
 }: PreviewProps) {
 	const container = useRef<HTMLDivElement>(null);
 	const content = useRef<HTMLDivElement>(null);
 	const anchorPrefix = `preview-${useId()}-`;
-	const publicBasePath = `/p/${encodeURIComponent(slug)}`;
+	const publicBasePath = basePath ?? `/p/${encodeURIComponent(slug)}`;
 	const [detail, setDetail] = useState<{ type: "project" | "article"; id: string } | null>(null);
 	const returnAnchor = useRef("");
 	const [metrics, setMetrics] = useState({ width: 390, height: 1200 });
@@ -84,9 +99,9 @@ export function PortfolioPreview({
 		const link = event.target instanceof Element ? event.target.closest("a") : null;
 		const href = link?.getAttribute("href");
 		if (!href) return;
-		const url = new URL(href, window.location.origin);
-		if (url.origin === window.location.origin && url.pathname.startsWith(`${publicBasePath}/`)) {
-			const [type, value] = url.pathname.slice(publicBasePath.length + 1).split("/");
+		const inside = withinPortfolio(href, publicBasePath);
+		if (inside?.startsWith("/")) {
+			const [type, value] = inside.split("#")[0].slice(1).split("/");
 			const project =
 				type === "projects" &&
 				draft.projects.find((item) => (item.slug || item.id) === decodeURIComponent(value));
@@ -102,21 +117,22 @@ export function PortfolioPreview({
 			}
 			return;
 		}
-		if (url.origin === window.location.origin && url.pathname === publicBasePath) {
+		if (inside !== null) {
 			event.preventDefault();
 			if (detail) {
-				returnAnchor.current = url.hash.slice(1);
+				returnAnchor.current = inside.slice(1);
 				setDetail(null);
 				return;
 			}
-			if (!url.hash) {
+			if (!inside) {
 				container.current
 					?.closest<HTMLElement>(".portfolio-viewport, .expanded-preview-content")
 					?.scrollTo({ top: 0, behavior: "instant" });
 				return;
 			}
 		} else if (!href.startsWith("#")) return;
-		const target = content.current?.querySelector<HTMLElement>(`#${CSS.escape(url.hash.slice(1))}`);
+		const hash = inside ?? href;
+		const target = content.current?.querySelector<HTMLElement>(`#${CSS.escape(hash.slice(1))}`);
 		const scroller = container.current?.closest<HTMLElement>(
 			".portfolio-viewport, .expanded-preview-content",
 		);

@@ -56,6 +56,7 @@ export function LandingShowcase({
 					locale={locale}
 					draft={draft}
 					slug="illustrative-example"
+					basePath="#example"
 					assetUrls={{}}
 					device={device}
 					onClose={onClose}
@@ -71,6 +72,7 @@ export function LandingShowcase({
 				<PortfolioPreview
 					draft={draft}
 					slug="illustrative-example"
+					basePath="#example"
 					assetUrls={{}}
 					device="desktop"
 				/>
