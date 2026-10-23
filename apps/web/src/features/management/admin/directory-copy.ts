@@ -32,7 +32,7 @@ export const directoryCopy = {
 		saved: "Operation completed.",
 		ordinary: "Sensitive actions are available for ordinary accounts only.",
 		removeWarning:
-			"Account and related database records will be removed. Stored R2 objects remain.",
+			"The account and its database records are removed; its sites' stored images are queued for deletion.",
 		published: "Published",
 		suspended: "Suspended",
 		reported: "Has reports",
@@ -110,7 +110,8 @@ export const directoryCopy = {
 		submit: "تأكيد الإجراء",
 		saved: "اكتملت العملية.",
 		ordinary: "الإجراءات الحساسة متاحة للحسابات العادية فقط.",
-		removeWarning: "سيُحذف الحساب وسجلاته المرتبطة في قاعدة البيانات. ستبقى ملفات R2 المخزّنة.",
+		removeWarning:
+			"سيُحذف الحساب وسجلاته في قاعدة البيانات، وتوضع صور مواقعه المخزّنة في قائمة الحذف.",
 		published: "منشور",
 		suspended: "موقوف",
 		reported: "عليه بلاغات",

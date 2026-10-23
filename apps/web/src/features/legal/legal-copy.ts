@@ -80,7 +80,7 @@ export const legalCopy: Record<
 					{
 						heading: "حقوقك",
 						paragraphs: [
-							"يمكنك طلب نسخة من بياناتك أو تصحيحها أو حذف حسابك. تُعالَج الطلبات حاليًا عبر فريق المنصة، وسننشر قناة التواصل الرسمية قبل الإطلاق العام.",
+							"يمكنك تعديل اسمك وبريدك وكلمة مرورك وحذف حسابك بنفسك من صفحة «الحساب» في الاستوديو؛ الحذف يزيل مواقعك فورًا ويضع صورك المرفوعة في قائمة الحذف. لطلب نسخة من بياناتك أو تصحيحها، تُعالَج الطلبات حاليًا عبر فريق المنصة، وسننشر قناة التواصل الرسمية قبل الإطلاق العام.",
 						],
 					},
 				],
@@ -217,7 +217,7 @@ export const legalCopy: Record<
 					{
 						heading: "Your rights",
 						paragraphs: [
-							"You can ask for a copy of your data, for corrections, or for your account to be deleted. Requests are currently handled by the platform team; the official contact channel will be published before the public launch.",
+							"You can change your name, email and password and delete your account yourself from the Account page in the studio; deletion removes your sites right away and queues your uploaded images for deletion. To ask for a copy of your data or a correction, requests are currently handled by the platform team; the official contact channel will be published before the public launch.",
 						],
 					},
 				],
