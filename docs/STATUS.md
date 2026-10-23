@@ -10,7 +10,7 @@ Updated: 2026-10-23, Asia/Riyadh. This page is the short continuation point. Eve
 
 ## Active work
 
-- On `claude/modest-davinci-osg31w`, awaiting human review: logo v1.3, phone navigation drawer (studio and admin), `bun run deploy:trial`, per-account wrong-password budget, upload completion without the site lock during IO. Evidence: [evidence/2026-10-23-overnight.md](evidence/2026-10-23-overnight.md).
+- On `claude/modest-davinci-osg31w`, awaiting human review: brand v2 (rebuilt folded-band emblem with Readex Pro, human-chosen; supersedes logo v1.3, evidence [evidence/2026-10-23-brand-v2.md](evidence/2026-10-23-brand-v2.md)), phone navigation drawer (studio and admin), `bun run deploy:trial`, per-account wrong-password budget, upload completion without the site lock during IO. Evidence: [evidence/2026-10-23-overnight.md](evidence/2026-10-23-overnight.md).
 
 ## Blockers
 

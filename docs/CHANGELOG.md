@@ -1,5 +1,10 @@
 # Action log
 
+## 2026-10-23 — Brand v2: rebuilt folded-band emblem with Readex Pro
+- Human rejected logo v1.3; three new directions were shown, then the human asked to keep the original emblem idea and chose the balanced weight and the Readex Pro wordmark.
+- Emblem rebuilt on exact hexagonal geometry; Readex Pro 600 wordmarks in both languages; kit v2.0, favicon and app icons regenerated; footer uses a lighter indigo for the second band.
+- Checks: typecheck 0, Biome clean, web 58/58, Playwright 56/56. Evidence: `docs/evidence/2026-10-23-brand-v2.md`. Not deployed.
+
 ## 2026-10-23 — Logo v1.3, phone navigation drawer, one-command release, hardening
 - Scope (human request before sleeping, decisions delegated): review logo weight and colour; menu button and drawer instead of top buttons on narrow screens in the studio and dashboard; carry out proposed tasks; keep working through interruptions (a recurring self check-in was scheduled for that).
 - Logo v1.3: Arabic lettering Noto Sans Arabic 600 sized to the emblem; two-colour primary (indigo emblem, ink word); kit v1.3 regenerated with redirects.

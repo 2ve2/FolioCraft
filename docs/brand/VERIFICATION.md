@@ -53,3 +53,9 @@ Change: Arabic outlines regenerated at weight 600 (`docs/brand/v1.3/generate.py`
 
 Comparison of the options considered: [logo-v1.3-options.png](../screenshots/logo-v1.3-options.png). This is a design judgement by the agent under the human's delegation, not a user study; legal-availability unknowns above are unchanged.
 
+## v2.0 — 2026-10-23
+
+The human rejected v1.3 ("not convincing at all") and asked for professional work, a rebuild if needed. Three new directions were presented on a design canvas (wordmark with rhombus dots, viewfinder frame, arch); the human asked to keep the original folded-band emblem idea instead. Audit of that emblem: the angles were not true 30-degree hexagon angles, the two bands differed, the gap between them varied (zero at the bottom join), the blue band's top end had an unrelated diagonal cut, and only outer corners were rounded.
+
+Rebuild (`docs/brand/v2/generate.py`): pointy-top hexagonal ring, inner half-width 0.32 of the outer, two vertical channels continuing the inner hexagon's sides, bands congruent under a 180-degree rotation, uniform gap 0.07 of the circumradius, fillets 0.11 (outer), 0.03 (inner), 0.015 (cut ends). Thicker (0.24) and lighter (0.38) inner ratios and a single-colour version were shown; the human chose the balanced 0.32. Wordmarks: Readex Pro 600 (one bilingual family) over Alexandria; the human chose Readex Pro. Lockup rules and colourways are in the kit README. This is a construction record and a human choice, not a user study; the legal-availability unknowns above are unchanged.
+
