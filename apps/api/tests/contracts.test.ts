@@ -2,11 +2,14 @@ import { expect, test } from "bun:test";
 import {
 	articleInputSchema,
 	calculateReadTime,
+	createSiteSchema,
 	draftSchema,
 	emptyDraft,
 	experienceSchema,
 	publishedDraft,
+	publishSchema,
 	richBodySchema,
+	saveSchema,
 } from "@ichnara/contracts";
 
 const article = (published: boolean) => ({
@@ -120,4 +123,17 @@ test("empty structured editor blocks preserve the plain body and its computed re
 	expect(
 		calculateReadTime({ body, richBody: [{ type: "paragraph", text: "real structured content" }] }),
 	).toBe(1);
+});
+
+test("site creation, draft save and publish bodies reject unknown fields", () => {
+	expect(createSiteSchema.safeParse({ slug: "valid-slug", locale: "en" }).success).toBe(true);
+	expect(createSiteSchema.safeParse({ slug: "valid-slug", locale: "en", owner: "x" }).success).toBe(
+		false,
+	);
+	expect(publishSchema.safeParse({ revision: 1 }).success).toBe(true);
+	expect(publishSchema.safeParse({ revision: 1, force: true }).success).toBe(false);
+	expect(saveSchema.safeParse({ revision: 0, draft: emptyDraft("en") }).success).toBe(true);
+	expect(saveSchema.safeParse({ revision: 0, draft: emptyDraft("en"), extra: 1 }).success).toBe(
+		false,
+	);
 });

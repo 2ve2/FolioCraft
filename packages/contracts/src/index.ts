@@ -314,9 +314,12 @@ export function publishedDraft(draft: Draft): Draft {
 	return result;
 }
 
-export const createSiteSchema = z.object({ slug: slugSchema, locale: localeSchema });
-export const saveSchema = z.object({ revision: z.number().int().min(0), draft: draftSchema });
-export const publishSchema = z.object({ revision: z.number().int().min(0) });
+// Request bodies are strict like every other input: unknown fields are an error, not ignored.
+export const createSiteSchema = z.object({ slug: slugSchema, locale: localeSchema }).strict();
+export const saveSchema = z
+	.object({ revision: z.number().int().min(0), draft: draftSchema })
+	.strict();
+export const publishSchema = z.object({ revision: z.number().int().min(0) }).strict();
 
 /** Creates the initial fixed-layout draft for the chosen content language. */
 export const emptyDraft = (locale: Locale): Draft => ({

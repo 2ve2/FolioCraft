@@ -6,10 +6,12 @@ import { entityId as id } from "../../lib/validation";
 import { type AuthEnv, requireAuth } from "../../middleware/auth";
 import { assetService } from "../../services/assets";
 
-const intent = z.object({
-	mime: z.enum(["image/png", "image/jpeg", "image/webp"]),
-	size: z.number().int().min(1).max(MAX_ASSET_BYTES),
-});
+const intent = z
+	.object({
+		mime: z.enum(["image/png", "image/jpeg", "image/webp"]),
+		size: z.number().int().min(1).max(MAX_ASSET_BYTES),
+	})
+	.strict();
 export const assetRoutes = new Hono<AuthEnv>();
 assetRoutes.use("/:siteId/assets/*", requireAuth);
 assetRoutes.use("/:siteId/assets", requireAuth);
