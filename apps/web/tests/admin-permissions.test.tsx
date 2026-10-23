@@ -91,3 +91,19 @@ test("site moderation asks for the operator password in both locales and disable
 		expect(html).toContain('minLength="10"');
 	}
 });
+
+test("every permission, recorded action and target type has an Arabic and English name", async () => {
+	const { adminStatements } = await import("@ichnara/contracts/admin-policy");
+	const { actionLabels, recordedActions, targetLabels } = await import(
+		"../src/features/management/admin/admin-copy"
+	);
+	const permissions = Object.entries(adminStatements).flatMap(([resource, actions]) =>
+		actions.map((action) => `${resource}.${action}`),
+	);
+	for (const key of [...permissions, ...recordedActions]) {
+		expect(actionLabels[key]?.en, key).toBeTruthy();
+		expect(actionLabels[key]?.ar, key).toMatch(/[؀-ۿ]/);
+	}
+	for (const target of ["user", "site", "session", "report", "notice", "audit", "request"])
+		expect(targetLabels[target]?.ar, target).toMatch(/[؀-ۿ]/);
+});

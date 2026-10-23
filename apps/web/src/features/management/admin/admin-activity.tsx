@@ -7,6 +7,7 @@ import { ApiError, apiOrigin } from "../../../lib/api";
 import { date, errorText } from "../shared";
 import type { Audit, Page } from "../shared/types";
 import { useAdminSession } from "./admin-context";
+import { actionLabel, recordedActions, targetLabel } from "./admin-copy";
 import { AdminDialog } from "./admin-dialog";
 import { useAdminData, useAdminList, useAdminRefresh } from "./admin-query";
 import { directoryCopy } from "./directory-copy";
@@ -60,11 +61,17 @@ export function EventTable({
 			primary: true,
 			cell: (row) => (
 				<div className={ui.primaryText}>
-					<strong className={ui.mono} dir="ltr">
-						{row.action}
-					</strong>
-					<span dir="ltr">
-						{row.targetId ? `${row.targetType} · ${row.targetId}` : row.targetType}
+					<strong title={row.action}>{actionLabel(row.action, locale)}</strong>
+					<span>
+						{targetLabel(row.targetType, locale)}
+						{row.targetId && (
+							<>
+								{" · "}
+								<span className={ui.mono} dir="ltr">
+									{row.targetId}
+								</span>
+							</>
+						)}
 					</span>
 				</div>
 			),
@@ -187,13 +194,13 @@ export function AdminActivityPage() {
 			setBusy(false);
 		}
 	}
-	const textFilter = (key: "action" | "actorId" | "targetId") => (
+	const textFilter = (key: "actorId" | "targetId") => (
 		<label className={ui.filter} key={key}>
 			{t[key]}
 			<input
 				className={ui.input}
 				dir="ltr"
-				maxLength={key === "action" ? 100 : 128}
+				maxLength={128}
 				value={filters[key] ?? ""}
 				onChange={(e) => change(key)(e.target.value)}
 			/>
@@ -229,7 +236,15 @@ export function AdminActivityPage() {
 					active={Object.values(filters).some((value) => value.trim())}
 					onClear={() => setFilters({})}
 				>
-					{textFilter("action")}
+					<FilterSelect
+						label={t.action}
+						value={filters.action ?? ""}
+						onChange={change("action")}
+						options={[
+							{ value: "", label: d.all },
+							...recordedActions.map((value) => ({ value, label: actionLabel(value, locale) })),
+						]}
+					/>
 					<FilterSelect
 						label={t.status}
 						value={filters.status ?? ""}
@@ -249,7 +264,7 @@ export function AdminActivityPage() {
 						options={[
 							{ value: "", label: d.all },
 							...["user", "site", "session", "report", "notice", "audit", "request"].map(
-								(value) => ({ value, label: value }),
+								(value) => ({ value, label: targetLabel(value, locale) }),
 							),
 						]}
 					/>
@@ -309,9 +324,7 @@ export function AdminActivityPage() {
 								key={e.id}
 								title={
 									<span className={ui.titleRow}>
-										<span className={ui.mono} dir="ltr">
-											{e.action}
-										</span>
+										<span title={e.action}>{actionLabel(e.action, locale)}</span>
 										<StatusBadge tone={statusTone[e.status]}>{t[e.status]}</StatusBadge>
 									</span>
 								}
@@ -320,7 +333,9 @@ export function AdminActivityPage() {
 									items={[
 										{ label: t.time, value: date(e.createdAt, locale) },
 										{ label: t.actorId, value: e.actorId ?? "—", mono: true },
-										{ label: t.target, value: `${e.targetType} · ${e.targetId}`, mono: true },
+										{ label: t.target, value: targetLabel(e.targetType, locale) },
+										{ label: t.targetId, value: e.targetId, mono: true },
+										{ label: t.action, value: e.action, mono: true },
 										{ label: t.reason, value: e.reason, hidden: !e.reason },
 									]}
 								/>
