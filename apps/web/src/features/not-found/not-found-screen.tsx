@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, FileQuestion, House, PanelsTopLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight, House, PanelsTopLeft } from "lucide-react";
 import Link from "next/link";
 import { Brand } from "../../components/ui/brand";
 import { LanguageSwitch } from "../../components/ui/language-switch";
@@ -32,22 +32,13 @@ export function NotFoundScreen() {
 				)}
 			</header>
 			<main className={styles.main}>
-				<div className={styles.art} aria-hidden="true">
-					<span className={styles.orbit} />
-					<span className={styles.number}>404</span>
-					<span className={styles.file}>
-						<FileQuestion size={34} strokeWidth={1.5} />
-					</span>
-				</div>
+				<p className={styles.number}>404</p>
 				<div className={styles.content}>
-					<p className={styles.eyebrow}>
-						{ar ? "لنعد إلى المسار الصحيح" : "LET’S GET YOU BACK ON TRACK"}
-					</p>
-					<h1>{ar ? "هذه الصفحة غير موجودة" : "This page is out of the picture."}</h1>
+					<h1>{ar ? "لم نعثر على هذه الصفحة" : "We can’t find this page"}</h1>
 					<p className={styles.description}>
 						{ar
-							? "قد يكون الرابط غير صحيح، أو أن المحتوى لم يعد متاحًا. تأكد من العنوان، أو تابع من هنا."
-							: "The link may be incorrect, or the content may no longer be available. Check the address, or find your way from here."}
+							? "ربما الرابط مكتوب بشكل غير صحيح، أو أن الصفحة نُقلت أو حُذفت. تحقق من العنوان أو تابع من هنا."
+							: "The link may be mistyped, or the page may have moved or been removed. Check the address or continue from here."}
 					</p>
 					<nav className={styles.actions} aria-label={ar ? "متابعة التصفح" : "Continue browsing"}>
 						<Link className={styles.primary} href={localeHref(locale, "/")}>
@@ -62,8 +53,8 @@ export function NotFoundScreen() {
 					<p className={styles.hint}>
 						<PanelsTopLeft size={16} aria-hidden="true" />
 						{ar
-							? "تبحث عن معرض أعمال؟ تأكد من الرابط مع صاحبه."
-							: "Looking for a portfolio? Confirm the link with its owner."}
+							? "تبحث عن معرض أعمال شخص ما؟ اطلب منه الرابط الصحيح."
+							: "Looking for someone’s portfolio? Ask them for the exact link."}
 					</p>
 				</div>
 			</main>

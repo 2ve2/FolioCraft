@@ -65,14 +65,13 @@ export function formatDraftIssues(issues: { path: PropertyKey[] }[], ar: boolean
 				galleryAssetIds: "Gallery images",
 				results: "Results",
 			};
-	return issues
-		.slice(0, 3)
-		.map((issue) =>
-			issue.path
-				.map((key) =>
-					typeof key === "number" ? key + 1 : (groups[key as keyof typeof groups] ?? key),
-				)
-				.join(" / "),
-		)
-		.join("؛ ");
+	// One field can fail several rules (format and length); it is named once, with the locale's list separator.
+	const fields = issues.map((issue) =>
+		issue.path
+			.map((key) =>
+				typeof key === "number" ? key + 1 : (groups[key as keyof typeof groups] ?? key),
+			)
+			.join(" / "),
+	);
+	return [...new Set(fields)].slice(0, 3).join(ar ? "؛ " : "; ");
 }

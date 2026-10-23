@@ -49,3 +49,20 @@ test("loading signature shows the localized wordmark", async () => {
 		expect(signature).not.toContain("transform=");
 	}
 });
+
+/** On an error the caller's heading leads and the wordmark steps aside. */
+test("error state shows the caller's title without the wordmark", () => {
+	const markup = renderToStaticMarkup(
+		<LoadingScreen
+			locale="en"
+			title="We can’t reach Ichnara right now"
+			message="Check your connection."
+			error
+		>
+			<button type="button">Try again</button>
+		</LoadingScreen>,
+	);
+	expect(markup).toContain("We can’t reach Ichnara right now");
+	expect(markup).not.toContain("loading-signature");
+	expect(markup).not.toContain("We couldn’t complete the request");
+});

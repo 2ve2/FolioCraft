@@ -41,6 +41,8 @@ export function AssetPicker({
 	const [loading, setLoading] = useState(false);
 	const [busy, setBusy] = useState(false);
 	const [busyAction, setBusyAction] = useState("");
+	// The asset this view is uploading right now: its pending row is in progress, not abandoned.
+	const [uploadingId, setUploadingId] = useState<string | null>(null);
 	const [error, setError] = useState<keyof typeof copy.en | "">("");
 	const [notice, setNotice] = useState<"success" | "deleted" | "deletionPending" | "detached" | "">(
 		"",
@@ -166,28 +168,34 @@ export function AssetPicker({
 			if (!current()) return;
 			const { uploadUrl, uploadHeaders, uploadExpiresIn: _expires, ...asset } = intent;
 			replaceAsset(asset);
+			setUploadingId(asset.id);
 			setOpen(true);
-			let response: Response;
 			try {
-				response = await fetch(uploadUrl, {
-					method: "PUT",
-					headers: uploadHeaders,
-					body: file,
-					credentials: "omit",
-					referrerPolicy: "no-referrer",
-				});
-			} catch {
-				throw new ApiError("PUT_FAILED", "Upload failed", 0);
+				let response: Response;
+				try {
+					response = await fetch(uploadUrl, {
+						method: "PUT",
+						headers: uploadHeaders,
+						body: file,
+						credentials: "omit",
+						referrerPolicy: "no-referrer",
+					});
+				} catch {
+					throw new ApiError("PUT_FAILED", "Upload failed", 0);
+				}
+				if (!current()) return;
+				if (!response.ok) throw new ApiError("PUT_FAILED", "Upload failed", response.status);
+				const ready = await api<Asset>(`/api/sites/${siteId}/assets/${intent.id}/complete`, "POST");
+				if (!current()) return;
+				if (ready.status !== "ready")
+					throw new ApiError("ASSET_STATE_CONFLICT", "Asset not ready", 409);
+				replaceAsset(ready);
+				live.current.onChange(ready.id);
+				setNotice("success");
+			} finally {
+				// A failure leaves the pending row with its retry action.
+				setUploadingId(null);
 			}
-			if (!current()) return;
-			if (!response.ok) throw new ApiError("PUT_FAILED", "Upload failed", response.status);
-			const ready = await api<Asset>(`/api/sites/${siteId}/assets/${intent.id}/complete`, "POST");
-			if (!current()) return;
-			if (ready.status !== "ready")
-				throw new ApiError("ASSET_STATE_CONFLICT", "Asset not ready", 409);
-			replaceAsset(ready);
-			live.current.onChange(ready.id);
-			setNotice("success");
 		});
 	}
 
@@ -314,7 +322,11 @@ export function AssetPicker({
 								/>
 							) : (
 								<div className={styles.placeholder}>
-									{asset.status === "pending" ? t.pending : t.deleting}
+									{asset.status !== "pending"
+										? t.deleting
+										: uploadingId === asset.id
+											? t.uploading
+											: t.pending}
 								</div>
 							)}
 							<small dir="ltr">
@@ -336,7 +348,7 @@ export function AssetPicker({
 									{t.clear}
 								</button>
 							)}
-							{asset.status === "pending" && (
+							{asset.status === "pending" && uploadingId !== asset.id && (
 								<button type="button" disabled={!canAct} onClick={() => void complete(asset.id)}>
 									<ButtonContent loading={busy && busyAction === `complete:${asset.id}`}>
 										{t.complete}

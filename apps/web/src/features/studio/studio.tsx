@@ -75,7 +75,7 @@ function StudioWorkspace() {
 	if (isPending) return <StudioSkeleton locale={locale} localeControl={localeControl} />;
 	if (sessionError)
 		return (
-			<LoadingScreen locale={locale} message={t.startupError} error>
+			<LoadingScreen locale={locale} title={t.startupErrorTitle} message={t.startupError} error>
 				<button type="button" className="primary" onClick={() => void refetchSession()}>
 					{t.loadRetry}
 				</button>
@@ -88,7 +88,8 @@ function StudioWorkspace() {
 		return (
 			<LoadingScreen
 				locale={locale}
-				message={emailUnverified ? t.emailUnverified : t.loadError}
+				title={emailUnverified ? t.emailUnverifiedTitle : t.loadErrorTitle}
+				message={emailUnverified ? t.emailUnverifiedScreen : t.loadError}
 				error
 			>
 				{emailUnverified && (

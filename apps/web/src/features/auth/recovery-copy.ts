@@ -20,8 +20,9 @@ export const recoveryCopy = {
 		accepted:
 			"Request accepted. If this address is eligible, check its inbox and spam folder. Delivery is not confirmed here.",
 		resetDone: "Password updated. Sign in with your new password.",
-		verificationReturn:
-			"Try signing in after following your verification link. If verification did not complete, request a new link below.",
+		verified: "Your email is verified",
+		verifiedBody: "Your account is ready. Sign in to start building your portfolio.",
+		verifiedAction: "Sign in",
 		forgotLink: "Request another reset link",
 		loading: "Preparing account recovery…",
 	},
@@ -45,8 +46,9 @@ export const recoveryCopy = {
 		accepted:
 			"تم قبول الطلب. إذا كان العنوان مؤهلاً، تحقق من صندوق البريد والرسائل غير المرغوبة. لا تؤكد هذه الرسالة وصول البريد.",
 		resetDone: "تم تحديث كلمة المرور. سجّل الدخول بكلمة المرور الجديدة.",
-		verificationReturn:
-			"حاول تسجيل الدخول بعد فتح رابط التحقق. إذا لم يكتمل التحقق، اطلب رابطاً جديداً أدناه.",
+		verified: "تم تأكيد بريدك الإلكتروني",
+		verifiedBody: "حسابك جاهز. سجّل الدخول وابدأ ببناء معرض أعمالك.",
+		verifiedAction: "تسجيل الدخول",
 		forgotLink: "طلب رابط جديد لإعادة تعيين كلمة المرور",
 		loading: "جارٍ تجهيز استعادة الحساب…",
 	},

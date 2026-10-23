@@ -5,22 +5,18 @@ Updated: 2026-10-23, Asia/Riyadh. This page is the short continuation point. Eve
 ## Product and trial
 
 - Ichnara (confirmed name), a bilingual Arabic/English portfolio builder. Friends-only trial on the temporary domain: https://lord2ve.tech (web) and https://api.lord2ve.tech (API).
-- `main` contains PRs #1–#16 (#12: full audit and cleanup; #13: migration command and signup email verification; #14: brand v2, phone drawer, deploy:trial, hardening; #15: branded authentication emails; #16: TanStack Query console, console redesign, studio Account page): audit fixes, `/ar` and `/en` language prefixes, the pool-close fix, the committed Playwright suite, optional Sentry monitoring, optional Hyperdrive, platform color tokens, optional published-page caching (off by default), signed-in entry and tab-return fix, and the immediate studio frame with the Next.js 16.4.1 security update.
+- `main` contains PRs #1–#17 (#12: full audit and cleanup; #13: migration command and signup email verification; #14: brand v2, phone drawer, deploy:trial, hardening; #15: branded authentication emails; #16: TanStack Query console, console redesign, studio Account page; #17: full audit and dashboard pass): audit fixes, `/ar` and `/en` language prefixes, the pool-close fix, the committed Playwright suite, optional Sentry monitoring, optional Hyperdrive, platform color tokens, optional published-page caching (off by default), signed-in entry and tab-return fix, and the immediate studio frame with the Next.js 16.4.1 security update.
 - Unknown: which `main` commit each trial Worker runs. The human deploys from the independent checkout; this session cannot reach the trial hosts (network policy).
 
 ## Active work
 
-- On `claude/modest-davinci-osg31w` (a new PR after #16), awaiting human review: the full audit requested by the human, including the dashboard deep pass.
-  - API: strict request bodies; session reads no longer rate-limited per shared address.
-  - Styles: dead CSS and unused tokens removed; twelve colour pairs brought to WCAG AA.
-  - Accessibility: `main` landmarks; 24 px link targets.
-  - Console: readable action and permission names; role names in the sidebar; focus return after the suspend dialog; an honest outage message.
-  - Screens: the loading/error wordmark; two metric cards per row on phones; no pager for single pages.
-  - Evidence: [evidence/2026-10-23-full-audit.md](evidence/2026-10-23-full-audit.md).
-  - Verification on the final head:
-    - API 105 pass / 12 skip / 0 fail; web 63/0; Workers 8/8 and 15/15; typecheck 0; Biome clean; `bun audit` clean; Playwright e2e 56 passed.
-    - API probe 120/120; console role tour 208 views clean; keyboard 164/164; states 12/12.
-- After deploying PR #15/#16 and this one, send one reset email to a private mailbox to check the branded email, and try one email change once mail is confirmed.
+- On `claude/modest-davinci-osg31w` (a new PR after #17), awaiting human review: fixes from two external review reports.
+  - Sign-up error messages; the email-verified confirmation; save-banner wording.
+  - The upload in-progress state; landing example links; `https://` completion.
+  - Evidence: [evidence/2026-10-23-external-review.md](evidence/2026-10-23-external-review.md).
+  - Checks: web 66/0, typecheck 0, Biome clean, browser checks 9/9 and upload simulation 3/3, e2e 56 passed.
+- Human action from the visitor review: add a `www` DNS record in Cloudflare and redirect it to `lord2ve.tech`.
+- After deploying, send one reset email to a private mailbox to check the branded email, and try one email change once mail is confirmed.
 
 ## Blockers
 
