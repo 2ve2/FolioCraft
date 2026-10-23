@@ -11,6 +11,7 @@
   - `https://` completion for link fields.
 - Follow-up: the 404 page numeral no longer reads as "4•4", and its copy is plain in both languages.
 - Follow-up: loading/error screens name the problem (connection, workspace load, email confirmation) and drop the competing wordmark.
+- Follow-up: the 404 page keeps only the numeral, the message and the actions; error headings drop the alert icon.
 - Not a defect: duplicate fields in the studio DOM, which are the preview's contact form. Human action: the `www` DNS record.
 - Checks: web 66/0, typecheck 0, Biome clean, browser checks 9/9 plus upload simulation 3/3, Playwright e2e 56 passed. Evidence: `docs/evidence/2026-10-23-external-review.md`. Not deployed.
 

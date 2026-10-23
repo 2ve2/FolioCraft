@@ -43,6 +43,15 @@ Each finding was checked against the code before anything changed. Nothing was d
   - The Arabic retry button reads "حاول مجدداً".
 - **Checked.** A new unit test (web 67/0), screenshots at 390 px in both languages and Playwright e2e 56 passed.
 
+## Follow-up: simpler 404 and error headings
+
+- **Request.** The human asked to remove three things from the 404 page: the ring around the numeral, the paper card and the small "Error 404" line. They also asked to remove or relocate the icon beside the error-screen heading; the decision was delegated.
+- **Change.**
+  - The 404 page keeps the numeral (now readable text, so 404 is still announced), the heading, the message and the actions.
+  - The error heading has no icon. It names the problem, and the message remains a live alert.
+  - The unused styles and colour tokens were removed.
+- **Checked.** Screenshots in both languages; web 67/0; typecheck 0; Biome clean; Playwright e2e 56 passed.
+
 ## Checks (local)
 
 - **Unit tests.** Web 66 pass / 0 fail, including `review-fixes.test.tsx`:
