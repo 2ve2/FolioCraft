@@ -192,8 +192,15 @@ export function AssetPicker({
 				replaceAsset(ready);
 				live.current.onChange(ready.id);
 				setNotice("success");
+			} catch (cause) {
+				// The server discards a file it refused (422); only other failures keep a retryable row.
+				if (cause instanceof ApiError && cause.status === 422)
+					setLibrary((previous) => ({
+						...previous,
+						items: previous.items.filter((item) => item.id !== asset.id),
+					}));
+				throw cause;
 			} finally {
-				// A failure leaves the pending row with its retry action.
 				setUploadingId(null);
 			}
 		});
