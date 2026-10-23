@@ -1,5 +1,9 @@
 # Action log
 
+## 2026-10-23 — TanStack Query for the administration console
+- Human request: add React Query to the dashboard ("ابدا"). Scope: the administration console only. Its reads move to TanStack Query through one console hook, with a query client scoped to the signed-in administrator session and dropped when the console unmounts; writes stay explicit `api()` calls and invalidate the console's queries afterwards. The studio editor (draft, revision and publication state machine) and the authorization gate's permission read are deliberately out of scope.
+- Step 1: remove unreachable controller reads (the console controller was only ever used for the site moderation dialog; its page, counts and account-dialog paths had no caller).
+
 ## 2026-10-23 — Branded authentication emails
 - Human request: add the new logo to the platform emails professionally. Verification and reset emails rebuilt (table layout, hosted 2x logo with alt text, title, button, link lifetime, fallback link, footer) in Arabic and English; email logo PNGs added to the kit; auth link lifetimes set explicitly to the 60 minutes the emails state.
 - Checks: mail tests 5/5, API 97 pass / 12 skip / 0 fail, Workers mail 15/15, typecheck 0, Biome clean. Evidence: `docs/evidence/2026-10-23-auth-email.md`. Not deployed; no real email sent.
