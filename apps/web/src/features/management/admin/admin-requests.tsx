@@ -15,13 +15,15 @@ import { date, errorText } from "../shared";
 import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { AdminDialog } from "./admin-dialog";
-import { ReadState, useAdminData } from "./admin-directory";
+import { ReadState } from "./admin-directory";
+import { useAdminData, useAdminRefresh } from "./admin-query";
 import fields from "./operations.module.css";
 import layout from "./reports.module.css";
 import { requestsCopy } from "./requests-copy";
 
 /** Credentials are per action and cleared after every request and dialog dismissal. */
 export function AdminRequests({ id }: { id?: string }) {
+	const refresh = useAdminRefresh();
 	const { locale, permissions } = useAdminSession(),
 		t = requestsCopy[locale];
 	const [status, setStatus] = useState(""),
@@ -111,7 +113,7 @@ export function AdminRequests({ id }: { id?: string }) {
 			}
 			setOperation(null);
 			setMessage(t.saved);
-			state.reload();
+			refresh();
 		} catch (e) {
 			setFailure(
 				e instanceof ApiError && e.code in t ? t[e.code as keyof typeof t] : errorText(e, locale),

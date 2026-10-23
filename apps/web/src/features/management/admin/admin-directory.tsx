@@ -1,7 +1,6 @@
 "use client";
-import type { Locale } from "@ichnara/contracts";
 import Link from "next/link";
-import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 import { SelectControl } from "../../../components/ui/select-control";
 import { api } from "../../../lib/api";
 import { localeHref } from "../../../lib/locale";
@@ -11,6 +10,7 @@ import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { AdminDialog } from "./admin-dialog";
 import { AdminPagination } from "./admin-pagination";
+import { useAdminData, useAdminRefresh } from "./admin-query";
 import { directoryCopy } from "./directory-copy";
 import fields from "./operations.module.css";
 import layout from "./reports.module.css";
@@ -18,30 +18,6 @@ import { SiteModerationDialog } from "./site-moderation-dialog";
 import { useSiteModeration } from "./use-site-moderation";
 
 export type CursorPage<T> = { items: T[]; nextCursor: string | null };
-/** Discards superseded reads and exposes explicit retry without replaying writes. */
-export function useAdminData<T>(path: string | null, locale: Locale) {
-	const [data, setData] = useState<T | null>(null),
-		[error, setError] = useState(""),
-		[version, setVersion] = useState(0);
-	useEffect(() => {
-		let current = true;
-		void version;
-		setData(null);
-		setError("");
-		if (path)
-			api<T>(path)
-				.then((value) => {
-					if (current) setData(value);
-				})
-				.catch((e) => {
-					if (current) setError(errorText(e, locale));
-				});
-		return () => {
-			current = false;
-		};
-	}, [path, locale, version]);
-	return { data, error, reload: useCallback(() => setVersion((v) => v + 1), []) };
-}
 export function ReadState({
 	state,
 	children,
@@ -283,6 +259,7 @@ function Related({ type, filter }: { type: "sites" | "reports" | "audit"; filter
 }
 /** Account actions call only the existing independently secured native/domain pipelines. */
 export function AdminAccountDetail({ id }: { id: string }) {
+	const refresh = useAdminRefresh();
 	const { locale, permissions } = useAdminSession(),
 		t = directoryCopy[locale];
 	const state = useAdminData<AdminUser>(`/api/admin/users/${encodeURIComponent(id)}`, locale),
@@ -327,8 +304,7 @@ export function AdminAccountDetail({ id }: { id: string }) {
 			setNotice(t.saved);
 			setAction("");
 			if (action !== "remove") {
-				state.reload();
-				sessions.reload();
+				refresh();
 			} else {
 				window.location.assign(localeHref(locale, "/admin/accounts"));
 			}
@@ -492,9 +468,6 @@ export function AdminSiteDetail({ id }: { id: string }) {
 		t = directoryCopy[locale];
 	const c = useSiteModeration(locale),
 		state = useAdminData<AdminSite>(`/api/admin/sites/${encodeURIComponent(id)}`, locale);
-	useEffect(() => {
-		if (c.notice) state.reload();
-	}, [c.notice, state.reload]);
 	return (
 		<section className={`${layout.page} ${fields.page}`}>
 			<Link href={localeHref(locale, "/admin/sites")}>{t.back}</Link>

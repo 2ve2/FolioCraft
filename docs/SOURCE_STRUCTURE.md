@@ -158,6 +158,7 @@ apps/web/src/
       admin/
         admin-shell.tsx          Role-aware navigation, session gate and account exit
         admin-context.tsx        Authorized identity and interface-locale context
+        admin-query.tsx          Session-scoped TanStack Query client, console reads and refresh
         admin-pagination.tsx     Shared bounded twenty-record pagination
         site-moderation-dialog.tsx Site overview and password-confirmed moderation
         admin-dialog.tsx         Native modal lifecycle and focus restoration

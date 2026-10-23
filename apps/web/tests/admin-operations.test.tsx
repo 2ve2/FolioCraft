@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { AdminActivityPage, AuditEvents } from "../src/features/management/admin/admin-activity";
 import { AdminContext } from "../src/features/management/admin/admin-context";
 import { AdminNotices } from "../src/features/management/admin/admin-notices";
+import { AdminQueryProvider } from "../src/features/management/admin/admin-query";
 import { AdminDashboard, AdminSystem } from "../src/features/management/admin/admin-system";
 import { operationsCopy } from "../src/features/management/admin/operations-copy";
 
@@ -14,16 +15,18 @@ test("operations copy parity, permission-scoped navigation and notice mutation p
 		for (const role of ["owner", "moderator", "support", "analyst"]) {
 			const wrap = (children: React.ReactNode) =>
 				renderToStaticMarkup(
-					<AdminContext.Provider
-						value={{
-							locale,
-							setLocale: () => {},
-							permissions: permissionsFor(role),
-							user: { id: "fixture", name: "Fixture", email: "f***@example.com" },
-						}}
-					>
-						{children}
-					</AdminContext.Provider>,
+					<AdminQueryProvider>
+						<AdminContext.Provider
+							value={{
+								locale,
+								setLocale: () => {},
+								permissions: permissionsFor(role),
+								user: { id: "fixture", name: "Fixture", email: "f***@example.com" },
+							}}
+						>
+							{children}
+						</AdminContext.Provider>
+					</AdminQueryProvider>,
 				);
 			const notices = wrap(<AdminNotices />);
 			expect(notices.includes(operationsCopy[locale].create)).toBe(role === "owner");
@@ -41,30 +44,32 @@ test("operations copy parity, permission-scoped navigation and notice mutation p
 });
 test("attempt/outcome events share one group and require an explicit drawer action", () => {
 	const html = renderToStaticMarkup(
-		<AdminContext.Provider
-			value={{
-				locale: "en",
-				setLocale: () => {},
-				permissions: permissionsFor("owner"),
-				user: { id: "fixture", name: "Fixture", email: "f***@example.com" },
-			}}
-		>
-			<AuditEvents
-				items={["attempted", "succeeded"].map((status, i) => ({
-					id: String(i),
-					actorId: "actor",
-					requestId: "correlation",
-					action: "notice.manage",
-					targetType: "notice",
-					targetId: "id",
-					createdAt: "2026-10-19T00:00:00.000Z",
-					reason: null,
-					metadata: {},
-					status: status as "attempted" | "succeeded",
-				}))}
-				open={() => {}}
-			/>
-		</AdminContext.Provider>,
+		<AdminQueryProvider>
+			<AdminContext.Provider
+				value={{
+					locale: "en",
+					setLocale: () => {},
+					permissions: permissionsFor("owner"),
+					user: { id: "fixture", name: "Fixture", email: "f***@example.com" },
+				}}
+			>
+				<AuditEvents
+					items={["attempted", "succeeded"].map((status, i) => ({
+						id: String(i),
+						actorId: "actor",
+						requestId: "correlation",
+						action: "notice.manage",
+						targetType: "notice",
+						targetId: "id",
+						createdAt: "2026-10-19T00:00:00.000Z",
+						reason: null,
+						metadata: {},
+						status: status as "attempted" | "succeeded",
+					}))}
+					open={() => {}}
+				/>
+			</AdminContext.Provider>
+		</AdminQueryProvider>,
 	);
 	expect(html.match(/correlation/g)?.length).toBe(1);
 	expect(html.match(/Event details/g)?.length).toBe(1);

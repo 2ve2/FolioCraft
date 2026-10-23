@@ -3,6 +3,7 @@ import { dataRequestInput, dataRequestTransitions } from "@ichnara/contracts";
 import { canViewAdmin, permissionsFor } from "@ichnara/contracts/admin-policy";
 import { renderToStaticMarkup } from "react-dom/server";
 import { AdminContext } from "../src/features/management/admin/admin-context";
+import { AdminQueryProvider } from "../src/features/management/admin/admin-query";
 import { AdminRequests } from "../src/features/management/admin/admin-requests";
 import { adminSecurityCopy } from "../src/features/management/admin/admin-security-copy";
 import { AdminStaff } from "../src/features/management/admin/admin-staff";
@@ -18,16 +19,18 @@ test("P6 exact bilingual copy parity and permission-driven controls", () => {
 			expect(canViewAdmin(permissions, "staff")).toBe(role === "owner");
 			const wrap = (node: React.ReactNode) =>
 				renderToStaticMarkup(
-					<AdminContext.Provider
-						value={{
-							locale,
-							permissions,
-							setLocale: () => {},
-							user: { id: "fixture", name: "Fixture", email: "masked" },
-						}}
-					>
-						{node}
-					</AdminContext.Provider>,
+					<AdminQueryProvider>
+						<AdminContext.Provider
+							value={{
+								locale,
+								permissions,
+								setLocale: () => {},
+								user: { id: "fixture", name: "Fixture", email: "masked" },
+							}}
+						>
+							{node}
+						</AdminContext.Provider>
+					</AdminQueryProvider>,
 				);
 			expect(wrap(<AdminRequests />).includes(`>${requestsCopy[locale].create}</button>`)).toBe(
 				["owner", "support"].includes(role),

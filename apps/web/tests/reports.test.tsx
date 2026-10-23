@@ -5,6 +5,7 @@ import { Portfolio, PortfolioDetail } from "@ichnara/portfolio";
 import { renderToStaticMarkup } from "react-dom/server";
 import { AdminContext } from "../src/features/management/admin/admin-context";
 import { adminCopy } from "../src/features/management/admin/admin-copy";
+import { AdminQueryProvider } from "../src/features/management/admin/admin-query";
 import { AdminReports } from "../src/features/management/admin/admin-reports";
 import { reportCopy } from "../src/features/portfolio/report-copy";
 import { ReportForm } from "../src/features/portfolio/report-form";
@@ -57,16 +58,18 @@ test("report queue renders bilingual filters and only granted roles can navigate
 		for (const role of ["owner", "moderator", "support", "analyst"]) {
 			expect(canViewAdmin(permissionsFor(role), "reports")).toBe(true);
 			const html = renderToStaticMarkup(
-				<AdminContext.Provider
-					value={{
-						locale,
-						setLocale: () => {},
-						user: { id: "fixture", name: "Fixture", email: "f***@example.com" },
-						permissions: permissionsFor(role),
-					}}
-				>
-					<AdminReports />
-				</AdminContext.Provider>,
+				<AdminQueryProvider>
+					<AdminContext.Provider
+						value={{
+							locale,
+							setLocale: () => {},
+							user: { id: "fixture", name: "Fixture", email: "f***@example.com" },
+							permissions: permissionsFor(role),
+						}}
+					>
+						<AdminReports />
+					</AdminContext.Provider>
+				</AdminQueryProvider>,
 			);
 			expect(html).toContain(adminCopy[locale].report.title);
 			expect(html).toContain('aria-haspopup="listbox"');

@@ -5,10 +5,12 @@ import { api } from "../../../lib/api";
 import { errorText } from "../shared";
 import { text } from "../shared/copy";
 import type { AdminSite } from "../shared/types";
+import { useAdminRefresh } from "./admin-query";
 
 /** Opens one site overview and submits its password-confirmed suspension or resumption. */
 export function useSiteModeration(locale: Locale) {
 	const t = text[locale];
+	const refresh = useAdminRefresh();
 
 	// Shared mutation feedback and the selected site form.
 	const [busy, setBusy] = useState(false);
@@ -53,6 +55,8 @@ export function useSiteModeration(locale: Locale) {
 		setNotice("");
 		try {
 			await operation(current);
+			// The write happened even if this view moved on, so stored console reads are stale either way.
+			refresh();
 			if (!current()) return;
 			setNotice(t.saved);
 		} catch (e) {

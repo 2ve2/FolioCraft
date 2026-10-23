@@ -14,6 +14,7 @@ import { errorText } from "../shared";
 import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { adminCopy } from "./admin-copy";
+import { useAdminData, useAdminRefresh } from "./admin-query";
 import reportStyles from "./reports.module.css";
 import { SiteModerationDialog } from "./site-moderation-dialog";
 import { useSiteModeration } from "./use-site-moderation";
@@ -24,30 +25,16 @@ export function AdminReports() {
 		t = adminCopy[locale].report;
 	const [status, setStatus] = useState("open"),
 		[category, setCategory] = useState(""),
-		[cursor, setCursor] = useState<string | null>(null),
-		[page, setPage] = useState<ReportPage | null>(null),
-		[error, setError] = useState(""),
-		[version, setVersion] = useState(0);
-	useEffect(() => {
-		let current = true;
-		setPage(null);
-		setError("");
-		const query = new URLSearchParams({ limit: "20" });
-		if (status) query.set("status", status);
-		if (category) query.set("category", category);
-		if (cursor) query.set("cursor", cursor);
-		void version;
-		api<ReportPage>(`/api/admin/reports?${query}`)
-			.then((value) => {
-				if (current) setPage(value);
-			})
-			.catch((e) => {
-				if (current) setError(errorText(e, locale));
-			});
-		return () => {
-			current = false;
-		};
-	}, [locale, status, category, cursor, version]);
+		[cursor, setCursor] = useState<string | null>(null);
+	const query = new URLSearchParams({ limit: "20" });
+	if (status) query.set("status", status);
+	if (category) query.set("category", category);
+	if (cursor) query.set("cursor", cursor);
+	const {
+		data: page,
+		error,
+		reload,
+	} = useAdminData<ReportPage>(`/api/admin/reports?${query}`, locale);
 	return (
 		<section className={reportStyles.page}>
 			<header>
@@ -89,11 +76,7 @@ export function AdminReports() {
 			{error ? (
 				<div role="alert">
 					<p>{error}</p>
-					<button
-						type="button"
-						className={styles.secondary}
-						onClick={() => setVersion((v) => v + 1)}
-					>
+					<button type="button" className={styles.secondary} onClick={reload}>
 						{t.retry}
 					</button>
 				</div>
@@ -143,43 +126,43 @@ export function AdminReports() {
 export function AdminReportDetail({ id }: { id: string }) {
 	const { locale, permissions } = useAdminSession(),
 		t = adminCopy[locale].report;
-	const [report, setReport] = useState<ContentReport | null>(null),
-		[error, setError] = useState(""),
+	const state = useAdminData<ContentReport>(`/api/admin/reports/${encodeURIComponent(id)}`, locale),
+		report = state.data,
+		refresh = useAdminRefresh();
+	const [actionError, setActionError] = useState(""),
 		[busy, setBusy] = useState(false),
 		[note, setNote] = useState(""),
-		[notice, setNotice] = useState(""),
-		[version, setVersion] = useState(0);
+		[notice, setNotice] = useState("");
 	const pending = useRef(false),
 		epoch = useRef(0),
+		noteFor = useRef<string | null>(null),
 		controller = useSiteModeration(locale);
+	const error = actionError || state.error;
+	// A different report invalidates pending transitions and clears this view's feedback.
 	useEffect(() => {
-		const current = ++epoch.current;
-		setReport(null);
+		void id;
+		epoch.current++;
 		setBusy(false);
-		setError("");
+		setActionError("");
 		setNotice("");
-		setNote("");
-		void version;
-		api<ContentReport>(`/api/admin/reports/${encodeURIComponent(id)}`)
-			.then((value) => {
-				if (current === epoch.current) {
-					setReport(value);
-					setNote(value.resolutionNote ?? "");
-				}
-			})
-			.catch((e) => {
-				if (current === epoch.current) setError(errorText(e, locale));
-			});
-		return () => {
-			epoch.current++;
-		};
-	}, [id, locale, version]);
+	}, [id]);
+	// The note starts from the stored resolution once per report; background rereads keep typed text.
+	useEffect(() => {
+		if (!report || noteFor.current === report.id) return;
+		noteFor.current = report.id;
+		setNote(report.resolutionNote ?? "");
+	}, [report]);
+	/** Clears a failed transition and rereads the report, which may have changed meanwhile. */
+	function retry() {
+		setActionError("");
+		state.reload();
+	}
 	/** Applies only a confirmed server transition and refuses stale completion work. */
 	async function transition(status: "reviewing" | "dismissed" | "actioned") {
 		if (pending.current || !report) return;
 		pending.current = true;
 		setBusy(true);
-		setError("");
+		setActionError("");
 		setNotice("");
 		const current = epoch.current;
 		try {
@@ -188,12 +171,13 @@ export function AdminReportDetail({ id }: { id: string }) {
 				...(note.trim() ? { resolutionNote: note.trim() } : {}),
 			});
 			if (current === epoch.current) {
-				setReport(value);
+				state.set(value);
 				setNotice(t.saved);
 			}
+			refresh();
 		} catch (e) {
 			if (current === epoch.current)
-				setError(
+				setActionError(
 					e instanceof ApiError && e.code === "REPORT_STATUS_CONFLICT"
 						? t.conflict
 						: errorText(e, locale),
@@ -213,12 +197,7 @@ export function AdminReportDetail({ id }: { id: string }) {
 			{error && (
 				<div role="alert">
 					<p>{error}</p>
-					<button
-						type="button"
-						className={styles.secondary}
-						disabled={busy}
-						onClick={() => setVersion((v) => v + 1)}
-					>
+					<button type="button" className={styles.secondary} disabled={busy} onClick={retry}>
 						{t.retry}
 					</button>
 				</div>

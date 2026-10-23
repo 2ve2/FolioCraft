@@ -7,8 +7,9 @@ import type { Audit, Page } from "../shared/types";
 import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { AdminDialog } from "./admin-dialog";
-import { DirectoryFilter, ReadState, useAdminData } from "./admin-directory";
+import { DirectoryFilter, ReadState } from "./admin-directory";
 import { AdminPagination } from "./admin-pagination";
+import { useAdminData, useAdminRefresh } from "./admin-query";
 import { directoryCopy } from "./directory-copy";
 import fields from "./operations.module.css";
 import { operationsCopy } from "./operations-copy";
@@ -45,6 +46,7 @@ export function AuditEvents({ items, open }: { items: AuditEvent[]; open?: (id: 
 }
 /** Correlates attempt/outcome rows by request ID and fetches the complete bounded group in a drawer. */
 export function AdminActivityPage() {
+	const refresh = useAdminRefresh();
 	const { locale, permissions } = useAdminSession(),
 		t = operationsCopy[locale],
 		d = directoryCopy[locale];
@@ -96,7 +98,7 @@ export function AdminActivityPage() {
 			a.click();
 			setTimeout(() => URL.revokeObjectURL(url), 1000);
 			setExporting(false);
-			state.reload();
+			refresh();
 		} catch (e) {
 			setError(errorText(e, locale));
 		} finally {
