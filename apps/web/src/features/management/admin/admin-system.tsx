@@ -97,7 +97,8 @@ export function AdminDashboard() {
 									<dt>{t[section]}</dt>
 									{Object.entries(data[section] ?? {}).map(([key, value]) => (
 										<dd key={key}>
-											{t[key as "total"] ?? key}: {value}
+											<span>{t[key as "total"] ?? key}</span>
+											<b>{value}</b>
 										</dd>
 									))}
 								</div>

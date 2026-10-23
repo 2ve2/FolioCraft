@@ -48,33 +48,6 @@
 	.studio-shell {
 		display: block;
 	}
-	.sidebar {
-		position: static;
-		width: 100%;
-		height: auto;
-		flex-direction: row;
-		align-items: center;
-		padding: 15px 22px;
-		border-inline-end: 0;
-		border-bottom: 1px solid var(--line);
-		gap: 25px;
-	}
-	.sidebar nav {
-		flex-direction: row;
-		margin-inline-start: auto;
-	}
-	.workspace-label,
-	.sidebar-bottom {
-		display: none;
-	}
-	.nav-item {
-		font-size: var(--text-caption);
-		padding: 9px 12px;
-		gap: 7px;
-	}
-	.nav-dot {
-		display: none;
-	}
 	.studio-main {
 		width: 100%;
 		margin: 0;
@@ -135,22 +108,6 @@
 		flex-direction: column;
 		gap: 9px;
 		padding: 22px 6vw;
-	}
-	.sidebar {
-		gap: 12px;
-		padding: 14px 16px;
-		align-items: center;
-		flex-wrap: wrap;
-	}
-	.sidebar nav {
-		gap: 4px;
-	}
-	.nav-item {
-		padding: 8px;
-		font-size: var(--text-caption);
-	}
-	.nav-item svg {
-		width: 14px;
 	}
 	.studio-header {
 		position: static;
@@ -253,24 +210,8 @@
 	.loading-screen p {
 		max-width: 450px;
 	}
-	.account {
-		display: none;
-	}
 }
 @media (max-width: 430px) {
-	.sidebar {
-		justify-content: space-between;
-		gap: 12px;
-	}
-	.sidebar nav {
-		width: 100%;
-		justify-content: space-between;
-		margin: 0;
-	}
-	.nav-item {
-		flex: 1;
-		justify-content: center;
-	}
 	.two-fields {
 		grid-template-columns: 1fr;
 		gap: 0;

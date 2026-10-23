@@ -1,0 +1,110 @@
+/* Studio navigation: a fixed sidebar on wide screens; below 970px a top bar whose menu button opens
+   the same navigation as a drawer from the reading-start edge. */
+.sidebar-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+.menu-toggle,
+.drawer-backdrop,
+.drawer-head {
+	display: none;
+}
+.sidebar-drawer {
+	display: contents;
+}
+
+@media (max-width: 970px) {
+	.studio-shell .sidebar {
+		position: static;
+		width: 100%;
+		height: auto;
+		flex-direction: row;
+		align-items: center;
+		padding: 10px 16px;
+		border-inline-end: 0;
+		border-bottom: 1px solid var(--line);
+	}
+	.studio-shell .sidebar-bar {
+		width: 100%;
+	}
+	.studio-shell .menu-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--ink);
+	}
+	.studio-shell .drawer-backdrop {
+		display: block;
+		position: fixed;
+		inset: 0;
+		border: 0;
+		padding: 0;
+		background: var(--color-drawer-backdrop);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.2s ease;
+		z-index: 60;
+	}
+	.studio-shell .sidebar-drawer {
+		display: flex;
+		flex-direction: column;
+		position: fixed;
+		inset-block: 0;
+		inset-inline-start: 0;
+		width: min(300px, 86vw);
+		padding: 16px 16px 20px;
+		background: var(--color-surface);
+		box-shadow: var(--shadow-drawer);
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		z-index: 61;
+		visibility: hidden;
+		transform: translateX(-100%);
+		transition:
+			transform 0.22s ease,
+			visibility 0s linear 0.22s;
+	}
+	[dir="rtl"] .studio-shell .sidebar-drawer {
+		transform: translateX(100%);
+	}
+	.studio-shell .sidebar[data-open] .sidebar-drawer {
+		visibility: visible;
+		transform: none;
+		transition: transform 0.22s ease;
+	}
+	.studio-shell .sidebar[data-open] .drawer-backdrop {
+		opacity: 1;
+		pointer-events: auto;
+	}
+	.studio-shell .drawer-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding-bottom: 12px;
+		border-bottom: 1px solid var(--line);
+	}
+	.studio-shell .sidebar-drawer .workspace-label {
+		margin: 24px 12px 12px;
+	}
+	.studio-shell .sidebar-drawer nav {
+		flex-direction: column;
+		flex-wrap: nowrap;
+	}
+	.studio-shell .sidebar-drawer .nav-item {
+		width: 100%;
+		justify-content: flex-start;
+	}
+	.studio-shell .sidebar-drawer .sidebar-bottom {
+		margin-top: auto;
+		padding-top: 24px;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.studio-shell .sidebar-drawer,
+	.studio-shell .drawer-backdrop {
+		transition: none;
+	}
+}

@@ -5,6 +5,8 @@ export const copy = {
 		publicationUpdated: "تم تحديث الإصدار العام. مسودتك الحالية لم تتغير.",
 		operations: "الرسائل والنشر",
 		admin: "الإدارة",
+		openMenu: "فتح القائمة",
+		closeMenu: "إغلاق القائمة",
 		studio: "استوديو البورتفوليو",
 		tagline: "عملك يستحق مساحة تليق به.",
 		intro: "قالب واحد مدروس. لمستك الخاصة. أنشئ بورتفوليو يعكسك، وشارك ما تصنعه مع العالم.",
@@ -168,6 +170,8 @@ export const copy = {
 		publicationUpdated: "Public release updated. Your current draft is unchanged.",
 		operations: "Inbox & releases",
 		admin: "Administration",
+		openMenu: "Open menu",
+		closeMenu: "Close menu",
 		studio: "Portfolio studio",
 		tagline: "Your work deserves a considered home.",
 		intro:

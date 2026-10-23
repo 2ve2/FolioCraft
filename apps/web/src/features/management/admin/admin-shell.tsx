@@ -5,10 +5,12 @@ import {
 	Globe2,
 	LayoutDashboard,
 	LogOut,
+	Menu,
 	ScrollText,
 	ShieldCheck,
 	ShieldX,
 	UsersRound,
+	X,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,6 +18,7 @@ import { type ReactNode, useEffect, useState } from "react";
 import { Brand } from "../../../components/ui/brand";
 import { LanguageSwitch } from "../../../components/ui/language-switch";
 import { TooltipButton } from "../../../components/ui/tooltip-button";
+import { useDrawer } from "../../../components/ui/use-drawer";
 import { ApiError, api } from "../../../lib/api";
 import { authClient } from "../../../lib/auth-client";
 import { localeHref } from "../../../lib/locale";
@@ -47,6 +50,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 	const router = useRouter();
 	const { data: session, isPending, error, refetch } = useAccountSession();
 	const [signingOut, setSigningOut] = useState(false);
+	const drawer = useDrawer(970);
 	const [signoutError, setSignoutError] = useState(false);
 	const admin = isStaff(session?.user.role) && !session?.session.impersonatedBy;
 	const [authorization, setAuthorization] = useState<
@@ -177,58 +181,92 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 				<a className={styles.skip} href="#admin-main">
 					{t.skip}
 				</a>
-				<aside className={styles.sidebar}>
-					<Link className={styles.brand} href={localeHref(locale, "/admin")}>
-						<Brand locale={locale} />
-					</Link>
-					<span className={styles.navLabel}>{t.label}</span>
-					<nav aria-label={t.platform} className={styles.nav}>
-						{navigation
-							.filter((item) => canViewAdmin(permissions, item.key))
-							.map(({ key, path, icon: Icon }) => (
-								<Link
-									key={key}
-									href={localeHref(locale, `${path}`)}
-									aria-current={pathname === path ? "page" : undefined}
-									className={styles.navLink}
-								>
-									<Icon size={19} aria-hidden="true" />
-									<span>{t[key]}</span>
-									{pathname === path && <i />}
-								</Link>
-							))}
-					</nav>
-					<div className={styles.sidebarBottom}>
-						<Link className={styles.studioLink} href={localeHref(locale, "/admin/security")}>
-							{t.security}
+				<aside className={styles.sidebar} data-open={drawer.open || undefined}>
+					<div className={styles.sidebarBar}>
+						<Link className={styles.brand} href={localeHref(locale, "/admin")}>
+							<Brand locale={locale} />
 						</Link>
-						<Link className={styles.studioLink} href={localeHref(locale, "/studio")}>
-							<span>{t.studio}</span>
-							<ArrowUpRight size={17} aria-hidden="true" />
-						</Link>
-						<div className={styles.adminIdentity}>
-							<span className={styles.adminAvatar}>
-								<ShieldCheck size={20} aria-hidden="true" />
-							</span>
-							<div>
-								<strong dir="auto">{session.user.name}</strong>
-								<small>{t.administrator}</small>
-							</div>
-							<TooltipButton
+						<button
+							ref={drawer.toggleRef}
+							type="button"
+							className={`${ui.iconButton} ${styles.menuToggle}`}
+							aria-label={t.openMenu}
+							aria-expanded={drawer.open}
+							aria-controls="admin-menu"
+							onClick={() => drawer.setOpen(true)}
+						>
+							<Menu size={22} aria-hidden="true" />
+						</button>
+					</div>
+					<button
+						type="button"
+						className={styles.drawerBackdrop}
+						tabIndex={-1}
+						aria-hidden="true"
+						onClick={() => drawer.close()}
+					/>
+					<div id="admin-menu" ref={drawer.panelRef} className={styles.drawer}>
+						<div className={styles.drawerHead}>
+							<Brand locale={locale} />
+							<button
+								type="button"
 								className={ui.iconButton}
-								hint={t.logout}
-								aria-label={t.logout}
-								disabled={signingOut}
-								onClick={() => void logout()}
+								aria-label={t.closeMenu}
+								onClick={() => drawer.close()}
 							>
-								<LogOut size={17} />
-							</TooltipButton>
+								<X size={20} aria-hidden="true" />
+							</button>
 						</div>
-						{signoutError && (
-							<p className={ui.error} role="alert">
-								{t.sessionError}
-							</p>
-						)}
+						<span className={styles.navLabel}>{t.label}</span>
+						<nav aria-label={t.platform} className={styles.nav}>
+							{navigation
+								.filter((item) => canViewAdmin(permissions, item.key))
+								.map(({ key, path, icon: Icon }) => (
+									<Link
+										key={key}
+										href={localeHref(locale, `${path}`)}
+										aria-current={pathname === path ? "page" : undefined}
+										className={styles.navLink}
+										onClick={() => drawer.close(false)}
+									>
+										<Icon size={19} aria-hidden="true" />
+										<span>{t[key]}</span>
+										{pathname === path && <i />}
+									</Link>
+								))}
+						</nav>
+						<div className={styles.sidebarBottom}>
+							<Link className={styles.studioLink} href={localeHref(locale, "/admin/security")}>
+								{t.security}
+							</Link>
+							<Link className={styles.studioLink} href={localeHref(locale, "/studio")}>
+								<span>{t.studio}</span>
+								<ArrowUpRight size={17} aria-hidden="true" />
+							</Link>
+							<div className={styles.adminIdentity}>
+								<span className={styles.adminAvatar}>
+									<ShieldCheck size={20} aria-hidden="true" />
+								</span>
+								<div>
+									<strong dir="auto">{session.user.name}</strong>
+									<small>{t.administrator}</small>
+								</div>
+								<TooltipButton
+									className={ui.iconButton}
+									hint={t.logout}
+									aria-label={t.logout}
+									disabled={signingOut}
+									onClick={() => void logout()}
+								>
+									<LogOut size={17} />
+								</TooltipButton>
+							</div>
+							{signoutError && (
+								<p className={ui.error} role="alert">
+									{t.sessionError}
+								</p>
+							)}
+						</div>
 					</div>
 				</aside>
 				<div className={styles.workspace}>
@@ -245,24 +283,6 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 								onChange={setLocale}
 								label={locale === "ar" ? "لغة الواجهة" : "Interface language"}
 							/>
-							<div className={styles.mobileActions}>
-								<Link
-									className={ui.iconButton}
-									href={localeHref(locale, "/studio")}
-									aria-label={t.studio}
-								>
-									<ArrowUpRight size={18} />
-								</Link>
-								<TooltipButton
-									className={ui.iconButton}
-									hint={t.logout}
-									aria-label={t.logout}
-									disabled={signingOut}
-									onClick={() => void logout()}
-								>
-									<LogOut size={17} />
-								</TooltipButton>
-							</div>
 						</div>
 					</header>
 					<main className={styles.main} id="admin-main" tabIndex={-1}>

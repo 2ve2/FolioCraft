@@ -32,11 +32,24 @@
 	color: var(--admin-muted);
 	line-height: 1.7;
 }
+/* Each counter is a label/value row so long labels wrap beside, not through, the number. */
 .stat dd {
-	font-size: 33px;
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	margin: 14px 0 0;
+}
+.stat dd span {
+	min-width: 0;
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--admin-muted);
+}
+.stat dd b {
+	font-size: 30px;
 	font-weight: 650;
-	line-height: 1.25;
-	margin: 18px 0 0;
+	line-height: 1.2;
 	font-variant-numeric: tabular-nums;
 }
 .stat small {
@@ -370,8 +383,8 @@
 	.stat {
 		padding: 16px;
 	}
-	.stat dd {
-		font-size: 28px;
+	.stat dd b {
+		font-size: 26px;
 	}
 	.filters {
 		width: 100%;

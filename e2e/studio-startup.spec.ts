@@ -79,7 +79,11 @@ for (const locale of ["ar", "en"] as const) {
 			let before: Record<string, number[]> = {};
 			try {
 				await expect(page.locator(".studio-header")).toBeVisible();
-				await expect(page.locator(".sidebar nav")).toBeVisible();
+				// Phones show the menu button; the navigation itself waits in the closed drawer.
+				if (width === 390) {
+					await expect(page.locator(".menu-toggle")).toBeVisible();
+					await expect(page.locator(".sidebar nav")).toBeHidden();
+				} else await expect(page.locator(".sidebar nav")).toBeVisible();
 				await expect(page.locator(".studio-shell")).toHaveAttribute("aria-busy", "true");
 				await expect(page.locator('.studio-loading-status[role="status"]')).toHaveCount(1);
 				await expect(page.locator("#studio-profile")).toHaveCount(0);

@@ -430,3 +430,7 @@ Human authorizes SMTP_HOST=smtp.resend.com,SMTP_PORT=465,SMTP_SECURE=true,SMTP_U
 - Engineering choice (not separately human-confirmed): existing unverified accounts are not deleted or force-verified. Better Auth sends a fresh link when they sign in, and the studio shows a confirm-your-email screen with a resend link for a session that predates the change.
 - Engineering choice (not separately human-confirmed): the migration command validates only `DATABASE_URL`, because applying SQL does not need auth secrets or origins and asking an operator to supply them widens secret exposure.
 
+## 2026-10-23 — Logo v1.3 and phone navigation drawers
+- The human asked for a review of the logo's weight and whether the black logo suits the platform, and asked that narrow screens use a menu button that opens a sidebar, in the studio and the dashboard; they delegated the decisions ("سوي يلي تبيه"). Agent decision (delegated, not separately reviewed): two-colour primary lockup (indigo emblem, ink word), Arabic lettering at Noto Sans Arabic 600 sized to the emblem like the Latin capital. Evidence and measurements in `docs/brand/VERIFICATION.md` (v1.3). This supersedes the 2026-10-18 A1 weight (700) and the single-colour header logo.
+- Phone navigation: below 970px both sidebars become a top bar with a menu button and a drawer from the reading-start edge; this replaces the row of navigation buttons and the separate phone sign-out button, which now live in the drawer.
+
