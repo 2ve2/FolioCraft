@@ -5,12 +5,18 @@ Updated: 2026-10-23, Asia/Riyadh. This page is the short continuation point. Eve
 ## Product and trial
 
 - Ichnara (confirmed name), a bilingual Arabic/English portfolio builder. Friends-only trial on the temporary domain: https://lord2ve.tech (web) and https://api.lord2ve.tech (API).
-- `main` contains PRs #1–#14 (#12: full audit and cleanup; #13: migration command and signup email verification; #14: brand v2, phone drawer, deploy:trial, hardening): audit fixes, `/ar` and `/en` language prefixes, the pool-close fix, the committed Playwright suite, optional Sentry monitoring, optional Hyperdrive, platform color tokens, optional published-page caching (off by default), signed-in entry and tab-return fix, and the immediate studio frame with the Next.js 16.4.1 security update.
+- `main` contains PRs #1–#15 (#12: full audit and cleanup; #13: migration command and signup email verification; #14: brand v2, phone drawer, deploy:trial, hardening; #15: branded authentication emails): audit fixes, `/ar` and `/en` language prefixes, the pool-close fix, the committed Playwright suite, optional Sentry monitoring, optional Hyperdrive, platform color tokens, optional published-page caching (off by default), signed-in entry and tab-return fix, and the immediate studio frame with the Next.js 16.4.1 security update.
 - Unknown: which `main` commit each trial Worker runs. The human deploys from the independent checkout; this session cannot reach the trial hosts (network policy).
 
 ## Active work
 
-- On `claude/modest-davinci-osg31w`, awaiting human review: branded authentication emails (hosted v2 logo, table layout, explicit 60-minute link lifetime). Evidence: [evidence/2026-10-23-auth-email.md](evidence/2026-10-23-auth-email.md). After deployment, send one reset email to a private mailbox to check real rendering.
+- On `claude/modest-davinci-osg31w` (PR #16), awaiting human review:
+  - TanStack Query in the administration console (session-scoped cache, infinite lists).
+  - A full console redesign on a shared component kit, with grouped navigation.
+  - Self-service account changes and deletion (studio Account page and Better Auth configuration).
+  - Studio sidebar no longer covers notices; console sidebar scrolls on short windows.
+  - Evidence: [evidence/2026-10-23-admin-query.md](evidence/2026-10-23-admin-query.md), [evidence/2026-10-23-console-redesign-account.md](evidence/2026-10-23-console-redesign-account.md).
+- After deploying PR #15/#16, send one reset email to a private mailbox to check the branded email, and try one email change once mail is confirmed.
 
 ## Blockers
 

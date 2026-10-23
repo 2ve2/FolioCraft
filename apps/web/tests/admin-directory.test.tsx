@@ -7,6 +7,7 @@ import {
 	AdminDirectory,
 	AdminSiteDetail,
 } from "../src/features/management/admin/admin-directory";
+import { AdminQueryProvider } from "../src/features/management/admin/admin-query";
 import { directoryCopy } from "../src/features/management/admin/directory-copy";
 
 test("directory copy has exact bilingual parity and accessible filters", () => {
@@ -16,16 +17,18 @@ test("directory copy has exact bilingual parity and accessible filters", () => {
 	for (const locale of ["ar", "en"] as const) {
 		const wrap = (children: React.ReactNode) =>
 			renderToStaticMarkup(
-				<AdminContext.Provider
-					value={{
-						locale,
-						setLocale: () => {},
-						permissions: permissionsFor("owner"),
-						user: { id: "owner", name: "Owner", email: "o***@example.com" },
-					}}
-				>
-					{children}
-				</AdminContext.Provider>,
+				<AdminQueryProvider>
+					<AdminContext.Provider
+						value={{
+							locale,
+							setLocale: () => {},
+							permissions: permissionsFor("owner"),
+							user: { id: "owner", name: "Owner", email: "o***@example.com" },
+						}}
+					>
+						{children}
+					</AdminContext.Provider>
+				</AdminQueryProvider>,
 			);
 		for (const kind of ["accounts", "sites"] as const) {
 			const html = wrap(<AdminDirectory kind={kind} />);

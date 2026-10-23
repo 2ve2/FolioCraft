@@ -46,19 +46,24 @@
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
+	/* Short windows scroll the navigation so the account controls at the bottom stay reachable. */
+	overflow-y: auto;
+	overscroll-behavior: contain;
 }
 .sidebarBar {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 12px;
-	margin: 0 10px 42px;
+	margin: 0 10px 28px;
 }
 .brand {
 	display: block;
 }
-/* Below 970px the sidebar becomes a top bar; its menu button opens the same navigation as a drawer. */
-.menuToggle,
+/* Below 970px the sidebar becomes a top bar; its menu button opens the same navigation as a drawer.
+   The toggle also carries the shared icon-button class, so its rules are scoped to win regardless of
+   which stylesheet the bundler emits first. */
+.sidebarBar .menuToggle,
 .drawerBackdrop,
 .drawerHead {
 	display: none;
@@ -66,16 +71,15 @@
 .drawer {
 	display: contents;
 }
-.navLabel {
-	font-size: 13px;
-	font-weight: 650;
-	letter-spacing: 0.09em;
-	color: var(--color-admin-nav-label-text);
-	margin: 0 14px 14px;
-}
 .nav {
 	display: grid;
-	gap: 7px;
+	gap: 2px;
+}
+.navGroup {
+	margin: 18px 12px 6px;
+	font-size: 12px;
+	font-weight: 650;
+	color: var(--color-admin-nav-label-text);
 }
 .navLink {
 	-webkit-user-select: none;
@@ -83,9 +87,9 @@
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	padding: 12px 14px;
-	min-height: 48px;
-	border-radius: 10px;
+	padding: 8px 12px;
+	min-height: 42px;
+	border-radius: 9px;
 	color: var(--color-admin-nav-link-text);
 	font-size: 14px;
 	font-weight: 550;
@@ -93,20 +97,41 @@
 .navLink:hover {
 	background: var(--color-admin-nav-link-hover-surface);
 }
+.navLink > span {
+	flex: 1;
+	min-width: 0;
+}
+.navCount {
+	min-width: 22px;
+	padding: 0 7px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 20px;
+	text-align: center;
+	font-variant-numeric: tabular-nums;
+	background: var(--color-admin-warning-surface);
+	color: var(--color-admin-warning-text);
+}
+.navCount[data-tone="danger"] {
+	background: var(--color-admin-bad-surface);
+	color: var(--color-admin-bad-text);
+}
+.navCount .srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
 .navLink[aria-current="page"] {
 	background: var(--color-admin-nav-active-surface);
 	color: var(--admin-accent);
 }
-.navLink i {
-	margin-inline-start: auto;
-	width: 5px;
-	height: 5px;
-	background: currentColor;
-	border-radius: 50%;
-}
 .sidebarBottom {
 	margin-top: auto;
-	padding-top: 48px;
+	padding-top: 28px;
 }
 .studioLink {
 	display: flex;
@@ -225,6 +250,7 @@
 	.sidebar {
 		position: static;
 		height: auto;
+		overflow: visible;
 		padding: 10px 16px;
 		border-inline-end: 0;
 		border-bottom: 1px solid var(--admin-line);
@@ -232,8 +258,8 @@
 	.sidebarBar {
 		margin: 0;
 	}
-	.menuToggle {
-		display: inline-flex;
+	.sidebarBar .menuToggle {
+		display: inline-grid;
 	}
 	.drawerBackdrop {
 		display: block;

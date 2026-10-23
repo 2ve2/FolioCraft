@@ -1,5 +1,18 @@
 # Action log
 
+## 2026-10-23 — Console navigation order
+- Human request: reorder the dashboard sidebar tabs. New order: Overview; Users & content (accounts, sites); Trust & safety (reports, data requests); Operations (notices, activity log); Administration (staff, system). Reports and Data requests show waiting counts. The desktop menu-button visibility clash is fixed. Checks: web 60/0, typecheck 0, e2e 56 passed. Evidence: `docs/evidence/2026-10-23-console-redesign-account.md`.
+
+## 2026-10-23 — Console redesign, infinite lists and the studio account page
+- Human request: "do the best" on account deletion, a dashboard as organised as other companies' dashboards, shadcn and infinite React Query questions, and proactive decisions. Scope: a shared console component kit with `useInfiniteQuery` lists; every console page redesigned; grouped navigation; self-service account changes and deletion (server and studio page); privacy and removal copy made accurate; the studio sidebar no longer covers notices. shadcn was not adopted (see DECISIONS).
+- Checks: API suite 103 pass / 12 skip / 0 fail (account integration 4/4, mail templates 7/7), web 60/0, Playwright e2e 56 passed, typecheck 0, Biome clean, browser QA of infinite loading, search, notices, report handling and the whole account flow. Evidence: `docs/evidence/2026-10-23-console-redesign-account.md`.
+
+## 2026-10-23 — TanStack Query for the administration console
+- Human request: add React Query to the dashboard ("ابدا"). Scope: the administration console only. Its reads move to TanStack Query through one console hook, with a query client scoped to the signed-in administrator session and dropped when the console unmounts; writes stay explicit `api()` calls and invalidate the console's queries afterwards. The studio editor (draft, revision and publication state machine) and the authorization gate's permission read are deliberately out of scope.
+- Step 1: remove unreachable controller reads (the console controller was only ever used for the site moderation dialog; its page, counts and account-dialog paths had no caller).
+- Step 2: `@tanstack/react-query` 5.104.2; `admin-query.tsx` (session-keyed provider, `useAdminData`, `useAdminRefresh`); all console reads moved; writes invalidate console reads; desktop console sidebar scrolls on short windows (sign-out was unreachable at 1280x720).
+- Checks: typecheck 0, Biome clean, web tests 58/0, Playwright e2e 56 passed, browser QA of caching, invalidation, background-failure and sign-out behavior on a local production build. Evidence: `docs/evidence/2026-10-23-admin-query.md`.
+
 ## 2026-10-23 — Branded authentication emails
 - Human request: add the new logo to the platform emails professionally. Verification and reset emails rebuilt (table layout, hosted 2x logo with alt text, title, button, link lifetime, fallback link, footer) in Arabic and English; email logo PNGs added to the kit; auth link lifetimes set explicitly to the 60 minutes the emails state.
 - Checks: mail tests 5/5, API 97 pass / 12 skip / 0 fail, Workers mail 15/15, typecheck 0, Biome clean. Evidence: `docs/evidence/2026-10-23-auth-email.md`. Not deployed; no real email sent.

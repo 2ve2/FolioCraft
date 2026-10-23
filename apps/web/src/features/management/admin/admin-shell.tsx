@@ -1,20 +1,26 @@
 "use client";
+import type { Locale } from "@ichnara/contracts";
 import { type AdminPermissions, canViewAdmin, isStaff } from "@ichnara/contracts/admin-policy";
 import {
 	ArrowUpRight,
+	Flag,
 	Globe2,
+	History,
+	Inbox,
 	LayoutDashboard,
 	LogOut,
+	Megaphone,
 	Menu,
-	ScrollText,
+	Server,
 	ShieldCheck,
 	ShieldX,
+	UserCog,
 	UsersRound,
 	X,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
+import { Fragment, type ReactNode, useEffect, useState } from "react";
 import { Brand } from "../../../components/ui/brand";
 import { LanguageSwitch } from "../../../components/ui/language-switch";
 import { TooltipButton } from "../../../components/ui/tooltip-button";
@@ -28,19 +34,94 @@ import { LoadingScreen } from "../../studio/loading-screen";
 import ui from "./admin.module.css";
 import { AdminContext } from "./admin-context";
 import { adminCopy } from "./admin-copy";
+import { AdminQueryProvider, useAdminData } from "./admin-query";
 import styles from "./admin-shell.module.css";
 
+// Ordered by how often staff use each page and how records relate: accounts own sites, sites
+// receive reports. Groups appear only when the role can open at least one of their pages.
 const navigation = [
-	{ key: "requests", path: "/admin/requests", icon: ScrollText },
-	{ key: "staff", path: "/admin/staff", icon: UsersRound },
-	{ key: "system", path: "/admin/system", icon: ShieldCheck },
-	{ key: "notices", path: "/admin/notices", icon: ScrollText },
-	{ key: "overview", path: "/admin", icon: LayoutDashboard },
-	{ key: "sites", path: "/admin/sites", icon: Globe2 },
-	{ key: "users", path: "/admin/accounts", icon: UsersRound },
-	{ key: "reports", path: "/admin/reports", icon: ScrollText },
-	{ key: "audit", path: "/admin/activity", icon: ScrollText },
+	{ key: "overview", path: "/admin", icon: LayoutDashboard, group: null },
+	{ key: "users", path: "/admin/accounts", icon: UsersRound, group: "groupPeople" },
+	{ key: "sites", path: "/admin/sites", icon: Globe2, group: "groupPeople" },
+	{ key: "reports", path: "/admin/reports", icon: Flag, group: "groupTrust" },
+	{ key: "requests", path: "/admin/requests", icon: Inbox, group: "groupTrust" },
+	{ key: "notices", path: "/admin/notices", icon: Megaphone, group: "groupOperations" },
+	{ key: "audit", path: "/admin/activity", icon: History, group: "groupOperations" },
+	{ key: "staff", path: "/admin/staff", icon: UserCog, group: "groupAdministration" },
+	{ key: "system", path: "/admin/system", icon: Server, group: "groupAdministration" },
 ] as const;
+
+type NavCounts = {
+	reports?: { open: number };
+	requests?: { open: number; overdue: number };
+};
+
+/**
+ * The console navigation with waiting-work counts beside Reports and Data requests. Counts come from
+ * the same permission-scoped overview read as the Overview page, so they appear only for roles that
+ * may see them and share its cache.
+ */
+function ConsoleNav({
+	locale,
+	permissions,
+	pathname,
+	onNavigate,
+}: {
+	locale: Locale;
+	permissions: AdminPermissions["permissions"];
+	pathname: string;
+	onNavigate: () => void;
+}) {
+	const t = adminCopy[locale];
+	const counts = useAdminData<NavCounts>(
+		canViewAdmin(permissions, "overview") ? "/api/admin/overview" : null,
+		locale,
+	).data;
+	const badge = (key: string) =>
+		key === "reports" && counts?.reports?.open
+			? { value: counts.reports.open, tone: "warning" }
+			: key === "requests" && counts?.requests?.open
+				? {
+						value: counts.requests.open,
+						tone: counts.requests.overdue > 0 ? "danger" : "warning",
+					}
+				: null;
+	return (
+		<nav aria-label={t.platform} className={styles.nav}>
+			{navigation
+				.filter((item) => canViewAdmin(permissions, item.key))
+				.map(({ key, path, icon: Icon, group }, index, visible) => {
+					const count = badge(key);
+					return (
+						<Fragment key={key}>
+							{group && visible[index - 1]?.group !== group && (
+								<span className={styles.navGroup}>{t[group]}</span>
+							)}
+							<Link
+								href={localeHref(locale, path)}
+								aria-current={
+									pathname === path || (path !== "/admin" && pathname.startsWith(`${path}/`))
+										? "page"
+										: undefined
+								}
+								className={styles.navLink}
+								onClick={onNavigate}
+							>
+								<Icon size={18} aria-hidden="true" />
+								<span>{t[key]}</span>
+								{count && (
+									<b className={styles.navCount} data-tone={count.tone}>
+										{count.value}
+										<span className={styles.srOnly}> {t.waiting}</span>
+									</b>
+								)}
+							</Link>
+						</Fragment>
+					);
+				})}
+		</nav>
+	);
+}
 
 /** Gates administration children and supplies an independent responsive navigation shell. */
 function AuthorizedAdminShell({ children }: { children: ReactNode }) {
@@ -176,121 +257,112 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 
 	const active = navigation.find((item) => item.key === activeView) || navigation[0];
 	return (
-		<AdminContext.Provider value={{ locale, setLocale, user: session.user, permissions }}>
-			<div className={styles.shell} lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
-				<a className={styles.skip} href="#admin-main">
-					{t.skip}
-				</a>
-				<aside className={styles.sidebar} data-open={drawer.open || undefined}>
-					<div className={styles.sidebarBar}>
-						<Link className={styles.brand} href={localeHref(locale, "/admin")}>
-							<Brand locale={locale} />
-						</Link>
-						<button
-							ref={drawer.toggleRef}
-							type="button"
-							className={`${ui.iconButton} ${styles.menuToggle}`}
-							aria-label={t.openMenu}
-							aria-expanded={drawer.open}
-							aria-controls="admin-menu"
-							onClick={() => drawer.setOpen(true)}
-						>
-							<Menu size={22} aria-hidden="true" />
-						</button>
-					</div>
-					<button
-						type="button"
-						className={styles.drawerBackdrop}
-						tabIndex={-1}
-						aria-hidden="true"
-						onClick={() => drawer.close()}
-					/>
-					<div id="admin-menu" ref={drawer.panelRef} className={styles.drawer}>
-						<div className={styles.drawerHead}>
-							<Brand locale={locale} />
+		// Keyed by session and role: another session never reads this one's cached console data.
+		<AdminQueryProvider key={sessionId}>
+			<AdminContext.Provider value={{ locale, setLocale, user: session.user, permissions }}>
+				<div className={styles.shell} lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
+					<a className={styles.skip} href="#admin-main">
+						{t.skip}
+					</a>
+					<aside className={styles.sidebar} data-open={drawer.open || undefined}>
+						<div className={styles.sidebarBar}>
+							<Link className={styles.brand} href={localeHref(locale, "/admin")}>
+								<Brand locale={locale} />
+							</Link>
 							<button
+								ref={drawer.toggleRef}
 								type="button"
-								className={ui.iconButton}
-								aria-label={t.closeMenu}
-								onClick={() => drawer.close()}
+								className={`${ui.iconButton} ${styles.menuToggle}`}
+								aria-label={t.openMenu}
+								aria-expanded={drawer.open}
+								aria-controls="admin-menu"
+								onClick={() => drawer.setOpen(true)}
 							>
-								<X size={20} aria-hidden="true" />
+								<Menu size={22} aria-hidden="true" />
 							</button>
 						</div>
-						<span className={styles.navLabel}>{t.label}</span>
-						<nav aria-label={t.platform} className={styles.nav}>
-							{navigation
-								.filter((item) => canViewAdmin(permissions, item.key))
-								.map(({ key, path, icon: Icon }) => (
-									<Link
-										key={key}
-										href={localeHref(locale, `${path}`)}
-										aria-current={pathname === path ? "page" : undefined}
-										className={styles.navLink}
-										onClick={() => drawer.close(false)}
-									>
-										<Icon size={19} aria-hidden="true" />
-										<span>{t[key]}</span>
-										{pathname === path && <i />}
-									</Link>
-								))}
-						</nav>
-						<div className={styles.sidebarBottom}>
-							<Link className={styles.studioLink} href={localeHref(locale, "/admin/security")}>
-								{t.security}
-							</Link>
-							<Link className={styles.studioLink} href={localeHref(locale, "/studio")}>
-								<span>{t.studio}</span>
-								<ArrowUpRight size={17} aria-hidden="true" />
-							</Link>
-							<div className={styles.adminIdentity}>
-								<span className={styles.adminAvatar}>
-									<ShieldCheck size={20} aria-hidden="true" />
-								</span>
-								<div>
-									<strong dir="auto">{session.user.name}</strong>
-									<small>{t.administrator}</small>
-								</div>
-								<TooltipButton
+						<button
+							type="button"
+							className={styles.drawerBackdrop}
+							tabIndex={-1}
+							aria-hidden="true"
+							onClick={() => drawer.close()}
+						/>
+						<div id="admin-menu" ref={drawer.panelRef} className={styles.drawer}>
+							<div className={styles.drawerHead}>
+								<Brand locale={locale} />
+								<button
+									type="button"
 									className={ui.iconButton}
-									hint={t.logout}
-									aria-label={t.logout}
-									disabled={signingOut}
-									onClick={() => void logout()}
+									aria-label={t.closeMenu}
+									onClick={() => drawer.close()}
 								>
-									<LogOut size={17} />
-								</TooltipButton>
+									<X size={20} aria-hidden="true" />
+								</button>
 							</div>
-							{signoutError && (
-								<p className={ui.error} role="alert">
-									{t.sessionError}
-								</p>
-							)}
-						</div>
-					</div>
-				</aside>
-				<div className={styles.workspace}>
-					<header className={styles.topbar}>
-						<div>
-							<ShieldCheck size={16} aria-hidden="true" />
-							<span>{t.platform}</span>
-							<span className={styles.breadcrumb}>/</span>
-							<strong>{t[active.key]}</strong>
-						</div>
-						<div className={styles.topbarTools}>
-							<LanguageSwitch
+							<ConsoleNav
 								locale={locale}
-								onChange={setLocale}
-								label={locale === "ar" ? "لغة الواجهة" : "Interface language"}
+								permissions={permissions}
+								pathname={pathname}
+								onNavigate={() => drawer.close(false)}
 							/>
+							<div className={styles.sidebarBottom}>
+								<Link className={styles.studioLink} href={localeHref(locale, "/admin/security")}>
+									{t.security}
+								</Link>
+								<Link className={styles.studioLink} href={localeHref(locale, "/studio")}>
+									<span>{t.studio}</span>
+									<ArrowUpRight size={17} aria-hidden="true" />
+								</Link>
+								<div className={styles.adminIdentity}>
+									<span className={styles.adminAvatar}>
+										<ShieldCheck size={20} aria-hidden="true" />
+									</span>
+									<div>
+										<strong dir="auto">{session.user.name}</strong>
+										<small>{t.administrator}</small>
+									</div>
+									<TooltipButton
+										className={ui.iconButton}
+										hint={t.logout}
+										aria-label={t.logout}
+										disabled={signingOut}
+										onClick={() => void logout()}
+									>
+										<LogOut size={17} />
+									</TooltipButton>
+								</div>
+								{signoutError && (
+									<p className={ui.error} role="alert">
+										{t.sessionError}
+									</p>
+								)}
+							</div>
 						</div>
-					</header>
-					<main className={styles.main} id="admin-main" tabIndex={-1}>
-						{children}
-					</main>
+					</aside>
+					<div className={styles.workspace}>
+						<header className={styles.topbar}>
+							<div>
+								<ShieldCheck size={16} aria-hidden="true" />
+								<span>{t.platform}</span>
+								<span className={styles.breadcrumb}>/</span>
+								<strong>{t[active.key]}</strong>
+							</div>
+							<div className={styles.topbarTools}>
+								<LanguageSwitch
+									locale={locale}
+									onChange={setLocale}
+									label={locale === "ar" ? "لغة الواجهة" : "Interface language"}
+								/>
+							</div>
+						</header>
+						<main className={styles.main} id="admin-main" tabIndex={-1}>
+							{children}
+						</main>
+					</div>
 				</div>
-			</div>
-		</AdminContext.Provider>
+			</AdminContext.Provider>
+		</AdminQueryProvider>
 	);
 }
 

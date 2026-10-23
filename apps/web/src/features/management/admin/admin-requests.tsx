@@ -5,29 +5,49 @@ import {
 	dataRequestTransitions,
 	dataRequestTypes,
 } from "@ichnara/contracts";
+import { Inbox, Plus } from "lucide-react";
 import Link from "next/link";
 import { type FormEvent, useRef, useState } from "react";
 import { ButtonContent } from "../../../components/ui/button-content";
-import { SelectControl } from "../../../components/ui/select-control";
 import { ApiError, api, apiOrigin } from "../../../lib/api";
 import { localeHref } from "../../../lib/locale";
 import { date, errorText } from "../shared";
-import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { AdminDialog } from "./admin-dialog";
-import { ReadState, useAdminData } from "./admin-directory";
-import fields from "./operations.module.css";
-import layout from "./reports.module.css";
+import { useAdminData, useAdminList, useAdminRefresh } from "./admin-query";
 import { requestsCopy } from "./requests-copy";
+import {
+	type Column,
+	DataTable,
+	FilterSelect,
+	KeyValues,
+	PageHeader,
+	Panel,
+	RecordState,
+	StatusBadge,
+	Toolbar,
+	ui,
+} from "./ui/console";
+
+type RequestPage = { items: DataRequest[]; nextCursor: string | null; dueDays: number };
+const statusTone = {
+	received: "warning",
+	in_progress: "info",
+	completed: "success",
+	rejected: "neutral",
+} as const;
+const isOverdue = (row: DataRequest) =>
+	(row.status === "received" || row.status === "in_progress") &&
+	new Date(row.dueAt).getTime() < Date.now();
 
 /** Credentials are per action and cleared after every request and dialog dismissal. */
 export function AdminRequests({ id }: { id?: string }) {
+	const refresh = useAdminRefresh();
 	const { locale, permissions } = useAdminSession(),
 		t = requestsCopy[locale];
 	const [status, setStatus] = useState(""),
 		[type, setType] = useState(""),
-		[overdue, setOverdue] = useState(false),
-		[cursor, setCursor] = useState<string | null>(null);
+		[overdue, setOverdue] = useState("");
 	const [operation, setOperation] = useState<"create" | "status" | "subject" | "export" | null>(
 			null,
 		),
@@ -42,12 +62,16 @@ export function AdminRequests({ id }: { id?: string }) {
 	if (status) q.set("status", status);
 	if (type) q.set("type", type);
 	if (overdue) q.set("overdue", "true");
-	if (cursor) q.set("cursor", cursor);
-	const state = useAdminData<
-		DataRequest | { items: DataRequest[]; nextCursor: string | null; dueDays: number }
-	>(id ? `/api/admin/requests/${id}` : `/api/admin/requests?${q}`, locale);
-	const detail = state.data && "id" in state.data ? state.data : null,
-		page = state.data && "items" in state.data ? state.data : null;
+	const list = useAdminList<DataRequest, RequestPage>(
+		id ? null : `/api/admin/requests?${q}`,
+		"cursor",
+		locale,
+	);
+	const state = useAdminData<DataRequest>(
+		id ? `/api/admin/requests/${encodeURIComponent(id)}` : null,
+		locale,
+	);
+	const detail = id ? state.data : null;
 	function choose(value: NonNullable<typeof operation>) {
 		setOperation(value);
 		setFormType("export");
@@ -111,7 +135,7 @@ export function AdminRequests({ id }: { id?: string }) {
 			}
 			setOperation(null);
 			setMessage(t.saved);
-			state.reload();
+			refresh();
 		} catch (e) {
 			setFailure(
 				e instanceof ApiError && e.code in t ? t[e.code as keyof typeof t] : errorText(e, locale),
@@ -121,151 +145,203 @@ export function AdminRequests({ id }: { id?: string }) {
 			setBusy(false);
 		}
 	}
+	const filtered = Boolean(status || type || overdue);
+	const href = (row: DataRequest) => localeHref(locale, `/admin/requests/${row.id}`);
+	const columns: Column<DataRequest>[] = [
+		{
+			key: "request",
+			header: t.request,
+			primary: true,
+			cell: (row) => (
+				<div className={ui.primaryText}>
+					<Link className={ui.cellLink} href={href(row)}>
+						{t[row.type]}
+					</Link>
+					<span dir="ltr">{row.email}</span>
+				</div>
+			),
+		},
+		{
+			key: "status",
+			header: t.status,
+			cell: (row) => (
+				<span className={ui.titleRow}>
+					<StatusBadge tone={statusTone[row.status]}>{t[row.status]}</StatusBadge>
+					{isOverdue(row) && <StatusBadge tone="danger">{t.overdueBadge}</StatusBadge>}
+				</span>
+			),
+		},
+		{
+			key: "due",
+			header: t.due,
+			cell: (row) => <span className={ui.muted}>{date(row.dueAt, locale)}</span>,
+		},
+		{
+			key: "received",
+			header: t.receivedAt,
+			cell: (row) => <span className={ui.muted}>{date(row.createdAt, locale)}</span>,
+		},
+	];
+	const canHandle = permissions.includes("request.handle");
 	return (
-		<section className={`${layout.page} ${fields.page}`}>
-			<h1>{id ? t.details : t.title}</h1>
-			<p>{t.intro}</p>
-			<p>{t.duePolicy}</p>
-			{message && <p role="status">{message}</p>}
+		<section className={ui.page}>
+			<PageHeader
+				back={id ? { href: localeHref(locale, "/admin/requests"), label: t.title } : undefined}
+				title={id ? (detail ? t[detail.type] : t.details) : t.title}
+				description={id ? undefined : t.intro}
+				badges={
+					detail && (
+						<>
+							<StatusBadge tone={statusTone[detail.status]}>{t[detail.status]}</StatusBadge>
+							{isOverdue(detail) && <StatusBadge tone="danger">{t.overdueBadge}</StatusBadge>}
+						</>
+					)
+				}
+				actions={
+					id
+						? detail && (
+								<>
+									{canHandle && dataRequestTransitions[detail.status].length > 0 && (
+										<button
+											type="button"
+											className={ui.buttonPrimary}
+											onClick={() => choose("status")}
+										>
+											{t.save}
+										</button>
+									)}
+									{canHandle && detail.status === "in_progress" && !detail.subjectVerifiedAt && (
+										<button type="button" className={ui.button} onClick={() => choose("subject")}>
+											{t.verify}
+										</button>
+									)}
+									{permissions.includes("request.export") &&
+										detail.type === "export" &&
+										detail.status === "in_progress" &&
+										detail.userId && (
+											<button type="button" className={ui.button} onClick={() => choose("export")}>
+												{t.download}
+											</button>
+										)}
+								</>
+							)
+						: canHandle && (
+								<button type="button" className={ui.buttonPrimary} onClick={() => choose("create")}>
+									<Plus size={16} aria-hidden="true" />
+									{t.create}
+								</button>
+							)
+				}
+			/>
+			{message && (
+				<p className={ui.banner} role="status">
+					{message}
+				</p>
+			)}
+			{!id && list.first && (
+				<p className={ui.banner} data-tone="info">
+					{t.dueIn.replace("{days}", String(list.first.dueDays))} {t.duePolicy}
+				</p>
+			)}
 			{id ? (
-				<Link href={localeHref(locale, "/admin/requests")}>{t.back}</Link>
-			) : (
-				<>
-					<div className={layout.filters}>
-						<div>
-							<span>{t.status}</span>
-							<SelectControl
-								label={t.status}
-								value={status}
-								onChange={(v) => {
-									setStatus(v);
-									setCursor(null);
-								}}
-								options={[
-									{ value: "", label: t.all },
-									...dataRequestStatuses.map((v) => ({ value: v, label: t[v] })),
-								]}
-							/>
+				<RecordState state={state} locale={locale}>
+					{detail && (
+						<div className={ui.grid2}>
+							<div className={ui.stack}>
+								<Panel title={t.handling}>
+									{detail.notes ? (
+										<p className={ui.message} dir="auto">
+											{detail.notes}
+										</p>
+									) : (
+										<p className={ui.muted}>—</p>
+									)}
+								</Panel>
+								<p className={ui.banner} data-tone="info">
+									{t.closureWarning}
+								</p>
+								{detail.type === "export" && (
+									<p className={ui.banner} data-tone="info">
+										{t.exportWarning}
+									</p>
+								)}
+							</div>
+							<Panel title={t.details}>
+								<KeyValues
+									items={[
+										{ label: t.email, value: <span dir="ltr">{detail.email}</span> },
+										{ label: t.type, value: t[detail.type] },
+										{ label: t.receivedAt, value: date(detail.createdAt, locale) },
+										{ label: t.due, value: date(detail.dueAt, locale) },
+										{
+											label: t.subject,
+											value: detail.userId ?? t.unverified,
+											mono: Boolean(detail.userId),
+										},
+										{
+											label: t.verifiedAt,
+											value: detail.subjectVerifiedAt
+												? date(detail.subjectVerifiedAt, locale)
+												: t.none,
+										},
+										{ label: t.id, value: detail.id, mono: true },
+									]}
+								/>
+							</Panel>
 						</div>
-						<div>
-							<span>{t.type}</span>
-							<SelectControl
-								label={t.type}
-								value={type}
-								onChange={(v) => {
-									setType(v);
-									setCursor(null);
-								}}
-								options={[
-									{ value: "", label: t.all },
-									...dataRequestTypes.map((v) => ({ value: v, label: t[v] })),
-								]}
-							/>
-						</div>
-						<label>
-							<input
-								type="checkbox"
-								checked={overdue}
-								onChange={(e) => {
-									setOverdue(e.target.checked);
-									setCursor(null);
-								}}
-							/>
-							{t.overdue}
-						</label>
-					</div>
-					{permissions.includes("request.handle") && (
-						<button type="button" className="primary" onClick={() => choose("create")}>
-							{t.create}
-						</button>
 					)}
-				</>
-			)}
-			<ReadState state={state}>{null}</ReadState>
-			{page && (
-				<>
-					<p>
-						{page.dueDays} — {t.duePolicy}
-					</p>
-					{!page.items.length && <p>{t.empty}</p>}
-					{page.items.map((row) => (
-						<article className={styles.card} key={row.id}>
-							<Link href={localeHref(locale, `/admin/requests/${row.id}`)}>
-								<bdi>{row.id}</bdi>
-							</Link>
-							<p>
-								{t[row.type]} · {t[row.status]}
-							</p>
-							<p>
-								{t.due}: {date(row.dueAt, locale)}
-							</p>
-							<bdi>{row.email}</bdi>
-						</article>
-					))}
-					<div className={styles.actions}>
-						<button type="button" disabled={!cursor} onClick={() => setCursor(null)}>
-							{t.first}
-						</button>
-						<button
-							type="button"
-							disabled={!page.nextCursor}
-							onClick={() => setCursor(page.nextCursor)}
-						>
-							{t.next}
-						</button>
-					</div>
-				</>
-			)}
-			{detail && (
-				<>
-					<article className={styles.card}>
-						<p>
-							<bdi>{detail.id}</bdi>
-						</p>
-						<p>
-							{t[detail.type]} · {t[detail.status]}
-						</p>
-						<p>
-							{t.email}: <bdi>{detail.email}</bdi>
-						</p>
-						<p>
-							{t.due}: {date(detail.dueAt, locale)}
-						</p>
-						<p>
-							{t.subject}: <bdi>{detail.userId ?? t.unverified}</bdi>
-						</p>
-						<p>
-							{t.verifiedAt}:{" "}
-							{detail.subjectVerifiedAt ? date(detail.subjectVerifiedAt, locale) : t.none}
-						</p>
-						<p dir="auto">{detail.notes}</p>
-					</article>
-					<p>{t.closureWarning}</p>
-					<p>{t.exportWarning}</p>
-					<div className={styles.actions}>
-						{permissions.includes("request.handle") &&
-							dataRequestTransitions[detail.status].length > 0 && (
-								<button type="button" onClick={() => choose("status")}>
-									{t.save}
-								</button>
-							)}
-						{permissions.includes("request.handle") &&
-							detail.status === "in_progress" &&
-							!detail.subjectVerifiedAt && (
-								<button type="button" onClick={() => choose("subject")}>
-									{t.verify}
-								</button>
-							)}
-						{permissions.includes("request.export") &&
-							detail.type === "export" &&
-							detail.status === "in_progress" &&
-							detail.userId && (
-								<button type="button" onClick={() => choose("export")}>
-									{t.download}
-								</button>
-							)}
-					</div>
-				</>
+				</RecordState>
+			) : (
+				<Panel padded={false}>
+					<Toolbar
+						locale={locale}
+						active={filtered}
+						onClear={() => {
+							setStatus("");
+							setType("");
+							setOverdue("");
+						}}
+					>
+						<FilterSelect
+							label={t.status}
+							value={status}
+							onChange={setStatus}
+							options={[
+								{ value: "", label: t.all },
+								...dataRequestStatuses.map((v) => ({ value: v, label: t[v] })),
+							]}
+						/>
+						<FilterSelect
+							label={t.type}
+							value={type}
+							onChange={setType}
+							options={[
+								{ value: "", label: t.all },
+								...dataRequestTypes.map((v) => ({ value: v, label: t[v] })),
+							]}
+						/>
+						<FilterSelect
+							label={t.overdueBadge}
+							value={overdue}
+							onChange={setOverdue}
+							options={[
+								{ value: "", label: t.all },
+								{ value: "true", label: t.overdue },
+							]}
+						/>
+					</Toolbar>
+					<DataTable
+						label={t.title}
+						columns={columns}
+						rows={list.items}
+						rowKey={(row) => row.id}
+						rowHref={href}
+						state={list}
+						locale={locale}
+						filtered={filtered}
+						empty={{ icon: Inbox, title: t.noRequests }}
+					/>
+				</Panel>
 			)}
 			{operation && (
 				<AdminDialog
@@ -283,72 +359,101 @@ export function AdminRequests({ id }: { id?: string }) {
 					headingRef={heading}
 					onClose={() => setOperation(null)}
 				>
-					<form onSubmit={submit} className={fields.form}>
+					<form onSubmit={submit} className={ui.form}>
 						{operation === "create" && (
 							<>
-								<label className="field">
+								<label className={ui.field}>
 									{t.email}
-									<input name="email" type="email" required maxLength={254} dir="ltr" />
+									<input
+										className={ui.input}
+										name="email"
+										type="email"
+										required
+										maxLength={254}
+										dir="ltr"
+									/>
 								</label>
 								<input type="hidden" name="type" value={formType} />
-								<div>
-									<span>{t.type}</span>
-									<SelectControl
-										label={t.type}
-										value={formType}
-										onChange={setFormType}
-										options={dataRequestTypes.map((v) => ({ value: v, label: t[v] }))}
-									/>
-								</div>
+								<FilterSelect
+									label={t.type}
+									value={formType}
+									onChange={setFormType}
+									options={dataRequestTypes.map((v) => ({ value: v, label: t[v] }))}
+								/>
 							</>
 						)}
 						{operation === "subject" && (
 							<>
-								<p>{t.verifyWarning}</p>
-								<label className="field">
+								<p className={ui.description}>{t.verifyWarning}</p>
+								<label className={ui.field}>
 									{t.subject}
-									<input name="userId" required maxLength={128} dir="ltr" />
+									<input className={ui.input} name="userId" required maxLength={128} dir="ltr" />
 								</label>
-								<label className="field">
+								<label className={ui.field}>
 									{t.confirm}
-									<input name="confirmation" required maxLength={128} dir="ltr" />
+									<input
+										className={ui.input}
+										name="confirmation"
+										required
+										maxLength={128}
+										dir="ltr"
+									/>
 								</label>
-								<label className="field">
+								<label className={ui.field}>
 									{t.evidence}
-									<textarea name="evidence" required minLength={10} maxLength={500} dir="auto" />
+									<textarea
+										className={ui.input}
+										name="evidence"
+										required
+										minLength={10}
+										maxLength={500}
+										dir="auto"
+									/>
 								</label>
 							</>
 						)}
 						{operation === "status" && detail && (
 							<>
-								<p>{t.closureWarning}</p>
+								<p className={ui.description}>{t.closureWarning}</p>
 								<input type="hidden" name="status" value={formStatus} />
-								<div>
-									<span>{t.status}</span>
-									<SelectControl
-										label={t.status}
-										value={formStatus}
-										onChange={setFormStatus}
-										options={dataRequestTransitions[detail.status].map((v) => ({
-											value: v,
-											label: t[v],
-										}))}
-									/>
-								</div>
-								<label className="field">
+								<FilterSelect
+									label={t.status}
+									value={formStatus}
+									onChange={setFormStatus}
+									options={dataRequestTransitions[detail.status].map((v) => ({
+										value: v,
+										label: t[v],
+									}))}
+								/>
+								<label className={ui.field}>
 									{t.notes}
-									<textarea name="notes" required minLength={10} maxLength={500} dir="auto" />
+									<textarea
+										className={ui.input}
+										name="notes"
+										required
+										minLength={10}
+										maxLength={500}
+										dir="auto"
+									/>
 								</label>
 							</>
 						)}
-						{operation === "export" && <p>{t.exportWarning}</p>}
-						<label className="field">
+						{operation === "export" && <p className={ui.description}>{t.exportWarning}</p>}
+						<label className={ui.field}>
 							{t.reason}
-							<textarea name="reason" required minLength={10} maxLength={500} dir="auto" />
+							<textarea
+								className={ui.input}
+								name="reason"
+								required
+								minLength={10}
+								maxLength={500}
+								dir="auto"
+							/>
 						</label>
-						<label className="field">
+						<label className={ui.field}>
 							{t.password}
 							<input
+								className={ui.input}
 								name="password"
 								type="password"
 								required
@@ -356,8 +461,12 @@ export function AdminRequests({ id }: { id?: string }) {
 								maxLength={1024}
 							/>
 						</label>
-						{failure && <p role="alert">{failure}</p>}
-						<button className="primary" type="submit" disabled={busy}>
+						{failure && (
+							<p className={ui.banner} data-tone="danger" role="alert">
+								{failure}
+							</p>
+						)}
+						<button className={ui.buttonPrimary} type="submit" disabled={busy}>
 							<ButtonContent loading={busy}>
 								{operation === "export" ? t.download : t.save}
 							</ButtonContent>

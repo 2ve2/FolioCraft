@@ -1,5 +1,4 @@
 import type { Draft } from "@ichnara/contracts";
-import type { text } from "./copy";
 
 export type Page<T> = { items: T[]; hasMore: boolean; limit: number; offset: number };
 export type Inquiry = {
@@ -49,4 +48,3 @@ export type AdminUser = {
 	role?: string | null;
 	banned?: boolean | null;
 };
-export type Counts = Record<keyof typeof text.en.counts, number>;

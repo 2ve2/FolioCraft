@@ -55,18 +55,40 @@ const nativePermissions: Record<string, Permission> = {
 };
 const nativeReads = new Set(["/admin/list-users", "/admin/get-user", "/admin/list-user-sessions"]);
 
+const profileInput = z.object({ name: z.string().trim().min(1).max(80) }).strict();
+
 type TotpHookContext = { totpSignInAttempt?: boolean; sensitiveAudit?: SensitiveAudit };
 
 export const authHooks = {
 	/** Enforces declared internal reads and the complete security pipeline for allowed sensitive mutations. */
 	before: createAuthMiddleware(async (ctx) => {
 		const needsMail =
-			["/request-password-reset", "/send-verification-email"].includes(ctx.path) ||
+			["/request-password-reset", "/send-verification-email", "/change-email"].includes(ctx.path) ||
 			(requireEmailVerification && ["/sign-up/email", "/sign-in/email"].includes(ctx.path));
 		if (needsMail && !mailConfigured)
 			throw new APIError("SERVICE_UNAVAILABLE", {
 				code: "MAIL_UNAVAILABLE",
 				message: "Email delivery is not configured",
+			});
+
+		// Account self-service: the profile accepts a bounded name only, and deletion always asks for
+		// the current password instead of trusting a recent session.
+		if (ctx.path === "/update-user") {
+			const profile = profileInput.safeParse(ctx.body ?? {});
+			if (!profile.success)
+				throw new APIError("BAD_REQUEST", {
+					code: "INVALID_PROFILE",
+					message: "Only a name of 1 to 80 characters can be changed",
+				});
+			return { context: { body: profile.data } };
+		}
+		if (
+			ctx.path === "/delete-user" &&
+			(typeof ctx.body?.password !== "string" || !ctx.body.password)
+		)
+			throw new APIError("BAD_REQUEST", {
+				code: "PASSWORD_REQUIRED",
+				message: "Confirm deletion with your password",
 			});
 
 		if (ctx.path.startsWith("/two-factor/verify-") && ctx.body?.trustDevice === true)

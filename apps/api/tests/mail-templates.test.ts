@@ -5,6 +5,7 @@ import {
 	AUTH_LINK_MINUTES,
 	authMailContent,
 	EMAIL_LOGOS,
+	mailKindForToken,
 	mailLocale,
 } from "../src/lib/auth/mail-templates";
 
@@ -66,4 +67,39 @@ test("email logo files exist at twice their declared display size", () => {
 		expect(Math.round(png.readUInt32BE(16) / 2)).toBe(logo.width);
 		expect(Math.round(png.readUInt32BE(20) / 2)).toBe(logo.height);
 	}
+});
+
+test("email-change approval names the escaped new address and its own ignore advice", () => {
+	for (const locale of ["en", "ar"] as const) {
+		const mail = authMailContent(
+			"change-email",
+			locale,
+			"Owner",
+			"https://api.example.test/api/auth/verify-email?token=t",
+			"https://web.example.test",
+			"new<x>@example.com",
+		);
+		expect(mail.html).toContain("new&lt;x&gt;@example.com");
+		expect(mail.html).not.toContain("new<x>@example.com");
+		expect(mail.text).toContain("new<x>@example.com");
+		expect(mail.html).not.toContain("{email}");
+		expect(mail.text).toContain(locale === "ar" ? "غيّر كلمة مرورك" : "change your password");
+	}
+});
+
+test("a verification link for a changed address uses the new-email wording", () => {
+	const token = (payload: object) =>
+		`header.${Buffer.from(JSON.stringify(payload)).toString("base64url")}.signature`;
+	expect(mailKindForToken(token({ requestType: "change-email-verification" }))).toBe("new-email");
+	expect(mailKindForToken(token({ email: "a@example.com" }))).toBe("verify");
+	expect(mailKindForToken("not-a-token")).toBe("verify");
+	const mail = authMailContent(
+		"new-email",
+		"en",
+		"Owner",
+		"https://api.example.test/api/auth/verify-email?token=t",
+		"https://web.example.test",
+	);
+	expect(mail.subject).toBe("Confirm your new email — Ichnara");
+	expect(mail.text).not.toContain("activate");
 });

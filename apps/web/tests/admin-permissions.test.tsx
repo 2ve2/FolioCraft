@@ -3,8 +3,8 @@ import { canViewAdmin, isStaff, permissionsFor } from "@ichnara/contracts/admin-
 import { renderToStaticMarkup } from "react-dom/server";
 import { AdminContext } from "../src/features/management/admin/admin-context";
 import { adminCopy } from "../src/features/management/admin/admin-copy";
-import { AdminManagementDialogs } from "../src/features/management/admin/admin-management-dialogs";
 import { adminSecurityCopy } from "../src/features/management/admin/admin-security-copy";
+import { SiteModerationDialog } from "../src/features/management/admin/site-moderation-dialog";
 
 test("console navigation follows server permission grants and both locales share copy keys", () => {
 	expect(canViewAdmin(permissionsFor("support"), "audit")).toBe(false);
@@ -15,7 +15,7 @@ test("console navigation follows server permission grants and both locales share
 	expect(Object.keys(adminCopy.ar).sort()).toEqual(Object.keys(adminCopy.en).sort());
 });
 
-test("read-only roles cannot render moderation actions and sensitive account controls remain unavailable", () => {
+test("read-only roles cannot render moderation actions", () => {
 	const details = {
 		id: "site",
 		slug: "fixture",
@@ -31,10 +31,8 @@ test("read-only roles cannot render moderation actions and sensitive account con
 			reason: "",
 			busy: false,
 			error: "",
-			selected: { id: "member", name: "Member", email: "m***@example.com" },
 			closeSiteDetails: () => {},
-			closeUser: () => {},
-		} as unknown as Parameters<typeof AdminManagementDialogs>[0]["controller"];
+		} as unknown as Parameters<typeof SiteModerationDialog>[0]["controller"];
 		const html = renderToStaticMarkup(
 			<AdminContext.Provider
 				value={{
@@ -44,11 +42,10 @@ test("read-only roles cannot render moderation actions and sensitive account con
 					permissions: permissionsFor(role),
 				}}
 			>
-				<AdminManagementDialogs controller={controller} locale="en" currentUserId="fixture" />
+				<SiteModerationDialog controller={controller} locale="en" />
 			</AdminContext.Provider>,
 		);
 		expect(html.includes("textarea")).toBe(role === "owner" || role === "moderator");
-		expect(html).toContain(adminCopy.en.securityPending);
 		expect(html.includes('type="password"')).toBe(role === "owner" || role === "moderator");
 		expect(html).not.toContain('role="combobox"');
 	}
@@ -72,9 +69,8 @@ test("site moderation asks for the operator password in both locales and disable
 			password: "",
 			busy: false,
 			error: "",
-			selected: null,
 			closeSiteDetails: () => {},
-		} as unknown as Parameters<typeof AdminManagementDialogs>[0]["controller"];
+		} as unknown as Parameters<typeof SiteModerationDialog>[0]["controller"];
 		const html = renderToStaticMarkup(
 			<AdminContext.Provider
 				value={{
@@ -84,7 +80,7 @@ test("site moderation asks for the operator password in both locales and disable
 					permissions: permissionsFor("moderator"),
 				}}
 			>
-				<AdminManagementDialogs controller={controller} locale={locale} currentUserId="actor" />
+				<SiteModerationDialog controller={controller} locale={locale} />
 			</AdminContext.Provider>,
 		);
 		expect(html).toContain(adminCopy[locale].operatorPassword);

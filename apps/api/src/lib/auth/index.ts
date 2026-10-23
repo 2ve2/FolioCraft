@@ -7,9 +7,10 @@ import { env, requireEmailVerification } from "../../config/env";
 import { db } from "../../db";
 import * as schema from "../../db/schema/auth";
 import { accessControl, accessRoles } from "./access";
+import { accountDeletion } from "./account-deletion";
 import { authHooks } from "./hooks";
 import { sendAuthMail } from "./mail";
-import { AUTH_LINK_MINUTES } from "./mail-templates";
+import { AUTH_LINK_MINUTES, mailKindForToken } from "./mail-templates";
 
 export const auth = betterAuth({
 	appName: "Ichnara",
@@ -53,9 +54,24 @@ export const auth = betterAuth({
 		autoSignInAfterVerification: false,
 		expiresIn: AUTH_LINK_MINUTES * 60,
 
-		/** Delivers the native verification link using the configured project mail transport. */
-		sendVerificationEmail: async ({ user, url }) => {
-			await sendAuthMail(user.email, user.name, url, "verify");
+		/** Delivers the native verification link (sign-up, or a new address after an approved change). */
+		sendVerificationEmail: async ({ user, url, token }) => {
+			await sendAuthMail(user.email, user.name, url, mailKindForToken(token));
+		},
+	},
+	user: {
+		changeEmail: {
+			enabled: true,
+			// A verified account first approves the change from its current address, then confirms
+			// the new one; an unverified account confirms the new address directly.
+			sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
+				await sendAuthMail(user.email, user.name, url, "change-email", newEmail);
+			},
+		},
+		deleteUser: {
+			enabled: true,
+			beforeDelete: accountDeletion.beforeDelete,
+			afterDelete: accountDeletion.afterDelete,
 		},
 	},
 	hooks: authHooks,
