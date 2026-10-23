@@ -2,6 +2,7 @@ import { collectAssetIds, newId, type Project } from "@ichnara/contracts";
 import { LayoutGrid, Plus, Trash2 } from "lucide-react";
 import { Field } from "../../../components/ui/field";
 import { TooltipButton } from "../../../components/ui/tooltip-button";
+import { withHttps } from "../../../lib/web-address";
 import { ProjectExtras } from "../../content/project-extras";
 import { moveItem } from "../../content/reorder";
 import { copy } from "../copy";
@@ -154,6 +155,10 @@ export function ProjectsSection({
 							placeholder="https://"
 							value={project.url}
 							onChange={(e) => changeProject(project.id, "url", e.target.value)}
+							onBlur={(e) => {
+								const url = withHttps(e.target.value);
+								if (url !== e.target.value) changeProject(project.id, "url", url);
+							}}
 						/>
 					</Field>
 					<div className="content-actions">

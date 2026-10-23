@@ -1,3 +1,4 @@
+import { withHttps } from "../../lib/web-address";
 /** Accessible native field for localized content editing. */
 export function Input({
 	label,
@@ -40,6 +41,14 @@ export function Input({
 					maxLength={max}
 					value={value}
 					onChange={(e) => onChange(e.target.value)}
+					onBlur={
+						type === "url"
+							? (e) => {
+									const address = withHttps(e.target.value);
+									if (address !== e.target.value) onChange(address);
+								}
+							: undefined
+					}
 				/>
 			)}
 		</label>

@@ -1,6 +1,7 @@
 import { collectAssetIds, type Draft } from "@ichnara/contracts";
 import { FileText } from "lucide-react";
 import { Field } from "../../../components/ui/field";
+import { withHttps } from "../../../lib/web-address";
 import { AssetPicker } from "../../assets/asset-picker";
 import { copy } from "../copy";
 import type { EditorSectionProps } from "../types";
@@ -13,6 +14,14 @@ export function ProfileSection({ draft, site, locale, update }: EditorSectionPro
 	/** Changes one profile field while retaining the remaining draft. */
 	const updateProfile = (key: keyof Draft["profile"], value: string | boolean) =>
 		update({ ...draft, profile: { ...profile, [key]: value } });
+	const setLinkUrl = (index: number, url: string) =>
+		update((d) => ({
+			...d,
+			profile: {
+				...d.profile,
+				socialLinks: d.profile.socialLinks?.map((x, i) => (i === index ? { ...x, url } : x)),
+			},
+		}));
 
 	return (
 		<section className="editor-card" id="studio-profile">
@@ -72,6 +81,10 @@ export function ProfileSection({ draft, site, locale, update }: EditorSectionPro
 						placeholder="https://"
 						value={profile.website}
 						onChange={(e) => updateProfile("website", e.target.value)}
+						onBlur={(e) => {
+							const website = withHttps(e.target.value);
+							if (website !== e.target.value) updateProfile("website", website);
+						}}
 					/>
 				</Field>
 			</div>
@@ -121,18 +134,11 @@ export function ProfileSection({ draft, site, locale, update }: EditorSectionPro
 							dir="ltr"
 							type="url"
 							value={link.url}
-							onChange={(e) => {
-								const url = e.target.value;
-								update((d) => ({
-									...d,
-									profile: {
-										...d.profile,
-										socialLinks: d.profile.socialLinks?.map((x, i) =>
-											i === index ? { ...x, url } : x,
-										),
-									},
-								}));
+							onBlur={(e) => {
+								const url = withHttps(e.target.value);
+								if (url !== e.target.value) setLinkUrl(index, url);
 							}}
+							onChange={(e) => setLinkUrl(index, e.target.value)}
 						/>
 					</Field>
 					<button
