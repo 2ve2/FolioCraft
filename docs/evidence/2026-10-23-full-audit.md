@@ -95,6 +95,7 @@ Request: "are you sure everything is fine? Do a comprehensive analysis of the st
 8. **Loading and error screens.** The wordmark draws the localized word with its measured bounds, since both v2 lockups list the emblem first and the word second. The alert icon is inline with the title. A new test checks the signature draws the word of each language.
 9. **Phone overview.** Two metric cards per row at ≤760 px.
 10. **Studio pager.** It is hidden when there is only one page. New test.
+11. **Second-pass contrast.** Five more colour pairs were darkened, with the same hues.
 
 ## Accepted exceptions (not changed)
 
@@ -105,7 +106,66 @@ Request: "are you sure everything is fine? Do a comprehensive analysis of the st
 
 ## Second pass (after fixes)
 
-In progress: the rerun of the crawl, contrast check, API probe and Playwright e2e is recorded here when it completes.
+- **Crawl** (180 views, build with fixes 1–6): 28 views noted, down from 67.
+  - No 429s, landmark findings, overflow or page errors.
+  - What remains: the expected 404 responses on the two not-found routes (12 views), the accepted targets below (8 views), and five more contrast pairs that the earlier failures had hidden:
+    - muted text on the studio preview panel, 4.37:1;
+    - the inactive device switch, 2.48:1;
+    - the preview link, 4.43:1;
+    - the `/p/` address prefix, 3.18:1;
+    - the console danger button, 4.38:1.
+  - Those five were darkened to 4.6–4.7:1 (fix 11). The axe contrast and landmark rerun on sign-in, the studio (content and settings), the console overview, a console site page and the Arabic terms page reports no violations.
+- **API probe**: 120 of 120 passed. Unknown fields now return 400. Median 3 ms, p95 7 ms (local).
+- **Loading/error screen**: the wordmark is drawn in full in both languages, and the alert icon sits beside the title. Screenshot: [audit-error-screen.png](../screenshots/audit-error-screen.png).
+- **Suites on the final head**:
+
+  | Check | Result |
+  |---|---|
+  | Typecheck | exit 0 |
+  | Biome | 483 files, clean |
+  | Web unit tests | 63 pass / 0 fail |
+  | API suite | 105 pass / 12 skip / 0 fail |
+  | Workers storage / mail | 8/8, 15/15 |
+  | `bun audit` | no vulnerabilities |
+  | Playwright e2e | 56 passed (2.7 min) |
+
+## Administration console deep pass
+
+The human then asked to apply this to the dashboard ("يب طبق هذا على الداش بورد").
+
+### Method
+
+The API suite already runs every role against every mounted administration endpoint, and that passed (above). This pass covered what the console shows each role and how it behaves.
+
+- **Role tour** (`work/audit-tools/console-tour.mjs`). Fictional local owner, moderator, support and analyst accounts, × Arabic/English × 1440/390 px × 13 console pages, 208 views.
+  - Each view records the visible navigation, any administration read the server refused, console errors, horizontal overflow, raw keys in the main region, and axe-core findings at 1440 px.
+- **Keyboard and dialogs** (`console-keyboard.mjs`), 164 checks:
+  - The skip link is the first Tab stop and moves focus into the main region.
+  - Every dialog opened from the notices, site, report, account, activity, data-request and security pages: focus moves in; the dialog has a name; 35 Tab/Shift+Tab presses stay inside; every field has a label; Escape closes it; focus returns to the opener.
+  - The phone menu opens with focus inside, and Escape closes it and returns focus to the menu button.
+- **States** (`console-states.mjs`), 12 checks. Each check simulates a failure in the browser only:
+  - a failed list read shows an alert with a retry that then loads the rows;
+  - a search with no match shows an empty state;
+  - a slow read shows loading rather than "no results";
+  - a failed permission read offers a retry.
+
+### Findings and fixes
+
+12. **Focus lost after the suspend dialog.** Closing it, from a site page or from a report's "take action", left focus on the page body. Its opener is disabled while the site loads, so the browser drops focus before the dialog can record it. The opener is now remembered when pressed and refocused after closing. The rerun passed 164 of 164.
+13. **Empty "unavailable" panel.** Support staff saw a site-history panel whose only content was "Unavailable with your permissions". It now appears only with `audit.read`.
+14. **Generic role label.** Every staff member was labelled "Administrator" in the sidebar. It now names the role (Owner, Moderator, Support, Analyst, with Arabic names in Arabic).
+15. **Misleading outage message.** When the permission read failed (for example a 503), the gate told an owner "This account does not have permission to manage the platform". It now says the server could not be reached and that nothing about the account changed, next to the retry button.
+
+### Result on the final build
+
+- Role tour: 208 views, 0 with refused reads, console errors, axe findings, overflow or unexpected raw keys. The staff matrix shows each permission's key as secondary text under its readable name, by design.
+- Each role's navigation matches its grants:
+  - owner: all nine pages;
+  - moderator: overview, accounts, sites, reports, notices, activity log;
+  - support: overview, accounts, sites, reports, data requests, notices;
+  - analyst: overview, accounts, sites, reports, notices, activity log, system.
+- Keyboard: 164 of 164. States: 12 of 12.
+- Screenshot board: [audit-console-roles.png](../screenshots/audit-console-roles.png). It shows the phone overview with two metrics per row, the readable activity log, the staff page with role names, and a support user's site page without the empty panel.
 
 ## Not verified
 

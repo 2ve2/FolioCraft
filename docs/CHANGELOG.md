@@ -2,6 +2,17 @@
 
 ## 2026-10-23 — Full audit: styles, UI/UX, APIs and tests
 - Human request: "are you sure everything is fine? Do a comprehensive analysis of the styles, UI/UX and everything, check the state of the APIs and run tests" ("هل انت متاكد كل شي تمام؟ ..."). Scope: baseline every suite on `main`; a black-box API probe (authorization, ownership, error contract, CORS, headers, public exposure, latency); a browser crawl of 30 routes in both languages at three widths with axe-core, overflow, target-size and language checks; a style review for dead selectors, unused tokens and contrast; fix what is found, then rerun everything. Fixes are committed one step at a time.
+- Fixes:
+  - API: strict request bodies; session reads exempt from Better Auth's global rule, which locked shared addresses out (see DECISIONS).
+  - Styles: dead selectors and 20 unused colour tokens removed; twelve colour pairs brought to WCAG AA.
+  - Accessibility: `main` landmarks for the studio and published pages; distinct legal nav names; 24 px link targets.
+  - Console: readable action and permission names in both languages.
+  - Screens: the loading/error wordmark (stale v2 view boxes) and the inline alert icon; two metrics per row on phones; no pager for single pages.
+- Dashboard deep pass (follow-up request "apply this to the dashboard"):
+  - Per-role tour, 208 views; keyboard and dialog checks, 164; state checks, 12.
+  - Fixes: focus return after the suspend dialog; the empty history panel hidden from roles without the activity log; the staff role named in the sidebar; an honest outage message instead of "no permission".
+- Checks on the final head: API 105 pass / 12 skip / 0 fail; web 63/0; Workers 8/8 and 15/15; typecheck 0; Biome clean; `bun audit` clean; Playwright e2e 56 passed; API probe 120/120; crawl 180 views with only expected 404s and accepted exceptions left.
+- Evidence: `docs/evidence/2026-10-23-full-audit.md`. Not deployed.
 
 ## 2026-10-23 — Console navigation order
 - Human request: reorder the dashboard sidebar tabs. New order: Overview; Users & content (accounts, sites); Trust & safety (reports, data requests); Operations (notices, activity log); Administration (staff, system). Reports and Data requests show waiting counts. The desktop menu-button visibility clash is fixed. Checks: web 60/0, typecheck 0, e2e 56 passed. Evidence: `docs/evidence/2026-10-23-console-redesign-account.md`.
