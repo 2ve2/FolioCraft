@@ -112,8 +112,9 @@ export const assetService = {
 
 	/** Verifies and copies immutable bytes before marking an owned asset ready. */
 	async complete(userId: string, siteId: string, id: string) {
-		let verifiedStaging: string | undefined;
-		const result = await db.transaction(async (tx) => {
+		// Validate under the site lock, then release it: provider verification and copying can take
+		// seconds and must not hold the owner's draft and publish operations or a database connection.
+		const checked = await db.transaction(async (tx) => {
 			await lockSite(tx, siteId, userId);
 			const [asset] = await tx
 				.select()
@@ -121,33 +122,55 @@ export const assetService = {
 				.where(ownedAsset(siteId, userId, id))
 				.for("update");
 			if (!asset) throw new ApiError(404, "NOT_FOUND");
-			if (asset.status === "ready") return dto(asset);
+			if (asset.status === "ready") return { ready: dto(asset) };
 			if (asset.status !== "pending") throw new ApiError(409, "ASSET_STATE_CONFLICT");
 			if (asset.expiresAt.getTime() < Date.now()) throw new ApiError(409, "UPLOAD_EXPIRED");
 			storage.assertConfigured();
-			const dimensions = await storage.verifyAndCopy(
-				asset.stagingKey,
-				asset.key,
-				asset.mime,
-				asset.size,
-			);
-			const [saved] = await tx
+			return { pending: asset };
+		});
+		if ("ready" in checked) return checked.ready;
+		const pending = checked.pending;
+		const dimensions = await storage.verifyAndCopy(
+			pending.stagingKey,
+			pending.key,
+			pending.mime,
+			pending.size,
+		);
+		const saved = await db.transaction(async (tx) => {
+			await lockSite(tx, siteId, userId);
+			const [current] = await tx
+				.select()
+				.from(assets)
+				.where(ownedAsset(siteId, userId, id))
+				.for("update");
+			// A concurrent completion already finished the same verified copy.
+			if (current?.status === "ready") return dto(current);
+			if (current?.status !== "pending") return undefined;
+			const [ready] = await tx
 				.update(assets)
 				.set({ status: "ready", ...dimensions, updatedAt: new Date() })
 				.where(eq(assets.id, id))
 				.returning();
-			verifiedStaging = asset.stagingKey;
-			return dto(saved);
+			return dto(ready);
 		});
+		if (!saved) {
+			// The upload was deleted while it was being copied: remove the copy so no unreferenced
+			// object outlives the deletion.
+			try {
+				await storage.delete(pending.key);
+			} catch {
+				console.error(JSON.stringify({ event: "asset_orphan_cleanup_failed" }));
+			}
+			throw new ApiError(409, "ASSET_STATE_CONFLICT");
+		}
 		// The verified copy is committed, so the staging upload is no longer needed. Best effort: a
 		// leftover object is only storage, and the owner cleanup route still removes it.
-		if (verifiedStaging)
-			try {
-				await storage.delete(verifiedStaging);
-			} catch {
-				console.error(JSON.stringify({ event: "asset_staging_cleanup_failed" }));
-			}
-		return result;
+		try {
+			await storage.delete(pending.stagingKey);
+		} catch {
+			console.error(JSON.stringify({ event: "asset_staging_cleanup_failed" }));
+		}
+		return saved;
 	},
 
 	/** Issues a short-lived private download for an owned ready asset. */

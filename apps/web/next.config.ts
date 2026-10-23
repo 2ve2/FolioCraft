@@ -28,13 +28,23 @@ const config: NextConfig = {
 		return [
 			...localeRedirects(),
 			{
+				source: "/brand/ichnara/ichnara-brand-kit-v1.3.zip",
+				destination: "/brand/ichnara/ichnara-brand-kit-v2.0.zip",
+				permanent: true,
+			},
+			{
+				source: "/brand/ichnara/ichnara-brand-kit-v1.2.zip",
+				destination: "/brand/ichnara/ichnara-brand-kit-v2.0.zip",
+				permanent: true,
+			},
+			{
 				source: "/brand/ichnara/ichnara-brand-kit-v1.1.zip",
-				destination: "/brand/ichnara/ichnara-brand-kit-v1.2.zip",
+				destination: "/brand/ichnara/ichnara-brand-kit-v2.0.zip",
 				permanent: true,
 			},
 			{
 				source: "/brand/ichnara/ichnara-brand-kit-v1.zip",
-				destination: "/brand/ichnara/ichnara-brand-kit-v1.2.zip",
+				destination: "/brand/ichnara/ichnara-brand-kit-v2.0.zip",
 				permanent: true,
 			},
 		];

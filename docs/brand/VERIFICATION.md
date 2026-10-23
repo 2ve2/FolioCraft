@@ -41,3 +41,25 @@ Review-only capital-I variants, font-derived Arabic studies, color contrast meas
 Human selected I1/A1/C1 and confirmed the Arabic spelling; current local product uses locale-specific Latin/Arabic outlined marks and accent #3F46C8. Later human feedback prompted an Arabic-only optical correction: actual gap317.25→60 source units, cropped Arabic viewBoxes. Twelve Latin lockup/wordmark SVG/PNG files are unchanged from the accepted English preview. Human selection is product approval, not an external user-study finding.
 
 Final typecheck/Biome276/Next18/guarded API21-878/web11-144 pass. Independent final OpenNext build passes. Pre-spacing24-case browser matrix and post-spacing normal-site inspection have distinct scopes. Actual normalized2400px inline/master raster comparisons have0 differing channels for both languages. Twenty SVGs parse; one v1.2 ZIP has47 files and passes CRC; direct legacy v1/v1.1 HTTP308 downloads match it. The overview explanation baseline is514 and the Arabic strip is included. Header uses inherited UI ink; footer reverse white. No backend/provider deployment or legal/device/accessibility certification follows.
+
+## v1.3 — 2026-10-23
+
+The human asked whether the logo's weight is balanced and whether the black (ink) logo suits the platform, and delegated the decision. Measured on the shipped artwork:
+
+- The Arabic lockup's tallest letter rendered at 22.7px against the Latin capital's 31.5px in the same header, and its Noto Sans Arabic 700 strokes were heavier relative to letter height (alef stroke 140 units on 732) than the drawn Latin stems (88 on 600), so the two languages did not look like one mark.
+- The all-ink lockup was the only element of the platform chrome with no relation to the indigo used for every primary action and selection.
+
+Change: Arabic outlines regenerated at weight 600 (`docs/brand/v1.3/generate.py`; the 700 run reproduces the previous outlines exactly, confirming the pipeline), scaled so the tallest letter spans the emblem as the Latin capital does, with the Latin gap-to-emblem ratio (0.26). The primary lockup is two-colour: indigo #3F46C8 emblem, ink word. Single-colour ink/white/violet files remain for one-ink uses; the footer keeps white. Kit v1.3 regenerated with the existing scripts (`build-brand-kit.py`, `render-brand-kit.ts`, `package-brand-kit.py`); v1, v1.1 and v1.2 archive URLs redirect to v1.3.
+
+Comparison of the options considered: [logo-v1.3-options.png](../screenshots/logo-v1.3-options.png). This is a design judgement by the agent under the human's delegation, not a user study; legal-availability unknowns above are unchanged.
+
+## v2.0 — 2026-10-23
+
+The human rejected v1.3 ("not convincing at all") and asked for professional work, a rebuild if needed. Three new directions were presented on a design canvas (wordmark with rhombus dots, viewfinder frame, arch); the human asked to keep the original folded-band emblem idea instead. Audit of that emblem: the angles were not true 30-degree hexagon angles, the two bands differed, the gap between them varied (zero at the bottom join), the blue band's top end had an unrelated diagonal cut, and only outer corners were rounded.
+
+Rebuild (`docs/brand/v2/generate.py`): pointy-top hexagonal ring, inner half-width 0.32 of the outer, two vertical channels continuing the inner hexagon's sides, bands congruent under a 180-degree rotation, uniform gap 0.07 of the circumradius, fillets 0.11 (outer), 0.03 (inner), 0.015 (cut ends). Thicker (0.24) and lighter (0.38) inner ratios and a single-colour version were shown; the human chose the balanced 0.32. Wordmarks: Readex Pro 600 (one bilingual family) over Alexandria; the human chose Readex Pro. Lockup rules and colourways are in the kit README. This is a construction record and a human choice, not a user study; the legal-availability unknowns above are unchanged.
+
+### Optical correction (same day)
+
+Asked whether the weights were right, the agent measured instead of assuming: the chosen 0.32 emblem's bands were 243 font units against Readex Pro stems of 142 (1.7 times), and the 0.07 gap was 1.1 px in the 32 px header and 0.34 px in a 16 px favicon, so the bands merged at small sizes. Correction within the chosen design: inner ratio 0.36 (bands 1.5 times the stems), gap 0.10, emblem 1.10 times the capital height (30 px in headers, capitals still 27 px), and a small-size master with a 0.16 gap for the favicon and app icons. Comparison: [logo-v2-optical-correction.png](../screenshots/logo-v2-optical-correction.png).
+

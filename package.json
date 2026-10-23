@@ -23,7 +23,8 @@
 		"db:verify-restore": "bun run --cwd apps/api db:verify-restore",
 		"test:e2e": "bun --no-env-file scripts/test-e2e.ts",
 		"typecheck:e2e": "tsc --noEmit -p e2e/tsconfig.json",
-		"test:worker-monitoring": "bun --no-env-file scripts/test-worker-monitoring.ts"
+		"test:worker-monitoring": "bun --no-env-file scripts/test-worker-monitoring.ts",
+		"deploy:trial": "bun --no-env-file scripts/deploy-trial.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.15",

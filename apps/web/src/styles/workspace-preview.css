@@ -64,27 +64,6 @@
 	}
 }
 
-.mobile-logout {
-	display: none;
-}
-@media (max-width: 970px) {
-	.studio-shell .sidebar {
-		flex-wrap: wrap;
-	}
-	.studio-shell .mobile-logout {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 44px;
-		flex: 0 0 44px;
-		margin-inline-start: auto;
-	}
-	.studio-shell .sidebar nav {
-		width: 100%;
-		margin-inline-start: 0;
-	}
-}
-
 /* Preview scrolling and actions remain contained in their intended surfaces. */
 .portfolio-viewport,
 .expanded-preview-content {

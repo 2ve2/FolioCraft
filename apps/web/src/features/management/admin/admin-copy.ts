@@ -57,6 +57,8 @@ export const adminCopy = {
 		retry: "Try again",
 		logout: "Sign out",
 		skip: "Skip to dashboard",
+		openMenu: "Open menu",
+		closeMenu: "Close menu",
 	},
 	ar: {
 		requests: "طلبات البيانات",
@@ -113,6 +115,8 @@ export const adminCopy = {
 		retry: "إعادة المحاولة",
 		logout: "تسجيل الخروج",
 		skip: "الانتقال للوحة الإدارة",
+		openMenu: "فتح القائمة",
+		closeMenu: "إغلاق القائمة",
 	},
 };
 

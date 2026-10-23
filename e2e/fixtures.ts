@@ -80,12 +80,22 @@ export async function signIn(page: Page, account: Account, locale: Locale) {
 }
 
 /** Keeps native cookies private in Playwright's per-test request context. */
+/** Signs in through the API, waiting out the shared loopback sign-in limit (10 per minute). */
 export async function apiSignIn(request: APIRequestContext, account: Account) {
-	const response = await request.post(`${apiURL}/api/auth/sign-in/email`, {
-		headers: { Origin: webURL },
-		data: { email: account.email, password: account.password },
-	});
-	expect(response.status()).toBe(200);
+	for (let attempt = 0; ; attempt++) {
+		const response = await request.post(`${apiURL}/api/auth/sign-in/email`, {
+			headers: { Origin: webURL },
+			data: { email: account.email, password: account.password },
+		});
+		if (response.status() !== 429 || attempt === 2) {
+			expect(response.status()).toBe(200);
+			return;
+		}
+		const wait = (Number(response.headers()["x-retry-after"] ?? 60) + 1) * 1_000;
+		// The wait is the limit's, not the journey's: extend the test budget by exactly that long.
+		test.info().setTimeout(test.info().timeout + wait);
+		await new Promise((resolve) => setTimeout(resolve, wait));
+	}
 }
 
 /** Asserts actual domain protocol success before returning its validated server state. */

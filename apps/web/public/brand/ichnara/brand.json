@@ -1,21 +1,19 @@
 {
 	"brand": "Ichnara",
 	"arabicName": "إيكنارا",
-	"version": "1.2",
-	"primary": "ichnara-logo-ink.svg",
-	"reverse": "ichnara-logo-white.svg",
-	"accent": "ichnara-logo-violet.svg",
-	"arabicPrimary": "ichnara-logo-ar-ink.svg",
-	"arabicReverse": "ichnara-logo-ar-white.svg",
-	"arabicAccent": "ichnara-logo-ar-violet.svg",
-	"emblem": "ichnara-emblem-violet.svg",
+	"version": "2.0",
+	"primary": "ichnara-logo-duo.svg",
+	"arabicPrimary": "ichnara-logo-ar-duo.svg",
+	"reverse": "ichnara-logo-reverse.svg",
+	"arabicReverse": "ichnara-logo-ar-reverse.svg",
+	"emblem": "ichnara-emblem-duo.svg",
 	"favicon": "favicon.svg",
-	"wordmark": "ichnara-wordmark-ink.svg",
 	"colors": {
 		"accent": "#3F46C8",
 		"ink": "#241B38",
+		"accentOnDark": "#A4A9FF",
 		"white": "#FFFFFF"
 	},
-	"construction": "Drawn Latin I1 wordmark; Arabic A1 derived from Noto Sans Arabic700 under SIL OFL; preserved folded-band emblem",
-	"humanApproved": "2026-10-18: I1/A1/C1 and Arabic spelling"
+	"construction": "Folded-band emblem rebuilt on a hexagonal ring (two congruent bands, 180-degree rotation, uniform gap); Readex Pro 600 wordmarks (SIL OFL 1.1), outlined",
+	"humanApproved": "2026-10-23: keep the folded-band emblem idea; balanced weight; Readex Pro wordmark"
 }

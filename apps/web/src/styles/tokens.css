@@ -40,6 +40,8 @@
 	--color-inset-surface: #f8f6fb;
 	--color-surface-named: white;
 	--color-accent: #3f46c8;
+	--color-brand-emblem: #3f46c8;
+	--color-brand-emblem-on-dark: #a4a9ff;
 	--color-accent-soft: #f0eafb;
 	--color-field-label: #514b60;
 	--color-text: #242137;
@@ -283,6 +285,8 @@
 
 	/* Preview roles. */
 	--color-preview-backdrop: #242137a6;
+	--color-drawer-backdrop: #24213766;
+	--shadow-drawer: 0 0 40px #2421372e;
 	--color-preview-browser-dot: #e0d6e9;
 	--color-preview-browser-dot-close: #eacbce;
 	--color-preview-browser-dot-minimize: #ebdfbc;
