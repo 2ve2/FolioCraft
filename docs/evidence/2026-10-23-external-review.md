@@ -20,6 +20,15 @@ Each finding was checked against the code before anything changed. Nothing was d
 | V1 | Landing example links return 404 when opened directly | **Confirmed.** `/p/illustrative-example/...` is not a published site; in-page clicks worked only because they are intercepted. | The preview accepts a base path; the landing uses its `#example` section, so links resolve to the home page. |
 | V2 | `www.lord2ve.tech` has no DNS record | **Outside the code.** It is a Cloudflare DNS setting. | Human action: add the `www` record with a redirect to the apex. |
 
+## Follow-up: the 404 page
+
+- **Request.** The human felt the 404 text looked broken ("احسه خربان").
+- **Cause.** The "404" numeral used IBM Plex Mono, whose zero has a centre dot. At -10px tracking the numeral read as "4•4", and the decorative card covered the last digit. The English heading ("This page is out of the picture.") was an idiom, under an all-caps eyebrow.
+- **Change.**
+  - The numeral uses the interface face with plain figures and -2px tracking, and the card sits beside it.
+  - The copy is now "Error 404" / "We can't find this page" and "خطأ 404" / "لم نعثر على هذه الصفحة", with plainer guidance.
+- **Checked.** Screenshots in both languages at 1440 and 390 px. Playwright e2e 56 passed with the updated routing assertion.
+
 ## Checks (local)
 
 - **Unit tests.** Web 66 pass / 0 fail, including `review-fixes.test.tsx`:
