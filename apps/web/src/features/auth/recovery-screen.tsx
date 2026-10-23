@@ -14,6 +14,9 @@ import { useRecoveryController } from "./use-recovery-controller";
 export function RecoveryScreen({ mode }: { mode: RecoveryMode }) {
 	const { locale, setLocale, t, token, error, success, returned, callbackError, busy, submit } =
 		useRecoveryController(mode);
+	// Better Auth returns here without an error only after the link verified the address (or it
+	// already was), so this is a real confirmation rather than a resend form.
+	const verified = mode === "verify" && returned;
 	return (
 		<div className={`welcome-page ${styles.page}`}>
 			<header className="welcome-header">
@@ -25,21 +28,25 @@ export function RecoveryScreen({ mode }: { mode: RecoveryMode }) {
 			<main className={styles.main}>
 				<section className={`auth-card ${styles.card}`} aria-labelledby="recovery-title">
 					<h1 id="recovery-title" className={styles.title}>
-						{t[mode]}
+						{verified ? t.verified : t[mode]}
 					</h1>
-					<p>{t.intro}</p>
+					<p role={verified ? "status" : undefined}>{verified ? t.verifiedBody : t.intro}</p>
+					{verified && (
+						<Link className="primary wide" href={localeHref(locale, "/login")}>
+							{t.verifiedAction}
+						</Link>
+					)}
 					{mode === "verify" && callbackError && (
 						<p role="alert" className="error-box">
 							{t.invalid}
 						</p>
 					)}
-					{mode === "verify" && returned && <p role="status">{t.verificationReturn}</p>}
 					{mode === "reset" && !token && !success && (
 						<p role="alert" className="error-box">
 							{t.invalid}
 						</p>
 					)}
-					{!success && (
+					{!success && !verified && (
 						<form onSubmit={submit} aria-busy={busy}>
 							<fieldset disabled={busy || (mode === "reset" && !token)}>
 								{mode === "reset" ? (
@@ -91,9 +98,11 @@ export function RecoveryScreen({ mode }: { mode: RecoveryMode }) {
 							{t.forgotLink}
 						</Link>
 					)}
-					<Link className="text-button auth-switch" href={localeHref(locale, "/login")}>
-						{t.login}
-					</Link>
+					{!verified && (
+						<Link className="text-button auth-switch" href={localeHref(locale, "/login")}>
+							{t.login}
+						</Link>
+					)}
 				</section>
 			</main>
 			<ProductFooter locale={locale} />
