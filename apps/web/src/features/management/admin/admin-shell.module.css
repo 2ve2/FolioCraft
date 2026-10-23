@@ -95,6 +95,34 @@
 .navLink:hover {
 	background: var(--color-admin-nav-link-hover-surface);
 }
+.navLink > span {
+	flex: 1;
+	min-width: 0;
+}
+.navCount {
+	min-width: 22px;
+	padding: 0 7px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 20px;
+	text-align: center;
+	font-variant-numeric: tabular-nums;
+	background: var(--color-admin-warning-surface);
+	color: var(--color-admin-warning-text);
+}
+.navCount[data-tone="danger"] {
+	background: var(--color-admin-bad-surface);
+	color: var(--color-admin-bad-text);
+}
+.navCount .srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
 .navLink[aria-current="page"] {
 	background: var(--color-admin-nav-active-surface);
 	color: var(--admin-accent);

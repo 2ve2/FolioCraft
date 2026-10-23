@@ -1,4 +1,5 @@
 "use client";
+import type { Locale } from "@ichnara/contracts";
 import { type AdminPermissions, canViewAdmin, isStaff } from "@ichnara/contracts/admin-policy";
 import {
 	ArrowUpRight,
@@ -33,20 +34,94 @@ import { LoadingScreen } from "../../studio/loading-screen";
 import ui from "./admin.module.css";
 import { AdminContext } from "./admin-context";
 import { adminCopy } from "./admin-copy";
-import { AdminQueryProvider } from "./admin-query";
+import { AdminQueryProvider, useAdminData } from "./admin-query";
 import styles from "./admin-shell.module.css";
 
+// Ordered by how often staff use each page and how records relate: accounts own sites, sites
+// receive reports. Groups appear only when the role can open at least one of their pages.
 const navigation = [
 	{ key: "overview", path: "/admin", icon: LayoutDashboard, group: null },
-	{ key: "reports", path: "/admin/reports", icon: Flag, group: "groupModeration" },
-	{ key: "sites", path: "/admin/sites", icon: Globe2, group: "groupModeration" },
-	{ key: "users", path: "/admin/accounts", icon: UsersRound, group: "groupModeration" },
-	{ key: "requests", path: "/admin/requests", icon: Inbox, group: "groupOperations" },
+	{ key: "users", path: "/admin/accounts", icon: UsersRound, group: "groupPeople" },
+	{ key: "sites", path: "/admin/sites", icon: Globe2, group: "groupPeople" },
+	{ key: "reports", path: "/admin/reports", icon: Flag, group: "groupTrust" },
+	{ key: "requests", path: "/admin/requests", icon: Inbox, group: "groupTrust" },
 	{ key: "notices", path: "/admin/notices", icon: Megaphone, group: "groupOperations" },
 	{ key: "audit", path: "/admin/activity", icon: History, group: "groupOperations" },
 	{ key: "staff", path: "/admin/staff", icon: UserCog, group: "groupAdministration" },
 	{ key: "system", path: "/admin/system", icon: Server, group: "groupAdministration" },
 ] as const;
+
+type NavCounts = {
+	reports?: { open: number };
+	requests?: { open: number; overdue: number };
+};
+
+/**
+ * The console navigation with waiting-work counts beside Reports and Data requests. Counts come from
+ * the same permission-scoped overview read as the Overview page, so they appear only for roles that
+ * may see them and share its cache.
+ */
+function ConsoleNav({
+	locale,
+	permissions,
+	pathname,
+	onNavigate,
+}: {
+	locale: Locale;
+	permissions: AdminPermissions["permissions"];
+	pathname: string;
+	onNavigate: () => void;
+}) {
+	const t = adminCopy[locale];
+	const counts = useAdminData<NavCounts>(
+		canViewAdmin(permissions, "overview") ? "/api/admin/overview" : null,
+		locale,
+	).data;
+	const badge = (key: string) =>
+		key === "reports" && counts?.reports?.open
+			? { value: counts.reports.open, tone: "warning" }
+			: key === "requests" && counts?.requests?.open
+				? {
+						value: counts.requests.open,
+						tone: counts.requests.overdue > 0 ? "danger" : "warning",
+					}
+				: null;
+	return (
+		<nav aria-label={t.platform} className={styles.nav}>
+			{navigation
+				.filter((item) => canViewAdmin(permissions, item.key))
+				.map(({ key, path, icon: Icon, group }, index, visible) => {
+					const count = badge(key);
+					return (
+						<Fragment key={key}>
+							{group && visible[index - 1]?.group !== group && (
+								<span className={styles.navGroup}>{t[group]}</span>
+							)}
+							<Link
+								href={localeHref(locale, path)}
+								aria-current={
+									pathname === path || (path !== "/admin" && pathname.startsWith(`${path}/`))
+										? "page"
+										: undefined
+								}
+								className={styles.navLink}
+								onClick={onNavigate}
+							>
+								<Icon size={18} aria-hidden="true" />
+								<span>{t[key]}</span>
+								{count && (
+									<b className={styles.navCount} data-tone={count.tone}>
+										{count.value}
+										<span className={styles.srOnly}> {t.waiting}</span>
+									</b>
+								)}
+							</Link>
+						</Fragment>
+					);
+				})}
+		</nav>
+	);
+}
 
 /** Gates administration children and supplies an independent responsive navigation shell. */
 function AuthorizedAdminShell({ children }: { children: ReactNode }) {
@@ -225,31 +300,12 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 									<X size={20} aria-hidden="true" />
 								</button>
 							</div>
-							<nav aria-label={t.platform} className={styles.nav}>
-								{navigation
-									.filter((item) => canViewAdmin(permissions, item.key))
-									.map(({ key, path, icon: Icon, group }, index, visible) => (
-										<Fragment key={key}>
-											{group && visible[index - 1]?.group !== group && (
-												<span className={styles.navGroup}>{t[group]}</span>
-											)}
-											<Link
-												href={localeHref(locale, `${path}`)}
-												aria-current={
-													pathname === path ||
-													(path !== "/admin" && pathname.startsWith(`${path}/`))
-														? "page"
-														: undefined
-												}
-												className={styles.navLink}
-												onClick={() => drawer.close(false)}
-											>
-												<Icon size={18} aria-hidden="true" />
-												<span>{t[key]}</span>
-											</Link>
-										</Fragment>
-									))}
-							</nav>
+							<ConsoleNav
+								locale={locale}
+								permissions={permissions}
+								pathname={pathname}
+								onNavigate={() => drawer.close(false)}
+							/>
 							<div className={styles.sidebarBottom}>
 								<Link className={styles.studioLink} href={localeHref(locale, "/admin/security")}>
 									{t.security}
