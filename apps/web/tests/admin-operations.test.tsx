@@ -94,3 +94,22 @@ test("notice contract rejects inverted windows, blank bilingual copy and unknown
 	])
 		expect(noticeInput.safeParse(invalid).success).toBe(false);
 });
+
+test("the studio pager appears only when there is more than one page", async () => {
+	const { Pager } = await import("../src/features/management/shared/pager");
+	const pager = (offset: number, count: number, hasMore: boolean) =>
+		renderToStaticMarkup(
+			<Pager
+				count={count}
+				offset={offset}
+				hasMore={hasMore}
+				disabled={false}
+				locale="en"
+				change={() => {}}
+			/>,
+		);
+	expect(pager(0, 0, false)).toBe("");
+	expect(pager(0, 12, false)).toBe("");
+	expect(pager(0, 20, true)).toContain("1–20");
+	expect(pager(20, 5, false)).toContain("21–25");
+});
