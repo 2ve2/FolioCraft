@@ -45,7 +45,7 @@
 	--color-accent-soft: #f0eafb;
 	--color-field-label: #514b60;
 	--color-text: #242137;
-	--color-text-muted: #706c80;
+	--color-text-muted: #6c687c;
 	--color-border: #e9e6ef;
 	--color-page: #faf9fc;
 	--color-control-focus-border: #7a7fe4;
@@ -146,7 +146,7 @@
 	--color-admin-secondary-text: #705c85;
 	--color-admin-danger-surface: #fff3f1;
 	--color-admin-danger-border: #f1d8d5;
-	--color-admin-danger-text: #ad5b56;
+	--color-admin-danger-text: #a75853;
 	--color-admin-operation-page-input-border: #d7d3e3;
 	--color-admin-operation-page-input-text: #242037;
 
@@ -260,7 +260,7 @@
 	--color-welcome-auth-privacy-text: #7b708c;
 	--color-welcome-auth-consent-text: #6b6280;
 	--color-welcome-onboarding-card-shadow: #4d32660a;
-	--color-welcome-slug-input-span-text: #91859e;
+	--color-welcome-slug-input-span-text: #756b7f;
 	--color-welcome-slug-input-span-surface: #f7f4fb;
 	--color-welcome-slug-input-span-border: #e7e0ef;
 
@@ -313,7 +313,7 @@
 	--color-workspace-preview-toolbar-text: #8d7e9e;
 	--color-workspace-device-controls-border: #e4ddeb;
 	--color-workspace-device-controls-surface: #e9e3f0;
-	--color-workspace-device-controls-button-text: #9c8bae;
+	--color-workspace-device-controls-button-text: #6b5f78;
 	--color-workspace-device-controls-button-active-shadow: #5332780d;
 	--color-workspace-status-pill-border: #e1daeb;
 	--color-workspace-status-pill-text: #8b789f;
@@ -323,7 +323,7 @@
 	--color-workspace-browser-bar-border: #f0ecf4;
 	--color-workspace-browser-bar-text: #ada1b8;
 	--color-workspace-preview-caption-text: #9b8aab;
-	--color-workspace-preview-link-text: #6266b5;
+	--color-workspace-preview-link-text: #6063b1;
 	--color-workspace-theme-choice-border: #e5deed;
 	--color-workspace-theme-choice-selected-border: #7c81e1;
 	--color-workspace-theme-choice-selected-shadow: #eee6fb;
