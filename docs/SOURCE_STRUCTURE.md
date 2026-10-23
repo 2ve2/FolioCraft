@@ -159,9 +159,9 @@ apps/web/src/
         admin-shell.tsx          Role-aware navigation, session gate and account exit
         admin-context.tsx        Authorized identity and interface-locale context
         admin-pagination.tsx     Shared bounded twenty-record pagination
-        admin-management-dialogs.tsx Site moderation and native account confirmation
+        site-moderation-dialog.tsx Site overview and password-confirmed moderation
         admin-dialog.tsx         Native modal lifecycle and focus restoration
-        use-admin-controller.ts  Requests, filtering, paging and guarded mutations
+        use-site-moderation.ts   Site overview read and guarded moderation mutation
         admin-copy.ts            Bilingual dashboard copy and audit action labels
         admin-shell.module.css   Navigation/session layout and responsive rules
         admin.module.css         Records, metrics and dialog styles

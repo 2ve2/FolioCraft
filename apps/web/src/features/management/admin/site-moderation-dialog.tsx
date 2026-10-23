@@ -4,23 +4,20 @@ import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { adminCopy } from "./admin-copy";
 import { AdminDialog } from "./admin-dialog";
-import type { useAdminController } from "./use-admin-controller";
+import type { useSiteModeration } from "./use-site-moderation";
 
-type Controller = ReturnType<typeof useAdminController>;
+type Controller = ReturnType<typeof useSiteModeration>;
 
-/** Presents moderation and native identity confirmations only for the selected server record. */
-export function AdminManagementDialogs({
+/** Presents the site overview and its password-confirmed moderation for the selected record. */
+export function SiteModerationDialog({
 	controller: c,
 	locale,
-	currentUserId,
 }: {
 	controller: Controller;
 	locale: "en" | "ar";
-	currentUserId: string;
 }) {
 	const t = adminCopy[locale];
 	const shared = text[locale];
-	const self = c.selected?.id === currentUserId;
 	const { permissions } = useAdminSession();
 	const canModerate = permissions.includes(c.details?.suspended ? "site.resume" : "site.suspend");
 	return (
@@ -119,30 +116,6 @@ export function AdminManagementDialogs({
 							</button>
 						</section>
 					)}
-				</AdminDialog>
-			)}
-			{c.selected && (
-				<AdminDialog
-					title={c.selected.name}
-					locale={locale}
-					onClose={c.closeUser}
-					busy={c.busy}
-					headingRef={c.selectedHeading}
-				>
-					{c.error && (
-						<p className={styles.error} role="alert">
-							{c.error}
-						</p>
-					)}
-					<section>
-						<h3>{t.accountDetails}</h3>
-						<p dir="ltr">{c.selected.email}</p>
-						<span className={`${styles.badge} ${c.selected.banned ? styles.bad : styles.good}`}>
-							{c.selected.banned ? t.banned : t.active}
-						</span>
-					</section>
-					{self && <p className={styles.loading}>{t.selfAccount}</p>}
-					<p className={styles.caption}>{t.securityPending}</p>
 				</AdminDialog>
 			)}
 		</>

@@ -14,9 +14,9 @@ import { errorText } from "../shared";
 import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { adminCopy } from "./admin-copy";
-import { AdminManagementDialogs } from "./admin-management-dialogs";
 import reportStyles from "./reports.module.css";
-import { useAdminController } from "./use-admin-controller";
+import { SiteModerationDialog } from "./site-moderation-dialog";
+import { useSiteModeration } from "./use-site-moderation";
 
 /** Renders a stable oldest-first queue with cursor navigation and independent server filters. */
 export function AdminReports() {
@@ -141,7 +141,7 @@ export function AdminReports() {
 
 /** Handles report state independently from the existing password-protected site moderation dialog. */
 export function AdminReportDetail({ id }: { id: string }) {
-	const { locale, permissions, user } = useAdminSession(),
+	const { locale, permissions } = useAdminSession(),
 		t = adminCopy[locale].report;
 	const [report, setReport] = useState<ContentReport | null>(null),
 		[error, setError] = useState(""),
@@ -151,7 +151,7 @@ export function AdminReportDetail({ id }: { id: string }) {
 		[version, setVersion] = useState(0);
 	const pending = useRef(false),
 		epoch = useRef(0),
-		controller = useAdminController(locale, "sites", true);
+		controller = useSiteModeration(locale);
 	useEffect(() => {
 		const current = ++epoch.current;
 		setReport(null);
@@ -327,7 +327,7 @@ export function AdminReportDetail({ id }: { id: string }) {
 			{notice && <p role="status">{notice}</p>}
 			{controller.error && !controller.details && <p role="alert">{controller.error}</p>}
 			{controller.notice && <p role="status">{controller.notice}</p>}
-			<AdminManagementDialogs controller={controller} locale={locale} currentUserId={user.id} />
+			<SiteModerationDialog controller={controller} locale={locale} />
 		</section>
 	);
 }

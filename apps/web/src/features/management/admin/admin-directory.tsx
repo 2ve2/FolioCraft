@@ -10,12 +10,12 @@ import type { AdminSite, AdminUser } from "../shared/types";
 import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { AdminDialog } from "./admin-dialog";
-import { AdminManagementDialogs } from "./admin-management-dialogs";
 import { AdminPagination } from "./admin-pagination";
 import { directoryCopy } from "./directory-copy";
 import fields from "./operations.module.css";
 import layout from "./reports.module.css";
-import { useAdminController } from "./use-admin-controller";
+import { SiteModerationDialog } from "./site-moderation-dialog";
+import { useSiteModeration } from "./use-site-moderation";
 
 export type CursorPage<T> = { items: T[]; nextCursor: string | null };
 /** Discards superseded reads and exposes explicit retry without replaying writes. */
@@ -488,9 +488,9 @@ export function AdminAccountDetail({ id }: { id: string }) {
 }
 /** Site detail selects published metadata only; moderation shares the existing password dialog. */
 export function AdminSiteDetail({ id }: { id: string }) {
-	const { locale, user, permissions } = useAdminSession(),
+	const { locale, permissions } = useAdminSession(),
 		t = directoryCopy[locale];
-	const c = useAdminController(locale, "sites", true),
+	const c = useSiteModeration(locale),
 		state = useAdminData<AdminSite>(`/api/admin/sites/${encodeURIComponent(id)}`, locale);
 	useEffect(() => {
 		if (c.notice) state.reload();
@@ -546,7 +546,7 @@ export function AdminSiteDetail({ id }: { id: string }) {
 			<Related type="reports" filter={`siteId=${id}`} />
 			<h2>{t.history}</h2>
 			<Related type="audit" filter={`targetType=site&targetId=${id}`} />
-			<AdminManagementDialogs controller={c} locale={locale} currentUserId={user.id} />
+			<SiteModerationDialog controller={c} locale={locale} />
 		</section>
 	);
 }
