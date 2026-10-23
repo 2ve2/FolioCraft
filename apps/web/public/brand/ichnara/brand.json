@@ -1,8 +1,10 @@
 {
 	"brand": "Ichnara",
 	"arabicName": "إيكنارا",
-	"version": "1.2",
-	"primary": "ichnara-logo-ink.svg",
+	"version": "1.3",
+	"primary": "ichnara-logo-duo.svg",
+	"arabicDuo": "ichnara-logo-ar-duo.svg",
+	"mono": "ichnara-logo-ink.svg",
 	"reverse": "ichnara-logo-white.svg",
 	"accent": "ichnara-logo-violet.svg",
 	"arabicPrimary": "ichnara-logo-ar-ink.svg",
@@ -16,6 +18,6 @@
 		"ink": "#241B38",
 		"white": "#FFFFFF"
 	},
-	"construction": "Drawn Latin I1 wordmark; Arabic A1 derived from Noto Sans Arabic700 under SIL OFL; preserved folded-band emblem",
-	"humanApproved": "2026-10-18: I1/A1/C1 and Arabic spelling"
+	"construction": "Drawn Latin I1 wordmark; Arabic derived from Noto Sans Arabic 600 under SIL OFL, sized to the emblem; preserved folded-band emblem; two-colour primary (indigo emblem, ink word)",
+	"humanApproved": "2026-10-18: I1/A1/C1 and Arabic spelling; 2026-10-23: the human asked for a review of logo weight and colour and delegated the decision (v1.3)"
 }

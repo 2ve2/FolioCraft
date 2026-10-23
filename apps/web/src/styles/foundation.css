@@ -142,6 +142,8 @@ textarea {
 }
 
 .brand {
+	/* Two-colour lockup on light surfaces; dark surfaces set the emblem back to the ink colour. */
+	--brand-emblem: var(--color-brand-emblem);
 	display: flex;
 	align-items: center;
 	direction: ltr;
