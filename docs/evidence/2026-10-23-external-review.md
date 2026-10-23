@@ -52,6 +52,24 @@ Each finding was checked against the code before anything changed. Nothing was d
   - The unused styles and colour tokens were removed.
 - **Checked.** Screenshots in both languages; web 67/0; typecheck 0; Biome clean; Playwright e2e 56 passed.
 
+## Retest report (2026-10-24)
+
+The human shared a retest of the deployed trial and asked to skip what was already fixed. Items 1–5 (landing example links, `www`, the sign-up message, the banner duplicate and its separator) are fixed on this branch and not yet deployed; `www` is the human's DNS action.
+
+**New item 6: a text file named `.png` returns 502.**
+- **Cause.** The Workers validator sent the bytes to Cloudflare Images. The decoder refused the input with a code outside the two mapped to `INVALID_IMAGE`, so the error became `502 STORAGE_PROVIDER_ERROR` ("storage could not be reached"). The upload also stayed as a retryable "incomplete" entry.
+- **Fix.**
+  - The validator compares the PNG, JPEG or WebP signature with the declared type before any decoder call; a mismatch is `422 INVALID_IMAGE`.
+  - Completion discards an upload the server refused (any 422) through the normal delete path, which removes the staged bytes. Provider failures keep the upload pending for a retry.
+  - The studio drops the refused card and explains that the file isn't a valid PNG, JPEG or WebP image and wasn't kept.
+- **Checks.**
+  - A unit test confirms refusal with no decoder call. An integration test covers discard on 422 and keep on 502; it fails without the change.
+  - API 107 pass / 12 skip / 0 fail; web 67/0; typecheck 0; Biome clean; Workers storage 8/8.
+  - Browser simulation of a refused upload: clear message, no card left.
+- **Not verified.** The real Cloudflare Images response on the trial, until it is deployed.
+
+**CI.** A high-severity advisory for `body-parser` (GHSA-27r3-jxmh-p828) was published on 2026-10-23 and made `bun audit` fail on every branch. The lockfile now resolves body-parser 2.4.0 inside express's existing range.
+
 ## Checks (local)
 
 - **Unit tests.** Web 66 pass / 0 fail, including `review-fixes.test.tsx`:
