@@ -2,7 +2,7 @@ import type { Locale } from "@ichnara/contracts";
 import { text } from "./copy";
 import styles from "./management.module.css";
 
-/** Renders bounded navigation for twenty-item resource pages. */
+/** Renders bounded navigation for twenty-item resource pages once there is more than one page. */
 export function Pager({
 	count,
 	offset,
@@ -19,6 +19,8 @@ export function Pager({
 	change: (offset: number) => void;
 }) {
 	const t = text[locale];
+	// A single page (including an empty list) has nothing to navigate.
+	if (offset === 0 && !hasMore) return null;
 	return (
 		<div className={styles.actions}>
 			<button

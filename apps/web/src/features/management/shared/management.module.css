@@ -95,24 +95,6 @@
 .preview > .actions {
 	padding: var(--space-4, 16px);
 }
-.counts {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
-	gap: 0.8rem;
-	margin: 0;
-}
-.counts > div {
-	border: 1px solid var(--color-management-card-border);
-	border-radius: 0.7rem;
-	padding: 0.8rem;
-}
-.counts dt {
-	font-size: var(--text-caption, 14px);
-}
-.counts dd {
-	font-size: 1.6rem;
-	margin: 0.3rem 0 0;
-}
 @media (max-width: 600px) {
 	.panel button {
 		min-height: var(--control-min, 44px);

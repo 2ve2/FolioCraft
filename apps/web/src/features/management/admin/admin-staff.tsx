@@ -3,6 +3,7 @@ import type { Permission, PlatformRole } from "@ichnara/contracts/admin-policy";
 import { Check, Minus, UserCog } from "lucide-react";
 import { date } from "../shared";
 import { useAdminSession } from "./admin-context";
+import { actionLabel } from "./admin-copy";
 import { RoleBadge } from "./admin-directory";
 import { useAdminData } from "./admin-query";
 import { directoryCopy } from "./directory-copy";
@@ -76,9 +77,12 @@ export function AdminStaff() {
 			header: t.permission,
 			primary: true,
 			cell: (permission) => (
-				<span className={ui.mono} dir="ltr">
-					{permission}
-				</span>
+				<div className={ui.primaryText}>
+					<strong>{actionLabel(permission, locale)}</strong>
+					<span className={ui.mono} dir="ltr">
+						{permission}
+					</span>
+				</div>
 			),
 		},
 		...roles.map((role) => ({

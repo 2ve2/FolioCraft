@@ -449,3 +449,8 @@ Human authorizes SMTP_HOST=smtp.resend.com,SMTP_PORT=465,SMTP_SECURE=true,SMTP_U
 - Engineering decision: console lists use `useInfiniteQuery`, keyset or offset per endpoint, with a visible "load more" and automatic loading near the end.
 - Delegated choice (recorded as the human's "do the best", not a separately confirmed option): account deletion is self-service, immediate and password-confirmed; staff accounts are refused; owned sites cascade and their stored images are queued for deletion. Email changes use Better Auth's two-step approval (current address, then the new one) and need configured mail.
 
+## 2026-10-23 — Session reads exempt from Better Auth rate limiting
+- Found in the human-requested full audit. Better Auth 1.7.7 keeps one database bucket per address and path, and resets it only after a full idle window, because every allowed request moves `lastRequest` forward. So continuous traffic from one shared address (campus, office, carrier NAT) reached the 100-per-minute global rule on `/get-session`. Every visitor behind that address then got 429 and a failed Studio or console load.
+- Engineering decision (not separately confirmed): `/get-session` is `false` in `customRules`. It only reads the caller's own cookie session, and private API reads are unthrottled too. Sign-in, sign-up, recovery, change-password, change-email, two-factor and every other auth path keep their limits. An integration test covers both sides.
+- Revisit if session reads ever become expensive, for example without the cookie cache, or if abuse shows up in monitoring.
+

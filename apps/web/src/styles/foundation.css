@@ -131,12 +131,10 @@ textarea {
 	min-height: var(--control-min);
 }
 .auth-card > p,
-.welcome-story > p,
-.loading-card p {
+.welcome-story > p {
 	font-size: var(--text-body);
 	color: var(--muted);
 }
-.loading-screen > .loading-footnote,
 .muted {
 	color: var(--muted);
 }
@@ -222,15 +220,7 @@ textarea {
 .danger {
 	color: var(--color-danger-text-emphasis);
 }
-.locale-select {
-	padding: 7px 10px;
-	font-size: var(--text-caption);
-	border-color: var(--color-locale-border);
-	width: auto;
-	background: var(--color-transparent);
-	border-radius: 8px;
-	min-width: 85px;
-}
+
 .header-actions {
 	display: flex;
 	align-items: center;

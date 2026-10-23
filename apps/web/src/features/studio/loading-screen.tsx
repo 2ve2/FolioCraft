@@ -4,6 +4,12 @@ import { CircleAlert } from "lucide-react";
 import { type ReactNode, useEffect, useId, useState } from "react";
 import { brandArtwork } from "../../components/ui/brand-artwork";
 
+/** The word's own outline bounds (untransformed v2 artwork) with a 30-unit margin. */
+const wordmarkViewBox: Record<Locale, string> = {
+	en: "43 -770 3771 810",
+	ar: "43 -792 2633 1085",
+};
+
 /** Presents real loading/error state without invented progress or replacing the caller's retry action. */
 export function LoadingScreen({
 	locale,
@@ -27,7 +33,8 @@ export function LoadingScreen({
 		return () => window.clearTimeout(timer);
 	}, [error]);
 
-	const wordmark = brandArtwork[locale].groups[ar ? 0 : 1];
+	// Both lockups list the emblem first and the word second; the signature draws the word alone.
+	const wordmark = brandArtwork[locale].groups[1];
 	const emblem = brandArtwork.en.groups[0];
 
 	return (
@@ -70,16 +77,14 @@ export function LoadingScreen({
 					className="loading-signature"
 					width="170"
 					height="44"
-					viewBox={ar ? "199.25 65 641.5 310" : "-66 -34 2577 681"}
+					viewBox={wordmarkViewBox[locale]}
 					fill="currentColor"
 					role="img"
 					aria-label={ar ? "إيكنارا" : "Ichnara"}
 				>
-					<g transform={ar ? wordmark.transform : undefined}>
-						{wordmark.paths.map((path) => (
-							<path key={`${path.d}-${"transform" in path ? path.transform : ""}`} {...path} />
-						))}
-					</g>
+					{wordmark.paths.map((path) => (
+						<path key={path.d} d={path.d} />
+					))}
 				</svg>
 				<h1 id={titleId}>
 					{error && <CircleAlert size={20} strokeWidth={1.75} aria-hidden="true" />}

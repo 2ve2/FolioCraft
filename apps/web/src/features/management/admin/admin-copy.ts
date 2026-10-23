@@ -1,3 +1,4 @@
+import type { Locale } from "@ichnara/contracts";
 import { adminReportCopy } from "./report-copy";
 export type AdminView = "overview" | "sites" | "users" | "audit";
 
@@ -55,6 +56,8 @@ export const adminCopy = {
 		signInDescription: "Sign in with an authorized administrator account to continue.",
 		signIn: "Sign in",
 		sessionError: "Could not verify your session.",
+		sessionErrorDescription:
+			"The server could not be reached to check your access. Nothing about your account changed; try again in a moment.",
 		retry: "Try again",
 		logout: "Sign out",
 		skip: "Skip to dashboard",
@@ -114,6 +117,8 @@ export const adminCopy = {
 		signInDescription: "سجّل الدخول بحساب مسؤول مصرح له للمتابعة.",
 		signIn: "تسجيل الدخول",
 		sessionError: "تعذر التحقق من جلستك.",
+		sessionErrorDescription:
+			"تعذر الوصول إلى الخادم للتحقق من صلاحياتك. لم يتغير شيء في حسابك؛ أعد المحاولة بعد قليل.",
 		retry: "إعادة المحاولة",
 		logout: "تسجيل الخروج",
 		skip: "الانتقال للوحة الإدارة",
@@ -122,16 +127,68 @@ export const adminCopy = {
 	},
 };
 
-export const auditActions: Record<string, { en: string; ar: string }> = {
-	"auth.set-role": { en: "Account role change", ar: "تغيير صلاحية حساب" },
-	"auth.create-user": { en: "Account creation", ar: "إنشاء حساب" },
-	"auth.update-user": { en: "Account update", ar: "تعديل حساب" },
-	"auth.ban-user": { en: "Account ban", ar: "حظر حساب" },
-	"auth.unban-user": { en: "Account access restoration", ar: "رفع حظر حساب" },
-	"auth.impersonate-user": { en: "Account impersonation", ar: "بدء دخول نيابي" },
-	"auth.stop-impersonating": { en: "End account impersonation", ar: "إنهاء دخول نيابي" },
-	"auth.revoke-user-session": { en: "Account session revocation", ar: "إلغاء جلسة حساب" },
-	"auth.revoke-user-sessions": { en: "Account sessions revocation", ar: "إلغاء جلسات حساب" },
-	"auth.remove-user": { en: "Account removal", ar: "حذف حساب" },
-	"auth.set-user-password": { en: "Account password change", ar: "تغيير كلمة مرور حساب" },
+type Label = { en: string; ar: string };
+
+/** Readable names for every permission and recorded console action; raw keys stay as the fallback. */
+export const actionLabels: Record<string, Label> = {
+	"user.read": { en: "View accounts", ar: "عرض الحسابات" },
+	"user.read_email": { en: "Reveal account email", ar: "كشف بريد حساب" },
+	"user.ban": { en: "Ban account", ar: "حظر حساب" },
+	"user.unban": { en: "Restore account access", ar: "رفع حظر حساب" },
+	"user.revoke_session": { en: "Sign out one session", ar: "إنهاء جلسة حساب" },
+	"user.revoke_sessions": { en: "Sign out all sessions", ar: "إنهاء كل جلسات حساب" },
+	"user.impersonate": { en: "Sign in as account", ar: "الدخول نيابةً عن حساب" },
+	"user.set_role": { en: "Change account role", ar: "تغيير دور حساب" },
+	"user.remove": { en: "Remove account", ar: "حذف حساب" },
+	"user.set_password": { en: "Set account password", ar: "تعيين كلمة مرور حساب" },
+	"site.read": { en: "View sites", ar: "عرض المواقع" },
+	"site.read_draft": { en: "View site drafts", ar: "عرض مسودات المواقع" },
+	"site.suspend": { en: "Suspend site", ar: "تعليق موقع" },
+	"site.resume": { en: "Resume site", ar: "إعادة إتاحة موقع" },
+	"report.read": { en: "View reports", ar: "عرض البلاغات" },
+	"report.handle": { en: "Handle report", ar: "معالجة بلاغ" },
+	"request.read": { en: "View data requests", ar: "عرض طلبات البيانات" },
+	"request.handle": { en: "Handle data request", ar: "معالجة طلب بيانات" },
+	"request.export": { en: "Export requested data", ar: "تصدير بيانات طلب" },
+	"notice.read": { en: "View notices", ar: "عرض التنبيهات" },
+	"notice.manage": { en: "Manage notices", ar: "إدارة التنبيهات" },
+	"audit.read": { en: "View activity log", ar: "عرض سجل الإجراءات" },
+	"audit.export": { en: "Export activity log", ar: "تصدير سجل الإجراءات" },
+	"system.read": { en: "View system status", ar: "عرض حالة النظام" },
+	"staff.read": { en: "View staff", ar: "عرض الطاقم" },
+	"staff.manage": { en: "Manage staff", ar: "إدارة الطاقم" },
+	"note.read": { en: "Read internal notes", ar: "قراءة الملاحظات الداخلية" },
+	"note.write": { en: "Write internal notes", ar: "كتابة ملاحظات داخلية" },
+	permission_denied: { en: "Refused: missing permission", ar: "رفض لعدم وجود الصلاحية" },
 };
+
+/** Actions the server records in the activity log, in the order the filter lists them. */
+export const recordedActions = [
+	"site.suspend",
+	"site.resume",
+	"report.handle",
+	"user.ban",
+	"user.unban",
+	"user.revoke_session",
+	"user.revoke_sessions",
+	"user.remove",
+	"user.read_email",
+	"request.handle",
+	"request.export",
+	"notice.manage",
+	"audit.export",
+	"permission_denied",
+] as const;
+
+export const targetLabels: Record<string, Label> = {
+	user: { en: "Account", ar: "حساب" },
+	site: { en: "Site", ar: "موقع" },
+	session: { en: "Session", ar: "جلسة" },
+	report: { en: "Report", ar: "بلاغ" },
+	notice: { en: "Notice", ar: "تنبيه" },
+	audit: { en: "Activity log", ar: "سجل الإجراءات" },
+	request: { en: "Data request", ar: "طلب بيانات" },
+};
+
+export const actionLabel = (key: string, locale: Locale) => actionLabels[key]?.[locale] ?? key;
+export const targetLabel = (key: string, locale: Locale) => targetLabels[key]?.[locale] ?? key;

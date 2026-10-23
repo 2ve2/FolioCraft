@@ -36,6 +36,7 @@ import { AdminContext } from "./admin-context";
 import { adminCopy } from "./admin-copy";
 import { AdminQueryProvider, useAdminData } from "./admin-query";
 import styles from "./admin-shell.module.css";
+import { directoryCopy } from "./directory-copy";
 
 // Ordered by how often staff use each page and how records relate: accounts own sites, sites
 // receive reports. Groups appear only when the role can open at least one of their pages.
@@ -225,7 +226,13 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 				<main className={styles.gateCard}>
 					<ShieldX size={32} aria-hidden="true" />
 					<h1>{error || authorizationError ? t.sessionError : t.denied}</h1>
-					<p>{session?.user ? t.deniedDescription : t.signInDescription}</p>
+					<p>
+						{error || authorizationError
+							? t.sessionErrorDescription
+							: session?.user
+								? t.deniedDescription
+								: t.signInDescription}
+					</p>
 					<div className={ui.actions}>
 						{error || authorizationError ? (
 							<button
@@ -320,7 +327,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 									</span>
 									<div>
 										<strong dir="auto">{session.user.name}</strong>
-										<small>{t.administrator}</small>
+										<small>{staffRoleName(session.user.role, locale) ?? t.administrator}</small>
 									</div>
 									<TooltipButton
 										className={ui.iconButton}
@@ -364,6 +371,16 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 			</AdminContext.Provider>
 		</AdminQueryProvider>
 	);
+}
+
+/** Names the signed-in staff role(s) so a moderator or analyst sees what they act as. */
+function staffRoleName(role: string | null | undefined, locale: Locale) {
+	const names = directoryCopy[locale].roles;
+	const roles = (role ?? "")
+		.split(",")
+		.map((value) => value.trim())
+		.filter((value): value is keyof typeof names => value in names && value !== "user");
+	return roles.length ? roles.map((value) => names[value]).join(" · ") : null;
 }
 
 /** Excludes enrollment/challenge pages from management providers and permission/data requests. */

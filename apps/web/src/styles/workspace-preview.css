@@ -40,28 +40,16 @@
 	padding: var(--space-4);
 }
 
-.studio-shell .sidebar-label,
 .studio-shell .workspace-label,
 .studio-shell .content-jump-nav a,
 .studio-shell .theme-choice {
 	font-size: var(--text-label);
 }
 .studio-shell .muted,
-.studio-shell .address-display,
 .studio-shell .rich-source-note {
 	font-size: var(--text-caption);
 	color: var(--muted);
 	overflow-wrap: anywhere;
-}
-.standalone-admin {
-	display: grid;
-	align-content: start;
-	gap: var(--space-8);
-}
-@media (max-width: 600px) {
-	.standalone-admin {
-		padding: var(--space-4);
-	}
 }
 
 /* Preview scrolling and actions remain contained in their intended surfaces. */

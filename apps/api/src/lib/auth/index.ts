@@ -94,6 +94,10 @@ export const auth = betterAuth({
 		window: 60,
 		max: 100,
 		customRules: {
+			// Session reads only echo the caller's own cookie. Better Auth resets a bucket only after a
+			// full idle window, so one busy shared address (campus, office, carrier NAT) would otherwise
+			// lock every visitor behind it out of the Studio. Private reads are unthrottled elsewhere too.
+			"/get-session": false,
 			"/sign-in/email": { window: 60, max: 10 },
 			"/sign-up/email": { window: 60, max: 5 },
 			"/request-password-reset": { window: 60, max: 5 },

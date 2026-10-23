@@ -45,7 +45,7 @@
 	--color-accent-soft: #f0eafb;
 	--color-field-label: #514b60;
 	--color-text: #242137;
-	--color-text-muted: #706c80;
+	--color-text-muted: #6c687c;
 	--color-border: #e9e6ef;
 	--color-page: #faf9fc;
 	--color-control-focus-border: #7a7fe4;
@@ -59,7 +59,6 @@
 	--color-danger-text: #9d343e;
 	--color-danger-surface: #fff3f3;
 	--color-danger-text-emphasis: #a74049;
-	--color-locale-border: #e9e4ef;
 	--color-status-dot: #666cdc;
 	--color-error-border: #efcccf;
 	--color-error-text: #93353e;
@@ -114,7 +113,7 @@
 	--color-admin-text: #2d253e;
 	--color-admin-page: #f7f7fb;
 	--color-admin-focus-ring: #9195e8;
-	--color-admin-nav-label-text: #9b92aa;
+	--color-admin-nav-label-text: #7b708f;
 	--color-admin-nav-link-text: #777083;
 	--color-admin-nav-link-hover-surface: #f8f6fc;
 	--color-admin-nav-active-surface: #f0eafa;
@@ -128,9 +127,7 @@
 	--color-admin-gate-card-svg-text: #9d83bf;
 	--color-admin-gate-card-p-text: #7d718b;
 	--color-admin-icon-button-text: #79658f;
-	--color-admin-stat-small-text: #8a8197;
 	--color-admin-card-header-border: #f0edf4;
-	--color-admin-identity-small-text: #8e859d;
 	--color-admin-badge-surface: #f0edf6;
 	--color-admin-badge-text: #81748f;
 	--color-admin-good-surface: #edf7f1;
@@ -140,33 +137,18 @@
 	--color-admin-bad-surface: #fff0f0;
 	--color-admin-bad-text: #ac5a61;
 	--color-admin-row-action-border: #e8e1f0;
-	--color-admin-row-action-text: #7958ab;
-	--color-admin-row-action-hover-surface: #f5f0fc;
-	--color-admin-filters-surface: #eceaf2;
-	--color-admin-filters-button-text: #83788f;
-	--color-admin-filters-button-aria-pressed-true-border: #e2dce9;
-	--color-admin-filters-button-aria-pressed-true-text: #594170;
-	--color-admin-filters-button-aria-pressed-true-shadow: #41335608;
-	--color-admin-empty-text: #9b8dad;
-	--color-admin-empty-h3-text: #665a78;
-	--color-admin-empty-p-text: #978ba2;
 	--color-admin-error-text: #98505c;
 	--color-admin-notice-surface: #ecf6f0;
 	--color-admin-notice-text: #377357;
-	--color-admin-loading-surface: #eeeaf7;
-	--color-admin-loading-text: #8a77a4;
 	--color-admin-dialog-shadow: #24103638;
 	--color-admin-dialog-backdrop-surface: #23193666;
 	--color-admin-secondary-border: #e5ddeb;
 	--color-admin-secondary-text: #705c85;
 	--color-admin-danger-surface: #fff3f1;
 	--color-admin-danger-border: #f1d8d5;
-	--color-admin-danger-text: #ad5b56;
+	--color-admin-danger-text: #a75853;
 	--color-admin-operation-page-input-border: #d7d3e3;
 	--color-admin-operation-page-input-text: #242037;
-	--color-admin-report-queue-li-border: #e4e4ee;
-	--color-admin-report-queue-time-text: #666;
-	--color-admin-report-handling-textarea-border: #ddd;
 
 	/* Management roles. */
 	--color-management-panel-input-border: #d9d7df;
@@ -275,11 +257,10 @@
 	--color-welcome-auth-card-border: #ebe4f1;
 	--color-welcome-auth-card-shadow: #4d326610;
 	--color-welcome-large-mark-surface: #f2ecfc;
-	--color-welcome-auth-privacy-text: #8b819a;
+	--color-welcome-auth-privacy-text: #7b708c;
 	--color-welcome-auth-consent-text: #6b6280;
-	--color-welcome-footer-text: #918899;
 	--color-welcome-onboarding-card-shadow: #4d32660a;
-	--color-welcome-slug-input-span-text: #91859e;
+	--color-welcome-slug-input-span-text: #756b7f;
 	--color-welcome-slug-input-span-surface: #f7f4fb;
 	--color-welcome-slug-input-span-border: #e7e0ef;
 
@@ -294,8 +275,8 @@
 	--color-preview-scrollbar-thumb: #d8d1e3;
 
 	/* Workspace roles. */
-	--color-workspace-label-text: #a095ac;
-	--color-workspace-nav-item-text: #80758d;
+	--color-workspace-label-text: #7d6f8d;
+	--color-workspace-nav-item-text: #7b7088;
 	--color-workspace-nav-item-hover-surface: #f8f5fc;
 	--color-workspace-sidebar-note-surface: #f9f7fc;
 	--color-workspace-sidebar-note-border: #eeebf2;
@@ -303,7 +284,7 @@
 	--color-workspace-avatar-text: #7b58aa;
 	--color-workspace-account-small-text: #9b8fa6;
 	--color-workspace-studio-header-surface: #ffffffba;
-	--color-workspace-page-breadcrumb-span-text: #9b8fa7;
+	--color-workspace-page-breadcrumb-span-text: #7c6d8b;
 	--color-workspace-page-breadcrumb-svg-text: #b9afc4;
 	--color-workspace-page-breadcrumb-b-text: #62556f;
 	--color-workspace-save-status-text: #92849d;
@@ -313,7 +294,7 @@
 	--color-workspace-feedback-success-surface: #edf7f0;
 	--color-workspace-feedback-success-border: #d4e9db;
 	--color-workspace-feedback-success-text: #326348;
-	--color-workspace-section-heading-eyebrow-text: #9986b3;
+	--color-workspace-section-heading-eyebrow-text: #7f679f;
 	--color-workspace-section-heading-p-text: #988aa3;
 	--color-workspace-editor-card-shadow: #33214a02;
 	--color-workspace-card-icon-text: #7377c7;
@@ -332,7 +313,7 @@
 	--color-workspace-preview-toolbar-text: #8d7e9e;
 	--color-workspace-device-controls-border: #e4ddeb;
 	--color-workspace-device-controls-surface: #e9e3f0;
-	--color-workspace-device-controls-button-text: #9c8bae;
+	--color-workspace-device-controls-button-text: #6b5f78;
 	--color-workspace-device-controls-button-active-shadow: #5332780d;
 	--color-workspace-status-pill-border: #e1daeb;
 	--color-workspace-status-pill-text: #8b789f;
@@ -342,7 +323,7 @@
 	--color-workspace-browser-bar-border: #f0ecf4;
 	--color-workspace-browser-bar-text: #ada1b8;
 	--color-workspace-preview-caption-text: #9b8aab;
-	--color-workspace-preview-link-text: #6266b5;
+	--color-workspace-preview-link-text: #6063b1;
 	--color-workspace-theme-choice-border: #e5deed;
 	--color-workspace-theme-choice-selected-border: #7c81e1;
 	--color-workspace-theme-choice-selected-shadow: #eee6fb;
@@ -351,11 +332,10 @@
 	--color-workspace-quiet-note-border: #e9e1f1;
 	--color-workspace-quiet-note-surface: #f7f2fc;
 	--color-workspace-quiet-note-text: #9783ad;
-	--color-workspace-address-display-text: #79638d;
 	--color-workspace-muted-text: #8a7c98;
 
 	/* Save roles. */
-	--color-save-success: #687b65;
+	--color-save-success: #667863;
 	--color-save-error: #b74d58;
 	--color-save-unsaved: #947139;
 

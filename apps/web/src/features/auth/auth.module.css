@@ -11,10 +11,6 @@
 .card {
 	width: min(100%, 460px);
 }
-.eyebrow {
-	display: block;
-	margin-top: 28px;
-}
 .title {
 	font-size: clamp(25px, 4vw, 30px);
 	line-height: 1.4;
