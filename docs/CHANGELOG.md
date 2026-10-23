@@ -1,5 +1,9 @@
 # Action log
 
+## 2026-10-23 — Console redesign, infinite lists and the studio account page
+- Human request: "do the best" on account deletion, a dashboard as organised as other companies' dashboards, shadcn and infinite React Query questions, and proactive decisions. Scope: a shared console component kit with `useInfiniteQuery` lists; every console page redesigned; grouped navigation; self-service account changes and deletion (server and studio page); privacy and removal copy made accurate; the studio sidebar no longer covers notices. shadcn was not adopted (see DECISIONS).
+- Checks: API suite 103 pass / 12 skip / 0 fail (account integration 4/4, mail templates 7/7), web 60/0, Playwright e2e 56 passed, typecheck 0, Biome clean, browser QA of infinite loading, search, notices, report handling and the whole account flow. Evidence: `docs/evidence/2026-10-23-console-redesign-account.md`.
+
 ## 2026-10-23 — TanStack Query for the administration console
 - Human request: add React Query to the dashboard ("ابدا"). Scope: the administration console only. Its reads move to TanStack Query through one console hook, with a query client scoped to the signed-in administrator session and dropped when the console unmounts; writes stay explicit `api()` calls and invalidate the console's queries afterwards. The studio editor (draft, revision and publication state machine) and the authorization gate's permission read are deliberately out of scope.
 - Step 1: remove unreachable controller reads (the console controller was only ever used for the site moderation dialog; its page, counts and account-dialog paths had no caller).

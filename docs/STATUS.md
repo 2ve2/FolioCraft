@@ -10,8 +10,13 @@ Updated: 2026-10-23, Asia/Riyadh. This page is the short continuation point. Eve
 
 ## Active work
 
-- On `claude/modest-davinci-osg31w`, awaiting human review: TanStack Query in the administration console (session-scoped cache, reads through one hook, writes invalidate), removal of unreachable controller code, and a fix for the desktop console sidebar cutting off sign-out on short windows. Evidence: [evidence/2026-10-23-admin-query.md](evidence/2026-10-23-admin-query.md).
-- After deploying PR #15, send one reset email to a private mailbox to check the branded email in a real inbox.
+- On `claude/modest-davinci-osg31w` (PR #16), awaiting human review:
+  - TanStack Query in the administration console (session-scoped cache, infinite lists).
+  - A full console redesign on a shared component kit, with grouped navigation.
+  - Self-service account changes and deletion (studio Account page and Better Auth configuration).
+  - Studio sidebar no longer covers notices; console sidebar scrolls on short windows.
+  - Evidence: [evidence/2026-10-23-admin-query.md](evidence/2026-10-23-admin-query.md), [evidence/2026-10-23-console-redesign-account.md](evidence/2026-10-23-console-redesign-account.md).
+- After deploying PR #15/#16, send one reset email to a private mailbox to check the branded email, and try one email change once mail is confirmed.
 
 ## Blockers
 

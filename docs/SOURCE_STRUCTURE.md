@@ -141,6 +141,10 @@ apps/web/src/
         projects-section.tsx     Project editor
         appearance-section.tsx   Appearance controls
         settings-section.tsx     Address and backup settings
+      account/
+        account-settings.tsx     Account page: name, email change, password, devices, deletion
+        account-copy.ts          Bilingual account copy and error messages
+        account.module.css       Account page cards
       landing-page.tsx           Public entry and session-aware studio links
       welcome-screen.tsx         Product landing and independent auth-route links
       landing-showcase.tsx       Fictional shared-template example
@@ -158,7 +162,9 @@ apps/web/src/
       admin/
         admin-shell.tsx          Role-aware navigation, session gate and account exit
         admin-context.tsx        Authorized identity and interface-locale context
-        admin-query.tsx          Session-scoped TanStack Query client, console reads and refresh
+        admin-query.tsx          Session-scoped TanStack Query client, console reads, infinite lists and refresh
+        ui/console.tsx           Console kit: page header, metrics, panels, tables, filters, states
+        ui/console.module.css    Console kit styles (tables become stacked cards on phones)
         admin-pagination.tsx     Shared bounded twenty-record pagination
         site-moderation-dialog.tsx Site overview and password-confirmed moderation
         admin-dialog.tsx         Native modal lifecycle and focus restoration
