@@ -45,11 +45,13 @@
 	);
 	z-index: -1;
 }
+/* The UI face keeps a plain zero; the code face's dotted zero read as "4•4" once tightly tracked. */
 .number {
-	font-family: var(--font-mono);
+	font-family: var(--font-ui);
 	font-size: clamp(96px, 22vw, 140px);
-	font-weight: 600;
-	letter-spacing: -10px;
+	font-weight: 700;
+	font-variant-numeric: lining-nums tabular-nums;
+	letter-spacing: -2px;
 	line-height: 1;
 	color: var(--color-not-found-number-text);
 	text-shadow: 0 6px 0 var(--color-not-found-number-shadow);
@@ -57,8 +59,8 @@
 }
 .file {
 	position: absolute;
-	inset-inline-end: 22px;
-	bottom: 8px;
+	inset-inline-end: -6px;
+	bottom: -2px;
 	width: 64px;
 	height: 72px;
 	display: grid;

@@ -75,7 +75,7 @@ for (const locale of ["ar", "en"] as const) {
 			const response = await page.goto(`/${locale}/does-not-exist`);
 			expect(response?.status()).toBe(404);
 			await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-				locale === "ar" ? "هذه الصفحة غير موجودة" : "This page is out of the picture.",
+				locale === "ar" ? "لم نعثر على هذه الصفحة" : "We can’t find this page",
 			);
 		});
 	});
