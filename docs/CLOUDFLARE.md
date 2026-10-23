@@ -38,6 +38,10 @@ R2 CORS was updated to allow the exact trial frontend origin alongside the exist
 
 ## Repeatable build and deployment
 
+Preferred since 2026-10-23: from the independent checkout on an up-to-date `main`, `bun run deploy:trial` (`scripts/deploy-trial.ts`) refuses to run on another branch, with uncommitted tracked changes or behind `origin/main`; installs the frozen lockfile; builds the web app with the trial public origins; deploys the API, then the web; and checks `https://api.lord2ve.tech/health` and `https://lord2ve.tech/en` for 200. `--cache` switches to the published-page cache manifests with the cache enabled and `--normal` switches back; the choice is remembered in ignored `work/deploy-trial.json`, so later releases cannot silently drop the cache bindings. `--dry-run` builds and bundles without uploading. It never runs migrations, reads or prints secrets, or creates resources; run `bun run db:migrate` first when a release adds a migration. Local check (2026-10-23): build exit 0 and dry-run bundles of all four manifests exit 0, including the cache web manifest with `--var PORTFOLIO_CACHE_ENABLED:true`; it has not been run against Cloudflare by the agent.
+
+The manual commands below remain valid.
+
 Use the independent checkout or a clean build directory so OpenNext's `.next` output does not interfere with a running local editor. Install the frozen Bun lockfile so the adapter patch applies. These commands are operational examples, not authorization to redeploy or a record that they were run again:
 
 ```sh

@@ -81,6 +81,8 @@ cd apps/web
 CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false WRANGLER_WRITE_LOGS=false WRANGLER_SEND_METRICS=false bun --no-env-file x --no-install opennextjs-cloudflare deploy --config wrangler.cache.toml --var PORTFOLIO_CACHE_ENABLED:true
 ```
 
+After the checks pass, release with `bun run deploy:trial --cache` from then on: it remembers the cache mode and always deploys both cache manifests with the cache enabled, so a later release cannot deploy the API without its invalidation bindings while the web keeps serving cached pages. `bun run deploy:trial --normal` returns to the normal manifests (cache off).
+
 Immediate operational rollback command (same built source/resources, bypass cached pages):
 
 ```sh
