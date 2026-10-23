@@ -1,14 +1,14 @@
 """Generate the Ichnara v2 brand masters: the rebuilt folded-band emblem and Readex Pro wordmarks.
 
 The emblem keeps the human-approved folded-band idea, rebuilt geometrically: a pointy-top hexagonal
-ring (inner half-width 0.32 of the outer) cut by two vertical channels into two congruent bands
+ring (inner half-width 0.36 of the outer, optically corrected from the chosen 0.32) cut by two vertical channels into two congruent bands
 related by a 180-degree rotation, one uniform gap, consistent fillets. Wordmarks are Readex Pro 600
 (SIL OFL 1.1) shaped with HarfBuzz and outlined; no font is needed to render the results.
 
 Requires: pip install fonttools brotli uharfbuzz, and the @fontsource/readex-pro 5.3.0 files, e.g.
   mkdir -p work/brand-fonts && cd work/brand-fonts && bun add @fontsource/readex-pro@5.3.0
 Usage: python3 docs/brand/v2/generate.py [path/to/@fontsource/readex-pro]
-Writes emblem.svg, wordmark-en.svg, wordmark-ar.svg and ReadexPro-LICENSE.txt next to this file.
+Writes emblem.svg, emblem-small.svg, wordmark-en.svg, wordmark-ar.svg and ReadexPro-LICENSE.txt next to this file.
 """
 import io
 import math
@@ -57,7 +57,7 @@ def fillet_path(points, radii):
     return path + "Z"
 
 
-def emblem(R=120.0, inner=0.32, gap=0.07, outer_r=0.11, inner_r=0.03, end_r=0.015):
+def emblem(R=120.0, inner=0.36, gap=0.10, outer_r=0.11, inner_r=0.03, end_r=0.015):
     """Two band paths and the (width, height) box; origin at the top-left of the hexagon's box."""
     W = R * math.cos(math.radians(30))
     a = inner * W
@@ -102,10 +102,13 @@ def outline(script, text):
 
 
 NS = "http://www.w3.org/2000/svg"
-a_path, b_path, (ew, eh) = emblem()
-(HERE / "emblem.svg").write_text(
-    f'<svg xmlns="{NS}" viewBox="0 0 {r(ew)} {r(eh)}" role="img" aria-label="Ichnara emblem"><path data-piece="a" d="{a_path}"/><path data-piece="b" d="{b_path}"/></svg>\n'
-)
+# Optical sizes: the regular master for lockups and large use; a small master with a wider gap so the
+# two bands stay separate at icon sizes (the regular gap is about 0.5 px in a 16 px favicon).
+for name, gap in [("emblem", 0.10), ("emblem-small", 0.16)]:
+    a_path, b_path, (ew, eh) = emblem(gap=gap)
+    (HERE / f"{name}.svg").write_text(
+        f'<svg xmlns="{NS}" viewBox="0 0 {r(ew)} {r(eh)}" role="img" aria-label="Ichnara emblem"><path data-piece="a" d="{a_path}"/><path data-piece="b" d="{b_path}"/></svg>\n'
+    )
 for name, script, text in [("en", "latin", "Ichnara"), ("ar", "arabic", "إيكنارا")]:
     d, x0, y0, x1, y1 = outline(script, text)
     # The viewBox is the ink bounds; baseline is y = 0 and the Latin capital height is 700 units.

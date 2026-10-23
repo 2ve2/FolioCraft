@@ -15,11 +15,11 @@ NS = "http://www.w3.org/2000/svg"
 INK, ACCENT, WHITE, ACCENT_ON_DARK, ICON_SOFT = "#241B38", "#3F46C8", "#FFFFFF", "#A4A9FF", "#C9CCFF"
 
 CAP = 700  # Readex Pro capital height in font units
-EMBLEM_H = CAP * 1.18  # the emblem is slightly taller than the capitals and centred on them
+EMBLEM_H = CAP * 1.10  # the emblem is slightly taller than the capitals and centred on them
 GAP = CAP * 0.30
 PAD = 30
-# Header size: the emblem renders 32px tall in both languages, so the capitals are 27px.
-DISPLAY = 32 / EMBLEM_H
+# Header size: the emblem renders 30px tall in both languages, so the capitals are 27px.
+DISPLAY = 30 / EMBLEM_H
 
 
 def r(n):
@@ -88,10 +88,13 @@ emblem_box = (-6, -6, e_box[2] + 12, e_box[3] + 12)
 for name, (a, b, _) in COLOURWAYS.items():
     (OUT / f"ichnara-emblem-{name}.svg").write_text(svg(emblem_box, emblem_body("", a, b), "Ichnara emblem"))
 
-# App icon and favicon: white emblem (soft second band) on an indigo tile.
+# App icon and favicon: white emblem (soft second band) on an indigo tile, from the small-size master.
+small_box, small_paths = master("emblem-small.svg")
+small = {piece: d for piece, d in small_paths}
 icon_scale = 64 * 0.6 / e_box[3]
 icon_t = f"translate({r((64 - e_box[2] * icon_scale) / 2)} {r((64 - e_box[3] * icon_scale) / 2)}) scale({r(icon_scale)})"
-icon = svg((0, 0, 64, 64), f'<rect width="64" height="64" rx="15" fill="{ACCENT}"/>' + emblem_body(icon_t, WHITE, ICON_SOFT), "Ichnara icon")
+icon_body = f'<g transform="{icon_t}"><path d="{small["a"]}" fill="{WHITE}"/><path d="{small["b"]}" fill="{ICON_SOFT}"/></g>'
+icon = svg((0, 0, 64, 64), f'<rect width="64" height="64" rx="15" fill="{ACCENT}"/>' + icon_body, "Ichnara icon")
 (OUT / "favicon.svg").write_text(icon)
 (ROOT / "apps/web/src/app/icon.svg").write_text(icon)
 

@@ -4,9 +4,9 @@ Version 2.0 (2026-10-23). The human asked for the logo to be reworked profession
 
 ## Construction
 
-- **Emblem.** The folded-band idea rebuilt on exact geometry: a pointy-top hexagonal ring whose inner hexagon is 0.32 of the outer half-width, cut by two vertical channels into two congruent bands related by a 180-degree rotation. The gap between the bands is one uniform width; outer corners, inner corners and cut ends each use one fillet radius. The first band takes the ink, the second the accent.
+- **Emblem.** The folded-band idea rebuilt on exact geometry: a pointy-top hexagonal ring whose inner hexagon is 0.36 of the outer half-width (optically corrected from the chosen 0.32 so the bands are about 1.5 times the letter stems), cut by two vertical channels into two congruent bands related by a 180-degree rotation. The gap between the bands is one uniform width (0.10 of the circumradius; a small-size master with 0.16 drives the favicon and app icons so the bands stay separate at 16 px); outer corners, inner corners and cut ends each use one fillet radius. The first band takes the ink, the second the accent.
 - **Wordmarks.** Readex Pro 600 (SIL Open Font License 1.1, see `ReadexPro-LICENSE.txt`), shaped with HarfBuzz and outlined: `Ichnara` and `إيكنارا` come from one bilingual family, so both scripts share stroke weight and proportions. No font is needed to render the files.
-- **Lockups.** The emblem is 1.18 times the capital height, centred on the capitals, with a gap of 0.30 capital height. English reads emblem then word; Arabic reads emblem (right) then word.
+- **Lockups.** The emblem is 1.10 times the capital height, centred on the capitals, with a gap of 0.30 capital height. English reads emblem then word; Arabic reads emblem (right) then word.
 
 ## Files
 
