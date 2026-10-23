@@ -1,6 +1,5 @@
 "use client";
 import type { Locale } from "@ichnara/contracts";
-import { CircleAlert } from "lucide-react";
 import { type ReactNode, useEffect, useId, useState } from "react";
 import { brandArtwork } from "../../components/ui/brand-artwork";
 
@@ -93,7 +92,6 @@ export function LoadingScreen({
 					</svg>
 				)}
 				<h1 id={titleId}>
-					{error && <CircleAlert size={20} strokeWidth={1.75} aria-hidden="true" />}
 					{error
 						? (title ?? (ar ? "تعذر إكمال الطلب" : "We couldn’t complete the request"))
 						: ar
