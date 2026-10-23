@@ -5,12 +5,12 @@ Updated: 2026-10-23, Asia/Riyadh. This page is the short continuation point. Eve
 ## Product and trial
 
 - Ichnara (confirmed name), a bilingual Arabic/English portfolio builder. Friends-only trial on the temporary domain: https://lord2ve.tech (web) and https://api.lord2ve.tech (API).
-- `main` contains PRs #1–#13 (#12: full audit and cleanup; #13: migration command and signup email verification): audit fixes, `/ar` and `/en` language prefixes, the pool-close fix, the committed Playwright suite, optional Sentry monitoring, optional Hyperdrive, platform color tokens, optional published-page caching (off by default), signed-in entry and tab-return fix, and the immediate studio frame with the Next.js 16.4.1 security update.
+- `main` contains PRs #1–#14 (#12: full audit and cleanup; #13: migration command and signup email verification; #14: brand v2, phone drawer, deploy:trial, hardening): audit fixes, `/ar` and `/en` language prefixes, the pool-close fix, the committed Playwright suite, optional Sentry monitoring, optional Hyperdrive, platform color tokens, optional published-page caching (off by default), signed-in entry and tab-return fix, and the immediate studio frame with the Next.js 16.4.1 security update.
 - Unknown: which `main` commit each trial Worker runs. The human deploys from the independent checkout; this session cannot reach the trial hosts (network policy).
 
 ## Active work
 
-- On `claude/modest-davinci-osg31w`, awaiting human review: brand v2 (rebuilt folded-band emblem with Readex Pro, human-chosen; supersedes logo v1.3, evidence [evidence/2026-10-23-brand-v2.md](evidence/2026-10-23-brand-v2.md)), phone navigation drawer (studio and admin), `bun run deploy:trial`, per-account wrong-password budget, upload completion without the site lock during IO. Evidence: [evidence/2026-10-23-overnight.md](evidence/2026-10-23-overnight.md).
+- On `claude/modest-davinci-osg31w`, awaiting human review: branded authentication emails (hosted v2 logo, table layout, explicit 60-minute link lifetime). Evidence: [evidence/2026-10-23-auth-email.md](evidence/2026-10-23-auth-email.md). After deployment, send one reset email to a private mailbox to check real rendering.
 
 ## Blockers
 

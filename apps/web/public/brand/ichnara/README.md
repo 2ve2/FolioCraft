@@ -15,6 +15,7 @@ Version 2.0 (2026-10-23). The human asked for the logo to be reworked profession
 - `ichnara-logo-ink/violet/white.svg` (and `-ar-`): single-colour lockups.
 - `ichnara-wordmark-*.svg`: the words alone; `ichnara-emblem-*.svg`: the emblem alone (duo, reverse, ink, violet, white).
 - `favicon.svg`, `favicon.ico`, `icon-16…512.png`: white emblem on an indigo tile; the Apple touch icon uses 180 px.
+- `ichnara-email-en.png` / `ichnara-email-ar.png`: the duo lockups at one scale for authentication emails (2x; shown 200x36 and 151x47 px), linked by URL because most mail clients do not display SVG.
 - `brand-overview.svg/png`, `brand.json`; every SVG has a matching PNG (2400 px lockups, 1024 px emblems).
 - `ichnara-brand-kit-v2.0.zip` holds all of the above.
 

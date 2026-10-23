@@ -9,6 +9,7 @@ import * as schema from "../../db/schema/auth";
 import { accessControl, accessRoles } from "./access";
 import { authHooks } from "./hooks";
 import { sendAuthMail } from "./mail";
+import { AUTH_LINK_MINUTES } from "./mail-templates";
 
 export const auth = betterAuth({
 	appName: "Ichnara",
@@ -39,6 +40,7 @@ export const auth = betterAuth({
 		minPasswordLength: 10,
 		requireEmailVerification,
 		revokeSessionsOnPasswordReset: true,
+		resetPasswordTokenExpiresIn: AUTH_LINK_MINUTES * 60,
 
 		/** Delivers the native reset link using the configured project mail transport. */
 		sendResetPassword: async ({ user, url }) => {
@@ -49,6 +51,7 @@ export const auth = betterAuth({
 		sendOnSignUp: requireEmailVerification,
 		sendOnSignIn: requireEmailVerification,
 		autoSignInAfterVerification: false,
+		expiresIn: AUTH_LINK_MINUTES * 60,
 
 		/** Delivers the native verification link using the configured project mail transport. */
 		sendVerificationEmail: async ({ user, url }) => {

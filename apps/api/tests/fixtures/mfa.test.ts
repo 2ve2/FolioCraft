@@ -16,6 +16,9 @@ const enabled = env.ADMIN_REQUIRE_MFA;
 const ids: string[] = [];
 type AuthEngine = { handler: (request: Request) => Promise<Response> };
 const password = "Mfa-fixture-password-only-123";
+// Better Auth allows 3 /two-factor/* calls per 10 s per address; a distinct address per call keeps
+// unrelated calls from sharing that budget (random picks from 254 addresses occasionally collided).
+let clientAddress = Math.floor(Math.random() * 254 * 254);
 
 /** Maintains response cookies like a browser without logging their values. */
 function cookies(response: Response, previous = "") {
@@ -45,7 +48,7 @@ async function native(engine: AuthEngine, path: string, body: unknown, cookie = 
 				Origin: env.WEB_URL,
 				"Content-Type": "application/json",
 				Cookie: cookie,
-				"x-folio-client-ip": `127.88.${Math.floor(Math.random() * 254)}.1`,
+				"x-folio-client-ip": `127.88.${Math.floor(clientAddress / 254) % 254}.${(clientAddress++ % 254) + 1}`,
 			},
 			body: JSON.stringify(body),
 		}),
