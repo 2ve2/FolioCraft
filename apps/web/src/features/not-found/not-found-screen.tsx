@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, FileQuestion, House, PanelsTopLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight, House, PanelsTopLeft } from "lucide-react";
 import Link from "next/link";
 import { Brand } from "../../components/ui/brand";
 import { LanguageSwitch } from "../../components/ui/language-switch";
@@ -32,15 +32,8 @@ export function NotFoundScreen() {
 				)}
 			</header>
 			<main className={styles.main}>
-				<div className={styles.art} aria-hidden="true">
-					<span className={styles.orbit} />
-					<span className={styles.number}>404</span>
-					<span className={styles.file}>
-						<FileQuestion size={34} strokeWidth={1.5} />
-					</span>
-				</div>
+				<p className={styles.number}>404</p>
 				<div className={styles.content}>
-					<p className={styles.eyebrow}>{ar ? "خطأ 404" : "Error 404"}</p>
 					<h1>{ar ? "لم نعثر على هذه الصفحة" : "We can’t find this page"}</h1>
 					<p className={styles.description}>
 						{ar

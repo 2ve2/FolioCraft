@@ -161,13 +161,8 @@
 
 	/* Not-found roles. */
 	--color-not-found-page-surface: #eee7fb;
-	--color-not-found-orbit-border: #d9cbed;
-	--color-not-found-orbit-surface: #e5d9f8;
 	--color-not-found-number-text: #3f46c8;
 	--color-not-found-number-shadow: #d9dbf4;
-	--color-not-found-file-border: #e4daef;
-	--color-not-found-file-shadow: #51308012;
-	--color-not-found-eyebrow-text: #72529a;
 	--color-not-found-description-text: #70677e;
 	--color-not-found-primary-shadow: #3f46c81a;
 	--color-not-found-primary-hover-surface: #3036a6;
@@ -200,7 +195,6 @@
 	--color-loading-sheet-line-surface: #e9eaf5;
 	--color-loading-sheet-grid-i-surface: #fafaff;
 	--color-loading-symbol-shadow: #3f46c80a;
-	--color-loading-error-icon: #a13b35;
 
 	/* Readability roles. */
 	--color-readability-content-jump-nav-a-text: #716080;
