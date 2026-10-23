@@ -33,8 +33,8 @@
 	border: 0;
 	border-radius: 0.65rem;
 	padding: 0.75rem 1rem;
-	background: #3f46c8;
-	color: white;
+	background: var(--color-accent);
+	color: var(--color-surface);
 	cursor: pointer;
 	font: inherit;
 }
@@ -44,6 +44,6 @@
 }
 .trigger:focus-visible,
 .submit:focus-visible {
-	outline: 3px solid #8589ff;
+	outline: 3px solid var(--color-admin-focus-ring);
 	outline-offset: 3px;
 }

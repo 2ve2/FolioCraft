@@ -13,15 +13,15 @@
 	height: 48px;
 	border: 1px solid #ffffff80;
 	border-radius: 50%;
-	background: #3f46c8;
-	color: #fff;
+	background: var(--color-accent);
+	color: var(--color-surface);
 	box-shadow: 0 3px 14px #17152b26;
 }
 .badge:hover {
-	background: #3339ad;
+	background: var(--color-accent-hover);
 }
 .badge:focus-visible {
-	outline: 3px solid #3f46c8;
+	outline: 3px solid var(--color-accent);
 	outline-offset: 4px;
 	box-shadow: 0 0 0 4px white;
 }

@@ -113,7 +113,7 @@
 	--color-admin-text: #2d253e;
 	--color-admin-page: #f7f7fb;
 	--color-admin-focus-ring: #9195e8;
-	--color-admin-nav-label-text: #9b92aa;
+	--color-admin-nav-label-text: #7b708f;
 	--color-admin-nav-link-text: #777083;
 	--color-admin-nav-link-hover-surface: #f8f6fc;
 	--color-admin-nav-active-surface: #f0eafa;
@@ -257,7 +257,7 @@
 	--color-welcome-auth-card-border: #ebe4f1;
 	--color-welcome-auth-card-shadow: #4d326610;
 	--color-welcome-large-mark-surface: #f2ecfc;
-	--color-welcome-auth-privacy-text: #8b819a;
+	--color-welcome-auth-privacy-text: #7b708c;
 	--color-welcome-auth-consent-text: #6b6280;
 	--color-welcome-onboarding-card-shadow: #4d32660a;
 	--color-welcome-slug-input-span-text: #91859e;
@@ -275,8 +275,8 @@
 	--color-preview-scrollbar-thumb: #d8d1e3;
 
 	/* Workspace roles. */
-	--color-workspace-label-text: #a095ac;
-	--color-workspace-nav-item-text: #80758d;
+	--color-workspace-label-text: #7d6f8d;
+	--color-workspace-nav-item-text: #7b7088;
 	--color-workspace-nav-item-hover-surface: #f8f5fc;
 	--color-workspace-sidebar-note-surface: #f9f7fc;
 	--color-workspace-sidebar-note-border: #eeebf2;
@@ -284,7 +284,7 @@
 	--color-workspace-avatar-text: #7b58aa;
 	--color-workspace-account-small-text: #9b8fa6;
 	--color-workspace-studio-header-surface: #ffffffba;
-	--color-workspace-page-breadcrumb-span-text: #9b8fa7;
+	--color-workspace-page-breadcrumb-span-text: #7c6d8b;
 	--color-workspace-page-breadcrumb-svg-text: #b9afc4;
 	--color-workspace-page-breadcrumb-b-text: #62556f;
 	--color-workspace-save-status-text: #92849d;
@@ -294,7 +294,7 @@
 	--color-workspace-feedback-success-surface: #edf7f0;
 	--color-workspace-feedback-success-border: #d4e9db;
 	--color-workspace-feedback-success-text: #326348;
-	--color-workspace-section-heading-eyebrow-text: #9986b3;
+	--color-workspace-section-heading-eyebrow-text: #7f679f;
 	--color-workspace-section-heading-p-text: #988aa3;
 	--color-workspace-editor-card-shadow: #33214a02;
 	--color-workspace-card-icon-text: #7377c7;
@@ -335,7 +335,7 @@
 	--color-workspace-muted-text: #8a7c98;
 
 	/* Save roles. */
-	--color-save-success: #687b65;
+	--color-save-success: #667863;
 	--color-save-error: #b74d58;
 	--color-save-unsaved: #947139;
 
