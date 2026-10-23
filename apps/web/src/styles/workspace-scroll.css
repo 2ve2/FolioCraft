@@ -76,6 +76,13 @@
 		min-height: 0;
 		height: auto;
 	}
+	/* Below a notice, the workspace sidebar starts under it instead of covering it. */
+	.studio-notice-shell > .studio-shell--split-scroll {
+		position: relative;
+	}
+	.studio-notice-shell > .studio-shell--split-scroll > .sidebar {
+		position: absolute;
+	}
 }
 
 @media (max-width: 480px) {
