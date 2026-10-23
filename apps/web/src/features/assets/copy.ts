@@ -42,7 +42,8 @@ export const copy = {
 			"هذا الملف مرتبط بالمسودة أو بإصدار محفوظ. يبقى الملف محميًا حتى بعد إزالة مرجع المسودة إن كان في إصدار سابق.",
 		STORAGE_UNAVAILABLE: "خدمة الصور غير مهيأة حاليًا.",
 		STORAGE_PROVIDER_ERROR: "تعذر الاتصال بخدمة الصور. أعد المحاولة.",
-		INVALID_IMAGE: "فشل التحقق من الصورة. استخدم صورة ثابتة صالحة ضمن الحدود.",
+		INVALID_IMAGE:
+			"هذا الملف ليس صورة PNG أو JPEG أو WebP صالحة، فلم يُحفظ. اختر صورة ثابتة ضمن الحدود.",
 		UPLOAD_EXPIRED: "انتهت مهلة الرفع. ارفع الصورة من جديد.",
 		UPLOAD_NOT_FOUND: "لم تصل الصورة إلى التخزين. ارفعها من جديد.",
 		UPLOAD_CHANGED: "تغير الملف أثناء التحقق. ارفعه من جديد.",
@@ -97,7 +98,8 @@ export const copy = {
 			"This file is referenced by the draft or a saved release. Historical releases keep it protected even after removing its draft reference.",
 		STORAGE_UNAVAILABLE: "Image storage is not configured yet.",
 		STORAGE_PROVIDER_ERROR: "Image storage could not be reached. Try again.",
-		INVALID_IMAGE: "Image verification failed. Use a valid still image within the limits.",
+		INVALID_IMAGE:
+			"This file isn’t a valid PNG, JPEG or WebP image, so it wasn’t kept. Choose a still image within the limits.",
 		UPLOAD_EXPIRED: "The upload permission expired. Upload the image again.",
 		UPLOAD_NOT_FOUND: "The image did not reach storage. Upload it again.",
 		UPLOAD_CHANGED: "The file changed during verification. Upload it again.",
