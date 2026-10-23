@@ -2,19 +2,24 @@
 import { type AdminPermissions, canViewAdmin, isStaff } from "@ichnara/contracts/admin-policy";
 import {
 	ArrowUpRight,
+	Flag,
 	Globe2,
+	History,
+	Inbox,
 	LayoutDashboard,
 	LogOut,
+	Megaphone,
 	Menu,
-	ScrollText,
+	Server,
 	ShieldCheck,
 	ShieldX,
+	UserCog,
 	UsersRound,
 	X,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
+import { Fragment, type ReactNode, useEffect, useState } from "react";
 import { Brand } from "../../../components/ui/brand";
 import { LanguageSwitch } from "../../../components/ui/language-switch";
 import { TooltipButton } from "../../../components/ui/tooltip-button";
@@ -32,15 +37,15 @@ import { AdminQueryProvider } from "./admin-query";
 import styles from "./admin-shell.module.css";
 
 const navigation = [
-	{ key: "requests", path: "/admin/requests", icon: ScrollText },
-	{ key: "staff", path: "/admin/staff", icon: UsersRound },
-	{ key: "system", path: "/admin/system", icon: ShieldCheck },
-	{ key: "notices", path: "/admin/notices", icon: ScrollText },
-	{ key: "overview", path: "/admin", icon: LayoutDashboard },
-	{ key: "sites", path: "/admin/sites", icon: Globe2 },
-	{ key: "users", path: "/admin/accounts", icon: UsersRound },
-	{ key: "reports", path: "/admin/reports", icon: ScrollText },
-	{ key: "audit", path: "/admin/activity", icon: ScrollText },
+	{ key: "overview", path: "/admin", icon: LayoutDashboard, group: null },
+	{ key: "reports", path: "/admin/reports", icon: Flag, group: "groupModeration" },
+	{ key: "sites", path: "/admin/sites", icon: Globe2, group: "groupModeration" },
+	{ key: "users", path: "/admin/accounts", icon: UsersRound, group: "groupModeration" },
+	{ key: "requests", path: "/admin/requests", icon: Inbox, group: "groupOperations" },
+	{ key: "notices", path: "/admin/notices", icon: Megaphone, group: "groupOperations" },
+	{ key: "audit", path: "/admin/activity", icon: History, group: "groupOperations" },
+	{ key: "staff", path: "/admin/staff", icon: UserCog, group: "groupAdministration" },
+	{ key: "system", path: "/admin/system", icon: Server, group: "groupAdministration" },
 ] as const;
 
 /** Gates administration children and supplies an independent responsive navigation shell. */
@@ -220,22 +225,29 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 									<X size={20} aria-hidden="true" />
 								</button>
 							</div>
-							<span className={styles.navLabel}>{t.label}</span>
 							<nav aria-label={t.platform} className={styles.nav}>
 								{navigation
 									.filter((item) => canViewAdmin(permissions, item.key))
-									.map(({ key, path, icon: Icon }) => (
-										<Link
-											key={key}
-											href={localeHref(locale, `${path}`)}
-											aria-current={pathname === path ? "page" : undefined}
-											className={styles.navLink}
-											onClick={() => drawer.close(false)}
-										>
-											<Icon size={19} aria-hidden="true" />
-											<span>{t[key]}</span>
-											{pathname === path && <i />}
-										</Link>
+									.map(({ key, path, icon: Icon, group }, index, visible) => (
+										<Fragment key={key}>
+											{group && visible[index - 1]?.group !== group && (
+												<span className={styles.navGroup}>{t[group]}</span>
+											)}
+											<Link
+												href={localeHref(locale, `${path}`)}
+												aria-current={
+													pathname === path ||
+													(path !== "/admin" && pathname.startsWith(`${path}/`))
+														? "page"
+														: undefined
+												}
+												className={styles.navLink}
+												onClick={() => drawer.close(false)}
+											>
+												<Icon size={18} aria-hidden="true" />
+												<span>{t[key]}</span>
+											</Link>
+										</Fragment>
 									))}
 							</nav>
 							<div className={styles.sidebarBottom}>
