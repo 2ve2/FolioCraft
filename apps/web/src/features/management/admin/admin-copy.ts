@@ -56,6 +56,8 @@ export const adminCopy = {
 		signInDescription: "Sign in with an authorized administrator account to continue.",
 		signIn: "Sign in",
 		sessionError: "Could not verify your session.",
+		sessionErrorDescription:
+			"The server could not be reached to check your access. Nothing about your account changed; try again in a moment.",
 		retry: "Try again",
 		logout: "Sign out",
 		skip: "Skip to dashboard",
@@ -115,6 +117,8 @@ export const adminCopy = {
 		signInDescription: "سجّل الدخول بحساب مسؤول مصرح له للمتابعة.",
 		signIn: "تسجيل الدخول",
 		sessionError: "تعذر التحقق من جلستك.",
+		sessionErrorDescription:
+			"تعذر الوصول إلى الخادم للتحقق من صلاحياتك. لم يتغير شيء في حسابك؛ أعد المحاولة بعد قليل.",
 		retry: "إعادة المحاولة",
 		logout: "تسجيل الخروج",
 		skip: "الانتقال للوحة الإدارة",

@@ -226,7 +226,13 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 				<main className={styles.gateCard}>
 					<ShieldX size={32} aria-hidden="true" />
 					<h1>{error || authorizationError ? t.sessionError : t.denied}</h1>
-					<p>{session?.user ? t.deniedDescription : t.signInDescription}</p>
+					<p>
+						{error || authorizationError
+							? t.sessionErrorDescription
+							: session?.user
+								? t.deniedDescription
+								: t.signInDescription}
+					</p>
 					<div className={ui.actions}>
 						{error || authorizationError ? (
 							<button
