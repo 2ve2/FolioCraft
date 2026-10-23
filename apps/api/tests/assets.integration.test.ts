@@ -233,3 +233,56 @@ test("completion copies without holding the site lock and drops a copy whose upl
 		remove.mockRestore();
 	}
 });
+
+test("a refused file is discarded at completion while a provider failure stays retryable", async () => {
+	const owner = await account("asset-refused", users);
+	const site = await result<Site>(
+		await request(
+			"/api/sites",
+			"POST",
+			{ slug: `refused-${crypto.randomUUID()}`, locale: "en" },
+			owner.cookie,
+		),
+	);
+	const base = `/api/sites/${site.id}`;
+	const removed: string[] = [];
+	let failure = new ApiError(422, "INVALID_IMAGE");
+	const configured = spyOn(storage, "assertConfigured").mockImplementation(() => {});
+	const sign = spyOn(storage, "uploadUrl").mockImplementation(
+		async (key) => `https://fixture.invalid/${key}`,
+	);
+	const copy = spyOn(storage, "verifyAndCopy").mockImplementation(async () => {
+		throw failure;
+	});
+	const remove = spyOn(storage, "delete").mockImplementation(async (key) => {
+		removed.push(key);
+	});
+	const intent = () =>
+		request(`${base}/assets/upload-intent`, "POST", { mime: "image/png", size: 40 }, owner.cookie);
+	try {
+		const refused = await result<{ id: string }>(await intent());
+		await error(
+			await request(`${base}/assets/${refused.id}/complete`, "POST", undefined, owner.cookie),
+			422,
+			"INVALID_IMAGE",
+		);
+		const [gone] = await db.select().from(assets).where(eq(assets.id, refused.id));
+		expect(["deleting", "deleted"]).toContain(gone.status);
+		expect(removed).toContain(`staging/${site.id}/${refused.id}`);
+
+		failure = new ApiError(502, "STORAGE_PROVIDER_ERROR");
+		const unreachable = await result<{ id: string }>(await intent());
+		await error(
+			await request(`${base}/assets/${unreachable.id}/complete`, "POST", undefined, owner.cookie),
+			502,
+			"STORAGE_PROVIDER_ERROR",
+		);
+		const [kept] = await db.select().from(assets).where(eq(assets.id, unreachable.id));
+		expect(kept.status).toBe("pending");
+	} finally {
+		configured.mockRestore();
+		sign.mockRestore();
+		copy.mockRestore();
+		remove.mockRestore();
+	}
+});

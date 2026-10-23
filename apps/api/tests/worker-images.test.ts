@@ -37,7 +37,8 @@ function binding(
 test("Workers decoder separates provider failures from invalid uploads and redacts diagnostics", async () => {
 	const logs: string[] = [];
 	const warning = spyOn(console, "warn").mockImplementation((value) => logs.push(String(value)));
-	const bytes = Buffer.from([1, 2, 3]);
+	// A JPEG signature lets the fixture reach the mocked decoder.
+	const bytes = Buffer.from([0xff, 0xd8, 0xff, 1, 2, 3]);
 	try {
 		await expect(validateImageBytes(bytes, "image/jpeg")).rejects.toMatchObject({
 			code: "STORAGE_UNAVAILABLE",
@@ -80,7 +81,7 @@ test("Images binding survives awaits and remains isolated between concurrent req
 			withImagesBinding(capability, async () => {
 				await new Promise((resolve) => setTimeout(resolve, 1));
 				expect(currentImagesBinding()).toBe(capability);
-				return validateImageBytes(Buffer.from([1]), "image/jpeg");
+				return validateImageBytes(Buffer.from([0xff, 0xd8, 0xff, 1]), "image/jpeg");
 			}),
 		),
 	);
@@ -94,4 +95,32 @@ test("Images binding survives awaits and remains isolated between concurrent req
 			validateImageBytes(Buffer.alloc(5 * 1024 * 1024 + 1), "image/jpeg"),
 		),
 	).rejects.toMatchObject({ code: "UPLOAD_SIZE_MISMATCH" });
+});
+
+test("files whose bytes do not match the declared image type are rejected before the decoder", async () => {
+	const warning = spyOn(console, "warn").mockImplementation(() => {});
+	let decoderCalls = 0;
+	const counting: ImagesBinding = {
+		...binding(),
+		async info() {
+			decoderCalls += 1;
+			return { format: "png", width: 1, height: 1 };
+		},
+	};
+	try {
+		const text = Buffer.from("This is a text file, not a picture.");
+		for (const mime of ["image/png", "image/jpeg", "image/webp"])
+			await expect(
+				withImagesBinding(counting, () => validateImageBytes(text, mime)),
+			).rejects.toMatchObject({ status: 422, code: "INVALID_IMAGE" });
+		// A JPEG declared as PNG is refused the same way.
+		await expect(
+			withImagesBinding(counting, () =>
+				validateImageBytes(Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0]), "image/png"),
+			),
+		).rejects.toMatchObject({ status: 422, code: "INVALID_IMAGE" });
+		expect(decoderCalls).toBe(0);
+	} finally {
+		warning.mockRestore();
+	}
 });

@@ -28,6 +28,18 @@ function rejectMultipleFrames(bytes: Buffer, format: string) {
 	}
 }
 
+/** Checks the file signature locally, so a renamed non-image never reaches the remote decoder. */
+function hasImageSignature(bytes: Buffer, mime: string) {
+	if (mime === "image/png")
+		return bytes
+			.subarray(0, 8)
+			.equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+	if (mime === "image/jpeg") return bytes.subarray(0, 3).equals(Buffer.from([0xff, 0xd8, 0xff]));
+	if (mime === "image/webp")
+		return bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 12) === "WEBP";
+	return false;
+}
+
 /** Uses Cloudflare's decoder without exposing private bytes or replacing the verified original. */
 export async function validateImageBytes(
 	bytes: Buffer,
@@ -35,6 +47,19 @@ export async function validateImageBytes(
 ): Promise<{ width: number; height: number }> {
 	if (bytes.length < 1 || bytes.length > MAX_ASSET_BYTES)
 		throw new ApiError(422, "UPLOAD_SIZE_MISMATCH");
+	// The decoder reports unreadable input with codes beyond the two mapped below, which surfaced
+	// as a 502 "storage unreachable" for a text file named .png.
+	if (!hasImageSignature(bytes, mime)) {
+		console.warn(
+			JSON.stringify({
+				event: "image_validation_failure",
+				stage: "signature",
+				code: "INVALID_IMAGE",
+				providerCode: null,
+			}),
+		);
+		throw new ApiError(422, "INVALID_IMAGE");
+	}
 	const images = currentImagesBinding();
 	if (!images) {
 		console.warn(

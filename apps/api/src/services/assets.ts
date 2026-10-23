@@ -130,12 +130,24 @@ export const assetService = {
 		});
 		if ("ready" in checked) return checked.ready;
 		const pending = checked.pending;
-		const dimensions = await storage.verifyAndCopy(
-			pending.stagingKey,
-			pending.key,
-			pending.mime,
-			pending.size,
-		);
+		let dimensions: Awaited<ReturnType<typeof storage.verifyAndCopy>>;
+		try {
+			dimensions = await storage.verifyAndCopy(
+				pending.stagingKey,
+				pending.key,
+				pending.mime,
+				pending.size,
+			);
+		} catch (error) {
+			// Content the server refused (not an image, wrong size or type) can never become ready:
+			// discard the upload instead of leaving a retryable "incomplete" entry. Provider errors
+			// keep the pending upload for a retry.
+			if (error instanceof ApiError && error.status === 422)
+				await assetService.delete(userId, siteId, id).catch(() => {
+					console.error(JSON.stringify({ event: "asset_rejected_cleanup_failed" }));
+				});
+			throw error;
+		}
 		const saved = await db.transaction(async (tx) => {
 			await lockSite(tx, siteId, userId);
 			const [current] = await tx
