@@ -74,9 +74,13 @@ export function useAuthController(mode: AuthMode) {
 							? t.authExists
 							: code === "INVALID_EMAIL_OR_PASSWORD"
 								? t.authCredentials
-								: result.error.status === 429
-									? t.authRateLimit
-									: t.authFailure,
+								: code === "PASSWORD_TOO_SHORT" || code === "PASSWORD_TOO_LONG"
+									? t.authPasswordLength
+									: code === "INVALID_EMAIL"
+										? t.authEmailInvalid
+										: result.error.status === 429
+											? t.authRateLimit
+											: t.authFailure,
 				);
 				return;
 			}
