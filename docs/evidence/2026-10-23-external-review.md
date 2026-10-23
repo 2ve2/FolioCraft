@@ -29,6 +29,20 @@ Each finding was checked against the code before anything changed. Nothing was d
   - The copy is now "Error 404" / "We can't find this page" and "خطأ 404" / "لم نعثر على هذه الصفحة", with plainer guidance.
 - **Checked.** Screenshots in both languages at 1440 and 390 px. Playwright e2e 56 passed with the updated routing assertion.
 
+## Follow-up: the loading/error screen
+
+- **Request.** The human had meant the "We couldn't complete the request" screen, not the 404 page.
+- **Problems.**
+  - A large wordmark competed with the heading.
+  - The generic heading was repeated by a message with jargon ("sign-in status").
+  - The Arabic button said "reload" while the English one said "Try again".
+  - The unverified-email state also used the error heading.
+- **Change.**
+  - The wordmark is hidden on errors; the illustration keeps the emblem.
+  - Callers pass a heading: "We can't reach Ichnara right now" (session check), "Your workspace didn't load" and "Confirm your email", with Arabic equivalents.
+  - The Arabic retry button reads "حاول مجدداً".
+- **Checked.** A new unit test (web 67/0), screenshots at 390 px in both languages and Playwright e2e 56 passed.
+
 ## Checks (local)
 
 - **Unit tests.** Web 66 pass / 0 fail, including `review-fixes.test.tsx`:
