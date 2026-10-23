@@ -42,7 +42,7 @@ export async function sendAuthMail(to: string, name: string, url: string, kind: 
 			// Display name keeps the sender recognisable; the address is the validated MAIL_FROM.
 			from: `Ichnara <${env.MAIL_FROM as string}>`,
 			to,
-			...authMailContent(kind, mailLocale(url), name, url),
+			...authMailContent(kind, mailLocale(url), name, url, env.WEB_URL),
 		};
 		console.info(
 			JSON.stringify({
