@@ -1,5 +1,17 @@
 # Action log
 
+## 2026-10-23 — External review reports
+- Human request: an opinion on two review reports of the trial (journey and visitor). Each finding was checked against the code first.
+- Fixed:
+  - save-banner duplicates and the separator in each language;
+  - clear password-length and email messages at sign-up;
+  - a real confirmation after email verification;
+  - an "uploading" state instead of "incomplete";
+  - landing example links that no longer point at a missing `/p/` address;
+  - `https://` completion for link fields.
+- Not a defect: duplicate fields in the studio DOM, which are the preview's contact form. Human action: the `www` DNS record.
+- Checks: web 66/0, typecheck 0, Biome clean, browser checks 9/9 plus upload simulation 3/3, Playwright e2e 56 passed. Evidence: `docs/evidence/2026-10-23-external-review.md`. Not deployed.
+
 ## 2026-10-23 — Full audit: styles, UI/UX, APIs and tests
 - Human request: "are you sure everything is fine? Do a comprehensive analysis of the styles, UI/UX and everything, check the state of the APIs and run tests" ("هل انت متاكد كل شي تمام؟ ..."). Scope: baseline every suite on `main`; a black-box API probe (authorization, ownership, error contract, CORS, headers, public exposure, latency); a browser crawl of 30 routes in both languages at three widths with axe-core, overflow, target-size and language checks; a style review for dead selectors, unused tokens and contrast; fix what is found, then rerun everything. Fixes are committed one step at a time.
 - Fixes:
