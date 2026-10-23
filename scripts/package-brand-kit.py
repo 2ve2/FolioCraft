@@ -10,9 +10,9 @@ Image.open(assets/'icon-512.png').save(assets/'favicon.ico',sizes=[(16,16),(32,3
 (root/'apps/web/src/app/apple-icon.png').write_bytes((assets/'icon-180.png').read_bytes())
 for archive in assets.glob('ichnara-brand-kit-*.zip'):
     archive.unlink()
-with ZipFile(assets/'ichnara-brand-kit-v1.3.zip','w',ZIP_DEFLATED) as archive:
+with ZipFile(assets/'ichnara-brand-kit-v2.0.zip','w',ZIP_DEFLATED) as archive:
     for asset in sorted(assets.iterdir()):
         if asset.is_file() and asset.suffix!='.zip':
             archive.write(asset,asset.name)
-assert ZipFile(assets/'ichnara-brand-kit-v1.3.zip').testzip() is None
-print('Packaged v1.3; ZIP CRC passed, icon sizes16/32/48.')
+assert ZipFile(assets/'ichnara-brand-kit-v2.0.zip').testzip() is None
+print('Packaged v2.0; ZIP CRC passed, icon sizes16/32/48.')

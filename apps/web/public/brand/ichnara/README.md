@@ -1,28 +1,27 @@
-# Ichnara — bilingual brand kit v1.3
+# Ichnara — bilingual brand kit v2.0
 
-Approved by the human on2026-10-18 after reviewing round2: I1 capped Latin initial, A1 Arabic spelling/style and C1 indigo #3F46C8. The folded-band emblem is retained. Version 1.3 (2026-10-23, after the human asked for a review of the logo's weight and colour and delegated the decision): the Arabic lettering uses Noto Sans Arabic 600 instead of 700, its tallest letter spans the emblem the way the Latin capital does, and the primary lockup is two-colour (indigo emblem, ink word). Approval is a visual/product choice, not legal clearance or independent-user-study evidence.
+Version 2.0 (2026-10-23). The human asked for the logo to be reworked professionally while keeping the folded-band emblem idea, then chose the balanced emblem weight and the Readex Pro wordmark. Earlier versions (v1.x) are recoverable from Git history; their archive URLs redirect here. Approval is a visual/product choice, not legal clearance or a user-study result.
 
-## Delivered artwork
+## Construction
 
-- ichnara-logo-duo.svg / ichnara-logo-ar-duo.svg: primary two-colour lockups (indigo emblem, ink word) for light backgrounds; matching 2400px PNGs.
-- ichnara-logo-ink/white/violet.svg: Latin composed mark in one colour; matching2400px transparent PNGs.
-- ichnara-logo-ar-ink/white/violet.svg: Arabic composed mark; matching2400px transparent PNGs. The Arabic spelling is confirmed in the artwork and brand.json.
-- ichnara-wordmark-*.svg/png: standalone Latin lettering; ichnara-wordmark-ar-*.svg/png: standalone Arabic lettering.
-- ichnara-emblem-ink/white/violet.svg/png: independent unchanged emblem geometry, with approved color. ichnara-initial-*.svg: capped Latin I.
-- favicon.svg/favicon.ico; icon16/32/48/64/180/192/512px PNGs. ICO contains16/32/48px. Apple touch icon uses180px. No PWA support is implied.
-- brand-overview.svg/png: Latin/Arabic presentation with a larger explanation-to-wordmark gap. brand.json identifies version/provenance.
-- ichnara-brand-kit-v1.3.zip is the sole stored archive. Legacy v1.zip, v1.1.zip and v1.2.zip URLs have direct Next308 redirects to this version. Old versions remain recoverable from Git history, not duplicated public files.
+- **Emblem.** The folded-band idea rebuilt on exact geometry: a pointy-top hexagonal ring whose inner hexagon is 0.32 of the outer half-width, cut by two vertical channels into two congruent bands related by a 180-degree rotation. The gap between the bands is one uniform width; outer corners, inner corners and cut ends each use one fillet radius. The first band takes the ink, the second the accent.
+- **Wordmarks.** Readex Pro 600 (SIL Open Font License 1.1, see `ReadexPro-LICENSE.txt`), shaped with HarfBuzz and outlined: `Ichnara` and `إيكنارا` come from one bilingual family, so both scripts share stroke weight and proportions. No font is needed to render the files.
+- **Lockups.** The emblem is 1.18 times the capital height, centred on the capitals, with a gap of 0.30 capital height. English reads emblem then word; Arabic reads emblem (right) then word.
 
-## Colors and use
+## Files
 
-Accent #3F46C8, ink #241B38, white #FFFFFF. In the product the word takes the surrounding ink (#242137 headers) and the emblem the accent; the footer on dark ink uses the white single-colour lockup. Accent contrast is7.19:1 on white but2.27:1 on brand ink; use white reverse artwork on dark backgrounds. Do not use the accent as ordinary text on dark ink. Round2 contrast data and actual application checks have their documented scope limits.
+- `ichnara-logo-duo.svg` / `ichnara-logo-ar-duo.svg`: primary lockups for light backgrounds.
+- `ichnara-logo-reverse.svg` / `ichnara-logo-ar-reverse.svg`: for dark backgrounds (white, light indigo #A4A9FF).
+- `ichnara-logo-ink/violet/white.svg` (and `-ar-`): single-colour lockups.
+- `ichnara-wordmark-*.svg`: the words alone; `ichnara-emblem-*.svg`: the emblem alone (duo, reverse, ink, violet, white).
+- `favicon.svg`, `favicon.ico`, `icon-16…512.png`: white emblem on an indigo tile; the Apple touch icon uses 180 px.
+- `brand-overview.svg/png`, `brand.json`; every SVG has a matching PNG (2400 px lockups, 1024 px emblems).
+- `ichnara-brand-kit-v2.0.zip` holds all of the above.
 
-Scale proportionally, preserve artwork geometry and provide clear space of at least one quarter of the Latin capital height. Product Brand renders the Latin lockup 170px wide; the Arabic lockup is sized so its tallest letter matches the Latin capital (31.5px), with its descender space trimmed from the row. The English wordmark keeps Latin left-to-right geometry; the Arabic master is already shaped and must not be mirrored. Use the emblem at sizes where the complete name becomes unreadable; no independent minimum-size study was completed.
+## Colours and use
 
-## Provenance and regeneration
+Accent #3F46C8, ink #241B38, accent on dark #A4A9FF, white #FFFFFF. The accent is 7.19:1 on white but 2.27:1 on ink, so dark backgrounds use the reverse lockup. Keep clear space of at least half the emblem's width around the lockup; scale proportionally and never redraw, recolour per piece or re-typeset the name. Use the emblem alone where the full name would be unreadable.
 
-Latin lettering is directly drawn outlined geometry; I1 adds clear upper/lower caps to the former vertical stroke. Arabic A1 is derived from Noto Sans Arabic (weight 600 since v1.3; `docs/brand/v1.3/generate.py`) with HarfBuzz shaping, under the included SIL Open Font License. It is not claimed as an exclusive custom Arabic font. The immutable reviewed outlines are the regeneration input; installed fonts are not needed to render the SVGs.
+## Regeneration
 
-From the repository root, `python3 scripts/build-brand-kit.py` writes SVG/manifest/shared locale data; `bun scripts/render-brand-kit.ts` renders PNGs using the existing Sharp dependency. ICO is generated from the supplied512px PNG using Pillow; `python3 scripts/package-brand-kit.py` builds the final ZIP and copies icons. Run the project formatter after generation and verify the resulting files before committing. No generator connects to a provider/database.
-
-All checks and actual remaining legal/provider/device/user-study unknowns are recorded in docs/STATUS.md and docs/brand/VERIFICATION.md. Neither custom construction, contrast measurements nor human acceptance proves legal availability or worldwide uniqueness.
+From the repository root: `python3 docs/brand/v2/generate.py` (needs fonttools, brotli, uharfbuzz and the Readex Pro files, see its header) writes the masters; `python3 scripts/build-brand-kit.py` composes the kit and `apps/web/src/components/ui/brand-artwork.ts`; `bun scripts/render-brand-kit.ts` renders the PNGs; `python3 scripts/package-brand-kit.py` builds the ZIP and copies the icons. Run the formatter afterwards. No step contacts a provider.

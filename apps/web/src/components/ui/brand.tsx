@@ -2,8 +2,9 @@ import type { Locale } from "@ichnara/contracts";
 import { brandArtwork } from "./brand-artwork";
 
 /**
- * Renders the locale lockup with an accessible name. The word inherits the surrounding ink; the
- * emblem takes `--brand-emblem` (the brand indigo on light surfaces, the ink itself on dark ones).
+ * Renders the locale lockup with an accessible name. The word and the emblem's first band inherit
+ * the surrounding ink; the second band takes `--brand-emblem` (indigo on light surfaces, a lighter
+ * indigo on the dark footer).
  */
 export function Brand({ locale = "en" }: { locale?: Locale }) {
 	const artwork = brandArtwork[locale];
@@ -20,13 +21,13 @@ export function Brand({ locale = "en" }: { locale?: Locale }) {
 				style={artwork.trim ? { marginBlockEnd: -artwork.trim } : undefined}
 			>
 				{artwork.groups.map((group) => (
-					<g
-						key={group.transform}
-						transform={group.transform}
-						fill={group.role === "emblem" ? "var(--brand-emblem, currentColor)" : undefined}
-					>
+					<g key={group.role} transform={group.transform}>
 						{group.paths.map((path) => (
-							<path key={`${path.d}-${"transform" in path ? path.transform : ""}`} {...path} />
+							<path
+								key={path.d}
+								d={path.d}
+								fill={"tone" in path ? "var(--brand-emblem, currentColor)" : undefined}
+							/>
 						))}
 					</g>
 				))}

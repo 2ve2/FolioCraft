@@ -16,8 +16,8 @@
 	display: inline-flex;
 	min-height: 44px;
 	color: var(--color-surface);
-	/* Indigo on the dark footer falls below 3:1, so the reverse lockup stays single-colour. */
-	--brand-emblem: currentColor;
+	/* Brand indigo is 2.27:1 on the footer ink; the reverse lockup uses the lighter indigo. */
+	--brand-emblem: var(--color-brand-emblem-on-dark);
 }
 .identity p {
 	max-width: 360px;
