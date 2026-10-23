@@ -1,6 +1,12 @@
 "use client";
 import type { Locale } from "@ichnara/contracts";
-import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	QueryClient,
+	QueryClientProvider,
+	useInfiniteQuery,
+	useQuery,
+	useQueryClient,
+} from "@tanstack/react-query";
 import { type ReactNode, useCallback, useState } from "react";
 import { ApiError, api } from "../../../lib/api";
 import { errorText } from "../shared";
@@ -54,6 +60,53 @@ export function useAdminData<T>(path: string | null, locale: Locale) {
 		set: useCallback((value: T) => client.setQueryData([ADMIN_KEY, path], value), [client, path]),
 	};
 }
+
+type ListPage<T> = { items: T[]; nextCursor?: string | null; hasMore?: boolean };
+
+/**
+ * Reads a console list page by page (keyset `cursor` or numeric `offset`, as each endpoint pages) and
+ * exposes the loaded rows as one list. `null` skips the request. First-page metadata such as a
+ * due-date policy stays available through `first`.
+ */
+export function useAdminList<T, P extends ListPage<T> = ListPage<T>>(
+	path: string | null,
+	paging: "cursor" | "offset",
+	locale: Locale,
+) {
+	const query = useInfiniteQuery({
+		queryKey: [ADMIN_KEY, "list", path],
+		queryFn: ({ pageParam }) =>
+			api<P>(
+				pageParam
+					? `${path}${path?.includes("?") ? "&" : "?"}${paging}=${encodeURIComponent(pageParam)}`
+					: (path as string),
+			),
+		initialPageParam: "",
+		getNextPageParam: (last, pages) =>
+			paging === "cursor"
+				? last.nextCursor || undefined
+				: last.hasMore
+					? String(pages.reduce((count, page) => count + page.items.length, 0))
+					: undefined,
+		enabled: path !== null,
+	});
+	const { refetch, fetchNextPage } = query;
+	return {
+		items: query.data?.pages.flatMap((page) => page.items) ?? [],
+		first: query.data?.pages[0] ?? null,
+		loaded: query.data !== undefined,
+		error:
+			query.isError && !query.isFetching && query.data === undefined
+				? errorText(query.error, locale)
+				: "",
+		reload: useCallback(() => void refetch(), [refetch]),
+		hasMore: query.hasNextPage,
+		loadingMore: query.isFetchingNextPage,
+		moreFailed: query.isFetchNextPageError,
+		loadMore: useCallback(() => void fetchNextPage({ cancelRefetch: false }), [fetchNextPage]),
+	};
+}
+export type AdminList<T> = ReturnType<typeof useAdminList<T>>;
 
 /** Marks every console read stale after a completed write; visible pages reread immediately. */
 export function useAdminRefresh() {
