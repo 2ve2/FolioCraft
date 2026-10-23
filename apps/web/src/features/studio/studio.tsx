@@ -182,7 +182,7 @@ function StudioWorkspace() {
 				logout={logout}
 				openAdministration={openAdministration}
 			/>
-			<div className="studio-main">
+			<main className="studio-main">
 				<WorkspaceHeader
 					locale={locale}
 					localeControl={localeControl}
@@ -285,7 +285,7 @@ function StudioWorkspace() {
 						</div>
 					</>
 				)}
-			</div>
+			</main>
 		</div>
 	);
 }

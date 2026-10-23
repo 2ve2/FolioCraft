@@ -46,7 +46,7 @@ export function StudioSkeleton({
 					logout={unavailableOperation}
 					openAdministration={unavailableOperation}
 				/>
-				<div className="studio-main">
+				<main className="studio-main">
 					<WorkspaceHeader
 						locale={locale}
 						localeControl={localeControl}
@@ -88,7 +88,7 @@ export function StudioSkeleton({
 							setExpandedPreview={unavailable}
 						/>
 					</div>
-				</div>
+				</main>
 			</div>
 		</>
 	);

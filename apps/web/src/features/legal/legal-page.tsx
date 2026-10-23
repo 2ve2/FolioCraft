@@ -31,7 +31,10 @@ export function LegalPage({ document }: { document: LegalDocument }) {
 				/>
 			</header>
 			<main className={styles.main}>
-				<nav className={styles.tabs} aria-label={ar ? "الوثائق القانونية" : "Legal documents"}>
+				<nav
+					className={styles.tabs}
+					aria-label={ar ? "التنقل بين الوثائق القانونية" : "Legal document navigation"}
+				>
 					{documents.map((item) => (
 						<Link
 							key={item}
