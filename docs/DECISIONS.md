@@ -437,4 +437,4 @@ Human authorizes SMTP_HOST=smtp.resend.com,SMTP_PORT=465,SMTP_SECURE=true,SMTP_U
 ## 2026-10-23 — Brand v2: rebuilt folded-band emblem with Readex Pro (human-confirmed)
 - The human rejected logo v1.3 and asked for a professional rework; after seeing three new directions they asked to keep the original emblem idea ("اريد نفس فكرة الرمز القديم"), then chose the balanced emblem weight and the Readex Pro wordmark from the presented options. This supersedes v1.3 and the 2026-10-18 I1/A1 wordmarks; the folded-band idea and the indigo accent are kept.
 - Engineering choices (not separately confirmed): the reverse lockup on the dark footer uses #a4a9ff for the second band; the emblem renders 32px tall in headers; the capped-I initial files are retired with the old Latin wordmark.
-
+- Same day, after the human asked whether the weights were right: measured optical correction of the chosen emblem (inner 0.36, gap 0.10, emblem 1.10 times the capitals, a 0.16-gap small-size master for icons). Engineering choice under the human's request for professional work; the chosen design and wordmark are unchanged.
