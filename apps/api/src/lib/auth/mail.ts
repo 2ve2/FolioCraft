@@ -22,7 +22,13 @@ const transport =
 		: undefined;
 
 /** Sends a native authentication link through the configured transport after validating its origin. */
-export async function sendAuthMail(to: string, name: string, url: string, kind: AuthMailKind) {
+export async function sendAuthMail(
+	to: string,
+	name: string,
+	url: string,
+	kind: AuthMailKind,
+	newEmail?: string,
+) {
 	if (!mailConfigured)
 		throw new APIError("SERVICE_UNAVAILABLE", {
 			code: "MAIL_UNAVAILABLE",
@@ -42,7 +48,7 @@ export async function sendAuthMail(to: string, name: string, url: string, kind: 
 			// Display name keeps the sender recognisable; the address is the validated MAIL_FROM.
 			from: `Ichnara <${env.MAIL_FROM as string}>`,
 			to,
-			...authMailContent(kind, mailLocale(url), name, url, env.WEB_URL),
+			...authMailContent(kind, mailLocale(url), name, url, env.WEB_URL, newEmail),
 		};
 		console.info(
 			JSON.stringify({
