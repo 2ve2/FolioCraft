@@ -746,12 +746,15 @@ export function AdminSiteDetail({ id }: { id: string }) {
 							<Panel title={t.reports} padded={false}>
 								<Related type="reports" filter={`siteId=${encodeURIComponent(id)}`} />
 							</Panel>
-							<Panel title={t.history} padded={false}>
-								<Related
-									type="audit"
-									filter={`targetType=site&targetId=${encodeURIComponent(id)}`}
-								/>
-							</Panel>
+							{/* Roles without the activity log do not get an empty "unavailable" panel. */}
+							{permissions.includes("audit.read") && (
+								<Panel title={t.history} padded={false}>
+									<Related
+										type="audit"
+										filter={`targetType=site&targetId=${encodeURIComponent(id)}`}
+									/>
+								</Panel>
+							)}
 						</div>
 						<Panel title={t.siteDetails}>
 							<KeyValues
