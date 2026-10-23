@@ -179,6 +179,9 @@ export const portfolioCss = `.folio .folio__skills-grid{
 	color:var(--folio-bg)!important
 }
 .folio__text-link{
+	display:inline-flex;
+	align-items:center;
+	min-block-size:24px;
 	font-size:max(13px,.83em);
 	font-weight:600
 }
@@ -359,7 +362,8 @@ export const portfolioCss = `.folio .folio__skills-grid{
 .folio .folio__arrow-link{
 	display:inline-flex;
 	align-items:center;
-	gap:8px
+	gap:8px;
+	min-block-size:24px
 }
 .folio__project-link:hover{
 	text-decoration:underline;

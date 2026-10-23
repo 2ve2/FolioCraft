@@ -25,7 +25,8 @@
 	align-items: center;
 	gap: 6px;
 	width: fit-content;
-	margin-bottom: 6px;
+	min-height: 24px;
+	margin-bottom: 4px;
 	font-size: var(--text-caption);
 	font-weight: 550;
 	color: var(--admin-muted);
