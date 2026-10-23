@@ -103,11 +103,15 @@ export const copy = {
 		english: "English",
 		createLanguage: "لغة البورتفوليو",
 		loading: "جارٍ تحميل مساحتك…",
-		loadError: "تعذر تحميل بياناتك. حاول مجدداً بعد قليل.",
+		loadErrorTitle: "تعذّر تحميل مساحتك",
+		loadError: "لم يتغير شيء في بياناتك. حاول مجدداً بعد قليل.",
+		emailUnverifiedTitle: "أكّد بريدك الإلكتروني",
+		emailUnverifiedScreen:
+			"افتح رسالة التحقق في بريدك أو اطلب رسالة جديدة، ثم ارجع هنا وحاول مجدداً.",
 		emailUnverified:
 			"أكّد بريدك الإلكتروني أولاً: افتح رسالة التحقق في بريدك أو اطلب رسالة جديدة، ثم ارجع هنا وأعد التحميل.",
 		resendVerification: "إعادة إرسال رسالة التحقق",
-		loadRetry: "إعادة التحميل",
+		loadRetry: "حاول مجدداً",
 		error: "تعذر إتمام العملية. حاول مجددًا.",
 		unavailable: "تعذر الاتصال بخدمة الموقع. تحقق من اتصالك وتشغيل الخدمة ثم أعد المحاولة.",
 		conflict:
@@ -165,7 +169,8 @@ export const copy = {
 		draftImportAssets:
 			"يحتوي الملف على صور غير متاحة أو لا تتبع هذا الموقع. لم يتم استبدال المسودة.",
 		draftImportSaved: "تمت استعادة المسودة وحفظها. راجع الحقول والمعاينة قبل النشر.",
-		startupError: "تعذر التحقق من تسجيل الدخول. حاول مجدداً بعد قليل.",
+		startupErrorTitle: "تعذّر الوصول إلى إيكنارا الآن",
+		startupError: "لم نتمكن من التحقق من تسجيل دخولك. تحقق من اتصالك بالإنترنت ثم حاول مجدداً.",
 	},
 	en: {
 		studioLoading: "Loading your studio",
@@ -276,7 +281,11 @@ export const copy = {
 		english: "English",
 		createLanguage: "Portfolio language",
 		loading: "Loading your workspace…",
-		loadError: "We couldn’t load your data. Please try again in a moment.",
+		loadErrorTitle: "Your workspace didn’t load",
+		loadError: "Nothing in your data changed. Try again in a moment.",
+		emailUnverifiedTitle: "Confirm your email",
+		emailUnverifiedScreen:
+			"Open the verification message in your inbox or request a new one, then come back and try again.",
 		emailUnverified:
 			"Confirm your email first: open the verification message in your inbox or request a new one, then come back and try again.",
 		resendVerification: "Resend verification email",
@@ -341,6 +350,7 @@ export const copy = {
 		draftImportAssets:
 			"The file references unavailable images or images belonging to another site. Your draft was not replaced.",
 		draftImportSaved: "Draft restored and saved. Review the fields and preview before publishing.",
-		startupError: "We couldn’t check your sign-in status. Please try again in a moment.",
+		startupErrorTitle: "We can’t reach Ichnara right now",
+		startupError: "We couldn’t check your sign-in. Check your internet connection and try again.",
 	},
 } as const;

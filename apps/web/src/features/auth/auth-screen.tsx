@@ -44,7 +44,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 	if (session?.user) return <LoadingScreen locale={locale} message={t.authLoading} />;
 	if (sessionError)
 		return (
-			<LoadingScreen locale={locale} message={t.startupError} error>
+			<LoadingScreen locale={locale} title={t.startupErrorTitle} message={t.startupError} error>
 				<button type="button" className="primary" onClick={() => void refetch()}>
 					{t.loadRetry}
 				</button>

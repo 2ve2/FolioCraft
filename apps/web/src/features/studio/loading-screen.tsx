@@ -14,11 +14,14 @@ const wordmarkViewBox: Record<Locale, string> = {
 export function LoadingScreen({
 	locale,
 	message,
+	title,
 	error = false,
 	children,
 }: {
 	locale: Locale;
 	message: string;
+	/** A heading naming what went wrong; errors without one fall back to a generic heading. */
+	title?: string;
 	error?: boolean;
 	children?: ReactNode;
 }) {
@@ -73,25 +76,26 @@ export function LoadingScreen({
 						))}
 					</svg>
 				</div>
-				<svg
-					className="loading-signature"
-					width="170"
-					height="44"
-					viewBox={wordmarkViewBox[locale]}
-					fill="currentColor"
-					role="img"
-					aria-label={ar ? "إيكنارا" : "Ichnara"}
-				>
-					{wordmark.paths.map((path) => (
-						<path key={path.d} d={path.d} />
-					))}
-				</svg>
+				{/* While loading the wordmark brands the wait; on an error the heading is the focus. */}
+				{!error && (
+					<svg
+						className="loading-signature"
+						width="170"
+						height="44"
+						viewBox={wordmarkViewBox[locale]}
+						fill="currentColor"
+						role="img"
+						aria-label={ar ? "إيكنارا" : "Ichnara"}
+					>
+						{wordmark.paths.map((path) => (
+							<path key={path.d} d={path.d} />
+						))}
+					</svg>
+				)}
 				<h1 id={titleId}>
 					{error && <CircleAlert size={20} strokeWidth={1.75} aria-hidden="true" />}
 					{error
-						? ar
-							? "تعذر إكمال الطلب"
-							: "We couldn’t complete the request"
+						? (title ?? (ar ? "تعذر إكمال الطلب" : "We couldn’t complete the request"))
 						: ar
 							? "جارٍ فتح صفحتك…"
 							: "Opening your page…"}
