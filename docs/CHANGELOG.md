@@ -1,5 +1,8 @@
 # Action log
 
+## 2026-10-23 — Full audit: styles, UI/UX, APIs and tests
+- Human request: "are you sure everything is fine? Do a comprehensive analysis of the styles, UI/UX and everything, check the state of the APIs and run tests" ("هل انت متاكد كل شي تمام؟ ..."). Scope: baseline every suite on `main`; a black-box API probe (authorization, ownership, error contract, CORS, headers, public exposure, latency); a browser crawl of 30 routes in both languages at three widths with axe-core, overflow, target-size and language checks; a style review for dead selectors, unused tokens and contrast; fix what is found, then rerun everything. Fixes are committed one step at a time.
+
 ## 2026-10-23 — Console navigation order
 - Human request: reorder the dashboard sidebar tabs. New order: Overview; Users & content (accounts, sites); Trust & safety (reports, data requests); Operations (notices, activity log); Administration (staff, system). Reports and Data requests show waiting counts. The desktop menu-button visibility clash is fixed. Checks: web 60/0, typecheck 0, e2e 56 passed. Evidence: `docs/evidence/2026-10-23-console-redesign-account.md`.
 
