@@ -1,5 +1,13 @@
 # Action log
 
+## 2026-10-23 — Logo v1.3, phone navigation drawer, one-command release, hardening
+- Scope (human request before sleeping, decisions delegated): review logo weight and colour; menu button and drawer instead of top buttons on narrow screens in the studio and dashboard; carry out proposed tasks; keep working through interruptions (a recurring self check-in was scheduled for that).
+- Logo v1.3: Arabic lettering Noto Sans Arabic 600 sized to the emblem; two-colour primary (indigo emblem, ink word); kit v1.3 regenerated with redirects.
+- Phone navigation: studio and admin sidebars become a top bar with a menu button and a drawer; admin overview counters become label/value rows.
+- `bun run deploy:trial` one-command release with remembered cache mode.
+- Hardening: per-account wrong-password budget on signed-in password checks; upload completion no longer holds the site lock during provider IO (audit findings 1 and 12).
+- Checks: typecheck 0, Biome clean, web 58/58, API 95 pass / 12 skip / 0 fail, Playwright 56/56. Evidence: `docs/evidence/2026-10-23-overnight.md`. Not deployed.
+
 ## 2026-10-22 — Deployment readiness: migration command, email verification
 - Scope (human request after PR #12): fix `bun run db:migrate` failing with missing BETTER_AUTH_SECRET/API_URL/WEB_URL in the human's checkout; turn signup email verification on; prepare exact steps for the backlog deployment, Sentry and the published-page cache. The human deploys; the agent does not access hosted systems or secrets.
 - `apps/api/src/db/migrate.ts` now needs only `DATABASE_URL`, prints the target host and database (no credentials) and reports a readable error when the URL is missing or malformed.

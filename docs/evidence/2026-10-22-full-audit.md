@@ -45,7 +45,7 @@ Comparisons: [sign-in 1440](../screenshots/audit-login-ar-1440.png), [sign-in 39
 Four read-only reviewers covered owner/public API surfaces, administration and authentication, runtime and data integrity, and the web app. They found no IDOR, no draft leak to public output, no XSS or open redirect and no permission-matrix gap. Reported findings, each to be verified before fixing (file:line approximate). Status as of the last update; any item without **Fixed** is still open:
 
 API — administration and authentication
-1. Medium: `POST /api/auth/verify-password` appears reachable over HTTP and is outside the `passwordFailures` budget, so a stolen staff session could guess the password at the generic rate (`lib/auth/index.ts`, `lib/auth/hooks.ts`, `middleware/admin.ts`). Also `/change-password` and `/two-factor/enable|disable` act as slower password oracles. **Fixed** (`0bcdf00`, HTTP returns 404; the slower oracles on change-password and 2FA keep Better Auth defaults — open).
+1. Medium: `POST /api/auth/verify-password` appears reachable over HTTP and is outside the `passwordFailures` budget, so a stolen staff session could guess the password at the generic rate (`lib/auth/index.ts`, `lib/auth/hooks.ts`, `middleware/admin.ts`). Also `/change-password` and `/two-factor/enable|disable` act as slower password oracles. **Fixed** (`0bcdf00`, HTTP returns 404). Follow-up 2026-10-23 (`28494d2`): wrong current passwords on change-password, delete-user and the password-checked two-factor endpoints now count against the account's shared failure budget, independent of IP.
 2. Low: password-verified sensitive actions that fail later write an extra `permission_denied` audit row (`services/admin/request-service.ts`, `notice-service.ts`, `user-service.ts`). **Fixed** (`a26d8ef`).
 3. Low: signed-in non-staff users can write unbounded `permission_denied` rows (`services/admin/sensitive-action.ts`, `middleware/admin.ts`). **Fixed** (`a26d8ef`).
 4. Low (decision): the email mask shows the first character and the full domain. Open: a product decision (masking the domain hides more but makes support harder).
@@ -60,7 +60,7 @@ API — runtime and data
 API — owner and public surfaces
 10. Medium: one IP can exhaust a site's hourly inquiry budget in 12 minutes (`routes/public/inquiries.ts`). **Fixed** (`57c0688`).
 11. Medium: one actor can exhaust a site's report budget; IPv6 is not bucketed by /64; 429 lacks Retry-After (`services/reports.ts`). **Fixed** (`09dbc89`; the site-wide cap stays as flood protection).
-12. Low-medium (not changed in this audit): upload completion holds the site lock during provider IO (`services/assets.ts` `complete`). Open by choice: restructuring the completion transaction needs its own careful change and test; impact is limited to one owner's concurrent uploads.
+12. Low-medium: upload completion holds the site lock during provider IO (`services/assets.ts` `complete`). **Fixed** 2026-10-23 (`c9817cb`): two short transactions around the copy; a deletion during the copy removes the late copy and returns 409 (integration test).
 13. Low: staging copies of completed uploads are never deleted (`services/assets.ts`, `services/maintenance.ts`). **Fixed** (`d6d668f`).
 14. Low: a project's custom slug cannot be removed once set (`draft-service.ts`, `content-service.ts`, contracts). Open: no studio control sets or removes a project slug today; only the API or an imported draft can, so this waits for that feature.
 
