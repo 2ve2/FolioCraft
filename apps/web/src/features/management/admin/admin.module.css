@@ -77,8 +77,7 @@
 	flex-wrap: wrap;
 }
 .primary,
-.secondary,
-.danger {
+.secondary {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -98,11 +97,6 @@
 	border-color: var(--color-admin-secondary-border);
 	color: var(--color-admin-secondary-text);
 	background: var(--color-surface);
-}
-.danger {
-	background: var(--color-admin-danger-surface);
-	border-color: var(--color-admin-danger-border);
-	color: var(--color-admin-danger-text);
 }
 @media (max-width: 600px) {
 	.dialogBody,

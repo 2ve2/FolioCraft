@@ -26,8 +26,6 @@
 .preview-toolbar,
 .quiet-note,
 .muted,
-.loading-card p,
-.loading-screen > .loading-footnote,
 .select-popup-title,
 .select-popup .select-option-copy small {
 	color: var(--muted);
@@ -201,7 +199,6 @@
 .studio-shell .field small {
 	font-size: var(--text-caption);
 }
-.studio-shell .sidebar-label,
 .studio-shell .sidebar-note p,
 .studio-shell .account small,
 .studio-shell .preview-toolbar,

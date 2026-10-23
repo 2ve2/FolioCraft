@@ -104,11 +104,6 @@
 	.auth-card {
 		padding: 25px;
 	}
-	.welcome-footer {
-		flex-direction: column;
-		gap: 9px;
-		padding: 22px 6vw;
-	}
 	.studio-header {
 		position: static;
 		padding: 13px 16px;
@@ -130,11 +125,6 @@
 	.studio-header .primary {
 		font-size: var(--text-caption);
 		padding: 8px 10px;
-	}
-	.locale-select {
-		min-width: 75px;
-		font-size: var(--text-caption);
-		padding: 7px 8px;
 	}
 	.mobile-tabs {
 		display: flex;
@@ -298,16 +288,4 @@
 	.content-actions {
 		gap: 6px;
 	}
-}
-.standalone-admin {
-	max-width: 1160px;
-	margin-inline: auto;
-	padding: 24px;
-	min-height: 100vh;
-}
-.standalone-admin > .content-actions {
-	justify-content: space-between;
-}
-.standalone-admin .field {
-	max-width: 200px;
 }

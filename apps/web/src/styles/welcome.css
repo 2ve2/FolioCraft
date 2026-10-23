@@ -118,13 +118,6 @@
 	width: 100%;
 	font-size: var(--text-caption);
 }
-.welcome-footer {
-	padding: 20px 6vw;
-	display: flex;
-	justify-content: space-between;
-	color: var(--color-welcome-footer-text);
-	font-size: var(--text-caption);
-}
 .onboarding {
 	width: min(560px, 90%);
 	margin: auto;
