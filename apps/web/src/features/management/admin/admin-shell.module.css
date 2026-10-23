@@ -60,8 +60,10 @@
 .brand {
 	display: block;
 }
-/* Below 970px the sidebar becomes a top bar; its menu button opens the same navigation as a drawer. */
-.menuToggle,
+/* Below 970px the sidebar becomes a top bar; its menu button opens the same navigation as a drawer.
+   The toggle also carries the shared icon-button class, so its rules are scoped to win regardless of
+   which stylesheet the bundler emits first. */
+.sidebarBar .menuToggle,
 .drawerBackdrop,
 .drawerHead {
 	display: none;
@@ -256,8 +258,8 @@
 	.sidebarBar {
 		margin: 0;
 	}
-	.menuToggle {
-		display: inline-flex;
+	.sidebarBar .menuToggle {
+		display: inline-grid;
 	}
 	.drawerBackdrop {
 		display: block;
