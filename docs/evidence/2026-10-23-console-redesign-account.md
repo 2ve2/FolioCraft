@@ -22,6 +22,21 @@ Request: the human asked for the best option on account deletion ("سوي الا
 - **Removed.** The legacy `ReadState`/`DirectoryFilter`/cursor controls, `admin-pagination.tsx`, `reports.module.css`, the unused admin styles and the "not implemented" overview footnote.
 - **Accuracy fix.** The administrator removal warning now says stored images are queued for deletion; they always were, but the text said they remain.
 
+## Navigation order (follow-up request)
+
+The human asked to reorder the sidebar tabs ("سوي اعادة ترتيب للتابات"). New order:
+- Overview.
+- Users & content: accounts, sites.
+- Trust & safety: reports, data requests.
+- Operations: notices, activity log.
+- Administration: staff, system.
+
+The order follows how often staff use each page and how records relate (accounts own sites; sites receive reports). Reports and Data requests show a count of waiting items, red when a request is overdue. The count comes from the same permission-scoped overview query as the Overview page.
+
+During this check the production build showed the phone menu button beside the logo on desktop: a stylesheet-order clash with the shared icon-button class. Its rules are now scoped to the sidebar bar.
+
+Checks: web 60/0, typecheck 0, Playwright e2e 56 passed. Screenshots of desktop EN/AR and phone AR: [console-v2-navigation.png](../screenshots/console-v2-navigation.png).
+
 ## Studio account page
 
 - **Server** (`lib/auth/index.ts`, `account-deletion.ts`, `hooks.ts`, mail templates).
