@@ -1,19 +1,25 @@
 "use client";
 import { noticeInput, type SystemNotice } from "@ichnara/contracts";
+import { Megaphone, Plus } from "lucide-react";
 import { useRef, useState } from "react";
+import { ButtonContent } from "../../../components/ui/button-content";
 import { api } from "../../../lib/api";
 import { date, errorText } from "../shared";
-import type { Page } from "../shared/types";
-import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { AdminDialog } from "./admin-dialog";
-import { DirectoryFilter, ReadState } from "./admin-directory";
-import { AdminPagination } from "./admin-pagination";
-import { useAdminData, useAdminRefresh } from "./admin-query";
+import { useAdminList, useAdminRefresh } from "./admin-query";
 import { directoryCopy } from "./directory-copy";
-import fields from "./operations.module.css";
 import { operationsCopy } from "./operations-copy";
-import layout from "./reports.module.css";
+import {
+	type Column,
+	DataTable,
+	FilterSelect,
+	PageHeader,
+	Panel,
+	StatusBadge,
+	type Tone,
+	ui,
+} from "./ui/console";
 
 const localTime = (value: string) => {
 	const date = new Date(value);
@@ -27,14 +33,32 @@ const blank = () => ({
 	endsAt: localTime(new Date(Date.now() + 3600000).toISOString()),
 	active: false,
 });
+const kindTone: Record<SystemNotice["kind"], Tone> = {
+	info: "info",
+	maintenance: "warning",
+	incident: "danger",
+};
+
+/** Where a notice stands now: disabled, waiting for its window, showing, or past its window. */
+function noticeState(row: SystemNotice, now = Date.now()) {
+	if (!row.active) return "disabled" as const;
+	if (now < new Date(row.startsAt).getTime()) return "scheduled" as const;
+	if (now > new Date(row.endsAt).getTime()) return "ended" as const;
+	return "live" as const;
+}
+const stateTone = {
+	live: "success",
+	scheduled: "info",
+	ended: "neutral",
+	disabled: "neutral",
+} as const;
 /** Every create/edit/disable is acknowledged by the actual audited backend operation. */
 export function AdminNotices() {
 	const refresh = useAdminRefresh();
 	const { locale, permissions } = useAdminSession(),
 		t = operationsCopy[locale],
 		d = directoryCopy[locale];
-	const [offset, setOffset] = useState(0),
-		[selected, setSelected] = useState<"create" | SystemNotice | null>(null),
+	const [selected, setSelected] = useState<"create" | SystemNotice | null>(null),
 		[disabling, setDisabling] = useState(false),
 		[draft, setDraft] = useState(blank),
 		[reason, setReason] = useState(""),
@@ -42,11 +66,7 @@ export function AdminNotices() {
 		[busy, setBusy] = useState(false),
 		[error, setError] = useState(""),
 		[notice, setNotice] = useState("");
-	const heading = useRef<HTMLHeadingElement>(null),
-		state = useAdminData<Page<SystemNotice>>(
-			`/api/admin/notices?limit=20&offset=${offset}`,
-			locale,
-		);
+	const heading = useRef<HTMLHeadingElement>(null);
 	const canManage = permissions.includes("notice.manage");
 	function choose(row: "create" | SystemNotice, disable = false) {
 		setSelected(row);
@@ -97,56 +117,94 @@ export function AdminNotices() {
 			setPassword("");
 		}
 	}
-	return (
-		<section className={`${layout.page} ${fields.page}`}>
-			<h1>{t.notices}</h1>
-			<p>{t.noticeHelp}</p>
-			{canManage && (
-				<button type="button" className={styles.primary} onClick={() => choose("create")}>
-					{t.create}
-				</button>
-			)}
-			{notice && <p role="status">{notice}</p>}
-			<ReadState state={state}>
-				<ul className={layout.queue}>
-					{state.data?.items.map((row) => (
-						<li key={row.id}>
-							<h2>{t[row.kind]}</h2>
-							<p dir="auto">{locale === "ar" ? row.messageAr : row.messageEn}</p>
-							<p>
-								{t.active}: {row.active ? d.yes : d.no}
-							</p>
-							<p>
-								{date(row.startsAt, locale)} — {date(row.endsAt, locale)}
-							</p>
-							{canManage && (
-								<div className={styles.actions}>
-									<button type="button" className={styles.secondary} onClick={() => choose(row)}>
-										{t.edit}
-									</button>
+	const list = useAdminList<SystemNotice>("/api/admin/notices?limit=20", "offset", locale);
+	const columns: Column<SystemNotice>[] = [
+		{
+			key: "message",
+			header: t.message,
+			primary: true,
+			cell: (row) => (
+				<div className={ui.primaryText}>
+					<StatusBadge tone={kindTone[row.kind]}>{t[row.kind]}</StatusBadge>
+					<span className={ui.clip} dir="auto">
+						{locale === "ar" ? row.messageAr : row.messageEn}
+					</span>
+				</div>
+			),
+		},
+		{
+			key: "state",
+			header: t.status,
+			cell: (row) => {
+				const current = noticeState(row);
+				return <StatusBadge tone={stateTone[current]}>{t[current]}</StatusBadge>;
+			},
+		},
+		{
+			key: "window",
+			header: t.window,
+			cell: (row) => (
+				<span className={ui.muted}>
+					{date(row.startsAt, locale)} – {date(row.endsAt, locale)}
+				</span>
+			),
+		},
+		...(canManage
+			? [
+					{
+						key: "actions",
+						header: d.actions,
+						align: "end" as const,
+						cell: (row: SystemNotice) => (
+							<span className={ui.headerActions}>
+								<button type="button" className={ui.buttonGhost} onClick={() => choose(row)}>
+									{t.edit}
+								</button>
+								{row.active && (
 									<button
 										type="button"
-										className={styles.danger}
-										disabled={!row.active}
+										className={ui.buttonGhost}
 										onClick={() => choose(row, true)}
 									>
 										{t.disable}
 									</button>
-								</div>
-							)}
-						</li>
-					))}
-				</ul>
-				{!state.data?.items.length && <p>{d.empty}</p>}
-				<AdminPagination
+								)}
+							</span>
+						),
+					},
+				]
+			: []),
+	];
+	return (
+		<section className={ui.page}>
+			<PageHeader
+				title={t.notices}
+				description={t.noticesIntro}
+				actions={
+					canManage && (
+						<button type="button" className={ui.buttonPrimary} onClick={() => choose("create")}>
+							<Plus size={16} aria-hidden="true" />
+							{t.create}
+						</button>
+					)
+				}
+			/>
+			{notice && (
+				<p className={ui.banner} role="status">
+					{notice}
+				</p>
+			)}
+			<Panel padded={false}>
+				<DataTable
+					label={t.notices}
+					columns={columns}
+					rows={list.items}
+					rowKey={(row) => row.id}
+					state={list}
 					locale={locale}
-					count={state.data?.items.length ?? 0}
-					offset={offset}
-					more={state.data?.hasMore ?? false}
-					disabled={!state.data}
-					change={setOffset}
+					empty={{ icon: Megaphone, title: t.noNotices, text: t.noticeHelp }}
 				/>
-			</ReadState>
+			</Panel>
 			{selected && (
 				<AdminDialog
 					headingRef={heading}
@@ -159,32 +217,36 @@ export function AdminNotices() {
 					}}
 				>
 					<form
-						className={fields.page}
+						className={ui.form}
 						onSubmit={(e) => {
 							e.preventDefault();
 							void submit();
 						}}
 					>
-						{error && <p role="alert">{error}</p>}
+						{error && (
+							<p className={ui.banner} data-tone="danger" role="alert">
+								{error}
+							</p>
+						)}
 						{!disabling && (
 							<>
-								<DirectoryFilter
+								<FilterSelect
 									label={t.kind}
 									value={draft.kind}
-									change={(v) => {
+									onChange={(v) => {
 										if (v) setDraft({ ...draft, kind: v as SystemNotice["kind"] });
 									}}
-									choices={(["info", "maintenance", "incident"] as const).map((value) => ({
+									options={(["info", "maintenance", "incident"] as const).map((value) => ({
 										value,
 										label: t[value],
 									}))}
 								/>
 								{(["messageAr", "messageEn"] as const).map((key) => (
-									<label key={key}>
+									<label className={ui.field} key={key}>
 										{t[key]}
 										<textarea
+											className={ui.input}
 											required
-											aria-label={t[key]}
 											lang={key === "messageAr" ? "ar" : "en"}
 											dir={key === "messageAr" ? "rtl" : "ltr"}
 											minLength={1}
@@ -194,28 +256,31 @@ export function AdminNotices() {
 										/>
 									</label>
 								))}
-								{(["startsAt", "endsAt"] as const).map((key) => (
-									<label key={key}>
-										{t[key]}
-										<input
-											required
-											type="datetime-local"
-											value={draft[key]}
-											min={key === "endsAt" ? draft.startsAt : undefined}
-											onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
-										/>
-									</label>
-								))}
-								<label>
-									{t.active}
+								<div className={ui.fieldRow}>
+									{(["startsAt", "endsAt"] as const).map((key) => (
+										<label className={ui.field} key={key}>
+											{t[key]}
+											<input
+												className={ui.input}
+												required
+												type="datetime-local"
+												value={draft[key]}
+												min={key === "endsAt" ? draft.startsAt : undefined}
+												onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
+											/>
+										</label>
+									))}
+								</div>
+								<label className={ui.check}>
 									<input
 										type="checkbox"
 										checked={draft.active}
 										onChange={(e) => setDraft({ ...draft, active: e.target.checked })}
 									/>
+									{t.active}
 								</label>
-								<section aria-label={t.preview}>
-									<h3>{t.preview}</h3>
+								<section className={ui.previewBox} aria-label={t.preview}>
+									<h3 className={ui.panelTitle}>{t.preview}</h3>
 									<p lang="ar" dir="rtl">
 										{draft.messageAr}
 									</p>
@@ -225,9 +290,10 @@ export function AdminNotices() {
 								</section>
 							</>
 						)}
-						<label>
+						<label className={ui.field}>
 							{d.reason}
 							<textarea
+								className={ui.input}
 								required
 								dir="auto"
 								minLength={10}
@@ -236,9 +302,10 @@ export function AdminNotices() {
 								onChange={(e) => setReason(e.target.value)}
 							/>
 						</label>
-						<label>
+						<label className={ui.field}>
 							{d.password}
 							<input
+								className={ui.input}
 								required
 								type="password"
 								autoComplete="current-password"
@@ -248,7 +315,7 @@ export function AdminNotices() {
 							/>
 						</label>
 						<button
-							className={styles.primary}
+							className={disabling ? ui.buttonDanger : ui.buttonPrimary}
 							type="submit"
 							disabled={
 								busy ||
@@ -257,7 +324,7 @@ export function AdminNotices() {
 								(!disabling && new Date(draft.endsAt) <= new Date(draft.startsAt))
 							}
 						>
-							{d.submit}
+							<ButtonContent loading={busy}>{d.submit}</ButtonContent>
 						</button>
 					</form>
 				</AdminDialog>

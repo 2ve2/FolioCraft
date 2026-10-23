@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { noticeInput } from "@ichnara/contracts";
 import { canViewAdmin, permissionsFor } from "@ichnara/contracts/admin-policy";
 import { renderToStaticMarkup } from "react-dom/server";
-import { AdminActivityPage, AuditEvents } from "../src/features/management/admin/admin-activity";
+import { AdminActivityPage, EventTable } from "../src/features/management/admin/admin-activity";
 import { AdminContext } from "../src/features/management/admin/admin-context";
 import { AdminNotices } from "../src/features/management/admin/admin-notices";
 import { AdminQueryProvider } from "../src/features/management/admin/admin-query";
@@ -42,7 +42,7 @@ test("operations copy parity, permission-scoped navigation and notice mutation p
 			expect(canViewAdmin(permissionsFor(role), "notices")).toBe(true);
 		}
 });
-test("attempt/outcome events share one group and require an explicit drawer action", () => {
+test("attempt/outcome events share one row showing the outcome and open through an explicit action", () => {
 	const html = renderToStaticMarkup(
 		<AdminQueryProvider>
 			<AdminContext.Provider
@@ -53,8 +53,9 @@ test("attempt/outcome events share one group and require an explicit drawer acti
 					user: { id: "fixture", name: "Fixture", email: "f***@example.com" },
 				}}
 			>
-				<AuditEvents
-					items={["attempted", "succeeded"].map((status, i) => ({
+				<EventTable
+					locale="en"
+					events={["attempted", "succeeded"].map((status, i) => ({
 						id: String(i),
 						actorId: "actor",
 						requestId: "correlation",
@@ -71,10 +72,10 @@ test("attempt/outcome events share one group and require an explicit drawer acti
 			</AdminContext.Provider>
 		</AdminQueryProvider>,
 	);
-	expect(html.match(/correlation/g)?.length).toBe(1);
+	expect(html.match(/<tr/g)?.length).toBe(2);
 	expect(html.match(/Event details/g)?.length).toBe(1);
-	expect(html).toContain("Attempted");
 	expect(html).toContain("Succeeded");
+	expect(html).not.toContain("Attempted");
 });
 test("notice contract rejects inverted windows, blank bilingual copy and unknown fields", () => {
 	const valid = {

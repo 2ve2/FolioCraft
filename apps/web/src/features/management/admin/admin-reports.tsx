@@ -1,123 +1,113 @@
 "use client";
-import {
-	type ContentReport,
-	type ReportPage,
-	reportCategories,
-	reportStatuses,
-} from "@ichnara/contracts";
+import { type ContentReport, reportCategories, reportStatuses } from "@ichnara/contracts";
+import { Flag } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { SelectControl } from "../../../components/ui/select-control";
 import { ApiError, api } from "../../../lib/api";
 import { localeHref } from "../../../lib/locale";
-import { errorText } from "../shared";
-import styles from "./admin.module.css";
+import { date, errorText } from "../shared";
 import { useAdminSession } from "./admin-context";
 import { adminCopy } from "./admin-copy";
-import { useAdminData, useAdminRefresh } from "./admin-query";
-import reportStyles from "./reports.module.css";
+import { reportTone } from "./admin-directory";
+import { useAdminData, useAdminList, useAdminRefresh } from "./admin-query";
 import { SiteModerationDialog } from "./site-moderation-dialog";
+import {
+	type Column,
+	DataTable,
+	FilterSelect,
+	KeyValues,
+	PageHeader,
+	Panel,
+	RecordState,
+	StatusBadge,
+	Toolbar,
+	ui,
+} from "./ui/console";
 import { useSiteModeration } from "./use-site-moderation";
 
-/** Renders a stable oldest-first queue with cursor navigation and independent server filters. */
+/** Oldest-first report queue with server filters; rows open the report. */
 export function AdminReports() {
 	const { locale } = useAdminSession(),
 		t = adminCopy[locale].report;
 	const [status, setStatus] = useState("open"),
-		[category, setCategory] = useState(""),
-		[cursor, setCursor] = useState<string | null>(null);
+		[category, setCategory] = useState("");
 	const query = new URLSearchParams({ limit: "20" });
 	if (status) query.set("status", status);
 	if (category) query.set("category", category);
-	if (cursor) query.set("cursor", cursor);
-	const {
-		data: page,
-		error,
-		reload,
-	} = useAdminData<ReportPage>(`/api/admin/reports?${query}`, locale);
+	const list = useAdminList<ContentReport>(`/api/admin/reports?${query}`, "cursor", locale);
+	const href = (row: ContentReport) => localeHref(locale, `/admin/reports/${row.id}`);
+	const columns: Column<ContentReport>[] = [
+		{
+			key: "site",
+			header: t.siteColumn,
+			primary: true,
+			cell: (row) => (
+				<div className={ui.primaryText}>
+					<Link className={ui.cellLink} href={href(row)} dir="ltr">
+						{row.slug}
+					</Link>
+					<span className={ui.clip} dir="auto">
+						{row.message}
+					</span>
+				</div>
+			),
+		},
+		{ key: "category", header: t.category, cell: (row) => t[row.category] },
+		{
+			key: "status",
+			header: t.status,
+			cell: (row) => <StatusBadge tone={reportTone[row.status]}>{t[row.status]}</StatusBadge>,
+		},
+		{
+			key: "created",
+			header: t.created,
+			cell: (row) => <span className={ui.muted}>{date(row.createdAt, locale)}</span>,
+		},
+	];
 	return (
-		<section className={reportStyles.page}>
-			<header>
-				<h1>{t.title}</h1>
-				<p>{t.description}</p>
-			</header>
-			<div className={reportStyles.filters}>
-				<div>
-					<span>{t.status}</span>
-					<SelectControl
+		<section className={ui.page}>
+			<PageHeader title={t.title} description={t.description} />
+			<Panel padded={false}>
+				<Toolbar
+					locale={locale}
+					active={status !== "open" || Boolean(category)}
+					onClear={() => {
+						setStatus("open");
+						setCategory("");
+					}}
+				>
+					<FilterSelect
 						label={t.status}
 						value={status}
-						onChange={(value) => {
-							setStatus(value);
-							setCursor(null);
-						}}
+						onChange={setStatus}
 						options={[
 							{ value: "", label: t.all },
 							...reportStatuses.map((value) => ({ value, label: t[value] })),
 						]}
 					/>
-				</div>
-				<div>
-					<span>{t.category}</span>
-					<SelectControl
+					<FilterSelect
 						label={t.category}
 						value={category}
-						onChange={(value) => {
-							setCategory(value);
-							setCursor(null);
-						}}
+						onChange={setCategory}
 						options={[
 							{ value: "", label: t.all },
 							...reportCategories.map((value) => ({ value, label: t[value] })),
 						]}
 					/>
-				</div>
-			</div>
-			{error ? (
-				<div role="alert">
-					<p>{error}</p>
-					<button type="button" className={styles.secondary} onClick={reload}>
-						{t.retry}
-					</button>
-				</div>
-			) : !page ? (
-				<p role="status">{t.loading}</p>
-			) : page.items.length === 0 ? (
-				<p>{t.empty}</p>
-			) : (
-				<ul className={reportStyles.queue}>
-					{page.items.map((report) => (
-						<li key={report.id}>
-							<Link href={localeHref(locale, `/admin/reports/${report.id}`)}>
-								<strong dir="auto">{report.slug}</strong>
-								<span>
-									{t[report.category]} · {t[report.status]}
-								</span>
-								<time dateTime={report.createdAt}>
-									{new Date(report.createdAt).toLocaleString(locale)}
-								</time>
-								<p dir="auto">{report.message}</p>
-							</Link>
-						</li>
-					))}
-				</ul>
-			)}
-			<div className={styles.actions}>
-				{cursor && (
-					<button type="button" className={styles.secondary} onClick={() => setCursor(null)}>
-						{t.first}
-					</button>
-				)}
-				{page?.nextCursor && (
-					<button
-						type="button"
-						className={styles.primary}
-						onClick={() => setCursor(page.nextCursor)}
-					>
-						{t.next}
-					</button>
-				)}
-			</div>
+				</Toolbar>
+				<DataTable
+					label={t.title}
+					columns={columns}
+					rows={list.items}
+					rowKey={(row) => row.id}
+					rowHref={href}
+					state={list}
+					locale={locale}
+					filtered={status !== "open" || Boolean(category)}
+					empty={{ icon: Flag, title: t.empty }}
+					loadingText={t.loading}
+				/>
+			</Panel>
 		</section>
 	);
 }
@@ -137,7 +127,6 @@ export function AdminReportDetail({ id }: { id: string }) {
 		epoch = useRef(0),
 		noteFor = useRef<string | null>(null),
 		controller = useSiteModeration(locale);
-	const error = actionError || state.error;
 	// A different report invalidates pending transitions and clears this view's feedback.
 	useEffect(() => {
 		void id;
@@ -190,122 +179,173 @@ export function AdminReportDetail({ id }: { id: string }) {
 	const canHandle = permissions.includes("report.handle"),
 		closed = report?.status === "actioned" || report?.status === "dismissed",
 		validNote = note.trim().length >= 10 && note.trim().length <= 500;
+	const locked = busy || controller.busy;
 	return (
-		<section className={reportStyles.page}>
-			<Link href={localeHref(locale, "/admin/reports")}>{t.back}</Link>
-			<h1>{t.details}</h1>
-			{error && (
-				<div role="alert">
-					<p>{error}</p>
-					<button type="button" className={styles.secondary} disabled={busy} onClick={retry}>
+		<section className={ui.page}>
+			<PageHeader
+				back={{ href: localeHref(locale, "/admin/reports"), label: t.title }}
+				title={report ? <span dir="ltr">{report.slug}</span> : t.details}
+				badges={
+					report && (
+						<>
+							<StatusBadge tone={reportTone[report.status]}>{t[report.status]}</StatusBadge>
+							<StatusBadge>{t[report.category]}</StatusBadge>
+						</>
+					)
+				}
+			/>
+			{actionError && (
+				<div className={ui.bannerRow} data-tone="danger" role="alert">
+					<p>{actionError}</p>
+					<button type="button" className={ui.button} disabled={busy} onClick={retry}>
 						{t.retry}
 					</button>
 				</div>
 			)}
-			{!report && !error && <p role="status">{t.loading}</p>}
-			{report && (
-				<>
-					<dl className={styles.detailsList}>
-						<div>
-							<dt>{t.status}</dt>
-							<dd>{t[report.status]}</dd>
-						</div>
-						<div>
-							<dt>{t.category}</dt>
-							<dd>{t[report.category]}</dd>
-						</div>
-						<div>
-							<dt>{t.reporter}</dt>
-							<dd dir="ltr">{report.reporterEmail ?? "—"}</dd>
-						</div>
-						<div>
-							<dt>{t.created}</dt>
-							<dd>
-								<time dateTime={report.createdAt}>
-									{new Date(report.createdAt).toLocaleString(locale)}
-								</time>
-							</dd>
-						</div>
-					</dl>
-					<p dir="auto" className={reportStyles.message}>
-						{report.message}
-					</p>
-					<a href={`/p/${encodeURIComponent(report.slug)}`}>
-						{t.site} <bdi>{report.slug}</bdi>
-					</a>
-					{report.resolutionNote && <p dir="auto">{report.resolutionNote}</p>}
-					{closed ? (
-						<p>{t.closed}</p>
-					) : (
-						canHandle && (
-							<div className={reportStyles.handling}>
-								<label>
-									{t.note}
-									<textarea
-										value={note}
-										onChange={(e) => setNote(e.target.value)}
-										minLength={10}
-										maxLength={500}
-										dir="auto"
-										rows={4}
-										disabled={busy || controller.busy}
-									/>
-								</label>
-								<div className={styles.actions}>
-									<button
-										type="button"
-										className={styles.secondary}
-										disabled={
-											busy ||
-											controller.busy ||
-											report.status === "reviewing" ||
-											Boolean(note.trim() && !validNote)
-										}
-										onClick={() => void transition("reviewing")}
-									>
-										{t.review}
-									</button>
-									<button
-										type="button"
-										className={styles.secondary}
-										disabled={busy || controller.busy || !validNote}
-										onClick={() => void transition("dismissed")}
-									>
-										{t.dismiss}
-									</button>
-									{permissions.includes("site.suspend") && (
-										<button
-											type="button"
-											className={styles.danger}
-											disabled={busy || controller.busy}
-											onClick={() =>
-												controller.openSiteDetails(
-													{ id: report.siteId },
-													`${t.prefill} ${report.id}: ${t[report.category]}`,
-												)
-											}
-										>
-											{t.takeAction}
-										</button>
-									)}
-									<button
-										type="button"
-										className={styles.primary}
-										disabled={busy || controller.busy || !validNote}
-										onClick={() => void transition("actioned")}
-									>
-										{t.closeActioned}
-									</button>
-								</div>
-								<p>{t.actionHelp}</p>
-							</div>
-						)
-					)}
-				</>
+			{notice && (
+				<p className={ui.banner} role="status">
+					{notice}
+				</p>
 			)}
-			{notice && <p role="status">{notice}</p>}
-			{controller.error && !controller.details && <p role="alert">{controller.error}</p>}
-			{controller.notice && <p role="status">{controller.notice}</p>}
+			{controller.error && !controller.details && (
+				<p className={ui.banner} data-tone="danger" role="alert">
+					{controller.error}
+				</p>
+			)}
+			{controller.notice && (
+				<p className={ui.banner} role="status">
+					{controller.notice}
+				</p>
+			)}
+			<RecordState state={state} locale={locale}>
+				{report && (
+					<div className={ui.grid2}>
+						<div className={ui.stack}>
+							<Panel title={t.message}>
+								<p className={ui.message} dir="auto">
+									{report.message}
+								</p>
+							</Panel>
+							{report.resolutionNote && (
+								<Panel title={t.resolution}>
+									<p className={ui.message} dir="auto">
+										{report.resolutionNote}
+									</p>
+								</Panel>
+							)}
+							<Panel title={t.handling} description={closed ? t.closed : t.actionHelp}>
+								{!closed && canHandle && (
+									<div className={ui.form}>
+										<label className={ui.field}>
+											{t.note}
+											<textarea
+												className={ui.input}
+												value={note}
+												onChange={(e) => setNote(e.target.value)}
+												minLength={10}
+												maxLength={500}
+												dir="auto"
+												rows={4}
+												disabled={locked}
+											/>
+										</label>
+										<div className={ui.headerActions}>
+											<button
+												type="button"
+												className={ui.button}
+												disabled={
+													locked ||
+													report.status === "reviewing" ||
+													Boolean(note.trim() && !validNote)
+												}
+												onClick={() => void transition("reviewing")}
+											>
+												{t.review}
+											</button>
+											<button
+												type="button"
+												className={ui.button}
+												disabled={locked || !validNote}
+												onClick={() => void transition("dismissed")}
+											>
+												{t.dismiss}
+											</button>
+											<button
+												type="button"
+												className={ui.buttonPrimary}
+												disabled={locked || !validNote}
+												onClick={() => void transition("actioned")}
+											>
+												{t.closeActioned}
+											</button>
+											{permissions.includes("site.suspend") && (
+												<button
+													type="button"
+													className={ui.buttonDanger}
+													disabled={locked}
+													onClick={() =>
+														controller.openSiteDetails(
+															{ id: report.siteId },
+															`${t.prefill} ${report.id}: ${t[report.category]}`,
+														)
+													}
+												>
+													{t.takeAction}
+												</button>
+											)}
+										</div>
+									</div>
+								)}
+							</Panel>
+						</div>
+						<Panel title={t.details}>
+							<KeyValues
+								items={[
+									{
+										label: t.reportedSite,
+										value: (
+											<Link
+												className={ui.cellLink}
+												href={localeHref(
+													locale,
+													`/admin/sites/${encodeURIComponent(report.siteId)}`,
+												)}
+												dir="ltr"
+											>
+												{report.slug}
+											</Link>
+										),
+									},
+									{
+										label: t.site,
+										value: (
+											<a
+												className={ui.cellLink}
+												href={`/p/${encodeURIComponent(report.slug)}`}
+												target="_blank"
+												rel="noreferrer"
+											>
+												/p/<bdi>{report.slug}</bdi>
+											</a>
+										),
+									},
+									{ label: t.category, value: t[report.category] },
+									{
+										label: t.reporter,
+										value: <span dir="ltr">{report.reporterEmail ?? "—"}</span>,
+									},
+									{ label: t.created, value: date(report.createdAt, locale) },
+									{
+										label: t.handledAt,
+										value: report.handledAt ? date(report.handledAt, locale) : "—",
+									},
+									{ label: t.reportId, value: report.id, mono: true },
+								]}
+							/>
+						</Panel>
+					</div>
+				)}
+			</RecordState>
 			<SiteModerationDialog controller={controller} locale={locale} />
 		</section>
 	);

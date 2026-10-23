@@ -1,70 +1,148 @@
 "use client";
+import type { Locale } from "@ichnara/contracts";
+import { Download, History, SlidersHorizontal } from "lucide-react";
 import { useRef, useState } from "react";
 import { ButtonContent } from "../../../components/ui/button-content";
 import { ApiError, apiOrigin } from "../../../lib/api";
 import { date, errorText } from "../shared";
 import type { Audit, Page } from "../shared/types";
-import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { AdminDialog } from "./admin-dialog";
-import { DirectoryFilter, ReadState } from "./admin-directory";
-import { AdminPagination } from "./admin-pagination";
-import { useAdminData, useAdminRefresh } from "./admin-query";
+import { useAdminData, useAdminList, useAdminRefresh } from "./admin-query";
 import { directoryCopy } from "./directory-copy";
-import fields from "./operations.module.css";
 import { operationsCopy } from "./operations-copy";
-import layout from "./reports.module.css";
+import {
+	type Column,
+	DataTable,
+	FilterSelect,
+	KeyValues,
+	PageHeader,
+	Panel,
+	StatusBadge,
+	Toolbar,
+	ui,
+	useDebouncedValue,
+} from "./ui/console";
+
 export type AuditEvent = Audit & {
 	requestId: string;
 	metadata: Record<string, string | number | boolean | null>;
 };
-export function AuditEvents({ items, open }: { items: AuditEvent[]; open?: (id: string) => void }) {
-	const { locale } = useAdminSession(),
-		t = operationsCopy[locale];
-	const groups = Map.groupBy(items, (row) => row.requestId);
+
+const statusTone = { attempted: "neutral", succeeded: "success", failed: "danger" } as const;
+
+/**
+ * One row per request: an attempt and its outcome share a request ID, so the row shows the action
+ * once with the outcome when recorded (otherwise the attempt). `open` shows the whole group.
+ */
+export function EventTable({
+	events,
+	locale,
+	open,
+	state,
+	filtered,
+}: {
+	events: AuditEvent[];
+	locale: Locale;
+	open?: (requestId: string) => void;
+	state?: Parameters<typeof DataTable<AuditEvent>>[0]["state"];
+	filtered?: boolean;
+}) {
+	const t = operationsCopy[locale],
+		d = directoryCopy[locale];
+	const rows = [...Map.groupBy(events, (row) => row.requestId).values()].map(
+		(group) => group.find((row) => row.status !== "attempted") ?? group[0],
+	);
+	const columns: Column<AuditEvent>[] = [
+		{
+			key: "action",
+			header: t.action,
+			primary: true,
+			cell: (row) => (
+				<div className={ui.primaryText}>
+					<strong className={ui.mono} dir="ltr">
+						{row.action}
+					</strong>
+					<span dir="ltr">
+						{row.targetId ? `${row.targetType} · ${row.targetId}` : row.targetType}
+					</span>
+				</div>
+			),
+		},
+		{
+			key: "status",
+			header: t.status,
+			cell: (row) => <StatusBadge tone={statusTone[row.status]}>{t[row.status]}</StatusBadge>,
+		},
+		{
+			key: "time",
+			header: t.time,
+			cell: (row) => <span className={ui.muted}>{date(row.createdAt, locale)}</span>,
+		},
+		...(open
+			? [
+					{
+						key: "details",
+						header: d.actions,
+						align: "end" as const,
+						cell: (row: AuditEvent) => (
+							<button type="button" className={ui.buttonGhost} onClick={() => open(row.requestId)}>
+								{t.details}
+							</button>
+						),
+					},
+				]
+			: []),
+	];
 	return (
-		<ul className={layout.queue}>
-			{[...groups].map(([id, events]) => (
-				<li key={id}>
-					<p>
-						<bdi>{id}</bdi>
-					</p>
-					{events.map((e) => (
-						<p key={e.id}>
-							<bdi>{e.action}</bdi> · {t[e.status]} · {date(e.createdAt, locale)}
-						</p>
-					))}
-					{open && (
-						<button type="button" className={styles.rowAction} onClick={() => open(id)}>
-							{t.details}
-						</button>
-					)}
-				</li>
-			))}
-		</ul>
+		<DataTable
+			label={t.activity}
+			columns={columns}
+			rows={rows}
+			rowKey={(row) => row.requestId}
+			state={state ?? { loaded: true, error: "", reload: () => {} }}
+			locale={locale}
+			filtered={filtered}
+			empty={{ icon: History, title: t.noEvents }}
+		/>
 	);
 }
-/** Correlates attempt/outcome rows by request ID and fetches the complete bounded group in a drawer. */
+
+/** Filterable audit log; a request's attempt and outcome open together in a side drawer. */
 export function AdminActivityPage() {
 	const refresh = useAdminRefresh();
 	const { locale, permissions } = useAdminSession(),
 		t = operationsCopy[locale],
 		d = directoryCopy[locale];
 	const [filters, setFilters] = useState<Record<string, string>>({}),
-		[applied, setApplied] = useState<Record<string, string>>({}),
-		[offset, setOffset] = useState(0),
 		[selected, setSelected] = useState<string | null>(null),
 		[exporting, setExporting] = useState(false),
 		[reason, setReason] = useState(""),
 		[password, setPassword] = useState(""),
 		[maxRows, setMaxRows] = useState(100),
 		[busy, setBusy] = useState(false),
-		[error, setError] = useState("");
+		[error, setError] = useState(""),
+		[advanced, setAdvanced] = useState(false);
 	const heading = useRef<HTMLHeadingElement>(null),
 		drawer = useRef<HTMLHeadingElement>(null);
-	const query = new URLSearchParams({ ...applied, limit: "20", offset: String(offset) }),
-		state = useAdminData<Page<AuditEvent>>(`/api/admin/audit?${query}`, locale),
-		details = useAdminData<Page<AuditEvent>>(
+	const settled = useDebouncedValue(filters, 400);
+	// Date bounds are sent as ISO instants; an incomplete date is ignored rather than sent.
+	const applied = Object.fromEntries(
+		Object.entries(settled)
+			.map(([key, value]) => {
+				const trimmed = value.trim();
+				if (!trimmed || (key !== "from" && key !== "to")) return [key, trimmed];
+				const time = new Date(trimmed);
+				return [key, Number.isNaN(time.getTime()) ? "" : time.toISOString()];
+			})
+			.filter(([, value]) => value),
+	);
+	const list = useAdminList<AuditEvent>(
+		`/api/admin/audit?${new URLSearchParams({ ...applied, limit: "20" })}`,
+		"offset",
+		locale,
+	);
+	const details = useAdminData<Page<AuditEvent>>(
 			selected ? `/api/admin/audit?requestId=${encodeURIComponent(selected)}&limit=100` : null,
 			locale,
 		),
@@ -72,9 +150,12 @@ export function AdminActivityPage() {
 			permissions.includes("audit.export") ? "/api/admin/system" : null,
 			locale,
 		);
-	function change(key: string, value: string) {
-		setFilters((f) => ({ ...f, [key]: value }));
-	}
+	const change = (key: string) => (value: string) => setFilters((f) => ({ ...f, [key]: value }));
+	// Identifier and date filters stay open while any of them is set.
+	const showAdvanced =
+		advanced || ["actorId", "targetId", "from", "to"].some((key) => filters[key]?.trim());
+
+	/** Downloads the identifier-only CSV after the server re-checks the reason and password. */
 	async function download() {
 		if (busy) return;
 		setBusy(true);
@@ -106,95 +187,107 @@ export function AdminActivityPage() {
 			setBusy(false);
 		}
 	}
+	const textFilter = (key: "action" | "actorId" | "targetId") => (
+		<label className={ui.filter} key={key}>
+			{t[key]}
+			<input
+				className={ui.input}
+				dir="ltr"
+				maxLength={key === "action" ? 100 : 128}
+				value={filters[key] ?? ""}
+				onChange={(e) => change(key)(e.target.value)}
+			/>
+		</label>
+	);
 	return (
-		<section className={`${layout.page} ${fields.page}`}>
-			<h1>{t.activity}</h1>
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					const q = Object.fromEntries(Object.entries(filters).filter(([, v]) => v));
-					for (const key of ["from", "to"]) if (q[key]) q[key] = new Date(q[key]).toISOString();
-					setApplied(q);
-					setOffset(0);
-				}}
-			>
-				<div className={layout.filters}>
-					{(["actorId", "action", "targetId"] as const).map((key) => (
-						<label key={key}>
-							{t[key]}
-							<input
-								dir="ltr"
-								maxLength={key === "action" ? 100 : 128}
-								value={filters[key] ?? ""}
-								onChange={(e) => change(key, e.target.value)}
-							/>
-						</label>
-					))}
-					<DirectoryFilter
-						label={t.targetType}
-						value={filters.targetType ?? ""}
-						change={(v) => change("targetType", v)}
-						choices={["user", "site", "session", "report", "notice", "audit", "request"].map(
-							(value) => ({
-								value,
-								label: value,
-							}),
-						)}
-					/>
-					<DirectoryFilter
+		<section className={ui.page}>
+			<PageHeader
+				title={t.activity}
+				description={t.activityIntro}
+				actions={
+					permissions.includes("audit.export") && (
+						<button
+							type="button"
+							className={ui.button}
+							disabled={!system.data}
+							onClick={() => {
+								setExporting(true);
+								setReason("");
+								setPassword("");
+								setError("");
+							}}
+						>
+							<Download size={16} aria-hidden="true" />
+							{t.export}
+						</button>
+					)
+				}
+			/>
+			<Panel padded={false}>
+				<Toolbar
+					locale={locale}
+					active={Object.values(filters).some((value) => value.trim())}
+					onClear={() => setFilters({})}
+				>
+					{textFilter("action")}
+					<FilterSelect
 						label={t.status}
 						value={filters.status ?? ""}
-						change={(v) => change("status", v)}
-						choices={(["attempted", "succeeded", "failed"] as const).map((value) => ({
-							value,
-							label: t[value],
-						}))}
+						onChange={change("status")}
+						options={[
+							{ value: "", label: d.all },
+							...(["attempted", "succeeded", "failed"] as const).map((value) => ({
+								value,
+								label: t[value],
+							})),
+						]}
 					/>
-					{(["from", "to"] as const).map((key) => (
-						<label key={key}>
-							{t[key]}
-							<input
-								type="datetime-local"
-								value={filters[key] ?? ""}
-								onChange={(e) => change(key, e.target.value)}
-							/>
-						</label>
-					))}
-				</div>
-				<button className={styles.primary} type="submit">
-					{t.apply}
-				</button>
-			</form>
-			{permissions.includes("audit.export") && (
-				<button
-					type="button"
-					className={styles.secondary}
-					disabled={!system.data}
-					onClick={() => {
-						setExporting(true);
-						setReason("");
-						setPassword("");
-						setError("");
-					}}
-				>
-					{t.export}
-				</button>
-			)}
-			<ReadState state={state}>
-				{state.data?.items.length === 0 ? (
-					<p>{d.empty}</p>
-				) : (
-					<AuditEvents items={state.data?.items ?? []} open={setSelected} />
-				)}
-				<AdminPagination
+					<FilterSelect
+						label={t.targetType}
+						value={filters.targetType ?? ""}
+						onChange={change("targetType")}
+						options={[
+							{ value: "", label: d.all },
+							...["user", "site", "session", "report", "notice", "audit", "request"].map(
+								(value) => ({ value, label: value }),
+							),
+						]}
+					/>
+					<button
+						type="button"
+						className={ui.buttonGhost}
+						aria-expanded={showAdvanced}
+						onClick={() => setAdvanced(!showAdvanced)}
+					>
+						<SlidersHorizontal size={16} aria-hidden="true" />
+						{t.moreFilters}
+					</button>
+					{showAdvanced && (
+						<div className={ui.toolbarRow}>
+							{textFilter("actorId")}
+							{textFilter("targetId")}
+							{(["from", "to"] as const).map((key) => (
+								<label className={ui.filter} key={key}>
+									{t[key]}
+									<input
+										className={ui.input}
+										type="datetime-local"
+										value={filters[key] ?? ""}
+										onChange={(e) => change(key)(e.target.value)}
+									/>
+								</label>
+							))}
+						</div>
+					)}
+				</Toolbar>
+				<EventTable
+					events={list.items}
 					locale={locale}
-					count={state.data?.items.length ?? 0}
-					offset={offset}
-					more={state.data?.hasMore ?? false}
-					disabled={!state.data}
-					change={setOffset}
+					open={setSelected}
+					state={list}
+					filtered={Object.keys(applied).length > 0}
 				/>
-			</ReadState>
+			</Panel>
 			{selected && (
 				<AdminDialog
 					drawer
@@ -204,32 +297,42 @@ export function AdminActivityPage() {
 					busy={false}
 					onClose={() => setSelected(null)}
 				>
-					<ReadState state={details}>
-						<AuditEvents items={details.data?.items ?? []} />
+					<div className={ui.stack}>
+						<KeyValues items={[{ label: t.requestId, value: selected, mono: true }]} />
+						{details.error && (
+							<p className={ui.banner} data-tone="danger" role="alert">
+								{details.error}
+							</p>
+						)}
 						{details.data?.items.map((e) => (
-							<section key={e.id}>
-								<h3>
-									<bdi>{e.id}</bdi>
-								</h3>
-								<p>
-									{t.actorId}: <bdi>{e.actorId ?? "—"}</bdi>
-								</p>
-								<p>
-									{t.targetId}:{" "}
-									<bdi>
-										{e.targetType} · {e.targetId}
-									</bdi>
-								</p>
-								{e.reason && (
-									<p dir="auto">
-										{t.reason}: {e.reason}
-									</p>
+							<Panel
+								key={e.id}
+								title={
+									<span className={ui.titleRow}>
+										<span className={ui.mono} dir="ltr">
+											{e.action}
+										</span>
+										<StatusBadge tone={statusTone[e.status]}>{t[e.status]}</StatusBadge>
+									</span>
+								}
+							>
+								<KeyValues
+									items={[
+										{ label: t.time, value: date(e.createdAt, locale) },
+										{ label: t.actorId, value: e.actorId ?? "—", mono: true },
+										{ label: t.target, value: `${e.targetType} · ${e.targetId}`, mono: true },
+										{ label: t.reason, value: e.reason, hidden: !e.reason },
+									]}
+								/>
+								{Object.keys(e.metadata ?? {}).length > 0 && (
+									<>
+										<h3 className={ui.panelTitle}>{t.metadata}</h3>
+										<pre className={ui.code}>{JSON.stringify(e.metadata, null, 2)}</pre>
+									</>
 								)}
-								<h4>{t.metadata}</h4>
-								<pre>{JSON.stringify(e.metadata, null, 2)}</pre>
-							</section>
+							</Panel>
 						))}
-					</ReadState>
+					</div>
 				</AdminDialog>
 			)}
 			{exporting && (
@@ -244,16 +347,22 @@ export function AdminActivityPage() {
 					}}
 				>
 					<form
+						className={ui.form}
 						onSubmit={(e) => {
 							e.preventDefault();
 							void download();
 						}}
 					>
-						<p>{t.csvHelp}</p>
-						{error && <p role="alert">{error}</p>}
-						<label>
+						<p className={ui.description}>{t.csvHelp}</p>
+						{error && (
+							<p className={ui.banner} data-tone="danger" role="alert">
+								{error}
+							</p>
+						)}
+						<label className={ui.field}>
 							{t.maxRows}
 							<input
+								className={ui.input}
 								required
 								type="number"
 								min={1}
@@ -262,9 +371,10 @@ export function AdminActivityPage() {
 								onChange={(e) => setMaxRows(Number(e.target.value))}
 							/>
 						</label>
-						<label>
+						<label className={ui.field}>
 							{d.reason}
 							<textarea
+								className={ui.input}
 								required
 								minLength={10}
 								maxLength={500}
@@ -273,9 +383,10 @@ export function AdminActivityPage() {
 								onChange={(e) => setReason(e.target.value)}
 							/>
 						</label>
-						<label>
+						<label className={ui.field}>
 							{d.password}
 							<input
+								className={ui.input}
 								required
 								type="password"
 								autoComplete="current-password"
@@ -285,7 +396,7 @@ export function AdminActivityPage() {
 							/>
 						</label>
 						<button
-							className={styles.primary}
+							className={ui.buttonPrimary}
 							type="submit"
 							disabled={busy || reason.trim().length < 10 || !password}
 						>

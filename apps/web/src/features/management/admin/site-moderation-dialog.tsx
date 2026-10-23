@@ -1,9 +1,9 @@
 import { ButtonContent } from "../../../components/ui/button-content";
 import { text } from "../shared/copy";
-import styles from "./admin.module.css";
 import { useAdminSession } from "./admin-context";
 import { adminCopy } from "./admin-copy";
 import { AdminDialog } from "./admin-dialog";
+import { KeyValues, StatusBadge, ui } from "./ui/console";
 import type { useSiteModeration } from "./use-site-moderation";
 
 type Controller = ReturnType<typeof useSiteModeration>;
@@ -21,66 +21,56 @@ export function SiteModerationDialog({
 	const { permissions } = useAdminSession();
 	const canModerate = permissions.includes(c.details?.suspended ? "site.resume" : "site.suspend");
 	return (
-		<>
-			{c.details && (
-				<AdminDialog
-					title={c.details.slug}
-					locale={locale}
-					onClose={c.closeSiteDetails}
-					busy={c.busy}
-					headingRef={c.detailsHeading}
-				>
+		c.details && (
+			<AdminDialog
+				title={c.details.slug}
+				locale={locale}
+				onClose={c.closeSiteDetails}
+				busy={c.busy}
+				headingRef={c.detailsHeading}
+			>
+				<div className={ui.form}>
 					{c.error && (
-						<p className={styles.error} role="alert">
+						<p className={ui.banner} data-tone="danger" role="alert">
 							{c.error}
 						</p>
 					)}
-					<section>
-						<h3>{t.siteDetails}</h3>
-						<span
-							className={`${styles.badge} ${c.details.suspended ? styles.warning : styles.good}`}
-						>
+					<div className={ui.titleRow}>
+						<h3 className={ui.panelTitle}>{t.siteDetails}</h3>
+						<StatusBadge tone={c.details.suspended ? "danger" : "success"}>
 							{c.details.suspended ? t.suspended : t.active}
-						</span>
-						<dl className={styles.dialogStats}>
-							{(
-								[
-									["releases", c.details.releaseCount],
-									["assets", c.details.assetCount],
-									["inquiries", c.details.inquiryCount],
-								] as const
-							).map(([key, value]) => (
-								<div key={key}>
-									<dt>{shared.counts[key]}</dt>
-									<dd>{value ?? "—"}</dd>
-								</div>
-							))}
-						</dl>
-						<dl className={styles.detailsList}>
-							<div>
-								<dt>{t.siteId}</dt>
-								<dd dir="ltr">{c.details.id}</dd>
-							</div>
-							<div>
-								<dt>{t.owner}</dt>
-								<dd dir="ltr">{c.details.ownerId}</dd>
-							</div>
-							{c.details.publishedReleaseId && (
-								<div>
-									<dt>{t.publishedRelease}</dt>
-									<dd dir="ltr">{c.details.publishedReleaseId}</dd>
-								</div>
-							)}
-						</dl>
-					</section>
+						</StatusBadge>
+					</div>
+					<KeyValues
+						items={[
+							{ label: shared.counts.releases, value: c.details.releaseCount ?? "—" },
+							{ label: shared.counts.assets, value: c.details.assetCount ?? "—" },
+							{ label: shared.counts.inquiries, value: c.details.inquiryCount ?? "—" },
+							{ label: t.siteId, value: c.details.id, mono: true },
+							{ label: t.owner, value: c.details.ownerId, mono: true },
+							{
+								label: t.publishedRelease,
+								value: c.details.publishedReleaseId,
+								mono: true,
+								hidden: !c.details.publishedReleaseId,
+							},
+						]}
+					/>
 					{canModerate && (
-						<section>
-							<h3>{t.moderation}</h3>
-							<p>{t.moderationDescription}</p>
-							{c.details.suspensionReason && <p dir="auto">{c.details.suspensionReason}</p>}
-							<label>
+						<section className={ui.form}>
+							<div>
+								<h3 className={ui.panelTitle}>{t.moderation}</h3>
+								<p className={ui.description}>{t.moderationDescription}</p>
+							</div>
+							{c.details.suspensionReason && (
+								<p className={ui.previewBox} dir="auto">
+									{c.details.suspensionReason}
+								</p>
+							)}
+							<label className={ui.field}>
 								{shared.reason}
 								<textarea
+									className={ui.input}
 									minLength={10}
 									maxLength={500}
 									value={c.reason}
@@ -88,9 +78,10 @@ export function SiteModerationDialog({
 									onChange={(e) => c.setReason(e.target.value)}
 								/>
 							</label>
-							<label>
+							<label className={ui.field}>
 								{t.operatorPassword}
 								<input
+									className={ui.input}
 									type="password"
 									autoComplete="current-password"
 									maxLength={1024}
@@ -101,7 +92,7 @@ export function SiteModerationDialog({
 							</label>
 							<button
 								type="button"
-								className={c.details.suspended ? styles.primary : styles.danger}
+								className={c.details.suspended ? ui.buttonPrimary : ui.buttonDanger}
 								disabled={
 									c.busy ||
 									!c.password ||
@@ -116,8 +107,8 @@ export function SiteModerationDialog({
 							</button>
 						</section>
 					)}
-				</AdminDialog>
-			)}
-		</>
+				</div>
+			</AdminDialog>
+		)
 	);
 }
