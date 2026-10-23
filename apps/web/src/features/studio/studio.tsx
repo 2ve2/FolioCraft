@@ -7,6 +7,7 @@ import { PublicNotices } from "../../components/ui/public-notices";
 import { localeHref } from "../../lib/locale";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
 import { SiteOperations } from "../management/site/site-operations";
+import { AccountSettings } from "./account/account-settings";
 import { LoadingScreen } from "./loading-screen";
 import { OnboardingScreen } from "./onboarding-screen";
 import { AppearanceSection } from "./sections/appearance-section";
@@ -190,87 +191,100 @@ function StudioWorkspace() {
 					busy={busy}
 					publish={publish}
 				/>
-				<div className="mobile-tabs">
-					<button
-						type="button"
-						className={mobileTab === "edit" ? "active" : ""}
-						onClick={() => setMobileTab("edit")}
-					>
-						{t.edit}
-					</button>
-					<button
-						type="button"
-						className={mobileTab === "preview" ? "active" : ""}
-						onClick={() => setMobileTab("preview")}
-					>
-						{t.preview}
-					</button>
-				</div>
-				{(error || notice) && (
-					<div
-						className={`feedback ${error ? "feedback-error" : "feedback-success"}`}
-						role={error ? "alert" : "status"}
-					>
-						<p>{error || notice}</p>
-						{error && notice && (
-							<p className="feedback-operation-notice" role="status">
-								{notice}
-							</p>
-						)}
-						{error && (
-							<div className="feedback-actions">
-								<button
-									type="button"
-									className="text-button"
-									disabled={busy}
-									onClick={() => void flush().catch(() => undefined)}
-								>
-									{t.retry}
-								</button>
-								<button type="button" className="text-button" onClick={exportDraft}>
-									{t.draftExport}
-								</button>
-								<button
-									type="button"
-									className="text-button"
-									disabled={busy || saveState === "saving"}
-									onClick={() => {
-										requestSavedReload();
-									}}
-								>
-									{t.reload}
-								</button>
-							</div>
-						)}
+				{section === "account" ? (
+					<div className="account-scroll">
+						<AccountSettings
+							locale={locale}
+							user={session.user}
+							sessionId={session.session.id}
+							exportDraft={exportDraft}
+						/>
 					</div>
-				)}
-				<div className="editor-layout">
-					<div className={`editor-panel ${mobileTab === "preview" ? "mobile-hidden" : ""}`}>
-						<fieldset disabled={busy}>{controls}</fieldset>
-						<div className="editor-bottom">
-							<span>{t.draftNote}</span>
+				) : (
+					<>
+						<div className="mobile-tabs">
 							<button
 								type="button"
-								className="text-button"
-								disabled={busy || saveState === "saved"}
-								onClick={() => void flush().catch(() => undefined)}
+								className={mobileTab === "edit" ? "active" : ""}
+								onClick={() => setMobileTab("edit")}
 							>
-								{t.save}
+								{t.edit}
+							</button>
+							<button
+								type="button"
+								className={mobileTab === "preview" ? "active" : ""}
+								onClick={() => setMobileTab("preview")}
+							>
+								{t.preview}
 							</button>
 						</div>
-					</div>
-					<WorkspacePreview
-						draft={draft}
-						site={site}
-						locale={locale}
-						assetUrls={assetUrls}
-						device={device}
-						setDevice={setDevice}
-						mobileTab={mobileTab}
-						expandedPreview={expandedPreview}
-						setExpandedPreview={setExpandedPreview}
-					/>
-				</div>
+						{(error || notice) && (
+							<div
+								className={`feedback ${error ? "feedback-error" : "feedback-success"}`}
+								role={error ? "alert" : "status"}
+							>
+								<p>{error || notice}</p>
+								{error && notice && (
+									<p className="feedback-operation-notice" role="status">
+										{notice}
+									</p>
+								)}
+								{error && (
+									<div className="feedback-actions">
+										<button
+											type="button"
+											className="text-button"
+											disabled={busy}
+											onClick={() => void flush().catch(() => undefined)}
+										>
+											{t.retry}
+										</button>
+										<button type="button" className="text-button" onClick={exportDraft}>
+											{t.draftExport}
+										</button>
+										<button
+											type="button"
+											className="text-button"
+											disabled={busy || saveState === "saving"}
+											onClick={() => {
+												requestSavedReload();
+											}}
+										>
+											{t.reload}
+										</button>
+									</div>
+								)}
+							</div>
+						)}
+						<div className="editor-layout">
+							<div className={`editor-panel ${mobileTab === "preview" ? "mobile-hidden" : ""}`}>
+								<fieldset disabled={busy}>{controls}</fieldset>
+								<div className="editor-bottom">
+									<span>{t.draftNote}</span>
+									<button
+										type="button"
+										className="text-button"
+										disabled={busy || saveState === "saved"}
+										onClick={() => void flush().catch(() => undefined)}
+									>
+										{t.save}
+									</button>
+								</div>
+							</div>
+							<WorkspacePreview
+								draft={draft}
+								site={site}
+								locale={locale}
+								assetUrls={assetUrls}
+								device={device}
+								setDevice={setDevice}
+								mobileTab={mobileTab}
+								expandedPreview={expandedPreview}
+								setExpandedPreview={setExpandedPreview}
+							/>
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	);

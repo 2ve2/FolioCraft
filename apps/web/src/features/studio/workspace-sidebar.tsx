@@ -1,6 +1,15 @@
 import type { Locale } from "@ichnara/contracts";
 import { isStaff } from "@ichnara/contracts/admin-policy";
-import { FileText, LogOut, Menu, Palette, Settings2, ShieldCheck, X } from "lucide-react";
+import {
+	FileText,
+	LogOut,
+	Menu,
+	Palette,
+	Settings2,
+	ShieldCheck,
+	UserRound,
+	X,
+} from "lucide-react";
 import { Brand } from "../../components/ui/brand";
 import { TooltipButton } from "../../components/ui/tooltip-button";
 import { useDrawer } from "../../components/ui/use-drawer";
@@ -74,8 +83,8 @@ export function WorkspaceSidebar({
 							{ key: "content", icon: FileText },
 							{ key: "appearance", icon: Palette },
 							{ key: "operations", icon: FileText },
-
 							{ key: "settings", icon: Settings2 },
+							{ key: "account", icon: UserRound },
 						] as const
 					).map(({ key, icon: Icon }) => (
 						<button
