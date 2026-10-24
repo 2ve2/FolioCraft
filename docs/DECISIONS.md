@@ -454,3 +454,11 @@ Human authorizes SMTP_HOST=smtp.resend.com,SMTP_PORT=465,SMTP_SECURE=true,SMTP_U
 - Engineering decision (not separately confirmed): `/get-session` is `false` in `customRules`. It only reads the caller's own cookie session, and private API reads are unthrottled too. Sign-in, sign-up, recovery, change-password, change-email, two-factor and every other auth path keep their limits. An integration test covers both sides.
 - Revisit if session reads ever become expensive, for example without the cookie cache, or if abuse shows up in monitoring.
 
+
+## 2026-10-24 — Pull request and commit attribution workflow (human-confirmed)
+- The human noticed that GitHub granted only the Quickdraw achievement even though about 19 pull requests from their account were merged. Every one of those pull requests was opened by the agent through the GitHub app integration. The most likely cause, which is inferred and unverified, is that GitHub does not count app-opened pull requests for Pull Shark.
+- The human agreed ("نعم") to two changes:
+  - From the next pull request on, the agent pushes the branch and gives the human a compare link. The human opens the pull request on GitHub themselves, then merges it as usual.
+  - Agent commits add the trailer `Co-authored-by: Abdulrahman Matouk <81648139+2ve2@users.noreply.github.com>`. This is the GitHub-provided noreply address, so no personal email appears in history. It reflects that the human directs and reviews the work.
+- PR #20 was opened before this decision and stays as is. Its later commits carry the trailer.
+- Check: if Pull Shark appears after pull requests the human opened themselves, the cause above is confirmed. Record the outcome here.
