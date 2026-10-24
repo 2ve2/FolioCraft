@@ -1,21 +1,41 @@
 import "./test-guard";
 import { afterAll, expect, spyOn, test } from "bun:test";
 import { createHash } from "node:crypto";
-import { inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { db } from "../src/db";
 import { user } from "../src/db/schema/auth";
 import { rateBuckets } from "../src/db/schema/operations";
 import { auth } from "../src/lib/auth";
 import * as mail from "../src/lib/auth/mail";
 import { authMailContent } from "../src/lib/auth/mail-templates";
-import { account } from "./helpers";
+import { account, error, request } from "./helpers";
 
 const users: string[] = [];
 afterAll(async () => {
 	if (users.length) await db.delete(user).where(inArray(user.id, users));
 });
 
-test("a sign-up with a registered address notifies its owner once an hour, in their language, silently", async () => {
+test("a sign-up with a registered address is refused by name and creates nothing", async () => {
+	const owner = await account("existing-refused", users);
+	const send = spyOn(mail, "sendAuthMail").mockImplementation(async () => {});
+	try {
+		const response = await request(
+			"/api/auth/sign-up/email",
+			"POST",
+			{ name: "Someone else", email: owner.email.toUpperCase(), password: "Another-password-1" },
+			undefined,
+			`192.0.2.${Math.floor(Math.random() * 200) + 20}`,
+		);
+		await error(response, 422, "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL");
+		expect(send).not.toHaveBeenCalled();
+		const rows = await db.select({ id: user.id }).from(user).where(eq(user.email, owner.email));
+		expect(rows.map((row) => row.id)).toEqual([owner.id]);
+	} finally {
+		send.mockRestore();
+	}
+});
+
+test("a sign-up that races past the check notifies the owner once an hour, in their language, silently", async () => {
 	const owner = await account("existing-signup", users);
 	const hook = auth.options.emailAndPassword?.onExistingUserSignUp;
 	expect(hook).toBeDefined();

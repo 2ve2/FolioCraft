@@ -23,6 +23,7 @@ export function useAuthController(mode: AuthMode) {
 	// The address a sign-up was accepted for; the page then shows the check-your-email step.
 	const [sentTo, setSentTo] = useState("");
 	const [emailNotVerified, setEmailNotVerified] = useState(false);
+	const [emailTaken, setEmailTaken] = useState(false);
 	const pending = useRef(false);
 	const mounted = useRef(true);
 
@@ -47,6 +48,7 @@ export function useAuthController(mode: AuthMode) {
 		setError("");
 		setSentTo("");
 		setEmailNotVerified(false);
+		setEmailTaken(false);
 		const data = new FormData(event.currentTarget);
 		try {
 			const input = { email: String(data.get("email")), password: String(data.get("password")) };
@@ -62,6 +64,7 @@ export function useAuthController(mode: AuthMode) {
 			if (result.error) {
 				const code = result.error.code || "";
 				setEmailNotVerified(code === "EMAIL_NOT_VERIFIED");
+				setEmailTaken(code.includes("ALREADY_EXISTS"));
 				setError(
 					code === "MAIL_UNAVAILABLE" ||
 						code === "MAIL_DELIVERY_FAILED" ||
@@ -112,6 +115,7 @@ export function useAuthController(mode: AuthMode) {
 		sentTo,
 		resetSignup: () => setSentTo(""),
 		emailNotVerified,
+		emailTaken,
 		returnToAdmin,
 		authenticate,
 	};

@@ -50,9 +50,9 @@ export const auth = betterAuth({
 		},
 
 		/**
-		 * Sign-up answers the same for new and registered addresses (no account enumeration); only
-		 * the address owner learns of the attempt, at most once an hour. Failures stay silent so the
-		 * response cannot differ.
+		 * The sign-up hook refuses registered addresses by name, so this runs only when two sign-ups
+		 * for one address race past that check: the owner learns of it, at most once an hour.
+		 * Failures stay silent so the neutral response cannot differ.
 		 */
 		onExistingUserSignUp: async ({ user }, request) => {
 			try {

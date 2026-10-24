@@ -2,19 +2,24 @@ import type { Locale } from "@ichnara/contracts";
 import Link from "next/link";
 import { localeHref } from "../../lib/locale";
 
-/** Offers password recovery only at sign-in and verification resend only after a verification gate. */
+/**
+ * Offers password recovery at sign-in or after a sign-up refused a registered address, and
+ * verification resend only after a verification gate.
+ */
 export function AuthRecoveryLinks({
 	locale,
 	mode,
 	verificationRequired,
+	emailTaken = false,
 }: {
 	locale: Locale;
 	mode: "login" | "signup";
 	verificationRequired: boolean;
+	emailTaken?: boolean;
 }) {
 	return (
 		<>
-			{mode === "login" && (
+			{(mode === "login" || emailTaken) && (
 				<Link className="text-button auth-switch" href={localeHref(locale, "/forgot-password")}>
 					{locale === "ar" ? "نسيت كلمة المرور؟" : "Forgot password?"}
 				</Link>
