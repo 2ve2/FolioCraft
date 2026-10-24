@@ -105,6 +105,6 @@ These are scoped acceptance checks, not a claim that every original console feat
 ## Committed browser regression gate — 2026-10-21
 - [x]43 committed Chromium checks cover the requested Arabic/English critical journeys against real Bun/Hono/PostgreSQL and production Next, with native security, unique fixtures and explicit script exceptions/negative controls.
 - [x]Final clean installation passes all eleven quality gates and the complete E2E suite three consecutive times; source/configuration byte parity and local cleanup verified.
-- [x]Dedicated PostgreSQL18 PR job passes43/43 in approximately2m08s including setup/cleanup; reports/traces/screenshots are configured as failure-only artifacts. Actual run39624159815 and limitations are recorded in evidence/2026-10-21-playwright-e2e.md.
+- [x]Dedicated PostgreSQL18 PR job passes43/43 in approximately2m08s including setup/cleanup; reports/traces/screenshots are configured as failure-only artifacts. Actual run39624159815 and limitations are recorded in EVIDENCE.md (2026-10-21-playwright-e2e).
 
 These checkboxes concern the requested local/CI Chromium regression gate only; they do not establish hosted mail/R2/cookie/device acceptance or authorize deployment. PR4 remains unmerged.

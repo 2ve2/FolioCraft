@@ -112,7 +112,7 @@ Prepared 2026-10-20 for the human-owned test domain. **Every operational action 
 - [ ] **NOT PERFORMED:** test authenticated upload intent, actual browser R2 PUT, completion, published image rendering and disposable-fixture cleanup; verify ownership failures and private draft isolation. Test a published site and ensure unpublished/suspended content remains unavailable.
 - [ ] **NOT PERFORMED:** inspect canonical/OpenGraph links, `/robots.txt`, `/sitemap.xml` and published per-site sitemap URLs; all web URLs must derive from `NEXT_PUBLIC_WEB_URL=https://lord2ve.tech`, with public assets using the configured API origin. Confirm runtime SSR reaches the API subdomain.
 
-Code evidence, cookie inference, full legacy-hostname inventory and search exclusions are in [CUSTOM_DOMAIN_REVIEW.md](archive/CUSTOM_DOMAIN_REVIEW.md). JSON shape follows [Cloudflare R2 CORS documentation](https://developers.cloudflare.com/r2/buckets/cors/).
+Code evidence, cookie inference, full legacy-hostname inventory and search exclusions are in CUSTOM_DOMAIN_REVIEW.md. JSON shape follows [Cloudflare R2 CORS documentation](https://developers.cloudflare.com/r2/buckets/cors/).
 
 ## Local build harness repair — 2026-10-20
 
@@ -155,7 +155,7 @@ Human requested using the existing login message placement/spacing without new n
 
 - Web `82572492-b169-427f-97eb-43cb96eefbcb`, deployment `4b5195ed-7191-45fc-8a9d-c993a365bd1f`,100%; previous `95c3b7d0-9590-4f8b-8cc8-78ed8c778f9d` retained for rollback, none needed. Eight startup/page checks200. Hosted Arabic recovery alert visually/computationally matches the login baseline after deployment.
 - API remains `00b403f4-6600-4b33-bd2e-71477bb1fd8c`,100%, active REPORT_IP_SALT present by name; no API deployment/rotation.
-- Evidence: work/recovery-feedback-fix. SMTP still unconfigured; presentation proof is not delivery acceptance. Earlier comprehensive audit and remaining browser/staff limits are in archive/ROUTE_AUDIT_2026-10-20. No production migrations, real-user/role changes or R2 operations in this UI repair.
+- Evidence: work/recovery-feedback-fix. SMTP still unconfigured; presentation proof is not delivery acceptance. Earlier comprehensive audit and remaining browser/staff limits are in archive/ROUTE_AUDIT_2026-10-20 (removed in the 2026-10-24 cleanup; kept in Git history). No production migrations, real-user/role changes or R2 operations in this UI repair.
 
 ## Atomic API SMTP setup — 2026-10-20
 
@@ -164,7 +164,7 @@ Human authorizes SMTP configuration and one API deployment only. Display-name MA
 - Active API `7468b506-230d-4b36-8a26-2dd3058b6944`, deployment `e2c65ace-57c3-4599-b84e-b056a5455999`,100%; previous `00b403f4-6600-4b33-bd2e-71477bb1fd8c` verified, no rollback needed. Health/ready200; mail reports configured.
 - SMTP_PASSWORD atomically included with code/vars through the documented OS pipe. Real key read only from ignored work/secrets/resend.key, never printed/persisted in a new file/argument/log; input deleted after use and absence verified. Active name and all existing secret names preserved. No salt rotation.
 - Synthetic full-group validation/dry run and typecheck/Biome357/guarded API56 pass12 skip plus11 enforced-MFA child pass. No production migration, web deployment, R2 operation, Neon/account/role change or SMTP delivery probe.
-- Human browser password-reset delivery test remains pending. Consult [SMTP_FALLBACK](archive/SMTP_FALLBACK.md) for MAIL_DELIVERY_FAILED/MAIL_UNAVAILABLE, actual Worker log limitations and a prepared-only HTTP alternative. No HTTP transport or debug logging was applied. Evidence: ignored work/smtp-setup.
+- Human browser password-reset delivery test remains pending. Consult SMTP_FALLBACK for MAIL_DELIVERY_FAILED/MAIL_UNAVAILABLE, actual Worker log limitations and a prepared-only HTTP alternative. No HTTP transport or debug logging was applied. Evidence: ignored work/smtp-setup.
 
 ## Optional server error monitoring — 2026-10-22
 

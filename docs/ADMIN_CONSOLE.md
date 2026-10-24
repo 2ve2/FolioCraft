@@ -281,7 +281,7 @@ P1 is human-accepted. This appendix replaces the earlier P2 scope/transaction pr
 
 ### 13.1 Exact schema delta, naming and compatibility
 
-The entire proposed SQL is [sql/P2A_TWO_FACTOR_DRAFT.sql](sql/P2A_TWO_FACTOR_DRAFT.sql). It lives under docs/sql, outside apps/api/src/db/migrations and its journal, so the current migration runner cannot discover it. It has no migration number and is not executable task automation. No application command is provided to apply it in this batch.
+The entire proposed SQL is sql/P2A_TWO_FACTOR_DRAFT.sql. It lives under docs/sql, outside apps/api/src/db/migrations and its journal, so the current migration runner cannot discover it. It has no migration number and is not executable task automation. No application command is provided to apply it in this batch.
 
 The installed Better Auth 1.7.7 schema, not an older minimal 2FA example, defines these standard logical fields:
 

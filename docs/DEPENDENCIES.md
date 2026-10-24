@@ -3,7 +3,7 @@
 ## 2026-10-22 — Studio prerequisite
 - Next16.4.1 and OpenNext1.20.13 are pinned existing dependencies. Main's original lockfile reproduced the high/critical Next16.4.0 audit findings. Registry metadata confirms Node>=20.9, React19 and the paired adapter's Next>=16.4.1 support. No new direct dependency was added.
 - The two existing cache reliability hunks are preserved under patches/@opennextjs%2Fcloudflare@1.20.13.patch; upstream now includes the preview-props manifest handling. All remaining dependencies retain their pins.
-- Source-only frozen installation and complete Next/OpenNext/local Worker verification are recorded in [studio evidence](evidence/2026-10-22-studio-startup.md). Initial linked-copy bundling failures did not independently prove the older adapter incompatible; the maintained pair is the tested choice. No hosted deployment is inferred.
+- Source-only frozen installation and complete Next/OpenNext/local Worker verification are recorded in [studio evidence](EVIDENCE.md#studio-startup--2026-10-22). Initial linked-copy bundling failures did not independently prove the older adapter incompatible; the maintained pair is the tested choice. No hosted deployment is inferred.
 
 ## 2026-10-18 — Previous remediation
 

@@ -1,6 +1,6 @@
 # Optional Hyperdrive trial runbook
 
-Prepared2026-10-22. **Nothing below was provisioned or deployed by this task.** There is no staging. The friends-only trial is the human-operated test environment. [Evidence, measurements and limits](evidence/2026-10-22-hyperdrive-latency.md).
+Prepared2026-10-22. **Nothing below was provisioned or deployed by this task.** There is no staging. The friends-only trial is the human-operated test environment. [Evidence, measurements and limits](EVIDENCE.md#optional-hyperdrive-latency-evaluation--2026-10-22).
 
 ## Decision and prerequisites
 
