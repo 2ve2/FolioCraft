@@ -19,7 +19,8 @@ export function PublishedShell({ locale, children }: { locale: Locale; children:
 				<svg
 					width="26"
 					height="26"
-					viewBox="0 0 235 240"
+					// The emblem's own outline bounds, so it sits centred in the round badge.
+					viewBox="0 2 208 236"
 					fill="currentColor"
 					aria-hidden="true"
 					focusable="false"
