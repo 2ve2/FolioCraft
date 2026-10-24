@@ -16,6 +16,81 @@
 	line-height: 1.4;
 	margin: 12px 0;
 }
+.passwordBox {
+	position: relative;
+	display: block;
+}
+.passwordBox input {
+	padding-right: 48px;
+}
+/* Sign-up feedback: the hint under each field turns red or green as the person types. */
+.hint[data-state="invalid"] {
+	color: var(--color-error-text);
+}
+.hint[data-state="valid"] {
+	color: var(--color-save-success);
+}
+.hint[data-state="valid"]::before {
+	content: "✓ ";
+}
+.liveField[data-state="invalid"] input {
+	border-color: var(--color-error-border);
+}
+.reveal {
+	position: absolute;
+	inset-block: 0;
+	right: 0;
+	width: 44px;
+	display: grid;
+	place-items: center;
+	color: var(--muted);
+	border-radius: 0 10px 10px 0;
+	cursor: pointer;
+}
+.reveal:hover {
+	color: var(--ink);
+}
+/* Check-your-email step that replaces the form after a sign-up. */
+.sent {
+	display: grid;
+	gap: 12px;
+	justify-items: start;
+}
+.sent h2 {
+	margin: 0;
+	font-size: 22px;
+	line-height: 1.4;
+}
+.sent h2:focus {
+	outline: none;
+}
+.sent p {
+	margin: 0;
+	line-height: 1.8;
+}
+.sentIcon {
+	display: grid;
+	place-items: center;
+	width: 52px;
+	height: 52px;
+	border-radius: 14px;
+	background: var(--color-accent-soft);
+	color: var(--purple);
+}
+.sentEmail {
+	unicode-bidi: isolate;
+	overflow-wrap: anywhere;
+}
+.sentNote {
+	color: var(--muted);
+	font-size: var(--text-caption);
+}
+.sentActions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 6px;
+}
 @media (max-width: 480px) {
 	.main {
 		padding: 24px 16px 40px;

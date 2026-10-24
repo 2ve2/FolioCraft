@@ -11,6 +11,8 @@ import { localeHref } from "../../lib/locale";
 import { LoadingScreen } from "../studio/loading-screen";
 import styles from "./auth.module.css";
 import { AuthRecoveryLinks } from "./auth-recovery-links";
+import { SignupFields } from "./signup-fields";
+import { SignupSent } from "./signup-sent";
 import { type AuthMode, useAuthController } from "./use-auth-controller";
 
 /** Renders a dedicated authentication page without landing-page content or examples. */
@@ -24,7 +26,8 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 		refetch,
 		busy,
 		error,
-		verificationRequired,
+		sentTo,
+		resetSignup,
 		emailNotVerified,
 		returnToAdmin,
 		authenticate,
@@ -78,86 +81,80 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 								? "مرحبًا بعودتك إلى مساحة أعمالك."
 								: "Welcome back to your workspace."}
 					</p>
-					<form onSubmit={authenticate} aria-busy={busy}>
-						<fieldset disabled={busy}>
-							{mode === "signup" && (
-								<Field label={t.authName}>
-									<input
-										ref={firstInput}
-										name="name"
-										dir="auto"
-										autoComplete="name"
-										required
-										maxLength={100}
-									/>
-								</Field>
-							)}
-							<Field label={t.email}>
-								<input
-									ref={mode === "login" ? firstInput : undefined}
-									name="email"
-									type="email"
-									dir="ltr"
-									autoComplete="email"
-									required
-								/>
-							</Field>
-							{/* Password rules apply when choosing a password; sign-in accepts any stored one. */}
-							<Field label={t.password} hint={mode === "signup" ? t.authHint : undefined}>
-								<input
-									name="password"
-									type="password"
-									dir="ltr"
-									minLength={mode === "signup" ? 10 : undefined}
-									maxLength={128}
-									autoComplete={mode === "signup" ? "new-password" : "current-password"}
-									required
-								/>
-							</Field>
-							{error && (
-								<p className="error-box" role="alert">
-									{error}
-								</p>
-							)}
-							{verificationRequired && (
-								<p className="auth-privacy" role="status">
-									{ar
-										? "تم إنشاء الحساب. يلزم تأكيد البريد الإلكتروني قبل تسجيل الدخول."
-										: "Account created. Verify your email address before signing in."}
-								</p>
-							)}
-							{mode === "signup" && (
-								<p className="auth-privacy auth-consent">
-									{ar ? "بإنشاء حسابك فإنك توافق على " : "By creating an account you agree to the "}
-									<Link href={localeHref(locale, "/terms")}>
-										{ar ? "شروط الاستخدام" : "Terms of use"}
-									</Link>
-									{ar ? " وتقرّ بأنك اطلعت على " : " and acknowledge the "}
-									<Link href={localeHref(locale, "/privacy")}>
-										{ar ? "إشعار الخصوصية" : "Privacy notice"}
-									</Link>
-									.
-								</p>
-							)}
-							<button type="submit" className="primary wide" disabled={busy}>
-								<ButtonContent loading={busy}>{title}</ButtonContent>
-							</button>
-						</fieldset>
-					</form>
-					<Link
-						className="text-button auth-switch"
-						href={localeHref(
-							locale,
-							`/${mode === "signup" ? "login" : "signup"}${returnToAdmin ? "?from=admin" : ""}`,
-						)}
-					>
-						{mode === "signup" ? t.switchLogin : t.switchSignup}
-					</Link>
-					<AuthRecoveryLinks
-						locale={locale}
-						mode={mode}
-						verificationRequired={verificationRequired || emailNotVerified}
-					/>
+					{sentTo ? (
+						<SignupSent locale={locale} email={sentTo} onBack={resetSignup} />
+					) : (
+						<>
+							<form onSubmit={authenticate} aria-busy={busy}>
+								<fieldset disabled={busy}>
+									{mode === "signup" ? (
+										<SignupFields locale={locale} firstInput={firstInput} />
+									) : (
+										<>
+											<Field label={t.email}>
+												<input
+													ref={firstInput}
+													name="email"
+													type="email"
+													dir="ltr"
+													autoComplete="email"
+													required
+												/>
+											</Field>
+											{/* Sign-in accepts any stored password; rules apply only when choosing one. */}
+											<Field label={t.password}>
+												<input
+													name="password"
+													type="password"
+													dir="ltr"
+													maxLength={128}
+													autoComplete="current-password"
+													required
+												/>
+											</Field>
+										</>
+									)}
+									{error && (
+										<p className="error-box" role="alert">
+											{error}
+										</p>
+									)}
+									{mode === "signup" && (
+										<p className="auth-privacy auth-consent">
+											{ar
+												? "بإنشاء حسابك فإنك توافق على "
+												: "By creating an account you agree to the "}
+											<Link href={localeHref(locale, "/terms")}>
+												{ar ? "شروط الاستخدام" : "Terms of use"}
+											</Link>
+											{ar ? " وتقرّ بأنك اطلعت على " : " and acknowledge the "}
+											<Link href={localeHref(locale, "/privacy")}>
+												{ar ? "إشعار الخصوصية" : "Privacy notice"}
+											</Link>
+											.
+										</p>
+									)}
+									<button type="submit" className="primary wide" disabled={busy}>
+										<ButtonContent loading={busy}>{title}</ButtonContent>
+									</button>
+								</fieldset>
+							</form>
+							<Link
+								className="text-button auth-switch"
+								href={localeHref(
+									locale,
+									`/${mode === "signup" ? "login" : "signup"}${returnToAdmin ? "?from=admin" : ""}`,
+								)}
+							>
+								{mode === "signup" ? t.switchLogin : t.switchSignup}
+							</Link>
+							<AuthRecoveryLinks
+								locale={locale}
+								mode={mode}
+								verificationRequired={emailNotVerified}
+							/>
+						</>
+					)}
 					<span className="auth-privacy">{t.privacy}</span>
 				</section>
 			</main>
