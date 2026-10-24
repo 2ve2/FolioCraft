@@ -2,6 +2,26 @@
 
 Dated evidence for each completed step, newest day first: what was asked, what changed, which checks actually ran and their results, and what was not verified. Screenshots and raw measurement files that earlier entries mention were removed in the 2026-10-24 cleanup and remain in Git history.
 
+## 2026-10-24 — Explicit refusal for a registered sign-up email
+
+Human request after the enumeration trade-off was explained ("غيرها"). Decision: `docs/DECISIONS.md`. Nothing was deployed.
+
+### Changes
+- **API.** `apps/api/src/lib/auth/hooks.ts` refuses `/sign-up/email` for a registered address (lower-cased lookup) with 422 `USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL`. The owner notice in `lib/auth/index.ts` now covers only racing sign-ups.
+- **Web.** New AR/EN `authExists` copy. `AuthRecoveryLinks` shows "Forgot password?" after that refusal. The sent step states plainly where the link went.
+
+### Checks
+- **API: 110 pass / 12 skip / 0 fail.** New test: an upper-cased registered address gets 422 with the Better Auth code, no mail is sent, and no second user row exists.
+- **Web: 70/0.** New test: the recovery link appears only after a refusal; the sent-step wording no longer hedges.
+- **Other checks.** Typecheck 0; Biome clean; Playwright e2e 56 passed.
+- **Browser, local production build.**
+  - A second Arabic sign-up with the same email shows the Arabic refusal and the recovery link.
+  - An upper-cased English attempt shows the English refusal.
+  - The first sign-up still succeeds.
+
+### Not verified
+- The hosted trial, where email verification is required. The hook runs before Better Auth's neutral path, so the same refusal is expected there.
+
 ## 2026-10-24 — Sign-up feedback, phone notice, badge centring and cleanup
 
 Requests from the human, verified against the code before changing it. Nothing was deployed.
