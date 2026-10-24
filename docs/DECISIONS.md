@@ -27,7 +27,7 @@
 - Human-confirmed architecture: published routes only; OpenNext R2 incremental cache plus SQLite sharded DO tags; private Service Binding revalidation with a constant-time checked Worker secret; default-off rollout; PostgreSQL durable invalidation retries every minute; no KV/regional Cache API/zone purge/staging/provider mutation. Preserve locale, draft isolation, security and robots behavior. These are task instructions, not completed features.
 - Installed 1.20.11 and current official source silently complete exhausted tag writes and return uninvalidated values on tag-read failure. A synthetic binding probe confirms four failed writes still resolve and three failed reads return false/0/false. HTTP-only retry detection cannot guarantee durable invalidation with that behavior.
 - Historical clarification checkpoint, subsequently resolved by the acceptance entry above: a narrow extension to the existing pinned Bun patch with fail-closed fault tests; preparation only of private R2 Standard `ichnara-portfolio-cache` and a SQLite `DOShardedTagCache` binding in the existing web Worker. R2 allowances are not a spending cap. No resource/secret/deployment/schema action performed.
-- Minute retries cannot bound stale visibility during a sustained outage without additional authoritative coordination. Do not claim zero outage staleness. Application work initially stopped at the human-requested clarification boundary; see [evidence](evidence/2026-10-22-published-isr.md).
+- Minute retries cannot bound stale visibility during a sustained outage without additional authoritative coordination. Do not claim zero outage staleness. Application work initially stopped at the human-requested clarification boundary; see [evidence](EVIDENCE.md#published-portfolio-isr-design-and-verification).
 
 ## 2026-10-22 — Exact platform palette extraction
 - Human-confirmed scope: replace platform UI color literals with tokens, zero visual change, bilingual screenshot matrix and contrast evidence, granular commits and an unmerged PR. Public portfolio rendering and owner-selected appearance are excluded. No deployment/provider/hosted database/secret operation is authorized.
@@ -40,7 +40,7 @@
 - Engineering choices, not separately human-confirmed: keep request-local max1 pools and existing pg/Drizzle transactions; require a bounded origin role/database statement_timeout instead of relying on reset session state. Retain the independent client read deadline; no whole-request transaction/retry. Revised in review (2026-10-22, engineering choice): the guard runs once per Worker isolate, not per request, and a failed or unreachable check falls back to the bounded direct DATABASE_URL path with a `hyperdrive_unverified` warning (retry after 60 s) instead of rejecting every database request.
 - Opt-in DB_TIMING_LOGS emits only numeric counters/durations, transport/stage and the generated response request ID; no SQL, values, paths, account data or credentials. No timing variable or live binding is enabled in the manifest.
 - Local Hyperdrive bindings are direct PostgreSQL forwarding, not distributed pooling; no actual edge gain is established. Prepare the optional candidate but require measured trial benefit before retaining activation. Initial local Service Binding comparison has identical6ms medians; a later SCRAM check differs by1ms, without repeatable edge/page-level evidence. Do not add production web routing or a new trusted IP boundary.
-- Local harnesses temporarily set and restore only the disposable folio_test caller role/database deadline; hosted configuration is manual. [Evidence](evidence/2026-10-22-hyperdrive-latency.md).
+- Local harnesses temporarily set and restore only the disposable folio_test caller role/database deadline; hosted configuration is manual. [Evidence](EVIDENCE.md#optional-hyperdrive-latency-evaluation--2026-10-22).
 
 ## 2026-10-21 — Human-selected monitoring; staging cancelled
 - Human-confirmed: cancel the staging task completely and replace it with owner error/uptime monitoring. Select providers before adding any SDK or account; no deployment or provider mutation is authorized.
@@ -66,7 +66,7 @@
 - bun info pg-cloudflare confirmed latest 1.4.1, published 2026-09-30 by the upstream node-postgres maintainer; no newer adapter fix was available. Keep the narrow patch until an upstream replacement passes the actual workerd regression. Historical hosted attribution remains unverified until the human deploys and captures evidence.
 
 ## 2026-10-20 — Language path prefixes for the platform interface
-- Human direction: page changes felt like crashes or refreshes; the human rejected an interim patch and asked for a root fix "like other platforms", then asked that no page show Arabic and English together. The concrete design below is an engineering choice within that direction, not separately human-confirmed. Evidence: `docs/evidence/2026-10-20-locale-routing.md`.
+- Human direction: page changes felt like crashes or refreshes; the human rejected an interim patch and asked for a root fix "like other platforms", then asked that no page show Arabic and English together. The concrete design below is an engineering choice within that direction, not separately human-confirmed. Evidence: `docs/EVIDENCE.md` (entry `2026-10-20-locale-routing.md`.
 - Platform pages live under `/ar/...` and `/en/...` (`app/(platform)/[locale]`), prerendered once per language with final text, `lang` and `dir`. This supersedes the 2026-10-20 choice to keep the language in `?lang=` behind a language-neutral loading screen, which caused a loading flash on every page change.
 - Un-prefixed URLs redirect (307) with static `next.config` rules, first match wins: legacy `?lang=`, the `ichnara-locale` cookie, a browser whose first language is Arabic, then English. No Node proxy/middleware, because OpenNext marks it experimental on Cloudflare. Query strings are kept so old reset/verification links keep working.
 - English is the default language for visitors without a preference. Published portfolios keep their own release language and never write the visitor's language cookie; pages without a prefix (portfolio, unmatched URLs) switch language in place.
@@ -74,7 +74,7 @@
 - Authentication emails take their language from the callback path prefix (legacy `?lang` fallback).
 
 ## 2026-10-20 — Audit-fix engineering choices (not separately human-confirmed)
-- Context: the human authorized implementing the audit fixes with "freedom to do what is excellent"; individual choices below are engineering decisions, not human confirmations. Evidence for each is in `docs/evidence/2026-10-20-audit-fixes.md`.
+- Context: the human authorized implementing the audit fixes with "freedom to do what is excellent"; individual choices below are engineering decisions, not human confirmations. Evidence for each is in `docs/EVIDENCE.md` (entry `2026-10-20-audit-fixes.md`.
 - Web CSP without nonces (Next 16 documented pattern): keeps static pages static; scripts/styles allow `'unsafe-inline'`, every other source is restricted and framing is forbidden. Revisit with nonces or SRI if inline-script risk becomes material.
 - Two root layouts (`(platform)`, `(portfolio)/p/[slug]`) plus `experimental.globalNotFound`, so published portfolios own `<html lang dir>`. Cost: navigating between the two trees is a full page load.
 - Unavailable public releases return 5xx (500 from the render) with noindex; Next cannot emit 503 from a page without a proxy layer.
@@ -86,7 +86,7 @@
 - Authentication emails are single-language (from the callback `lang`, English fallback) with the `Ichnara` display name. (Language source updated by the language-prefix entry above.)
 
 ## 2026-10-20 — cuid2 identifiers for all new records (human-confirmed)
-- Human-confirmed: use `@paralleldrive/cuid2` to generate ids. Supersedes the 2026-10-13 compatibility choice (I05) to keep UUID domain ids, which required a deliberate migration with preserved-data proof; that proof is recorded in `docs/evidence/2026-10-20-audit-fixes.md`.
+- Human-confirmed: use `@paralleldrive/cuid2` to generate ids. Supersedes the 2026-10-13 compatibility choice (I05) to keep UUID domain ids, which required a deliberate migration with preserved-data proof; that proof is recorded in `docs/EVIDENCE.md` (entry `2026-10-20-audit-fixes.md`.
 - Implemented: `packages/contracts/src/ids.ts` exports `newId()` (cuid2 3.3.0, 24 lowercase base-36 characters, lazily initialized so Workers never draws randomness at global scope) and `idSchema`. Better Auth record ids use `advanced.database.generateId`; session and verification tokens keep Better Auth's own generator. Domain rows, draft content items, assets and request/audit correlation ids use `newId()`.
 - Compatibility: migration `0008_cuid2_text_ids.sql` converts domain id/foreign-key columns from `uuid` to `text`, keeps every existing value verbatim, removes database UUID defaults and recreates the six spanning foreign keys with identical definitions. `idSchema` accepts both cuid2 and legacy UUIDs, so existing drafts and immutable release snapshots stay valid. Raw SQL inserts must now supply ids.
 - Keysets on text ids order byte-wise (`collate "C"`, `apps/api/src/db/keyset.ts`) so cursor order never depends on the database locale.
@@ -123,7 +123,7 @@ Date: 2026-10-13 (Asia/Riyadh).
 - D01: One fixed comprehensive portfolio UI; configurable theme/colors and font type/style/size. Source: original user message recovered from referenced conversation.
 - D02: Backend separate from frontend. Explicit correction overrides earlier Next.js backend/Supabase proposal.
 - D03: Backend uses Bun, Hono, Better Auth, Drizzle ORM.
-- D04: Use the read-only reference backend as inspiration for backend style. Identified local reference path in BACKEND_STYLE.md.
+- D04: Use the read-only reference backend as inspiration for backend style. Identified local reference path in ARCHITECTURE.md (backend conventions).
 - D05: Create a new execution chat, transfer required information, create Markdown project memory.
 - D06: Start implementation in existing `<project workspace>` and create its own new project session; supersedes proposed fresh projectless workspace. Preserve existing code/changes and follow its local instructions.
 
@@ -431,7 +431,7 @@ Human authorizes SMTP_HOST=smtp.resend.com,SMTP_PORT=465,SMTP_SECURE=true,SMTP_U
 - Engineering choice (not separately human-confirmed): the migration command validates only `DATABASE_URL`, because applying SQL does not need auth secrets or origins and asking an operator to supply them widens secret exposure.
 
 ## 2026-10-23 — Logo v1.3 and phone navigation drawers
-- The human asked for a review of the logo's weight and whether the black logo suits the platform, and asked that narrow screens use a menu button that opens a sidebar, in the studio and the dashboard; they delegated the decisions ("سوي يلي تبيه"). Agent decision (delegated, not separately reviewed): two-colour primary lockup (indigo emblem, ink word), Arabic lettering at Noto Sans Arabic 600 sized to the emblem like the Latin capital. Evidence and measurements in `docs/brand/VERIFICATION.md` (v1.3). This supersedes the 2026-10-18 A1 weight (700) and the single-colour header logo.
+- The human asked for a review of the logo's weight and whether the black logo suits the platform, and asked that narrow screens use a menu button that opens a sidebar, in the studio and the dashboard; they delegated the decisions ("سوي يلي تبيه"). Agent decision (delegated, not separately reviewed): two-colour primary lockup (indigo emblem, ink word), Arabic lettering at Noto Sans Arabic 600 sized to the emblem like the Latin capital. Evidence and measurements in `docs/brand/VERIFICATION.md` (v1.3) (removed in the 2026-10-24 cleanup; kept in Git history). This supersedes the 2026-10-18 A1 weight (700) and the single-colour header logo.
 - Phone navigation: below 970px both sidebars become a top bar with a menu button and a drawer from the reading-start edge; this replaces the row of navigation buttons and the separate phone sign-out button, which now live in the drawer.
 
 ## 2026-10-23 — Brand v2: rebuilt folded-band emblem with Readex Pro (human-confirmed)
@@ -454,3 +454,11 @@ Human authorizes SMTP_HOST=smtp.resend.com,SMTP_PORT=465,SMTP_SECURE=true,SMTP_U
 - Engineering decision (not separately confirmed): `/get-session` is `false` in `customRules`. It only reads the caller's own cookie session, and private API reads are unthrottled too. Sign-in, sign-up, recovery, change-password, change-email, two-factor and every other auth path keep their limits. An integration test covers both sides.
 - Revisit if session reads ever become expensive, for example without the cookie cache, or if abuse shows up in monitoring.
 
+
+## 2026-10-24 — Pull request and commit attribution workflow (human-confirmed)
+- The human noticed that GitHub granted only the Quickdraw achievement even though about 19 pull requests from their account were merged. Every one of those pull requests was opened by the agent through the GitHub app integration. The most likely cause, which is inferred and unverified, is that GitHub does not count app-opened pull requests for Pull Shark.
+- The human agreed ("نعم") to two changes:
+  - From the next pull request on, the agent pushes the branch and gives the human a compare link. The human opens the pull request on GitHub themselves, then merges it as usual.
+  - Agent commits add the trailer `Co-authored-by: Abdulrahman Matouk <81648139+2ve2@users.noreply.github.com>`. This is the GitHub-provided noreply address, so no personal email appears in history. It reflects that the human directs and reviews the work.
+- PR #20 was opened before this decision and stays as is. Its later commits carry the trailer.
+- Check: if Pull Shark appears after pull requests the human opened themselves, the cause above is confirmed. Record the outcome here.

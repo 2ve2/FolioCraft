@@ -1,6 +1,6 @@
 # Owner monitoring
 
-Prepared 2026-10-21; updated 2026-10-22 for the friends-only trial. The human selected Sentry Developer and UptimeRobot Free. This runbook does not authorize a deployment or establish that any hosted alert has been delivered. [Actual local evidence](evidence/2026-10-21-owner-monitoring.md).
+Prepared 2026-10-21; updated 2026-10-22 for the friends-only trial. The human selected Sentry Developer and UptimeRobot Free. This runbook does not authorize a deployment or establish that any hosted alert has been delivered. [Actual local evidence](EVIDENCE.md#owner-monitoring--2026-10-2122).
 
 ## What is monitored
 

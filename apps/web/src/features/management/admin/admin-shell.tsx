@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { Fragment, type ReactNode, useEffect, useState } from "react";
 import { Brand } from "../../../components/ui/brand";
 import { LanguageSwitch } from "../../../components/ui/language-switch";
+import { LargeScreenNotice } from "../../../components/ui/large-screen-notice";
 import { TooltipButton } from "../../../components/ui/tooltip-button";
 import { useDrawer } from "../../../components/ui/use-drawer";
 import { ApiError, api } from "../../../lib/api";
@@ -268,6 +269,7 @@ function AuthorizedAdminShell({ children }: { children: ReactNode }) {
 		<AdminQueryProvider key={sessionId}>
 			<AdminContext.Provider value={{ locale, setLocale, user: session.user, permissions }}>
 				<div className={styles.shell} lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
+					<LargeScreenNotice locale={locale} area="admin" />
 					<a className={styles.skip} href="#admin-main">
 						{t.skip}
 					</a>

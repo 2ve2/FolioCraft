@@ -166,3 +166,17 @@
 	border: 0;
 	border-radius: 0;
 }
+/* The frame clips its children, so the focus ring belongs on the frame, not the inner field. */
+.slug-input:focus-within {
+	border-color: var(--color-control-focus-border);
+	box-shadow: 0 0 0 3px var(--color-accent-shadow-subtle);
+}
+.slug-input:has(input:focus-visible) {
+	outline: 2px solid var(--focus-ring);
+	outline-offset: 2px;
+}
+.slug-input input:focus,
+.slug-input input:focus-visible {
+	outline: none;
+	box-shadow: none;
+}

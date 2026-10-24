@@ -1,5 +1,19 @@
 # Action log
 
+## 2026-10-24 — Sign-up feedback, phone notice, badge centring, project cleanup
+- Human requests (Arabic, summarized): the portfolio address field showed a misplaced blue line; sign-up gave no feedback while typing; a second sign-up with the same email said nothing; a resend link sat oddly on the sign-up page; show phones a notice that a larger screen is better; the emblem in the published-page badge was off-centre; clean the project of screenshots, unneeded folders and Markdown files.
+- Fixes:
+  - The /p/ address frame carries the focus ring.
+  - Sign-up has live field feedback and a password toggle, and an accepted sign-up shows a check-your-email step.
+  - Duplicate sign-ups keep Better Auth's neutral answer, and the address owner gets a bilingual notice at most hourly.
+  - The phone notice appears in the studio and console only.
+  - The badge's view box matches the emblem.
+- Cleanup:
+  - Removed `docs/screenshots`, `docs/archive`, the old brand review rounds, the brand verification record, the unapplied SQL draft and the pointer `docs/AGENTS.md`.
+  - The 19 evidence files are merged into `docs/EVIDENCE.md`, and `BACKEND_STYLE.md` into `ARCHITECTURE.md`. All links are relinked; the check finds 0 broken relative links. Git history keeps everything removed.
+- Checks: API 109 pass / 12 skip / 0 fail; web 69/0; typecheck 0; Biome clean; Playwright e2e 56 passed. Evidence: `docs/EVIDENCE.md` (2026-10-24 entry).
+- CI follow-up: new advisories made `bun audit` fail on PR #20. nodemailer is pinned to 10.1.7 (GHSA-m943-m63m-w62w, GHSA-85x2-q946-cp5h, GHSA-8c8m-p3m8-cjg8); a scoped root override sets miniflare's exact undici pin to 7.30.1 and `bun audit fix` moves dotenvx's undici to 6.29.1 (GHSA-4qv8-2p9j-2685, GHSA-f72v-6w45-q472, GHSA-xjj6-f33q-929c).
+
 ## 2026-10-23 — External review reports
 - Human request: an opinion on two review reports of the trial (journey and visitor). Each finding was checked against the code first.
 - Fixed:
@@ -14,7 +28,7 @@
 - Follow-up: the 404 page keeps only the numeral, the message and the actions; error headings drop the alert icon.
 - Retest follow-up: non-image uploads now get 422 `INVALID_IMAGE` (signature check before the decoder) and are discarded instead of a 502 "storage unreachable"; body-parser 2.4.0 for GHSA-27r3-jxmh-p828.
 - Not a defect: duplicate fields in the studio DOM, which are the preview's contact form. Human action: the `www` DNS record.
-- Checks: web 66/0, typecheck 0, Biome clean, browser checks 9/9 plus upload simulation 3/3, Playwright e2e 56 passed. Evidence: `docs/evidence/2026-10-23-external-review.md`. Not deployed.
+- Checks: web 66/0, typecheck 0, Biome clean, browser checks 9/9 plus upload simulation 3/3, Playwright e2e 56 passed. Evidence: `docs/EVIDENCE.md` (entry `2026-10-23-external-review.md`. Not deployed.
 
 ## 2026-10-23 — Full audit: styles, UI/UX, APIs and tests
 - Human request: "are you sure everything is fine? Do a comprehensive analysis of the styles, UI/UX and everything, check the state of the APIs and run tests" ("هل انت متاكد كل شي تمام؟ ..."). Scope: baseline every suite on `main`; a black-box API probe (authorization, ownership, error contract, CORS, headers, public exposure, latency); a browser crawl of 30 routes in both languages at three widths with axe-core, overflow, target-size and language checks; a style review for dead selectors, unused tokens and contrast; fix what is found, then rerun everything. Fixes are committed one step at a time.
@@ -28,30 +42,30 @@
   - Per-role tour, 208 views; keyboard and dialog checks, 164; state checks, 12.
   - Fixes: focus return after the suspend dialog; the empty history panel hidden from roles without the activity log; the staff role named in the sidebar; an honest outage message instead of "no permission".
 - Checks on the final head: API 105 pass / 12 skip / 0 fail; web 63/0; Workers 8/8 and 15/15; typecheck 0; Biome clean; `bun audit` clean; Playwright e2e 56 passed; API probe 120/120; crawl 180 views with only expected 404s and accepted exceptions left.
-- Evidence: `docs/evidence/2026-10-23-full-audit.md`. Not deployed.
+- Evidence: `docs/EVIDENCE.md` (entry `2026-10-23-full-audit.md`. Not deployed.
 
 ## 2026-10-23 — Console navigation order
-- Human request: reorder the dashboard sidebar tabs. New order: Overview; Users & content (accounts, sites); Trust & safety (reports, data requests); Operations (notices, activity log); Administration (staff, system). Reports and Data requests show waiting counts. The desktop menu-button visibility clash is fixed. Checks: web 60/0, typecheck 0, e2e 56 passed. Evidence: `docs/evidence/2026-10-23-console-redesign-account.md`.
+- Human request: reorder the dashboard sidebar tabs. New order: Overview; Users & content (accounts, sites); Trust & safety (reports, data requests); Operations (notices, activity log); Administration (staff, system). Reports and Data requests show waiting counts. The desktop menu-button visibility clash is fixed. Checks: web 60/0, typecheck 0, e2e 56 passed. Evidence: `docs/EVIDENCE.md` (entry `2026-10-23-console-redesign-account.md`.
 
 ## 2026-10-23 — Console redesign, infinite lists and the studio account page
 - Human request: "do the best" on account deletion, a dashboard as organised as other companies' dashboards, shadcn and infinite React Query questions, and proactive decisions. Scope: a shared console component kit with `useInfiniteQuery` lists; every console page redesigned; grouped navigation; self-service account changes and deletion (server and studio page); privacy and removal copy made accurate; the studio sidebar no longer covers notices. shadcn was not adopted (see DECISIONS).
-- Checks: API suite 103 pass / 12 skip / 0 fail (account integration 4/4, mail templates 7/7), web 60/0, Playwright e2e 56 passed, typecheck 0, Biome clean, browser QA of infinite loading, search, notices, report handling and the whole account flow. Evidence: `docs/evidence/2026-10-23-console-redesign-account.md`.
+- Checks: API suite 103 pass / 12 skip / 0 fail (account integration 4/4, mail templates 7/7), web 60/0, Playwright e2e 56 passed, typecheck 0, Biome clean, browser QA of infinite loading, search, notices, report handling and the whole account flow. Evidence: `docs/EVIDENCE.md` (entry `2026-10-23-console-redesign-account.md`.
 
 ## 2026-10-23 — TanStack Query for the administration console
 - Human request: add React Query to the dashboard ("ابدا"). Scope: the administration console only. Its reads move to TanStack Query through one console hook, with a query client scoped to the signed-in administrator session and dropped when the console unmounts; writes stay explicit `api()` calls and invalidate the console's queries afterwards. The studio editor (draft, revision and publication state machine) and the authorization gate's permission read are deliberately out of scope.
 - Step 1: remove unreachable controller reads (the console controller was only ever used for the site moderation dialog; its page, counts and account-dialog paths had no caller).
 - Step 2: `@tanstack/react-query` 5.104.2; `admin-query.tsx` (session-keyed provider, `useAdminData`, `useAdminRefresh`); all console reads moved; writes invalidate console reads; desktop console sidebar scrolls on short windows (sign-out was unreachable at 1280x720).
-- Checks: typecheck 0, Biome clean, web tests 58/0, Playwright e2e 56 passed, browser QA of caching, invalidation, background-failure and sign-out behavior on a local production build. Evidence: `docs/evidence/2026-10-23-admin-query.md`.
+- Checks: typecheck 0, Biome clean, web tests 58/0, Playwright e2e 56 passed, browser QA of caching, invalidation, background-failure and sign-out behavior on a local production build. Evidence: `docs/EVIDENCE.md` (entry `2026-10-23-admin-query.md`.
 
 ## 2026-10-23 — Branded authentication emails
 - Human request: add the new logo to the platform emails professionally. Verification and reset emails rebuilt (table layout, hosted 2x logo with alt text, title, button, link lifetime, fallback link, footer) in Arabic and English; email logo PNGs added to the kit; auth link lifetimes set explicitly to the 60 minutes the emails state.
-- Checks: mail tests 5/5, API 97 pass / 12 skip / 0 fail, Workers mail 15/15, typecheck 0, Biome clean. Evidence: `docs/evidence/2026-10-23-auth-email.md`. Not deployed; no real email sent.
+- Checks: mail tests 5/5, API 97 pass / 12 skip / 0 fail, Workers mail 15/15, typecheck 0, Biome clean. Evidence: `docs/EVIDENCE.md` (entry `2026-10-23-auth-email.md`. Not deployed; no real email sent.
 - CI follow-up: the MFA fixture now gives every native call a distinct client address; random picks from 254 addresses occasionally put four `/two-factor/*` calls in one Better Auth budget (3 per 10 s) and returned 429. MFA integration 3 consecutive runs passed; API 97 pass / 12 skip / 0 fail.
 
 ## 2026-10-23 — Brand v2: rebuilt folded-band emblem with Readex Pro
 - Human rejected logo v1.3; three new directions were shown, then the human asked to keep the original emblem idea and chose the balanced weight and the Readex Pro wordmark.
 - Emblem rebuilt on exact hexagonal geometry; Readex Pro 600 wordmarks in both languages; kit v2.0, favicon and app icons regenerated; footer uses a lighter indigo for the second band.
-- Checks: typecheck 0, Biome clean, web 58/58, Playwright 56/56. Evidence: `docs/evidence/2026-10-23-brand-v2.md`. Not deployed.
+- Checks: typecheck 0, Biome clean, web 58/58, Playwright 56/56. Evidence: `docs/EVIDENCE.md` (entry `2026-10-23-brand-v2.md`. Not deployed.
 
 ## 2026-10-23 — Logo v1.3, phone navigation drawer, one-command release, hardening
 - Scope (human request before sleeping, decisions delegated): review logo weight and colour; menu button and drawer instead of top buttons on narrow screens in the studio and dashboard; carry out proposed tasks; keep working through interruptions (a recurring self check-in was scheduled for that).
@@ -59,14 +73,14 @@
 - Phone navigation: studio and admin sidebars become a top bar with a menu button and a drawer; admin overview counters become label/value rows.
 - `bun run deploy:trial` one-command release with remembered cache mode.
 - Hardening: per-account wrong-password budget on signed-in password checks; upload completion no longer holds the site lock during provider IO (audit findings 1 and 12).
-- Checks: typecheck 0, Biome clean, web 58/58, API 95 pass / 12 skip / 0 fail, Playwright 56/56. Evidence: `docs/evidence/2026-10-23-overnight.md`. Not deployed.
+- Checks: typecheck 0, Biome clean, web 58/58, API 95 pass / 12 skip / 0 fail, Playwright 56/56. Evidence: `docs/EVIDENCE.md` (entry `2026-10-23-overnight.md`. Not deployed.
 
 ## 2026-10-22 — Deployment readiness: migration command, email verification
 - Scope (human request after PR #12): fix `bun run db:migrate` failing with missing BETTER_AUTH_SECRET/API_URL/WEB_URL in the human's checkout; turn signup email verification on; prepare exact steps for the backlog deployment, Sentry and the published-page cache. The human deploys; the agent does not access hosted systems or secrets.
 - `apps/api/src/db/migrate.ts` now needs only `DATABASE_URL`, prints the target host and database (no credentials) and reports a readable error when the URL is missing or malformed.
 - `TRIAL_SKIP_EMAIL_VERIFICATION="false"` in `apps/api/wrangler.toml` and `apps/api/wrangler.cache.toml`.
 - Studio: an existing signed-in account whose email is not verified gets a confirm-your-email screen with a resend link, retry and sign-out, instead of a generic load error; `EMAIL_NOT_VERIFIED` in other studio operations shows the same message.
-- Docs: OPERATIONS, CLOUDFLARE, API, ARCHITECTURE, LAUNCH, README, STATUS, DECISIONS; evidence `docs/evidence/2026-10-22-email-verification.md`.
+- Docs: OPERATIONS, CLOUDFLARE, API, ARCHITECTURE, LAUNCH, README, STATUS, DECISIONS; evidence `docs/EVIDENCE.md` (entry `2026-10-22-email-verification.md`.
 - CI: the e2e job was cancelled twice (PR #12 and #13) at its ten-minute job limit while `playwright install --with-deps` spent over nine minutes on system packages, before any test ran; the same commits passed in other runs. The install step now has its own 15-minute limit, the browser journeys keep ten minutes, and the job is capped at 25.
 - Checks: typecheck 0, Biome clean, web 58/58, guarded API 93 pass / 12 skip / 0 fail, Playwright 54/54; local production-mode verification flow (signup, blocked sign-in, link, sign-in, owned read) passed. Not deployed; hosted mail delivery not verified.
 
@@ -74,7 +88,7 @@
 - Cleanup: about 1,100 lines of verified-unused code, styles and tokens removed; documentation reorganized with history in `docs/archive/` (no content deleted).
 - Visual identity: one font pair, one type scale, one weight per heading level, three radii, one accent family and one page column across every platform screen; measured on 102 screenshots before and after. Rules in DESIGN_SYSTEM.md.
 - Review: four read-only reviewers (human-authorized helpers) reported 21 findings; 18 fixed with tests in separate commits, 3 low items left open with reasons. No IDOR, draft leak, XSS or open redirect was found.
-- Final gates: audit clean, typecheck 0, Biome clean, web 58/58, API 93 pass / 12 skip / 0 fail, Playwright 54/54, OpenNext build 0. Evidence: `docs/evidence/2026-10-22-full-audit.md`. Not deployed.
+- Final gates: audit clean, typecheck 0, Biome clean, web 58/58, API 93 pass / 12 skip / 0 fail, Playwright 54/54, OpenNext build 0. Evidence: `docs/EVIDENCE.md` (entry `2026-10-22-full-audit.md`. Not deployed.
 
 ## 2026-10-22 — Full project audit and cleanup (scope)
 - Human request after Task 8: check everything, clean the whole project, and review fonts, sizes, layouts, visual identity and logos so the product looks professional.
@@ -106,7 +120,7 @@
 - Fixed: a failed background session re-check (Better Auth re-checks on every tab return) no longer replaces an open studio/administration screen; `useAccountSession` reports errors only while no session is known.
 - Added: identity-free `ichnara-signed-in` hint cookie and redirect rules so `/` opens the studio for a signed-in browser; `/ar` and `/en` still show the product page; privacy notice lists the cookies.
 - Not reproduced: the product page has no loading screen on `main`; the trial may run a web build older than PR #2 (unverified).
-- Evidence: `docs/evidence/2026-10-22-session-entry.md` (typecheck, Biome, web 43/43, Playwright 44/44 plus new 3/3, mutation check). Not deployed.
+- Evidence: `docs/EVIDENCE.md` (entry `2026-10-22-session-entry.md` (typecheck, Biome, web 43/43, Playwright 44/44 plus new 3/3, mutation check). Not deployed.
 
 ## 2026-10-22 — Public cache review fix: the minute retry no longer wakes the database
 - Review finding: once the revalidation binding was configured, the `* * * * *` Cron queried PostgreSQL every minute even with nothing pending, which would keep Neon compute from scaling to zero (free compute allowance). The runbook did not mention it.
@@ -163,7 +177,7 @@
 
 ## 2026-10-22 — Optional database path implementation verified
 - Added optional HTTP/Cron Hyperdrive selection, fail-closed origin deadline verification and opt-in numeric pg timings; no active binding, query caching, dependency, schema or web routing change. Added explicit publication/rollback/deadline tests and doubled actual workerd database checks to both modes. Local-only harness restores the caller role/database deadline.
-- Baseline and after measurements recorded in evidence/2026-10-22-hyperdrive-latency.md. Local binding cannot prove distributed pooling gains; HTTP/Service Binding have identical6ms medians, so no Service Binding ships. Synthetic accounts were cleaned after each run.
+- Baseline and after measurements recorded in EVIDENCE.md (2026-10-22-hyperdrive-latency). Local binding cannot prove distributed pooling gains; HTTP/Service Binding have identical6ms medians, so no Service Binding ships. Synthetic accounts were cleaned after each run.
 - All eleven gates and monitoring pass: API79/0/5297 plus MFA11/0/308, web37/0/685, database14/14, storage8/8, mail15/15, monitoring28/28, Biome425, Next/OpenNext50/50, API dry run exit0. Manual operational handoff and PR remain active. No hosted/provider action or secret inspection.
 
 ## 2026-10-22 — Optional Hyperdrive latency evaluation (scope)
@@ -222,7 +236,7 @@
 
 ## 2026-10-21 — Local browser suite completed
 - Added43 committed Chromium checks, local-only API/PostgreSQL/production Next orchestration, unique native fixtures and scoped verified account cleanup, exact-origin browser networking, strict script checks with negative controls, and root scripts/typecheck.
-- Actual evidence:43/43 three consecutive local runs; all eleven required gates exit0. Web37/0/685, API66/12 conditional skips/0/5143 plus MFA11/0/308, storage8/8, mail15/15, Next49/49 and both Worker builds/dry-run pass. See evidence/2026-10-21-playwright-e2e.md for exact output, files, design and limits.
+- Actual evidence:43/43 three consecutive local runs; all eleven required gates exit0. Web37/0/685, API66/12 conditional skips/0/5143 plus MFA11/0/308, storage8/8, mail15/15, Next49/49 and both Worker builds/dry-run pass. See EVIDENCE.md (2026-10-21-playwright-e2e) for exact output, files, design and limits.
 - No application/security/schema/provider change, no deployment. CI implementation/push/PR acceptance is the next separate step.
 
 ## 2026-10-21 — Deterministic browser E2E suite (scope)
@@ -262,7 +276,7 @@
 
 ## 2026-10-20 — Audit fixes on claude/modest-davinci-osg31w
 - Scope (human-authorized after the read-only audit): fix confirmed audit findings that need no external resources, adopt `@paralleldrive/cuid2` identifiers (human request), and document each step. Planned order: flaky keyset test; cuid2 ids with a reviewed, data-preserving migration; web security headers; server-rendered Arabic `lang/dir`; focus visibility; user-link `rel`; 503 for unavailable public pages; CI parity with the deployed build; draft legal pages; bilingual mail templates; scheduled cleanup, release retention, R2 cleanup on account removal and complete data export; unused dependency removal; stale documentation.
-- Limits: no deployment, no Neon/R2/Resend access, no secrets, no production migration. Evidence per step: `docs/evidence/2026-10-20-audit-fixes.md`.
+- Limits: no deployment, no Neon/R2/Resend access, no secrets, no production migration. Evidence per step: `docs/EVIDENCE.md` (entry `2026-10-20-audit-fixes.md`.
 
 ## 2026-10-20 — Human confirms trying the repaired mail path
 - After the concrete HTTP change and passing test results were reported, the human explicitly requested sending from the new solution. Treat this as confirmation to deploy the API once and perform one further native reset-email test to the already privately supplied address. No web deployment, password/account/role change, R2 operation or direct production database access. A native reset may create its own temporary verification record; no credential change is attempted.
@@ -293,4 +307,4 @@
 
 ## Earlier entries
 
-Entries from 2026-10-13 to 2026-10-20 that were written in chronological order are in [archive/CHANGELOG-2026-10-13-to-2026-10-20.md](archive/CHANGELOG-2026-10-13-to-2026-10-20.md), unchanged.
+Entries from 2026-10-13 to 2026-10-20 that were written in chronological order are in archive/CHANGELOG-2026-10-13-to-2026-10-20.md, unchanged.

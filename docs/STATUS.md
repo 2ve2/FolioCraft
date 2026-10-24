@@ -1,22 +1,24 @@
 # Current status
 
-Updated: 2026-10-23, Asia/Riyadh. This page is the short continuation point. Every earlier status section is kept unchanged in [archive/STATUS-ARCHIVE.md](archive/STATUS-ARCHIVE.md); step evidence is in [evidence/](evidence/).
+Updated: 2026-10-23, Asia/Riyadh. This page is the short continuation point. Earlier status sections were retired in the 2026-10-24 cleanup and remain in Git history; step evidence is in [EVIDENCE.md](EVIDENCE.md).
 
 ## Product and trial
 
 - Ichnara (confirmed name), a bilingual Arabic/English portfolio builder. Friends-only trial on the temporary domain: https://lord2ve.tech (web) and https://api.lord2ve.tech (API).
-- `main` contains PRs #1–#17 (#12: full audit and cleanup; #13: migration command and signup email verification; #14: brand v2, phone drawer, deploy:trial, hardening; #15: branded authentication emails; #16: TanStack Query console, console redesign, studio Account page; #17: full audit and dashboard pass): audit fixes, `/ar` and `/en` language prefixes, the pool-close fix, the committed Playwright suite, optional Sentry monitoring, optional Hyperdrive, platform color tokens, optional published-page caching (off by default), signed-in entry and tab-return fix, and the immediate studio frame with the Next.js 16.4.1 security update.
+- `main` contains PRs #1–#19 (#12: full audit and cleanup; #13: migration command and signup email verification; #14: brand v2, phone drawer, deploy:trial, hardening; #15: branded authentication emails; #16: TanStack Query console, console redesign, studio Account page; #17: full audit and dashboard pass): audit fixes, `/ar` and `/en` language prefixes, the pool-close fix, the committed Playwright suite, optional Sentry monitoring, optional Hyperdrive, platform color tokens, optional published-page caching (off by default), signed-in entry and tab-return fix, and the immediate studio frame with the Next.js 16.4.1 security update.
 - Unknown: which `main` commit each trial Worker runs. The human deploys from the independent checkout; this session cannot reach the trial hosts (network policy).
 
 ## Active work
 
-- On `claude/modest-davinci-osg31w` (a new PR after #17), awaiting human review: fixes from two external review reports.
-  - Sign-up error messages; the email-verified confirmation; save-banner wording.
-  - The upload in-progress state; landing example links; `https://` completion.
-  - Evidence: [evidence/2026-10-23-external-review.md](evidence/2026-10-23-external-review.md).
-  - Checks: web 66/0, typecheck 0, Biome clean, browser checks 9/9 and upload simulation 3/3, e2e 56 passed.
-- Human action from the visitor review: add a `www` DNS record in Cloudflare and redirect it to `lord2ve.tech`.
-- After deploying, send one reset email to a private mailbox to check the branded email, and try one email change once mail is confirmed.
+- On `claude/modest-davinci-osg31w` (a new PR after #19), awaiting human review:
+  - sign-up live feedback and a check-your-email step;
+  - an existing-account email on duplicate sign-ups;
+  - the /p/ field focus ring;
+  - the phone notice in the studio and console;
+  - the centred badge emblem;
+  - the documentation cleanup.
+  - Evidence: [EVIDENCE.md](EVIDENCE.md).
+- Human actions: add the `www` DNS record and redirect; finish the owner role and authenticator enrollment from the guide. Sentry's DSN is set on both Workers (reported by the human on 2026-10-24).
 
 ## Blockers
 

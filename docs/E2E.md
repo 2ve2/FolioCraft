@@ -59,4 +59,4 @@ The `e2e` job in `.github/workflows/check.yml` runs on PostgreSQL 18, installs t
 bunx --no-install playwright show-report work/e2e-report
 ```
 
-Traces include only generated disposable test identities but can contain their session cookies and passwords; do not reuse them or attach unrelated/private browser recordings. There are no real account secrets in the test configuration. Dated actual acceptance results belong in `docs/evidence/2026-10-21-playwright-e2e.md`.
+Traces include only generated disposable test identities but can contain their session cookies and passwords; do not reuse them or attach unrelated/private browser recordings. There are no real account secrets in the test configuration. Dated actual acceptance results belong in `docs/EVIDENCE.md` (entry `2026-10-21-playwright-e2e.md`.

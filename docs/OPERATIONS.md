@@ -351,7 +351,7 @@ Account directory search is name-only for every staff role, including owner/supp
 
 ## Database pool error capture — 2026-10-21
 
-The safe event projection includes event/name/code/stage/ending/ended. Names and codes use finite allowlists; unknown is intentional, not evidence of a particular network condition. No messages, stack traces, SQL, parameters, client objects, URLs or user data are included. A local pg-cloudflare normal-close defect is fixed with the pinned Bun patch; see [investigation evidence](evidence/2026-10-21-pool-error-investigation.md). Do not lower severity or tune pools/deadlines based only on a name-only historical event.
+The safe event projection includes event/name/code/stage/ending/ended. Names and codes use finite allowlists; unknown is intentional, not evidence of a particular network condition. No messages, stack traces, SQL, parameters, client objects, URLs or user data are included. A local pg-cloudflare normal-close defect is fixed with the pinned Bun patch; see [investigation evidence](EVIDENCE.md#database-pool-error-investigation--2026-10-21). Do not lower severity or tune pools/deadlines based only on a name-only historical event.
 
 Human-operated rollout, after reviewing/merging the PR (not executed by this task):
 

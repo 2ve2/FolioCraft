@@ -1,6 +1,6 @@
 # Published portfolio cache: manual trial rollout
 
-This is preparation for the friends-only trial, not a deployment record. No staging, provider creation, secret setup or Neon migration was performed by the agent. Source and local evidence are in [the dated report](evidence/2026-10-22-published-isr.md). The human explicitly approved preparing the private R2/SQLite DO resources and the pinned adapter correction, within the free allowance.
+This is preparation for the friends-only trial, not a deployment record. No staging, provider creation, secret setup or Neon migration was performed by the agent. Source and local evidence are in [the dated report](EVIDENCE.md#published-portfolio-isr-design-and-verification). The human explicitly approved preparing the private R2/SQLite DO resources and the pinned adapter correction, within the free allowance.
 
 ## Behavior and boundaries
 

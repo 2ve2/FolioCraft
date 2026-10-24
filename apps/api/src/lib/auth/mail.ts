@@ -42,7 +42,9 @@ export async function sendAuthMail(
 		} catch {
 			throw new MailTransportError("INVALID_LINK");
 		}
-		if (link.origin !== new URL(env.API_URL).origin || !["http:", "https:"].includes(link.protocol))
+		// Native links point at the API; only the existing-account notice links to the web sign-in page.
+		const expectedOrigin = new URL(kind === "existing-account" ? env.WEB_URL : env.API_URL).origin;
+		if (link.origin !== expectedOrigin || !["http:", "https:"].includes(link.protocol))
 			throw new MailTransportError("INVALID_LINK");
 		const payload = {
 			// Display name keeps the sender recognisable; the address is the validated MAIL_FROM.

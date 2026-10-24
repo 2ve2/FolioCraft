@@ -20,7 +20,8 @@ export function useAuthController(mode: AuthMode) {
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState("");
 	const [returnToAdmin, setReturnToAdmin] = useState(false);
-	const [verificationRequired, setVerificationRequired] = useState(false);
+	// The address a sign-up was accepted for; the page then shows the check-your-email step.
+	const [sentTo, setSentTo] = useState("");
 	const [emailNotVerified, setEmailNotVerified] = useState(false);
 	const pending = useRef(false);
 	const mounted = useRef(true);
@@ -44,7 +45,7 @@ export function useAuthController(mode: AuthMode) {
 		pending.current = true;
 		setBusy(true);
 		setError("");
-		setVerificationRequired(false);
+		setSentTo("");
 		setEmailNotVerified(false);
 		const data = new FormData(event.currentTarget);
 		try {
@@ -89,8 +90,7 @@ export function useAuthController(mode: AuthMode) {
 				return;
 			}
 			await refetch();
-			if (mounted.current && mode === "signup" && !result.data?.token)
-				setVerificationRequired(true);
+			if (mounted.current && mode === "signup" && !result.data?.token) setSentTo(input.email);
 		} catch {
 			if (mounted.current) setError(t.unavailable);
 		} finally {
@@ -109,7 +109,8 @@ export function useAuthController(mode: AuthMode) {
 		refetch,
 		busy,
 		error,
-		verificationRequired,
+		sentTo,
+		resetSignup: () => setSentTo(""),
 		emailNotVerified,
 		returnToAdmin,
 		authenticate,
