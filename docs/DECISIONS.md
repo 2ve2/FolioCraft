@@ -462,3 +462,9 @@ Human authorizes SMTP_HOST=smtp.resend.com,SMTP_PORT=465,SMTP_SECURE=true,SMTP_U
   - Agent commits add the trailer `Co-authored-by: Abdulrahman Matouk <81648139+2ve2@users.noreply.github.com>`. This is the GitHub-provided noreply address, so no personal email appears in history. It reflects that the human directs and reviews the work.
 - PR #20 was opened before this decision and stays as is. Its later commits carry the trailer.
 - Check: if Pull Shark appears after pull requests the human opened themselves, the cause above is confirmed. Record the outcome here.
+
+## 2026-10-24 — Sign-up names a registered address (human-confirmed)
+- The human asked whether a second sign-up with a registered email should simply be refused with "this email is used by another account". The agent explained the account-enumeration trade-off and recommended keeping the neutral answer; the human chose the explicit message ("غيرها").
+- This supersedes the neutral duplicate answer recorded in the 2026-10-24 sign-up work. A `before` hook on `/sign-up/email` looks the address up (lower-cased, as Better Auth stores it) and throws Better Auth's own `USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL` (422). The form shows the message with a sign-in switch and a password-recovery link.
+- Accepted risk: anyone can learn whether an address is registered. The existing `/sign-up/email` rate rule (5 per minute per address) bounds the lookups. Sign-in and password recovery keep their neutral answers.
+- The owner notice (`onExistingUserSignUp`) stays only for two sign-ups that race past the check.
