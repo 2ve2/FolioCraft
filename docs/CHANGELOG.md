@@ -12,6 +12,7 @@
   - Removed `docs/screenshots`, `docs/archive`, the old brand review rounds, the brand verification record, the unapplied SQL draft and the pointer `docs/AGENTS.md`.
   - The 19 evidence files are merged into `docs/EVIDENCE.md`, and `BACKEND_STYLE.md` into `ARCHITECTURE.md`. All links are relinked; the check finds 0 broken relative links. Git history keeps everything removed.
 - Checks: API 109 pass / 12 skip / 0 fail; web 69/0; typecheck 0; Biome clean; Playwright e2e 56 passed. Evidence: `docs/EVIDENCE.md` (2026-10-24 entry).
+- CI follow-up: new advisories made `bun audit` fail on PR #20. nodemailer is pinned to 10.1.7 (GHSA-m943-m63m-w62w, GHSA-85x2-q946-cp5h, GHSA-8c8m-p3m8-cjg8); a scoped root override sets miniflare's exact undici pin to 7.30.1 and `bun audit fix` moves dotenvx's undici to 6.29.1 (GHSA-4qv8-2p9j-2685, GHSA-f72v-6w45-q472, GHSA-xjj6-f33q-929c).
 
 ## 2026-10-23 — External review reports
 - Human request: an opinion on two review reports of the trial (journey and visitor). Each finding was checked against the code first.

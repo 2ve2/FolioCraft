@@ -39,6 +39,22 @@ Requests from the human, verified against the code before changing it. Nothing w
 - **Merged:** 19 evidence files into this file, and the backend style notes into ARCHITECTURE.md.
 - **Result:** `docs` holds 26 files instead of about 150, and the relative link check finds 0 broken links. Brand scripts read only `docs/brand/v2`, which stays.
 
+### Dependency advisories
+- **Cause.** `bun audit` failed on PR #20 with advisories published after the previous run:
+  - nodemailer 10.1.0 (GHSA-m943-m63m-w62w, GHSA-85x2-q946-cp5h, GHSA-8c8m-p3m8-cjg8, fixed in 10.1.4);
+  - undici 7.29.1, pinned exactly by miniflare under wrangler, and 6.29.0 under `@dotenvx/dotenvx` (GHSA-4qv8-2p9j-2685, GHSA-f72v-6w45-q472, GHSA-xjj6-f33q-929c).
+- **Change.**
+  - `apps/api` pins nodemailer 10.1.7, the last release on the 10.1 line.
+  - `bun audit fix` resolves dotenvx's undici to 6.29.1.
+  - A scoped root override (`miniflare` → `undici` 7.30.1) follows the existing override pattern; miniflare is a local development and deploy tool only.
+- **Checks.**
+  - `bun audit`: no vulnerabilities.
+  - Frozen install: no changes.
+  - Typecheck 0; Biome clean.
+  - API 109 pass / 12 skip / 0 fail; web 69/0.
+  - Workers mail checks: 15 passed.
+  - `bun run build` passed, and `wrangler deploy --dry-run` for the API passed.
+
 ### Not verified
 - Real email delivery of the existing-account notice; the hosted trial.
 
