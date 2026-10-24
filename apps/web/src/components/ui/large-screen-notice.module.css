@@ -1,0 +1,41 @@
+/* A small centred card over a dimmed page; it reads as advice, not an error. */
+.notice {
+	width: min(calc(100% - 32px), 380px);
+	margin: auto;
+	padding: 28px 24px 24px;
+	border: 1px solid var(--line);
+	border-radius: 18px;
+	background: var(--color-surface);
+	color: var(--ink);
+	box-shadow: 0 28px 100px var(--color-admin-dialog-shadow);
+	text-align: center;
+}
+.notice[open] {
+	display: grid;
+	justify-items: center;
+	gap: 12px;
+}
+.notice::backdrop {
+	background: var(--color-admin-dialog-backdrop-surface);
+	backdrop-filter: blur(3px);
+}
+.notice h2 {
+	margin: 0;
+	font-size: 20px;
+	line-height: 1.4;
+}
+.notice p {
+	margin: 0 0 6px;
+	color: var(--muted);
+	font-size: var(--text-body);
+	line-height: 1.8;
+}
+.icon {
+	display: grid;
+	place-items: center;
+	width: 52px;
+	height: 52px;
+	border-radius: 14px;
+	background: var(--color-accent-soft);
+	color: var(--purple);
+}

@@ -10,6 +10,8 @@ for (const locale of ["ar", "en"] as const) {
 			test.setTimeout(150000);
 			await page.setViewportSize({ width, height: 900 });
 			await page.emulateMedia({ reducedMotion: width === 390 ? "reduce" : "no-preference" });
+			// This journey measures the startup frame; the phone notice is covered in navigation.spec.
+			await page.addInitScript(() => localStorage.setItem("ichnara-large-screen-notice", "seen"));
 			const account = await accounts.seed();
 			await openStudioSignedIn(page, account, locale);
 			await expect(page.locator(".onboarding")).toBeVisible();

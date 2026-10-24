@@ -15,6 +15,19 @@ for (const locale of ["ar", "en"] as const) {
 		await page.goto(`/${locale}/studio`);
 		await expect(page.locator(".studio-shell:not([aria-busy])")).toBeVisible();
 
+		// A phone first gets one suggestion to use a larger screen; continuing remembers it.
+		const notice = page.getByRole("dialog", {
+			name: ar ? "الأفضل على شاشة أكبر" : "Best on a larger screen",
+		});
+		await expect(notice).toBeVisible();
+		await notice
+			.getByRole("button", { name: ar ? "متابعة على الجوال" : "Continue on phone" })
+			.click();
+		await expect(notice).toBeHidden();
+		await page.reload();
+		await expect(page.locator(".studio-shell:not([aria-busy])")).toBeVisible();
+		await expect(notice).toBeHidden();
+
 		const toggle = page.getByRole("button", { name: ar ? "فتح القائمة" : "Open menu" });
 		const drawer = page.locator("#studio-menu");
 		const nav = drawer.getByRole("navigation");

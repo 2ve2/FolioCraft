@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { LanguageSwitch } from "../../components/ui/language-switch";
+import { LargeScreenNotice } from "../../components/ui/large-screen-notice";
 import { PublicNotices } from "../../components/ui/public-notices";
 import { localeHref } from "../../lib/locale";
 import { useInterfaceLocale } from "../../lib/use-interface-locale";
@@ -298,6 +299,7 @@ export function Studio() {
 		<div className="studio-notice-shell">
 			<PublicNotices locale={locale} />
 			<StudioWorkspace />
+			<LargeScreenNotice locale={locale} area="studio" />
 		</div>
 	);
 }
