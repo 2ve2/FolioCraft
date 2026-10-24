@@ -1,6 +1,6 @@
 import type { Locale } from "@ichnara/contracts";
 
-export type AuthMailKind = "verify" | "reset" | "change-email" | "new-email";
+export type AuthMailKind = "verify" | "reset" | "change-email" | "new-email" | "existing-account";
 type MailContent = { subject: string; text: string; html: string };
 
 /** Escapes user-facing values before embedding them in an authentication email. */
@@ -17,9 +17,9 @@ const escapeHtml = (s: string) =>
  */
 export function mailLocale(url: string): Locale {
 	try {
+		// Native links carry the page they return to; a direct web link is its own target.
 		const raw = new URL(url).searchParams.get("callbackURL");
-		if (!raw) return "en";
-		const callback = new URL(raw);
+		const callback = new URL(raw ?? url);
 		const prefix = callback.pathname.split("/")[1];
 		const language =
 			prefix === "ar" || prefix === "en" ? prefix : callback.searchParams.get("lang");
@@ -91,6 +91,16 @@ const copy = {
 			action: "تأكيد البريد الجديد",
 			expiry: "الرابط صالح لمدة ساعة واحدة.",
 		},
+		"existing-account": {
+			subject: "محاولة تسجيل جديدة ببريدك — إيكنارا",
+			title: "لديك حساب بهذا البريد من قبل",
+			preview: "وصلنا طلب لإنشاء حساب جديد بعنوان بريدك.",
+			intro:
+				"وصلنا طلب لإنشاء حساب جديد في إيكنارا بهذا البريد، لكن لديك حساب به من قبل، فلم ننشئ حساباً آخر. إذا كنت أنت، سجّل الدخول من الزر، أو اختر «نسيت كلمة المرور؟» إن لم تتذكرها.",
+			action: "تسجيل الدخول",
+			expiry: "لا يحتاج حسابك إلى أي إجراء آخر.",
+			ignore: "إذا لم تكن أنت، تجاهل هذه الرسالة؛ لم يتغير شيء في حسابك.",
+		},
 		fallback: "إذا لم يعمل الزر، انسخ هذا الرابط في المتصفح:",
 		ignore: "إذا لم تطلب ذلك، تجاهل هذه الرسالة ولن يتغير شيء في حسابك.",
 		automated: "رسالة تلقائية، لا تحتاج إلى رد.",
@@ -134,6 +144,16 @@ const copy = {
 			intro: "Use the button below to confirm this address as your new sign-in email.",
 			action: "Confirm new email",
 			expiry: "This link expires in one hour.",
+		},
+		"existing-account": {
+			subject: "A new sign-up used your email — Ichnara",
+			title: "You already have an account",
+			preview: "Someone asked to create a new account with your email address.",
+			intro:
+				"We received a request to create a new Ichnara account with this email, but you already have one, so no second account was created. If this was you, sign in with the button below, or choose “Forgot password?” if you don’t remember it.",
+			action: "Sign in",
+			expiry: "Your account needs no other action.",
+			ignore: "If this wasn’t you, ignore this message; nothing changed in your account.",
 		},
 		fallback: "If the button does not work, copy this link into your browser:",
 		ignore: "If you did not request this, ignore this message and nothing will change.",

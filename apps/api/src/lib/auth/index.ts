@@ -6,6 +6,7 @@ import { twoFactor } from "better-auth/plugins/two-factor";
 import { env, requireEmailVerification } from "../../config/env";
 import { db } from "../../db";
 import * as schema from "../../db/schema/auth";
+import { rateLimitService } from "../../services/rate-limit";
 import { accessControl, accessRoles } from "./access";
 import { accountDeletion } from "./account-deletion";
 import { authHooks } from "./hooks";
@@ -46,6 +47,32 @@ export const auth = betterAuth({
 		/** Delivers the native reset link using the configured project mail transport. */
 		sendResetPassword: async ({ user, url }) => {
 			await sendAuthMail(user.email, user.name, url, "reset");
+		},
+
+		/**
+		 * Sign-up answers the same for new and registered addresses (no account enumeration); only
+		 * the address owner learns of the attempt, at most once an hour. Failures stay silent so the
+		 * response cannot differ.
+		 */
+		onExistingUserSignUp: async ({ user }, request) => {
+			try {
+				const limit = await rateLimitService.consume(`existing-signup:${user.id}`, 1, 3600);
+				if (!limit.allowed) return;
+				const body = (await request?.json().catch(() => null)) as { callbackURL?: unknown } | null;
+				let locale = "en";
+				try {
+					if (typeof body?.callbackURL === "string")
+						locale = new URL(body.callbackURL).pathname.split("/")[1] === "ar" ? "ar" : "en";
+				} catch {}
+				await sendAuthMail(
+					user.email,
+					user.name,
+					new URL(`/${locale}/login`, env.WEB_URL).href,
+					"existing-account",
+				);
+			} catch {
+				console.warn(JSON.stringify({ event: "existing_signup_notice_failed" }));
+			}
 		},
 	},
 	emailVerification: {
