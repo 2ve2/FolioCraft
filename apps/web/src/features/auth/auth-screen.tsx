@@ -29,6 +29,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 		sentTo,
 		resetSignup,
 		emailNotVerified,
+		emailTaken,
 		returnToAdmin,
 		authenticate,
 	} = useAuthController(mode);
@@ -152,6 +153,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
 								locale={locale}
 								mode={mode}
 								verificationRequired={emailNotVerified}
+								emailTaken={emailTaken}
 							/>
 						</>
 					)}

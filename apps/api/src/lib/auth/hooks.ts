@@ -71,6 +71,19 @@ export const authHooks = {
 				message: "Email delivery is not configured",
 			});
 
+		// Human decision (2026-10-24): a registered address is refused by name. Better Auth would
+		// answer neutrally while verification is required; the sign-up rate rule bounds lookups.
+		if (ctx.path === "/sign-up/email" && typeof ctx.body?.email === "string") {
+			const existing = await ctx.context.internalAdapter.findUserByEmail(
+				ctx.body.email.toLowerCase(),
+			);
+			if (existing)
+				throw new APIError("UNPROCESSABLE_ENTITY", {
+					code: "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL",
+					message: "User already exists. Use another email.",
+				});
+		}
+
 		// Account self-service: the profile accepts a bounded name only, and deletion always asks for
 		// the current password instead of trusting a recent session.
 		if (ctx.path === "/update-user") {

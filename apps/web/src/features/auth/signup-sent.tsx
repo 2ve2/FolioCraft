@@ -15,10 +15,9 @@ const RESEND_SECONDS = 60;
 const text = {
 	ar: {
 		title: "تحقّق من بريدك",
-		sent: "إذا كان هذا البريد جديداً لدينا، أرسلنا إليه رابط تفعيل الحساب:",
+		sent: "أرسلنا رابط تفعيل الحساب إلى:",
 		next: "افتح الرسالة واضغط الرابط، ثم سجّل الدخول.",
-		missing:
-			"لم تصلك الرسالة خلال دقائق؟ تحقّق من مجلد الرسائل غير المرغوبة، أو أعد الإرسال. وإذا كان لديك حساب بهذا البريد من قبل، فسجّل الدخول أو استعد كلمة المرور.",
+		missing: "لم تصلك الرسالة خلال دقائق؟ تحقّق من مجلد الرسائل غير المرغوبة، أو أعد الإرسال.",
 		resend: "إعادة إرسال الرابط",
 		wait: (s: number) => `إعادة الإرسال بعد ${s.toLocaleString("ar-EG")} ث`,
 		resent: "طلبنا رسالة جديدة. قد تستغرق دقيقة لتصل.",
@@ -27,10 +26,9 @@ const text = {
 	},
 	en: {
 		title: "Check your email",
-		sent: "If this email is new to us, we sent an activation link to:",
+		sent: "We sent an activation link to:",
 		next: "Open the message and select the link, then sign in.",
-		missing:
-			"No message after a few minutes? Check your spam folder or resend it. If you already have an account with this email, sign in or reset your password.",
+		missing: "No message after a few minutes? Check your spam folder or resend it.",
 		resend: "Resend link",
 		wait: (s: number) => `Resend in ${s}s`,
 		resent: "We requested a new message. It can take a minute to arrive.",
@@ -40,8 +38,8 @@ const text = {
 } as const;
 
 /**
- * Replaces the sign-up form once Better Auth accepts it. The wording covers both a new address
- * and one that already has an account, because the server answers both the same way.
+ * Replaces the sign-up form once Better Auth accepts it. A registered address never reaches this
+ * step: the server refuses it by name and the form shows that error instead.
  */
 export function SignupSent({
 	locale,

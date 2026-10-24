@@ -1,5 +1,11 @@
 # Action log
 
+
+## 2026-10-24 — Explicit refusal for a registered sign-up email
+- Human request: refuse a sign-up with a registered email by saying the email is used by another account ("غيرها", after the enumeration trade-off was explained).
+- API: a `/sign-up/email` before hook returns 422 `USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL`; the owner notice remains for races only.
+- Web: clearer AR/EN message plus a password-recovery link on refusal; the sent step no longer hedges about existing accounts.
+- Checks: listed in `docs/EVIDENCE.md` (2026-10-24, explicit refusal).
 ## 2026-10-24 — Sign-up feedback, phone notice, badge centring, project cleanup
 - Human requests (Arabic, summarized): the portfolio address field showed a misplaced blue line; sign-up gave no feedback while typing; a second sign-up with the same email said nothing; a resend link sat oddly on the sign-up page; show phones a notice that a larger screen is better; the emblem in the published-page badge was off-centre; clean the project of screenshots, unneeded folders and Markdown files.
 - Fixes:

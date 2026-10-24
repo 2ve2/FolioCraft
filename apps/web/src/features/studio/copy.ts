@@ -135,7 +135,7 @@ export const copy = {
 		authFailure: "تعذر تسجيل الدخول أو إنشاء الحساب. تحقق من البيانات وحاول مجددًا.",
 		authPasswordLength: "كلمة المرور يجب أن تكون من ١٠ إلى ١٢٨ حرفاً.",
 		authEmailInvalid: "أدخل عنوان بريد إلكتروني صالحاً.",
-		authExists: "هذا البريد مسجل بالفعل. انتقل إلى تسجيل الدخول.",
+		authExists: "هذا البريد مستخدم بحساب آخر. سجّل الدخول، أو استعد كلمة المرور إن نسيتها.",
 		authCredentials: "البريد أو كلمة المرور غير صحيحة.",
 		authRateLimit: "محاولات كثيرة. انتظر قليلًا ثم حاول مجددًا.",
 		publicContact: "اختياري · يظهر للزوار عند النشر",
@@ -315,7 +315,8 @@ export const copy = {
 		authFailure: "Could not sign in or create your account. Check your details and retry.",
 		authPasswordLength: "Use a password of 10 to 128 characters.",
 		authEmailInvalid: "Enter a valid email address.",
-		authExists: "This email is already registered. Switch to sign in.",
+		authExists:
+			"This email is already used by another account. Sign in, or reset your password if you forgot it.",
 		authCredentials: "Incorrect email or password.",
 		authRateLimit: "Too many attempts. Please wait and try again.",
 		publicContact: "Optional · visible to visitors after publishing",
